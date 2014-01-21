@@ -696,6 +696,8 @@ void MainWindow::mouseDoubleClickEvent(QMouseEvent *)
 {
 	if (stackedWidget->currentIndex() == imageViewIdx)
 	{
+		if(isFullScreen())
+			showNormal();
 		setThumbViewWidgetsVisible(true);
 		stackedWidget->setCurrentIndex(thumbViewIdx);
 		setWindowTitle(thumbView->currentViewDir + " - Phototonic");
@@ -729,6 +731,8 @@ void MainWindow::loadImagefromThumb(const QModelIndex &idx)
 	clickedImage += thumbView->thumbViewModel->item(idx.row())->text();
 	imageView->loadImage(clickedImage);
 	setThumbViewWidgetsVisible(false);
+	if (GData::isFullScreen == true)
+		showFullScreen();
 	stackedWidget->setCurrentIndex(1);
 	setWindowTitle(thumbView->thumbViewModel->item(idx.row())->text() + " - Phototonic");
 }
