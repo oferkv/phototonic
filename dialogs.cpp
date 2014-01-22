@@ -182,12 +182,24 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	mainLayout->addLayout(okCancelLayout);
 	setLayout(mainLayout);
 
+	// Background color
+	QGroupBox *colorsGroupBox = new QGroupBox(tr("Colors"));
+	QLabel *bgTxtLab = new QLabel("Viewer background color:");
+	colButton = new QPushButton("");
+	QHBoxLayout *bgColBox = new QHBoxLayout;
+	bgColBox->addWidget(bgTxtLab);
+	bgColBox->addWidget(colButton);
+	bgColBox->addStretch(1);
+	colorsGroupBox->setLayout(bgColBox);
+	connect(colButton, SIGNAL(clicked()), this, SLOT(pickColor()));
+	colButton->setPalette(QPalette(	GData::backgroundColor));
+	colButton->setAutoFillBackground(true);
+
 	// Zoom options
 	QGroupBox *zoomOpts = new QGroupBox(tr("Zoom Options"));
 	QHBoxLayout *zoomOptsBox = new QHBoxLayout;
 	zoomOptsBox->setAlignment(Qt::AlignTop);
 	zoomOpts->setLayout(zoomOptsBox);
-//	QCheckBox *zoomFitCheck = new QCheckBox("Fit to window");
 
 	// Zoom large images
 	QGroupBox *fitLargeGroupBox = new QGroupBox(tr("Fit Large Images"));
@@ -227,6 +239,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	fitSmallRadios[GData::zoomInFlags]->setChecked(true);
  	
 	optsLayout->addWidget(zoomOpts);
+	optsLayout->addSpacerItem(new QSpacerItem(0, 5, QSizePolicy::Fixed, QSizePolicy::Expanding));
+	optsLayout->addWidget(colorsGroupBox);
 	optsLayout->addStretch(1);
 }
 
@@ -252,6 +266,8 @@ void SettingsDialog::saveSettings()
 		}
 	}
 
+	GData::backgroundColor = bgColor;
+
 	close();
 }
 
@@ -260,3 +276,12 @@ void SettingsDialog::abort()
 	close();
 }
 
+void SettingsDialog::pickColor()
+{
+	QColor userColor = QColorDialog::getColor(GData::backgroundColor, this);
+    if (userColor.isValid())
+    {	
+        colButton->setPalette(QPalette(userColor));
+        bgColor = userColor;
+    }
+}

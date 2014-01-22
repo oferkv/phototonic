@@ -36,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 	connect(thumbView->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), 
 				this, SLOT(changeActionsBySelection(QItemSelection, QItemSelection)));
 
+	GData::backgroundColor = GData::appSettings->value("backgroundColor").value<QColor>();
    	imageView = new ImageView(this);
    	imageView->setVisible(false);
 
@@ -416,6 +417,8 @@ void MainWindow::showSettings()
 {
 	SettingsDialog *dialog = new SettingsDialog(this);
 	dialog->exec();
+
+	imageView->setPalette(QPalette(GData::backgroundColor));
 }
 
 void MainWindow::toggleFullScreen()
@@ -678,6 +681,7 @@ void MainWindow::writeSettings()
 	GData::appSettings->setValue("thumbsSortFlags", (int)thumbView->thumbsSortFlags);
 	GData::appSettings->setValue("thumbsZoomVal", (int)thumbView->m_thumbSize);
 	GData::appSettings->setValue("isFullScreen", (bool)GData::isFullScreen);
+	GData::appSettings->setValue("backgroundColor", GData::backgroundColor);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

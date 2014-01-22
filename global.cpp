@@ -24,6 +24,7 @@ namespace GData
 	QSettings *appSettings;
 	unsigned int zoomInFlags;
 	unsigned int zoomOutFlags;
+	QColor backgroundColor;
 
 	// app data
 	QModelIndexList copyCutIdxList;

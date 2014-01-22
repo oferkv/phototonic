@@ -57,6 +57,9 @@ public:
 	static int const nZoomRadios = 5;
     SettingsDialog(QWidget *parent);
 
+private slots:
+	void pickColor();
+
 public slots:
 	void abort();
 	void saveSettings();
@@ -64,6 +67,9 @@ public slots:
 private:
 	QRadioButton *fitLargeRadios[nZoomRadios];
 	QRadioButton *fitSmallRadios[nZoomRadios];
+    QPushButton *colButton;
+	QColor bgColor;
+	
 };
 
 #endif // DIALOGS_H

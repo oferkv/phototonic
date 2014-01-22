@@ -22,6 +22,7 @@
 #include <QSettings>
 #include <QModelIndexList>
 #include <QStringList>
+#include <QColor>
 
 namespace GData
 {
@@ -29,6 +30,7 @@ namespace GData
 	extern QSettings *appSettings;
 	extern unsigned int zoomInFlags;
 	extern unsigned int zoomOutFlags;
+	extern QColor backgroundColor;
 
 	// app data
 	extern QModelIndexList copyCutIdxList;

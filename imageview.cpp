@@ -33,9 +33,7 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	imgLabel1->setScaledContents(true);
 	imgLabel1->setFixedSize(0,0);
 
-	QPalette pal = palette();
-	pal.setColor(backgroundRole(), QColor(0,0,0));
-	setPalette(pal);
+	setPalette(QPalette(GData::backgroundColor));
 
 	scrlArea = new QScrollArea;
 	scrlArea->setContentsMargins(0,0,0,0);
