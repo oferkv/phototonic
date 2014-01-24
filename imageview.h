@@ -33,8 +33,8 @@ class ImageView : public QWidget
 public:
     ImageView(QWidget *parent = 0);
     ~ImageView();
-
 	void loadImage(QString &imagePath);
+	void resizeImage();
 
 	enum ZoomMethods
 	{
@@ -55,8 +55,6 @@ private:
 	QLabel *imgLabel1;
 	QLabel *imgLabel2;
 	QScrollArea *scrlArea;
-
-	void resizeImage();
 };
 
 #endif // IMAGEVIEW_H

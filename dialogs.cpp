@@ -194,6 +194,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	connect(colButton, SIGNAL(clicked()), this, SLOT(pickColor()));
 	colButton->setPalette(QPalette(	GData::backgroundColor));
 	colButton->setAutoFillBackground(true);
+	bgColor = GData::backgroundColor;
 
 	// Zoom options
 	QGroupBox *zoomOpts = new QGroupBox(tr("Zoom Options"));
@@ -268,12 +269,12 @@ void SettingsDialog::saveSettings()
 
 	GData::backgroundColor = bgColor;
 
-	close();
+	accept();
 }
 
 void SettingsDialog::abort()
 {
-	close();
+	reject();
 }
 
 void SettingsDialog::pickColor()

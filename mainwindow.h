@@ -42,6 +42,7 @@ public:
     ~MainWindow();
 	void mouseDoubleClickEvent(QMouseEvent *);
 	int copyCutCount;
+	QString currentImage;
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -89,6 +90,7 @@ private slots:
 
 private:
 	void restoreCurrentIdx();
+	void createImageView();
 	void createActions();
 	void createMenus();
 	void createToolBars();

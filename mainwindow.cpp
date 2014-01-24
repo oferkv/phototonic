@@ -52,11 +52,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 	createToolBars();
 	createStatusBar();
 	createFSTree();
-
-   	imageView->addAction(fullScreenAct);
-	imageView->setContextMenuPolicy(Qt::ActionsContextMenu);
-	GData::isFullScreen = GData::appSettings->value("isFullScreen").toBool();
-	fullScreenAct->setChecked(GData::isFullScreen); 
+	createImageView();
 
     restoreGeometry(GData::appSettings->value("geometry").toByteArray());
     restoreState(GData::appSettings->value("MainWindowState").toByteArray());
@@ -113,11 +109,24 @@ void MainWindow::unsetBusy()
 	thumbViewBusy = false;
 }
 
+void MainWindow::createImageView()
+{
+  	imageView->addAction(fullScreenAct);
+
+	QAction *sep = new QAction(this);
+	sep->setSeparator(true);
+	imageView->addAction(sep);
+   	imageView->addAction(settingsAction);
+
+	imageView->setContextMenuPolicy(Qt::ActionsContextMenu);
+	GData::isFullScreen = GData::appSettings->value("isFullScreen").toBool();
+	fullScreenAct->setChecked(GData::isFullScreen); 
+}
+
 void MainWindow::createActions()
 {
 	fullScreenAct = new QAction(tr("Full Screen"), this);
     fullScreenAct->setCheckable(true);
-	// fullScreenAct->setIcon(QIcon(":/images/settings.png"));
 	connect(fullScreenAct, SIGNAL(triggered()), this, SLOT(toggleFullScreen()));
 	
 	settingsAction = new QAction(tr("Settings"), this);
@@ -416,9 +425,16 @@ void MainWindow::about()
 void MainWindow::showSettings()
 {
 	SettingsDialog *dialog = new SettingsDialog(this);
-	dialog->exec();
 
-	imageView->setPalette(QPalette(GData::backgroundColor));
+	if (dialog->exec())
+	{
+		imageView->setPalette(QPalette(GData::backgroundColor));
+
+		if (stackedWidget->currentIndex() == imageViewIdx)
+			imageView->resizeImage();
+	}
+
+	delete dialog;
 }
 
 void MainWindow::toggleFullScreen()
@@ -730,10 +746,10 @@ void MainWindow::setThumbViewWidgetsVisible(bool visible)
 
 void MainWindow::loadImagefromThumb(const QModelIndex &idx)
 {
-    QString clickedImage = thumbView->currentViewDir;
-    clickedImage += QDir::separator();
-	clickedImage += thumbView->thumbViewModel->item(idx.row())->text();
-	imageView->loadImage(clickedImage);
+    currentImage= thumbView->currentViewDir;
+    currentImage += QDir::separator();
+	currentImage += thumbView->thumbViewModel->item(idx.row())->text();
+	imageView->loadImage(currentImage);
 	setThumbViewWidgetsVisible(false);
 	if (GData::isFullScreen == true)
 		showFullScreen();
