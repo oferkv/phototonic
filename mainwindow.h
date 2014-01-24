@@ -40,7 +40,8 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
-	void mouseDoubleClickEvent(QMouseEvent *);
+	void mouseDoubleClickEvent(QMouseEvent *event);
+	void mousePressEvent(QMouseEvent *event);
 	int copyCutCount;
 	QString currentImage;
 
@@ -55,6 +56,7 @@ public slots:
 	void updateState(QString state);
 	void dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvDirPath);
 	void loadImagefromThumb(const QModelIndex &idx);
+	void closeImage();
 
 private slots:
     void about();
@@ -139,6 +141,7 @@ private:
 	QAction *actReverse;
 	QAction *refreshAction;
 	QAction *fullScreenAct;
+	QAction *closeImageAct;
 	QAction *settingsAction;
 	QAction *thumbsZoomIn;
 	QAction *thumbsZoomOut;

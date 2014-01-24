@@ -111,12 +111,16 @@ void MainWindow::unsetBusy()
 
 void MainWindow::createImageView()
 {
+  	imageView->addAction(closeImageAct);
   	imageView->addAction(fullScreenAct);
-
 	QAction *sep = new QAction(this);
 	sep->setSeparator(true);
 	imageView->addAction(sep);
    	imageView->addAction(settingsAction);
+	sep = new QAction(this);
+	sep->setSeparator(true);
+	imageView->addAction(sep);
+	imageView->addAction(exitAction);
 
 	imageView->setContextMenuPolicy(Qt::ActionsContextMenu);
 	GData::isFullScreen = GData::appSettings->value("isFullScreen").toBool();
@@ -125,9 +129,14 @@ void MainWindow::createImageView()
 
 void MainWindow::createActions()
 {
+	closeImageAct = new QAction(tr("Close Image"), this);
+	connect(closeImageAct, SIGNAL(triggered()), this, SLOT(closeImage()));
+	closeImageAct->setShortcut(Qt::Key_Escape);
+
 	fullScreenAct = new QAction(tr("Full Screen"), this);
     fullScreenAct->setCheckable(true);
 	connect(fullScreenAct, SIGNAL(triggered()), this, SLOT(toggleFullScreen()));
+	fullScreenAct->setShortcut(tr("f"));
 	
 	settingsAction = new QAction(tr("Settings"), this);
 	settingsAction->setIcon(QIcon(":/images/settings.png"));
@@ -295,17 +304,17 @@ void MainWindow::createMenus()
     helpMenu->addAction(aboutQtAction);
 
     // thumbview context menu
-	QAction *sep1 = new QAction(this);
-	QAction *sep2 = new QAction(this);
-	sep1->setSeparator(true);
-	sep2->setSeparator(true);
 	thumbView->addAction(cutAction);
 	thumbView->addAction(copyAction);
 	thumbView->addAction(renameAction);
 	thumbView->addAction(deleteAction);
-	thumbView->addAction(sep1);
+	QAction *sep = new QAction(this);
+	sep->setSeparator(true);
+	thumbView->addAction(sep);
 	thumbView->addAction(pasteAction);
-	thumbView->addAction(sep2);
+	sep = new QAction(this);
+	sep->setSeparator(true);
+	thumbView->addAction(sep);
    	thumbView->addAction(selectAllAction);
 	thumbView->setContextMenuPolicy(Qt::ActionsContextMenu);
 }
@@ -617,6 +626,16 @@ void MainWindow::goSelectedDir(const QModelIndex&)
 void MainWindow::goPathBarDir()
 {
 	thumbView->setNeedScroll(true);
+
+	QDir checkPath(pathBar->text());
+	if (!checkPath.exists() || !checkPath.isReadable())
+	{
+		QMessageBox msgBox;
+		msgBox.critical(this, "Error", "Invalid Path: " + thumbView->currentViewDir);
+		pathBar->setText(thumbView->currentViewDir);
+		return;
+	}
+	
 	thumbView->currentViewDir = pathBar->text();
 	restoreCurrentIdx();
 	refreshThumbs();
@@ -691,6 +710,7 @@ void MainWindow::writeSettings()
 	if (stackedWidget->currentIndex() == imageViewIdx)
 		setThumbViewWidgetsVisible(true);
 
+	showNormal();
     GData::appSettings->setValue("geometry", saveGeometry());
 	GData::appSettings->setValue("MainWindowState", saveState());
 	GData::appSettings->setValue("splitterSizes", splitter->saveState());
@@ -712,15 +732,29 @@ void MainWindow::updateState(QString state)
     stateLabel->setText(state);
 }
 
-void MainWindow::mouseDoubleClickEvent(QMouseEvent *)
+void MainWindow::mouseDoubleClickEvent(QMouseEvent *event)
 {
-	if (stackedWidget->currentIndex() == imageViewIdx)
+	if (event->button() == Qt::LeftButton)
 	{
-		if(isFullScreen())
-			showNormal();
-		setThumbViewWidgetsVisible(true);
-		stackedWidget->setCurrentIndex(thumbViewIdx);
-		setWindowTitle(thumbView->currentViewDir + " - Phototonic");
+		if (stackedWidget->currentIndex() == imageViewIdx)
+		{
+			closeImage();
+		    event->accept();
+		}
+	}
+}
+
+void MainWindow::mousePressEvent(QMouseEvent *event)
+{
+	if (event->button() == Qt::MiddleButton)
+	{
+		if (stackedWidget->currentIndex() == imageViewIdx)
+		{
+			fullScreenAct->setChecked(!(fullScreenAct->isChecked()));
+				
+			toggleFullScreen();
+	        event->accept();
+		}
 	}
 }
 
@@ -755,6 +789,15 @@ void MainWindow::loadImagefromThumb(const QModelIndex &idx)
 		showFullScreen();
 	stackedWidget->setCurrentIndex(1);
 	setWindowTitle(thumbView->thumbViewModel->item(idx.row())->text() + " - Phototonic");
+}
+
+void MainWindow::closeImage()
+{
+	if(isFullScreen())
+	showNormal();
+	setThumbViewWidgetsVisible(true);
+	stackedWidget->setCurrentIndex(thumbViewIdx);
+	setWindowTitle(thumbView->currentViewDir + " - Phototonic");
 }
 
 void MainWindow::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvDirPath)
