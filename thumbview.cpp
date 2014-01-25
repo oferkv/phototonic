@@ -29,11 +29,12 @@
 
 ThumbView::ThumbView(QWidget *parent, int thumbSize) : QListView(parent)
 {
-	m_thumbSize = thumbSize;
-	if (m_thumbSize == 0)
-		m_thumbSize = 200;
+	thumbHeight = thumbSize;
+	if (!thumbHeight)
+		thumbHeight = 200;
+	thumbWidth = thumbHeight * GData::thumbAspect;
 
-	setIconSize(QSize(m_thumbSize, m_thumbSize));
+	setIconSize(QSize(thumbWidth, thumbHeight));
 	setViewMode(QListView::IconMode);
 	setSelectionMode(QAbstractItemView::ExtendedSelection);
 	setResizeMode(QListView::Adjust);
@@ -121,7 +122,7 @@ int ThumbView::getFirstVisibleItem()
 
 void ThumbView::load()
 {
-	setIconSize(QSize(m_thumbSize, m_thumbSize));
+	setIconSize(QSize(thumbWidth, thumbHeight));
 	thumbsDir->setPath(currentViewDir);
 	thumbsDir->setFilter(QDir::Files);
 	thumbsDir->setNameFilters(*m_fileFilters);
@@ -148,7 +149,7 @@ void ThumbView::initThumbs()
 
 	QImage emptyImg;
 	emptyImg.load(":/images/no_image.png");
-	QPixmap emptyPixMap = QPixmap::fromImage(emptyImg).scaled(m_thumbSize, m_thumbSize);
+	QPixmap emptyPixMap = QPixmap::fromImage(emptyImg).scaled(thumbWidth, thumbHeight);
 
 	int currThumb;
 	for (currThumb = 0; currThumb <= thumbFileInfoList.size() - 1; currThumb++)
@@ -198,20 +199,19 @@ refreshThumbs:
 		thumbReader.setFileName(thumbFileInfo.filePath());
 		thumbSize = thumbReader.size();
 
-		if (!thumbSize.isValid())
+		if (thumbSize.isValid())
 		{
-			thumbViewModel->item(currThumb)->setIcon(errorPixMap);
-		} 
-		else 
-		{
-			if (thumbSize.height() > m_thumbSize || thumbSize.width() > m_thumbSize)
+			if (thumbSize.height() > thumbHeight || thumbSize.width() > thumbWidth)
 			{
-				thumbSize.scale(QSize(m_thumbSize,m_thumbSize), Qt::KeepAspectRatio);
+				thumbSize.scale(QSize(thumbWidth, thumbHeight), Qt::KeepAspectRatio);
 			}
 			thumbReader.setScaledSize(thumbSize);
 			thumbViewModel->item(currThumb)->setIcon(QPixmap::fromImage(thumbReader.read()));
-		}
+		} 
+		else 
+			thumbViewModel->item(currThumb)->setIcon(errorPixMap);
 
+		setRowHidden(currThumb , false);
 		(*thumbIsLoaded)[currThumb] = true;
 
 		QApplication::processEvents();

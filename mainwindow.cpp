@@ -26,27 +26,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
 	GData::appSettings = new QSettings("Phototonic", "Phototonic");
 	initComplete = false;
-	int thumbSize = GData::appSettings->value("thumbsZoomVal").toInt();
-	thumbView = new ThumbView(this, thumbSize);
-	thumbView->thumbsSortFlags = (QDir::SortFlags)GData::appSettings->value("thumbsSortFlags").toInt();
 
-	connect(this, SIGNAL(abortThumbLoading()), thumbView, SLOT(abort()));
-	connect(thumbView, SIGNAL(unsetBusy()), this, SLOT(unsetBusy()));
-	connect(thumbView, SIGNAL(updateState(QString)), this, SLOT(updateState(QString)));
-	connect(thumbView->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), 
-				this, SLOT(changeActionsBySelection(QItemSelection, QItemSelection)));
-
-	GData::backgroundColor = GData::appSettings->value("backgroundColor").value<QColor>();
-   	imageView = new ImageView(this);
-   	imageView->setVisible(false);
-
-	GData::zoomOutFlags = GData::appSettings->value("zoomOutFlags").toInt();
-	if (!GData::zoomOutFlags)
-		GData::zoomOutFlags = ImageView::WidthNHeight;
-	GData::zoomInFlags = GData::appSettings->value("zoomInFlags").toInt();
-	if (!GData::zoomInFlags)
-		GData::zoomInFlags = ImageView::Disable;
-
+	createThumbView();
 	createActions();
 	createMenus();
 	createToolBars();
@@ -109,8 +90,33 @@ void MainWindow::unsetBusy()
 	thumbViewBusy = false;
 }
 
+void MainWindow::createThumbView()
+{
+	int thumbSize = GData::appSettings->value("thumbsZoomVal").toInt();
+
+	thumbView = new ThumbView(this, thumbSize);
+	thumbView->thumbsSortFlags = (QDir::SortFlags)GData::appSettings->value("thumbsSortFlags").toInt();
+
+	connect(this, SIGNAL(abortThumbLoading()), thumbView, SLOT(abort()));
+	connect(thumbView, SIGNAL(unsetBusy()), this, SLOT(unsetBusy()));
+	connect(thumbView, SIGNAL(updateState(QString)), this, SLOT(updateState(QString)));
+	connect(thumbView->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), 
+				this, SLOT(changeActionsBySelection(QItemSelection, QItemSelection)));
+}
+
 void MainWindow::createImageView()
 {
+	GData::backgroundColor = GData::appSettings->value("backgroundColor").value<QColor>();
+   	imageView = new ImageView(this);
+   	imageView->setVisible(false);
+
+	GData::zoomOutFlags = GData::appSettings->value("zoomOutFlags").toInt();
+	if (!GData::zoomOutFlags)
+		GData::zoomOutFlags = ImageView::WidthNHeight;
+	GData::zoomInFlags = GData::appSettings->value("zoomInFlags").toInt();
+	if (!GData::zoomInFlags)
+		GData::zoomInFlags = ImageView::Disable;
+
   	imageView->addAction(closeImageAct);
   	imageView->addAction(fullScreenAct);
 	QAction *sep = new QAction(this);
@@ -147,19 +153,19 @@ void MainWindow::createActions()
 	exitAction->setShortcut(tr("Ctrl+Q"));
 	connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
 
-	thumbsZoomIn = new QAction(tr("Zoom In"), this);
-	thumbsZoomIn->setShortcut(QKeySequence::ZoomIn);
-	connect(thumbsZoomIn, SIGNAL(triggered()), this, SLOT(zoomIn()));
-	thumbsZoomIn->setIcon(QIcon(":/images/zoom_in.png"));
-	if (thumbView->m_thumbSize == 400)
-		thumbsZoomIn->setEnabled(false);
+	thumbsZoomInAct = new QAction(tr("Zoom In"), this);
+	thumbsZoomInAct->setShortcut(QKeySequence::ZoomIn);
+	connect(thumbsZoomInAct, SIGNAL(triggered()), this, SLOT(thumbsZoomIn()));
+	thumbsZoomInAct->setIcon(QIcon(":/images/zoom_in.png"));
+	if (thumbView->thumbHeight == 400)
+		thumbsZoomInAct->setEnabled(false);
 
-	thumbsZoomOut = new QAction(tr("Zoom Out"), this);
-	thumbsZoomOut->setShortcut(QKeySequence::ZoomOut);
-	connect(thumbsZoomOut, SIGNAL(triggered()), this, SLOT(zoomOut()));
-	thumbsZoomOut->setIcon(QIcon(":/images/zoom_out.png"));
-	if (thumbView->m_thumbSize == 100)
-		thumbsZoomOut->setEnabled(false);
+	thumbsZoomOutAct = new QAction(tr("Zoom Out"), this);
+	thumbsZoomOutAct->setShortcut(QKeySequence::ZoomOut);
+	connect(thumbsZoomOutAct, SIGNAL(triggered()), this, SLOT(thumbsZoomOut()));
+	thumbsZoomOutAct->setIcon(QIcon(":/images/zoom_out.png"));
+	if (thumbView->thumbHeight == 100)
+		thumbsZoomOutAct->setEnabled(false);
 
 	cutAction = new QAction(tr("Cut"), this);
 	cutAction->setShortcut(QKeySequence::Cut);
@@ -282,8 +288,8 @@ void MainWindow::createMenus()
 	goMenu->addAction(goHomeAction);
 
 	viewMenu = menuBar()->addMenu(tr("&View"));
-   	viewMenu->addAction(thumbsZoomIn);
-   	viewMenu->addAction(thumbsZoomOut);
+   	viewMenu->addAction(thumbsZoomInAct);
+   	viewMenu->addAction(thumbsZoomOutAct);
     sortMenu = viewMenu->addMenu(tr("&Sort By"));
 	sortTypesGroup = new QActionGroup(this);
 	sortTypesGroup->addAction(actName);
@@ -348,8 +354,8 @@ void MainWindow::createToolBars()
 	goToolBar->addWidget(pathBar);
 
 	viewToolBar = addToolBar(tr("View"));
-	viewToolBar->addAction(thumbsZoomIn);
-	viewToolBar->addAction(thumbsZoomOut);
+	viewToolBar->addAction(thumbsZoomInAct);
+	viewToolBar->addAction(thumbsZoomOutAct);
 	viewToolBar->setObjectName("View");
 }
 
@@ -494,26 +500,28 @@ void MainWindow::copyImages()
 	pasteAction->setEnabled(true);
 }
 
-void MainWindow::zoomIn()
+void MainWindow::thumbsZoomIn()
 {
-	if (thumbView->m_thumbSize < 400)
+	if (thumbView->thumbHeight < 400)
 	{
-		thumbView->m_thumbSize += 50;
-		thumbsZoomOut->setEnabled(true);
-		if (thumbView->m_thumbSize == 400)
-			thumbsZoomIn->setEnabled(false);
+		thumbView->thumbHeight += 50;
+		thumbView->thumbWidth = thumbView->thumbHeight * GData::thumbAspect;
+		thumbsZoomOutAct->setEnabled(true);
+		if (thumbView->thumbHeight == 400)
+			thumbsZoomInAct->setEnabled(false);
 		refreshThumbs();
 	}
 }
 
-void MainWindow::zoomOut()
+void MainWindow::thumbsZoomOut()
 {
-	if (thumbView->m_thumbSize > 100)
+	if (thumbView->thumbHeight > 100)
 	{
-		thumbView->m_thumbSize -= 50;
-		thumbsZoomIn->setEnabled(true);
-		if (thumbView->m_thumbSize == 100)
-			thumbsZoomOut->setEnabled(false);
+		thumbView->thumbHeight -= 50;
+		thumbView->thumbWidth = thumbView->thumbHeight * GData::thumbAspect;
+		thumbsZoomInAct->setEnabled(true);
+		if (thumbView->thumbHeight == 100)
+			thumbsZoomOutAct->setEnabled(false);
 		refreshThumbs();
 	}
 }
@@ -715,7 +723,7 @@ void MainWindow::writeSettings()
 	GData::appSettings->setValue("MainWindowState", saveState());
 	GData::appSettings->setValue("splitterSizes", splitter->saveState());
 	GData::appSettings->setValue("thumbsSortFlags", (int)thumbView->thumbsSortFlags);
-	GData::appSettings->setValue("thumbsZoomVal", (int)thumbView->m_thumbSize);
+	GData::appSettings->setValue("thumbsZoomVal", (int)thumbView->thumbHeight);
 	GData::appSettings->setValue("isFullScreen", (bool)GData::isFullScreen);
 	GData::appSettings->setValue("backgroundColor", GData::backgroundColor);
 }
@@ -780,7 +788,7 @@ void MainWindow::setThumbViewWidgetsVisible(bool visible)
 
 void MainWindow::loadImagefromThumb(const QModelIndex &idx)
 {
-    currentImage= thumbView->currentViewDir;
+    currentImage = thumbView->currentViewDir;
     currentImage += QDir::separator();
 	currentImage += thumbView->thumbViewModel->item(idx.row())->text();
 	imageView->loadImage(currentImage);

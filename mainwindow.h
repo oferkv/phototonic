@@ -86,13 +86,14 @@ private slots:
 	void cutImages();
 	void copyImages();
 	void pasteImages();
-	void zoomIn();
-	void zoomOut();
+	void thumbsZoomIn();
+	void thumbsZoomOut();
 	void setThumbViewWidgetsVisible(bool visible);
 
 private:
 	void restoreCurrentIdx();
 	void createImageView();
+	void createThumbView();
 	void createActions();
 	void createMenus();
 	void createToolBars();
@@ -143,8 +144,8 @@ private:
 	QAction *fullScreenAct;
 	QAction *closeImageAct;
 	QAction *settingsAction;
-	QAction *thumbsZoomIn;
-	QAction *thumbsZoomOut;
+	QAction *thumbsZoomInAct;
+	QAction *thumbsZoomOutAct;
 
 	QAction *aboutAction;
 	QAction *aboutQtAction;

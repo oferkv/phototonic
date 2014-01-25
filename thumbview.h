@@ -25,6 +25,7 @@
 #include <QDebug>
 #include <QStandardItem>
 #include <QTreeView>
+#include "global.h"
 
 class QListView;
 class QStandardItemModel;
@@ -56,7 +57,8 @@ public:
 	QStandardItemModel *thumbViewModel;
 	QString currentViewDir;
 	QDir::SortFlags thumbsSortFlags;
-	int m_thumbSize;
+	int thumbWidth;
+	int thumbHeight;
 
 protected:
     void startDrag(Qt::DropActions);
