@@ -54,10 +54,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     // Load current folder
    	initComplete = true;
     thumbViewBusy = false;
-	thumbView->setNeedScroll(true);
 	currentHistoryIdx = -1;
 	needHistoryRecord = true;
-	refreshThumbs();
+	refreshThumbs(true);
 }
 
 MainWindow::~MainWindow()
@@ -423,12 +422,22 @@ void MainWindow::setSortFlags()
 	setFlagsByQAction(actSize, QDir::Size);
 	setFlagsByQAction(actType, QDir::Type);
 	setFlagsByQAction(actReverse, QDir::Reversed);
-	refreshThumbs();
+	refreshThumbs(false);
 }
 
-void MainWindow::refreshThumbs()
+void MainWindow::refreshThumbs(bool scrollToTop)
 {
-	QTimer::singleShot(0, this, SLOT(reloadThumbsSlot()));
+	if (scrollToTop)
+	{
+		thumbView->setNeedScroll(true);
+		QTimer::singleShot(0, this, SLOT(reloadThumbsSlot()));
+	}
+	else
+	{
+		thumbView->setNeedScroll(false);
+		QTimer::singleShot(100, this, SLOT(reloadThumbsSlot()));
+		QTimer::singleShot(200, thumbView, SLOT(updateIndex()));
+	}
 }
 
 void MainWindow::about()
@@ -447,6 +456,7 @@ void MainWindow::showSettings()
 
 		if (stackedWidget->currentIndex() == imageViewIdx)
 			imageView->resizeImage();
+			refreshThumbs(true);
 	}
 
 	delete dialog;
@@ -476,8 +486,8 @@ void MainWindow::createCopyCutFileList()
 	GData::copyCutFileList.clear();
 	for (int tn = 0; tn < copyCutCount; tn++)
 	{
-		QString currFile = thumbView->thumbViewModel->item(GData::copyCutIdxList[tn].row())->text();
-		QString sourceFile = thumbView->currentViewDir + QDir::separator() + currFile;
+		QString sourceFile = thumbView->currentViewDir + QDir::separator() +
+			thumbView->thumbsDir->entryInfoList().at(GData::copyCutIdxList[tn].row()).fileName();
 		GData::copyCutFileList.append(sourceFile);
 	}
 }
@@ -509,7 +519,7 @@ void MainWindow::thumbsZoomIn()
 		thumbsZoomOutAct->setEnabled(true);
 		if (thumbView->thumbHeight == 400)
 			thumbsZoomInAct->setEnabled(false);
-		refreshThumbs();
+		refreshThumbs(false);
 	}
 }
 
@@ -588,12 +598,15 @@ void MainWindow::deleteOp()
 			abortThumbsLoad();
 		}
 
-		QModelIndexList indexesList;
+
+		QModelIndexList indexesList = thumbView->selectionModel()->selectedIndexes();
 		int nfiles = 0;
-		while((indexesList = thumbView->selectionModel()->selectedIndexes()).size())
+
+		for (int tn = 0; tn < indexesList.size(); tn++)
 		{ 
 			ok = QFile::remove(thumbView->currentViewDir + QDir::separator() + 
-						thumbView->thumbViewModel->item(indexesList.first().row())->text());
+				thumbView->thumbsDir->entryInfoList().at(indexesList[tn].row()).fileName());
+
 			nfiles++;
 			if (!ok)
 			{
@@ -606,6 +619,7 @@ void MainWindow::deleteOp()
 		}
 		QString state = QString("Deleted " + QString::number(nfiles) + " images");
 		updateState(state);
+		thumbView->thumbsDir->refresh();
 
 		if (thumbViewBusy)
 		{
@@ -790,13 +804,14 @@ void MainWindow::loadImagefromThumb(const QModelIndex &idx)
 {
     currentImage = thumbView->currentViewDir;
     currentImage += QDir::separator();
-	currentImage += thumbView->thumbViewModel->item(idx.row())->text();
+	currentImage += thumbView->thumbsDir->entryInfoList().at(idx.row()).fileName();
+	
 	imageView->loadImage(currentImage);
 	setThumbViewWidgetsVisible(false);
 	if (GData::isFullScreen == true)
 		showFullScreen();
 	stackedWidget->setCurrentIndex(1);
-	setWindowTitle(thumbView->thumbViewModel->item(idx.row())->text() + " - Phototonic");
+	setWindowTitle(thumbView->thumbsDir->entryInfoList().at(idx.row()).fileName() + " - Phototonic");
 }
 
 void MainWindow::closeImage()
@@ -847,12 +862,12 @@ void MainWindow::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvD
 	}
 	else
 	{
-		CpMvDialog *dialog = new CpMvDialog(this);
+		CpMvDialog *cpMvdialog = new CpMvDialog(this);
 		GData::copyCutIdxList = thumbView->selectionModel()->selectedIndexes();
-		dialog->exec(thumbView, destDir, false);
-		QString state = QString((GData::copyOp? "Copied " : "Moved ") + QString::number(dialog->nfiles) + " images");
+		cpMvdialog->exec(thumbView, destDir, false);
+		QString state = QString((GData::copyOp? "Copied " : "Moved ") + QString::number(cpMvdialog->nfiles) + " images");
 		updateState(state);
-		delete(dialog);
+		delete(cpMvdialog);
 	}
 
 	if (thumbViewBusy)
@@ -1008,7 +1023,7 @@ void MainWindow::rename()
 		return;
 
 	bool ok;
-	QString renameImageName = thumbView->thumbViewModel->item(indexesList.first().row())->text();
+	QString renameImageName = thumbView->thumbsDir->entryInfoList().at(indexesList.first().row()).fileName();
 	QString title = "Rename " + renameImageName;
 	QString newImageName = QInputDialog::getText(this, title, 
 										tr("New name:"), QLineEdit::Normal, renameImageName, &ok);
@@ -1027,14 +1042,17 @@ void MainWindow::rename()
 	QFile currentFile(currnetFilePath);
 	ok = currentFile.rename(thumbView->currentViewDir + QDir::separator() + newImageName);
 
-	if (!ok)
+	if (ok)
 	{
-		QMessageBox msgBox;
-		msgBox.critical(this, "Error", "failed to rename file");
+		if (GData::showThumbnailNames)
+			thumbView->thumbViewModel->item(indexesList.first().row())->setText(newImageName);
+		thumbView->thumbsDir->refresh();
+		refreshThumbs(true);
 	}
 	else
 	{
-		thumbView->thumbViewModel->item(indexesList.first().row())->setText(newImageName);
+		QMessageBox msgBox;
+		msgBox.critical(this, "Error", "failed to rename file");
 	}
 }
 

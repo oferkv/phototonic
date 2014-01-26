@@ -40,7 +40,7 @@ ThumbView::ThumbView(QWidget *parent, int thumbSize) : QListView(parent)
 	setResizeMode(QListView::Adjust);
 	setFrameShape(QFrame::NoFrame);
 	setMovement(QListView::Movement(QListView::Static));
-	setUniformItemSizes(true);
+//	setUniformItemSizes(true);
 	setWordWrap(true);
 	setDragEnabled(true);
 	setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -155,7 +155,10 @@ void ThumbView::initThumbs()
 	for (currThumb = 0; currThumb <= thumbFileInfoList.size() - 1; currThumb++)
 	{
 		thumbFileInfo = thumbFileInfoList.at(currThumb);
-		thumbIitem = new QStandardItem(thumbFileInfo.fileName());
+		if (GData::showThumbnailNames)
+			thumbIitem = new QStandardItem(thumbFileInfo.fileName());
+		else
+			thumbIitem = new QStandardItem();
 		thumbIitem->setIcon(emptyPixMap);
 		thumbViewModel->appendRow(thumbIitem);
 		thumbIsLoaded->append(false);

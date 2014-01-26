@@ -49,7 +49,6 @@ protected:
     void resizeEvent(QResizeEvent *event);
     void showEvent(QShowEvent *event);
 
-
 private:
 	QGridLayout *grid;
 	QLabel *imgLabel1;

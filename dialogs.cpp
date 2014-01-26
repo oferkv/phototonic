@@ -101,10 +101,12 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 		int tn = 0;
 		for (tn = GData::copyCutIdxList.size() - 1; tn >= 0 ; tn--)
 		{
-			QString currFile = thumbView->thumbViewModel->item(GData::copyCutIdxList[tn].row())->text();
+			QFileInfo thumbFileInfo = thumbView->thumbsDir->entryInfoList().at(GData::copyCutIdxList[tn].row());
+			QString currFile = thumbFileInfo.fileName();
+			qDebug() << "its: " << currFile;
 			QString sourceFile = thumbView->currentViewDir + QDir::separator() + currFile;
 			QString destFile = destDir + QDir::separator() + currFile;
-			
+
 			opLabel->setText((GData::copyOp? "Copying ":"Moving ") + sourceFile + " to " + destFile);
 			QApplication::processEvents();
 
@@ -137,6 +139,8 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 			QString currFile = fInfo.fileName();
 			QString destFile = destDir + QDir::separator() + currFile;
 
+			qDebug() << "or its: " << sourceFile;
+
 			opLabel->setText((GData::copyOp? "Copying ":"Moving ") + sourceFile + " to " + destFile);
 			QApplication::processEvents();
 
@@ -151,6 +155,7 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 		}
 	}
 
+	thumbView->thumbsDir->refresh();
 	close();	
 }
 
@@ -195,6 +200,14 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	colButton->setPalette(QPalette(	GData::backgroundColor));
 	colButton->setAutoFillBackground(true);
 	bgColor = GData::backgroundColor;
+
+	// Thumbnail options
+	QGroupBox *thumbOptsGroupBox = new QGroupBox(tr("Thumbnail Options"));
+	showImageNames = new QCheckBox("Show image names");
+	showImageNames->setChecked(GData::showThumbnailNames);
+	QVBoxLayout *thumbsOptsBox = new QVBoxLayout;
+	thumbsOptsBox->addWidget(showImageNames);
+	thumbOptsGroupBox->setLayout(thumbsOptsBox);
 
 	// Zoom options
 	QGroupBox *zoomOpts = new QGroupBox(tr("Zoom Options"));
@@ -242,6 +255,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	optsLayout->addWidget(zoomOpts);
 	optsLayout->addSpacerItem(new QSpacerItem(0, 5, QSizePolicy::Fixed, QSizePolicy::Expanding));
 	optsLayout->addWidget(colorsGroupBox);
+	optsLayout->addWidget(thumbOptsGroupBox);
 	optsLayout->addStretch(1);
 }
 
@@ -268,6 +282,7 @@ void SettingsDialog::saveSettings()
 	}
 
 	GData::backgroundColor = bgColor;
+	GData::showThumbnailNames = showImageNames->isChecked();
 
 	accept();
 }

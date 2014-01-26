@@ -52,6 +52,7 @@ public:
 		m_needScroll = needScroll;
 	}
 
+	QDir *thumbsDir;
 	QList<QStandardItem*> *thumbList;
 	QList<bool> *thumbIsLoaded;
 	QStandardItemModel *thumbViewModel;
@@ -64,9 +65,8 @@ protected:
     void startDrag(Qt::DropActions);
 	
 private:
-	QFileInfoList thumbFileInfoList;
 	QFileInfo thumbFileInfo;
-	QDir *thumbsDir;
+	QFileInfoList thumbFileInfoList;
 	bool abortOp;
 	int newIndex;
 	bool thumbLoaderActive;

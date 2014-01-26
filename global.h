@@ -32,6 +32,7 @@ namespace GData
 	extern unsigned int zoomOutFlags;
 	extern QColor backgroundColor;
 	extern float thumbAspect;
+	extern bool showThumbnailNames;
 
 	// app data
 	extern QModelIndexList copyCutIdxList;

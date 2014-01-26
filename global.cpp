@@ -26,6 +26,7 @@ namespace GData
 	unsigned int zoomOutFlags;
 	QColor backgroundColor;
 	float thumbAspect = 1.33;
+	bool showThumbnailNames;
 
 	// app data
 	QModelIndexList copyCutIdxList;
