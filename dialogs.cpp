@@ -121,13 +121,6 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 			nfiles++;
 			rowList.append(GData::copyCutIdxList[tn].row());
 		}
-
-		if (!GData::copyOp)
-		{
-			qSort(rowList);
-			for (int t = rowList.size() - 1; t >= 0; t--)
-				thumbView->thumbViewModel->removeRow(rowList.at(t));
-		}
 	}
 	else
 	{
@@ -155,7 +148,6 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 		}
 	}
 
-	thumbView->thumbsDir->refresh();
 	close();	
 }
 

@@ -425,6 +425,11 @@ void MainWindow::setSortFlags()
 	refreshThumbs(false);
 }
 
+void MainWindow::refreshThumbs()
+{
+	refreshThumbs(false);
+}
+
 void MainWindow::refreshThumbs(bool scrollToTop)
 {
 	if (scrollToTop)
@@ -532,7 +537,7 @@ void MainWindow::thumbsZoomOut()
 		thumbsZoomInAct->setEnabled(true);
 		if (thumbView->thumbHeight == 100)
 			thumbsZoomOutAct->setEnabled(false);
-		refreshThumbs();
+		refreshThumbs(false);
 	}
 }
 
@@ -569,7 +574,7 @@ void MainWindow::pasteImages()
 
 	delete(dialog);
 	if (pasteInCurrDir)
-		refreshThumbs();
+		refreshThumbs(false);
 	else
 		restoreCurrentIdx();
 
@@ -592,7 +597,7 @@ void MainWindow::deleteOp()
 
 	if (ret == QMessageBox::Yes)
 	{
-		bool ok;
+		bool ok, alreadyDeleted;
 		if (thumbViewBusy)
 		{
 			abortThumbsLoad();
@@ -608,25 +613,23 @@ void MainWindow::deleteOp()
 				thumbView->thumbsDir->entryInfoList().at(indexesList[tn].row()).fileName());
 
 			nfiles++;
-			if (!ok)
+			if (ok)
+			{
+				if (!alreadyDeleted)
+					alreadyDeleted = true;
+			}
+			else
 			{
 				QMessageBox msgBox;
 				msgBox.critical(this, "Error", "failed to delete image");
+				if (alreadyDeleted)
+					refreshThumbs(false);
 				return;
 			}
-						
-		    thumbView->thumbViewModel->removeRow(indexesList.first().row());
 		}
 		QString state = QString("Deleted " + QString::number(nfiles) + " images");
 		updateState(state);
-		thumbView->thumbsDir->refresh();
-
-		if (thumbViewBusy)
-		{
-			thumbView->setNeedScroll(false);
-			QTimer::singleShot(100, this, SLOT(reloadThumbsSlot()));
-			QTimer::singleShot(200, thumbView, SLOT(updateIndex()));
-		}
+		refreshThumbs(false);
 	}
 }
 
@@ -635,14 +638,14 @@ void MainWindow::goTo(QString path)
 	thumbView->setNeedScroll(true);
 	fsTree->setCurrentIndex(fsModel->index(path));
 	thumbView->currentViewDir = path;
-	refreshThumbs();
+	refreshThumbs(false);
 }
 
 void MainWindow::goSelectedDir(const QModelIndex&)
 {
 	thumbView->setNeedScroll(true);
 	thumbView->currentViewDir = getSelectedPath();
-	refreshThumbs();
+	refreshThumbs(false);
 }
 
 void MainWindow::goPathBarDir()
@@ -660,7 +663,7 @@ void MainWindow::goPathBarDir()
 	
 	thumbView->currentViewDir = pathBar->text();
 	restoreCurrentIdx();
-	refreshThumbs();
+	refreshThumbs(false);
 }
 
 void MainWindow::goBack()
@@ -870,12 +873,7 @@ void MainWindow::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvD
 		delete(cpMvdialog);
 	}
 
-	if (thumbViewBusy)
-	{
-		thumbView->setNeedScroll(false);
-		QTimer::singleShot(100, this, SLOT(reloadThumbsSlot()));
-		QTimer::singleShot(200, thumbView, SLOT(updateIndex()));
-	}
+	refreshThumbs(false);
 }
 
 void MainWindow::restoreCurrentIdx()
@@ -1046,8 +1044,7 @@ void MainWindow::rename()
 	{
 		if (GData::showThumbnailNames)
 			thumbView->thumbViewModel->item(indexesList.first().row())->setText(newImageName);
-		thumbView->thumbsDir->refresh();
-		refreshThumbs(true);
+		refreshThumbs(false);
 	}
 	else
 	{

@@ -76,6 +76,7 @@ private:
 	void initThumbs();
 	void loadThumbs();
 	int getFirstVisibleItem();
+	bool isItemVisible(QModelIndex idx);
 };
 
 class FSTree : public QTreeView

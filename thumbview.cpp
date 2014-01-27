@@ -109,15 +109,26 @@ int ThumbView::getFirstVisibleItem()
 {
 	QModelIndex idx;
 
-	for (int currThumb = 0; currThumb < thumbViewModel->rowCount() - 1; currThumb++) {
+	for (int currThumb = 0; currThumb < thumbViewModel->rowCount() - 1; currThumb++)
+	{
 		idx = thumbViewModel->indexFromItem(thumbViewModel->item(currThumb));
-		if ( viewport()->rect().contains(QPoint(0, visualRect(idx).y() + visualRect(idx).height() + 1 )))
+		if (viewport()->rect().contains(QPoint(0, visualRect(idx).y() + visualRect(idx).height() + 1)))
 		{
 			return idx.row();
 		}
 	}
 
 	return -1;
+}
+
+bool ThumbView::isItemVisible(QModelIndex idx)
+{
+	if (viewport()->rect().contains(QPoint(0, visualRect(idx).y() + visualRect(idx).height() + 1)))
+	{
+		return true;
+	}
+
+	return false;
 }
 
 void ThumbView::load()
@@ -164,18 +175,11 @@ void ThumbView::initThumbs()
 		thumbIsLoaded->append(false);
 	}
 
-	// This is a dirty hack that one day will be fixed
-	thumbIitem = new QStandardItem(thumbFileInfo.fileName());
-	thumbIitem->setIcon(emptyPixMap);
-	thumbViewModel->appendRow(thumbIitem);
-	thumbIsLoaded->append(false);
-	setRowHidden(currThumb , true);
-
-	if ((thumbViewModel->rowCount() - 1) == 0)
+	if ((thumbViewModel->rowCount()) == 0)
 		emit updateState("No images");
 	else 
 	{
-		QString state = (QString::number(thumbViewModel->rowCount() - 1) + " images");
+		QString state = (QString::number(thumbViewModel->rowCount()) + " images");
 		emit updateState(state);
 	}
 }
@@ -192,7 +196,7 @@ void ThumbView::loadThumbs()
 	QPixmap errorPixMap = QPixmap::fromImage(errorImg);
 
 refreshThumbs:
-	for (int currThumb = 0; currThumb < thumbViewModel->rowCount() - 1; currThumb++)
+	for (int currThumb = 0; currThumb < thumbViewModel->rowCount(); currThumb++)
 	{
 		if (thumbIsLoaded->at(currThumb))
 			continue;
