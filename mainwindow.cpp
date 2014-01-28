@@ -645,7 +645,7 @@ void MainWindow::goSelectedDir(const QModelIndex&)
 {
 	thumbView->setNeedScroll(true);
 	thumbView->currentViewDir = getSelectedPath();
-	refreshThumbs(false);
+	refreshThumbs(true);
 }
 
 void MainWindow::goPathBarDir()

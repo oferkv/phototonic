@@ -40,10 +40,17 @@ ThumbView::ThumbView(QWidget *parent, int thumbSize) : QListView(parent)
 	setResizeMode(QListView::Adjust);
 	setFrameShape(QFrame::NoFrame);
 	setMovement(QListView::Movement(QListView::Static));
-//	setUniformItemSizes(true);
 	setWordWrap(true);
 	setDragEnabled(true);
 	setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+/*	Alternate layout:
+	setUniformItemSizes(true);
+	setSpacing(0);
+	setWrapping(true);
+	setFlow(QListView::TopToBottom);
+	setViewMode(QListView::ListMode);	*/
+
 
 	thumbViewModel = new QStandardItemModel(this);
 	thumbIsLoaded = new QList<bool>();
@@ -58,9 +65,12 @@ ThumbView::ThumbView(QWidget *parent, int thumbSize) : QListView(parent)
 
 
 	thumbsDir = new QDir();
-	m_fileFilters = new QStringList;
-	*m_fileFilters << "*.BMP" << "*.GIF" << "*.JPG" << "*.JPEG" << "*.JPE" << "*.PNG"
+	QStringList *fileFilters = new QStringList;
+	*fileFilters << "*.BMP" << "*.GIF" << "*.JPG" << "*.JPEG" << "*.JPE" << "*.PNG"
 				<< "*.PBM" << "*.PGM" << "*.PPM" << "*.XBM" << "*.XPM";
+	thumbsDir->setFilter(QDir::Files);
+	thumbsDir->setNameFilters(*fileFilters);
+
 }
 
 ThumbView::~ThumbView()
@@ -135,8 +145,6 @@ void ThumbView::load()
 {
 	setIconSize(QSize(thumbWidth, thumbHeight));
 	thumbsDir->setPath(currentViewDir);
-	thumbsDir->setFilter(QDir::Files);
-	thumbsDir->setNameFilters(*m_fileFilters);
 	thumbsDir->setSorting(thumbsSortFlags);
 	
 	abortOp = false;
@@ -163,7 +171,7 @@ void ThumbView::initThumbs()
 	QPixmap emptyPixMap = QPixmap::fromImage(emptyImg).scaled(thumbWidth, thumbHeight);
 
 	int currThumb;
-	for (currThumb = 0; currThumb <= thumbFileInfoList.size() - 1; currThumb++)
+	for (currThumb = 0; currThumb < thumbFileInfoList.size(); currThumb++)
 	{
 		thumbFileInfo = thumbFileInfoList.at(currThumb);
 		if (GData::showThumbnailNames)

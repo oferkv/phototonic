@@ -70,7 +70,6 @@ private:
 	bool abortOp;
 	int newIndex;
 	bool thumbLoaderActive;
-	QStringList *m_fileFilters;
 	bool m_needScroll;
 
 	void initThumbs();
