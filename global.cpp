@@ -25,6 +25,7 @@ namespace GData
 	unsigned int zoomInFlags;
 	unsigned int zoomOutFlags;
 	QColor backgroundColor;
+	QColor thumbsBackgroundColor;
 	float thumbAspect = 1.33;
 	bool showThumbnailNames;
 

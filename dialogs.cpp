@@ -186,7 +186,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	mainLayout->addLayout(okCancelLayout);
 	setLayout(mainLayout);
 
-	// Background color
+	// Background colors
 	QGroupBox *colorsGroupBox = new QGroupBox(tr("Colors"));
 	QLabel *bgTxtLab = new QLabel("Viewer background color:");
 	colButton = new QPushButton("");
@@ -196,9 +196,21 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	bgColBox->addStretch(1);
 	colorsGroupBox->setLayout(bgColBox);
 	connect(colButton, SIGNAL(clicked()), this, SLOT(pickColor()));
-	colButton->setPalette(QPalette(	GData::backgroundColor));
+	colButton->setPalette(QPalette(GData::backgroundColor));
 	colButton->setAutoFillBackground(true);
 	bgColor = GData::backgroundColor;
+
+	QLabel *bgThumbTxtLab = new QLabel("Thumbnails background color:");
+	colThumbButton = new QPushButton("");
+	QHBoxLayout *bgThumbColBox = new QHBoxLayout;
+	bgThumbColBox->addWidget(bgThumbTxtLab);
+	bgThumbColBox->addWidget(colThumbButton);
+	bgThumbColBox->addStretch(1);
+	bgColBox->addLayout(bgThumbColBox);
+	connect(colThumbButton, SIGNAL(clicked()), this, SLOT(pickThumbsColor()));
+	colThumbButton->setPalette(QPalette(GData::thumbsBackgroundColor));
+	colThumbButton->setAutoFillBackground(true);
+	thumbBgColor = GData::thumbsBackgroundColor;
 
 	// Thumbnail options
 	QGroupBox *thumbOptsGroupBox = new QGroupBox(tr("Thumbnail Options"));
@@ -281,6 +293,7 @@ void SettingsDialog::saveSettings()
 	}
 
 	GData::backgroundColor = bgColor;
+	GData::thumbsBackgroundColor = thumbBgColor;
 	GData::showThumbnailNames = showImageNames->isChecked();
 
 	accept();
@@ -298,6 +311,16 @@ void SettingsDialog::pickColor()
     {	
         colButton->setPalette(QPalette(userColor));
         bgColor = userColor;
+    }
+}
+
+void SettingsDialog::pickThumbsColor()
+{
+	QColor userColor = QColorDialog::getColor(GData::thumbsBackgroundColor, this);
+    if (userColor.isValid())
+    {	
+        colThumbButton->setPalette(QPalette(userColor));
+        thumbBgColor = userColor;
     }
 }
 

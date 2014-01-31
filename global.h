@@ -31,6 +31,7 @@ namespace GData
 	extern unsigned int zoomInFlags;
 	extern unsigned int zoomOutFlags;
 	extern QColor backgroundColor;
+	extern QColor thumbsBackgroundColor;
 	extern float thumbAspect;
 	extern bool showThumbnailNames;
 
@@ -38,7 +39,6 @@ namespace GData
 	extern QModelIndexList copyCutIdxList;
 	extern bool copyOp;
 	extern QStringList copyCutFileList;
-
 	extern bool isFullScreen;
 }
 

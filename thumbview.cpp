@@ -34,6 +34,9 @@ ThumbView::ThumbView(QWidget *parent, int thumbSize) : QListView(parent)
 		thumbHeight = 200;
 	thumbWidth = thumbHeight * GData::thumbAspect;
 
+	GData::thumbsBackgroundColor = GData::appSettings->value("backgroundThumbColor").value<QColor>();
+	setThumbsBackgroundColor();
+
 	setIconSize(QSize(thumbWidth, thumbHeight));
 	setViewMode(QListView::IconMode);
 	setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -43,10 +46,10 @@ ThumbView::ThumbView(QWidget *parent, int thumbSize) : QListView(parent)
 	setWordWrap(true);
 	setDragEnabled(true);
 	setEditTriggers(QAbstractItemView::NoEditTriggers);
+	setSpacing(10);
 
 /*	Alternate layout:
 	setUniformItemSizes(true);
-	setSpacing(0);
 	setWrapping(true);
 	setFlow(QListView::TopToBottom);
 	setViewMode(QListView::ListMode);	*/
@@ -76,6 +79,16 @@ ThumbView::ThumbView(QWidget *parent, int thumbSize) : QListView(parent)
 ThumbView::~ThumbView()
 {
 
+}
+
+void ThumbView::setThumbsBackgroundColor()
+{
+	QPalette sbOrig = verticalScrollBar()->palette();
+	QPalette tvOrig = palette();
+	tvOrig.setColor(QPalette::Base, GData::thumbsBackgroundColor);
+	setPalette(tvOrig);
+	verticalScrollBar()->setPalette(sbOrig);
+	// Set text color here also as reverse of background
 }
 
 void ThumbView::handleSelectionChanged(const QItemSelection&)

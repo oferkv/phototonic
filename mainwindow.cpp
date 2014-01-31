@@ -458,6 +458,7 @@ void MainWindow::showSettings()
 	if (dialog->exec())
 	{
 		imageView->setPalette(QPalette(GData::backgroundColor));
+		thumbView->setThumbsBackgroundColor();
 
 		if (stackedWidget->currentIndex() == imageViewIdx)
 			imageView->resizeImage();
@@ -746,6 +747,7 @@ void MainWindow::writeSettings()
 	GData::appSettings->setValue("thumbsZoomVal", (int)thumbView->thumbHeight);
 	GData::appSettings->setValue("isFullScreen", (bool)GData::isFullScreen);
 	GData::appSettings->setValue("backgroundColor", GData::backgroundColor);
+	GData::appSettings->setValue("backgroundThumbColor", GData::thumbsBackgroundColor);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

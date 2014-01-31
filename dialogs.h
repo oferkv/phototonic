@@ -59,6 +59,7 @@ public:
 
 private slots:
 	void pickColor();
+	void pickThumbsColor();
 
 public slots:
 	void abort();
@@ -69,8 +70,9 @@ private:
 	QRadioButton *fitSmallRadios[nZoomRadios];
 	QCheckBox *showImageNames;
     QPushButton *colButton;
+    QPushButton *colThumbButton;
 	QColor bgColor;
-	
+	QColor thumbBgColor;
 };
 
 #endif // DIALOGS_H
