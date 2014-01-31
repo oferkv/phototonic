@@ -51,8 +51,8 @@ ThumbView::ThumbView(QWidget *parent, int thumbSize) : QListView(parent)
 	setFlow(QListView::TopToBottom);
 	setViewMode(QListView::ListMode);	*/
 
-
 	thumbViewModel = new QStandardItemModel(this);
+	thumbViewModel->setSortRole(SortRole);
 	thumbIsLoaded = new QList<bool>();
 	setModel(thumbViewModel);
 
@@ -174,13 +174,15 @@ void ThumbView::initThumbs()
 	for (currThumb = 0; currThumb < thumbFileInfoList.size(); currThumb++)
 	{
 		thumbFileInfo = thumbFileInfoList.at(currThumb);
-		if (GData::showThumbnailNames)
-			thumbIitem = new QStandardItem(thumbFileInfo.fileName());
-		else
-			thumbIitem = new QStandardItem();
+		thumbIitem = new QStandardItem();
 		thumbIitem->setIcon(emptyPixMap);
 		thumbViewModel->appendRow(thumbIitem);
 		thumbIsLoaded->append(false);
+
+		thumbViewModel->item(currThumb)->setData(currThumb, SortRole);
+		thumbViewModel->item(currThumb)->setData(thumbFileInfo.fileName(), FileNameRole);
+		if (GData::showThumbnailNames)
+			thumbViewModel->item(currThumb)->setData(thumbFileInfo.fileName(), Qt::DisplayRole);
 	}
 
 	if ((thumbViewModel->rowCount()) == 0)
@@ -250,6 +252,52 @@ refreshThumbs:
 	
 	thumbLoaderActive = false;
 	emit unsetBusy();
+}
+
+void ThumbView::addNewThumb(QString &imageFileName)
+{
+	QStandardItem *thumbIitem;
+	QImageReader thumbReader;
+	QSize thumbSize;
+
+	QImage emptyImg;
+	emptyImg.load(":/images/no_image.png");
+	QPixmap emptyPixMap = QPixmap::fromImage(emptyImg).scaled(thumbWidth, thumbHeight);
+	
+	QImage errorImg;
+	errorImg.load(":/images/error_image.png");
+	QPixmap errorPixMap = QPixmap::fromImage(errorImg);
+
+	QFileInfo fInfo = QFileInfo(imageFileName);
+	thumbIitem = new QStandardItem();
+	thumbIitem->setIcon(emptyPixMap);
+	thumbIitem->setData(666, SortRole);
+	thumbIitem->setData(fInfo.fileName(), FileNameRole);
+	if (GData::showThumbnailNames)
+		thumbIitem->setData(fInfo.fileName(), Qt::DisplayRole);
+
+	thumbReader.setFileName(fInfo.filePath());
+	thumbSize = thumbReader.size();
+
+	if (thumbSize.isValid())
+	{
+		if (thumbSize.height() > thumbHeight || thumbSize.width() > thumbWidth)
+		{
+			thumbSize.scale(QSize(thumbWidth, thumbHeight), Qt::KeepAspectRatio);
+		}
+		thumbReader.setScaledSize(thumbSize);
+		thumbIitem->setIcon(QPixmap::fromImage(thumbReader.read()));
+	} 
+	else 
+		thumbIitem->setIcon(errorPixMap);
+
+//		setRowHidden(currThumb , false);
+
+
+	thumbViewModel->appendRow(thumbIitem);
+
+
+	
 }
 
 FSTree::FSTree(QWidget *parent) : QTreeView(parent)

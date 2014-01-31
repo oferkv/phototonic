@@ -32,7 +32,6 @@ namespace GData
 	QModelIndexList copyCutIdxList;
 	bool copyOp;
 	QStringList copyCutFileList;
-
 	bool isFullScreen;
 }
 

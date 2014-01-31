@@ -39,7 +39,7 @@ public slots:
 
 public:
     CpMvDialog(QWidget *parent);
-	void exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDir);
+	void exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDir, bool thumbViewBusy);
 	int nfiles;
 
 private:

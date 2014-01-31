@@ -51,6 +51,7 @@ public:
 	{
 		m_needScroll = needScroll;
 	}
+	void addNewThumb(QString &imageFileName);
 
 	QDir *thumbsDir;
 	QList<QStandardItem*> *thumbList;
@@ -60,6 +61,12 @@ public:
 	QDir::SortFlags thumbsSortFlags;
 	int thumbWidth;
 	int thumbHeight;
+
+	enum UserRoles
+	{
+		FileNameRole = Qt::UserRole + 1,
+		SortRole
+	};
 
 protected:
     void startDrag(Qt::DropActions);

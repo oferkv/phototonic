@@ -88,22 +88,47 @@ static int cpMvFile(bool isCopy, QString &srcFile, QString &srcPath, QString &ds
 	return res;
 }
 
-void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDir)
+void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDir, bool thumbViewBusy)
 {
 	int res = 0;
 	nfiles = 0;
 
 	show();
 
-	if (!pasteInCurrDir)
+	if (pasteInCurrDir)
+	{
+		int tn = 0;
+		for (tn = 0; tn < GData::copyCutFileList.size(); tn++)
+		{
+			QString sourceFile = GData::copyCutFileList[tn];
+			QFileInfo fInfo = QFileInfo(sourceFile);
+			QString currFile = fInfo.fileName();
+			QString destFile = destDir + QDir::separator() + currFile;
+
+			opLabel->setText((GData::copyOp? "Copying ":"Moving ") + sourceFile + " to " + destFile);
+			QApplication::processEvents();
+
+			res = cpMvFile(GData::copyOp, currFile, sourceFile, destFile, destDir);
+
+			if (!res || abortOp)
+			{
+				nfiles++;
+				break;
+			}
+			nfiles++;
+
+			// The name is wrong here because cpMvFile might change the dest name, fix this when implementing interactive copy dialog
+			if (!thumbViewBusy)
+				thumbView->addNewThumb(destFile);
+		}
+	}
+	else
 	{
 		QList<int> rowList;
 		int tn = 0;
 		for (tn = GData::copyCutIdxList.size() - 1; tn >= 0 ; tn--)
 		{
-			QFileInfo thumbFileInfo = thumbView->thumbsDir->entryInfoList().at(GData::copyCutIdxList[tn].row());
-			QString currFile = thumbFileInfo.fileName();
-			qDebug() << "its: " << currFile;
+			QString currFile = thumbView->thumbViewModel->item(GData::copyCutIdxList[tn].row())->data(thumbView->FileNameRole).toString();
 			QString sourceFile = thumbView->currentViewDir + QDir::separator() + currFile;
 			QString destFile = destDir + QDir::separator() + currFile;
 
@@ -121,30 +146,12 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 			nfiles++;
 			rowList.append(GData::copyCutIdxList[tn].row());
 		}
-	}
-	else
-	{
-		int tn = 0;
-		for (tn = 0; tn < GData::copyCutFileList.size(); tn++)
+
+		if (!GData::copyOp)
 		{
-			QString sourceFile = GData::copyCutFileList[tn];
-			QFileInfo fInfo = QFileInfo(sourceFile);
-			QString currFile = fInfo.fileName();
-			QString destFile = destDir + QDir::separator() + currFile;
-
-			qDebug() << "or its: " << sourceFile;
-
-			opLabel->setText((GData::copyOp? "Copying ":"Moving ") + sourceFile + " to " + destFile);
-			QApplication::processEvents();
-
-			res = cpMvFile(GData::copyOp, currFile, sourceFile, destFile, destDir);
-
-			if (!res || abortOp)
-			{
-				nfiles++;
-				break;
-			}
-			nfiles++;
+			qSort(rowList);
+			for (int t = rowList.size() - 1; t >= 0; t--)
+				thumbView->thumbViewModel->removeRow(rowList.at(t));
 		}
 	}
 
@@ -293,3 +300,4 @@ void SettingsDialog::pickColor()
         bgColor = userColor;
     }
 }
+
