@@ -52,7 +52,7 @@ public:
 		m_needScroll = needScroll;
 	}
 	void addNewThumb(QString &imageFileName);
-	void setThumbsBackgroundColor();
+	void setThumbColors();
 
 	QDir *thumbsDir;
 	QList<QStandardItem*> *thumbList;

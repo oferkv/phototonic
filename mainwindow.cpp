@@ -458,11 +458,12 @@ void MainWindow::showSettings()
 	if (dialog->exec())
 	{
 		imageView->setPalette(QPalette(GData::backgroundColor));
-		thumbView->setThumbsBackgroundColor();
+		thumbView->setThumbColors();
 
 		if (stackedWidget->currentIndex() == imageViewIdx)
 			imageView->resizeImage();
-			refreshThumbs(true);
+
+		refreshThumbs(true);
 	}
 
 	delete dialog;
@@ -748,6 +749,9 @@ void MainWindow::writeSettings()
 	GData::appSettings->setValue("isFullScreen", (bool)GData::isFullScreen);
 	GData::appSettings->setValue("backgroundColor", GData::backgroundColor);
 	GData::appSettings->setValue("backgroundThumbColor", GData::thumbsBackgroundColor);
+	GData::appSettings->setValue("textThumbColor", GData::thumbsTextColor);
+	GData::appSettings->setValue("showThumbNames", (bool)GData::showThumbnailNames);
+	GData::appSettings->setValue("thumbSpacing", (int)GData::thumbSpacing);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

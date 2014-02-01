@@ -19,11 +19,9 @@
 #ifndef IMAGEVIEW_H
 #define IMAGEVIEW_H
 
-#include <QWidget>
 #include <QLabel>
 #include <QGridLayout>
 #include <QDebug>
-#include <QModelIndex>
 #include <QScrollArea>
 
 class ImageView : public QWidget

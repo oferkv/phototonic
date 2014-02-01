@@ -16,7 +16,6 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QtGui>
 #include "dialogs.h"
 #include "global.h"
 
@@ -186,38 +185,69 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	mainLayout->addLayout(okCancelLayout);
 	setLayout(mainLayout);
 
-	// Background colors
+	// imageView background color
 	QGroupBox *colorsGroupBox = new QGroupBox(tr("Colors"));
+	QVBoxLayout *bgColsBox = new QVBoxLayout;
+	colorsGroupBox->setLayout(bgColsBox);
 	QLabel *bgTxtLab = new QLabel("Viewer background color:");
 	colButton = new QPushButton("");
 	QHBoxLayout *bgColBox = new QHBoxLayout;
 	bgColBox->addWidget(bgTxtLab);
 	bgColBox->addWidget(colButton);
 	bgColBox->addStretch(1);
-	colorsGroupBox->setLayout(bgColBox);
 	connect(colButton, SIGNAL(clicked()), this, SLOT(pickColor()));
 	colButton->setPalette(QPalette(GData::backgroundColor));
 	colButton->setAutoFillBackground(true);
 	bgColor = GData::backgroundColor;
 
+	// thumbView background color
 	QLabel *bgThumbTxtLab = new QLabel("Thumbnails background color:");
 	colThumbButton = new QPushButton("");
 	QHBoxLayout *bgThumbColBox = new QHBoxLayout;
 	bgThumbColBox->addWidget(bgThumbTxtLab);
 	bgThumbColBox->addWidget(colThumbButton);
 	bgThumbColBox->addStretch(1);
-	bgColBox->addLayout(bgThumbColBox);
 	connect(colThumbButton, SIGNAL(clicked()), this, SLOT(pickThumbsColor()));
 	colThumbButton->setPalette(QPalette(GData::thumbsBackgroundColor));
 	colThumbButton->setAutoFillBackground(true);
 	thumbBgColor = GData::thumbsBackgroundColor;
 
-	// Thumbnail options
+	// thumbView text color
+	QLabel *txtThumbTxtLab = new QLabel("Thumbnail text color:");
+	colThumbTextButton = new QPushButton("");
+	QHBoxLayout *txtThumbColBox = new QHBoxLayout;
+	txtThumbColBox->addWidget(txtThumbTxtLab);
+	txtThumbColBox->addWidget(colThumbTextButton);
+	txtThumbColBox->addStretch(1);
+	connect(colThumbTextButton, SIGNAL(clicked()), this, SLOT(pickThumbsTextColor()));
+	colThumbTextButton->setPalette(QPalette(GData::thumbsTextColor));
+	colThumbTextButton->setAutoFillBackground(true);
+	thumbTextColor = GData::thumbsTextColor;
+
+	bgColsBox->addLayout(bgColBox);
+	bgColsBox->addLayout(bgThumbColBox);
+	bgColsBox->addLayout(txtThumbColBox);
+
+	// Thumbnail names
+	QVBoxLayout *thumbsOptsBox = new QVBoxLayout;
 	QGroupBox *thumbOptsGroupBox = new QGroupBox(tr("Thumbnail Options"));
 	showImageNames = new QCheckBox("Show image names");
 	showImageNames->setChecked(GData::showThumbnailNames);
-	QVBoxLayout *thumbsOptsBox = new QVBoxLayout;
-	thumbsOptsBox->addWidget(showImageNames);
+	QVBoxLayout *imgNameBox = new QVBoxLayout;
+	imgNameBox->addWidget(showImageNames);
+
+	// Thumbnail spacing
+	QHBoxLayout *thumbSpacingbox = new QHBoxLayout;
+	QLabel *thumbSpacingLab = new QLabel("Thumbnail spacing:");
+	thumbSpacingSpin = new QSpinBox;
+	thumbSpacingSpin->setRange(2, 10);
+	thumbSpacingSpin->setValue(GData::thumbSpacing);
+	thumbSpacingbox->addWidget(thumbSpacingLab);
+	thumbSpacingbox->addWidget(thumbSpacingSpin);
+	thumbSpacingbox->addStretch(1);
+
+	thumbsOptsBox->addLayout(imgNameBox);
+	thumbsOptsBox->addLayout(thumbSpacingbox);
 	thumbOptsGroupBox->setLayout(thumbsOptsBox);
 
 	// Zoom options
@@ -294,7 +324,9 @@ void SettingsDialog::saveSettings()
 
 	GData::backgroundColor = bgColor;
 	GData::thumbsBackgroundColor = thumbBgColor;
+	GData::thumbsTextColor = thumbTextColor;
 	GData::showThumbnailNames = showImageNames->isChecked();
+	GData::thumbSpacing = thumbSpacingSpin->value();
 
 	accept();
 }
@@ -321,6 +353,16 @@ void SettingsDialog::pickThumbsColor()
     {	
         colThumbButton->setPalette(QPalette(userColor));
         thumbBgColor = userColor;
+    }
+}
+
+void SettingsDialog::pickThumbsTextColor()
+{
+	QColor userColor = QColorDialog::getColor(GData::thumbsTextColor, this);
+    if (userColor.isValid())
+    {	
+        colThumbTextButton->setPalette(QPalette(userColor));
+        thumbTextColor = userColor;
     }
 }
 

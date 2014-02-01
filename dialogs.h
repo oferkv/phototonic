@@ -19,8 +19,7 @@
 #ifndef DIALOGS_H
 #define DIALOGS_H
 
-#include <QDialog>
-#include <QFileInfo>
+#include <QtGui>
 #include "thumbview.h"
 
 class QCheckBox;
@@ -60,6 +59,7 @@ public:
 private slots:
 	void pickColor();
 	void pickThumbsColor();
+	void pickThumbsTextColor();
 
 public slots:
 	void abort();
@@ -71,8 +71,11 @@ private:
 	QCheckBox *showImageNames;
     QPushButton *colButton;
     QPushButton *colThumbButton;
+    QPushButton *colThumbTextButton;
+	QSpinBox *thumbSpacingSpin;
 	QColor bgColor;
 	QColor thumbBgColor;
+	QColor thumbTextColor;
 };
 
 #endif // DIALOGS_H

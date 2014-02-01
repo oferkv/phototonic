@@ -16,14 +16,10 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QStandardItemModel>
-#include <QDebug>
 #include <QApplication>
-#include <QDir>
 #include <QImageReader>
 #include <QScrollBar>
 #include <QDragEnterEvent>
-#include <QTreeView>
 #include <QUrl>
 #include "thumbview.h"
 
@@ -35,7 +31,10 @@ ThumbView::ThumbView(QWidget *parent, int thumbSize) : QListView(parent)
 	thumbWidth = thumbHeight * GData::thumbAspect;
 
 	GData::thumbsBackgroundColor = GData::appSettings->value("backgroundThumbColor").value<QColor>();
-	setThumbsBackgroundColor();
+	GData::thumbsTextColor = GData::appSettings->value("textThumbColor").value<QColor>();
+	setThumbColors();
+	GData::showThumbnailNames = GData::appSettings->value("showThumbNames").toBool();
+	GData::thumbSpacing = GData::appSettings->value("thumbSpacing").toInt();
 
 	setIconSize(QSize(thumbWidth, thumbHeight));
 	setViewMode(QListView::IconMode);
@@ -46,13 +45,6 @@ ThumbView::ThumbView(QWidget *parent, int thumbSize) : QListView(parent)
 	setWordWrap(true);
 	setDragEnabled(true);
 	setEditTriggers(QAbstractItemView::NoEditTriggers);
-	setSpacing(10);
-
-/*	Alternate layout:
-	setUniformItemSizes(true);
-	setWrapping(true);
-	setFlow(QListView::TopToBottom);
-	setViewMode(QListView::ListMode);	*/
 
 	thumbViewModel = new QStandardItemModel(this);
 	thumbViewModel->setSortRole(SortRole);
@@ -73,7 +65,6 @@ ThumbView::ThumbView(QWidget *parent, int thumbSize) : QListView(parent)
 				<< "*.PBM" << "*.PGM" << "*.PPM" << "*.XBM" << "*.XPM";
 	thumbsDir->setFilter(QDir::Files);
 	thumbsDir->setNameFilters(*fileFilters);
-
 }
 
 ThumbView::~ThumbView()
@@ -81,14 +72,14 @@ ThumbView::~ThumbView()
 
 }
 
-void ThumbView::setThumbsBackgroundColor()
+void ThumbView::setThumbColors()
 {
 	QPalette sbOrig = verticalScrollBar()->palette();
 	QPalette tvOrig = palette();
 	tvOrig.setColor(QPalette::Base, GData::thumbsBackgroundColor);
+	tvOrig.setColor(QPalette::Text, GData::thumbsTextColor);
 	setPalette(tvOrig);
 	verticalScrollBar()->setPalette(sbOrig);
-	// Set text color here also as reverse of background
 }
 
 void ThumbView::handleSelectionChanged(const QItemSelection&)
@@ -107,7 +98,8 @@ void ThumbView::handleSelectionChanged(const QItemSelection&)
 void ThumbView::startDrag(Qt::DropActions)
 {
     QModelIndexList indexesList = selectionModel()->selectedIndexes();
-    if (indexesList.isEmpty()) {
+    if (indexesList.isEmpty())
+	{
         return;
     }
 
@@ -172,6 +164,7 @@ void ThumbView::initThumbs()
 	thumbFileInfoList = thumbsDir->entryInfoList();
 	QStandardItem *thumbIitem;
 
+	setSpacing(GData::thumbSpacing);
 	thumbViewModel->clear();
 	thumbIsLoaded->clear();
 	if (m_needScroll)
