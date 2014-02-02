@@ -56,6 +56,7 @@ public slots:
 	void updateState(QString state);
 	void dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvDirPath);
 	void loadImagefromThumb(const QModelIndex &idx);
+	void loadImagefromCli(const QString &imageFileName);
 	void closeImage();
 
 private slots:
@@ -93,6 +94,7 @@ private slots:
 
 private:
 	void restoreCurrentIdx();
+	bool argIsImageFile();
 	void createImageView();
 	void createThumbView();
 	void createActions();
@@ -112,6 +114,7 @@ private:
 	void createCopyCutFileList();
 	void setCopyCutActions(bool setEnabled);
 
+	QString cliFileName;
 	bool thumbViewBusy;
 	QMenuBar *thumbsMenuBar;
 	QMenu *fileMenu;

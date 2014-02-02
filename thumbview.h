@@ -79,6 +79,7 @@ private:
 	int newIndex;
 	bool thumbLoaderActive;
 	bool m_needScroll;
+	QImage emptyImg;
 
 	void initThumbs();
 	void loadThumbs();

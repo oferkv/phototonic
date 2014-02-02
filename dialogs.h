@@ -68,8 +68,8 @@ public slots:
 private:
 	QRadioButton *fitLargeRadios[nZoomRadios];
 	QRadioButton *fitSmallRadios[nZoomRadios];
-	QCheckBox *showImageNames;
-    QPushButton *colButton;
+	QCheckBox *compactLayoutCb;
+    QPushButton *backgroundColorButton;
     QPushButton *colThumbButton;
     QPushButton *colThumbTextButton;
 	QSpinBox *thumbSpacingSpin;

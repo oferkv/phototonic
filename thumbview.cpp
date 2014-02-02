@@ -33,7 +33,7 @@ ThumbView::ThumbView(QWidget *parent, int thumbSize) : QListView(parent)
 	GData::thumbsBackgroundColor = GData::appSettings->value("backgroundThumbColor").value<QColor>();
 	GData::thumbsTextColor = GData::appSettings->value("textThumbColor").value<QColor>();
 	setThumbColors();
-	GData::showThumbnailNames = GData::appSettings->value("showThumbNames").toBool();
+	GData::thumbsCompactLayout = GData::appSettings->value("showThumbNames").toBool();
 	GData::thumbSpacing = GData::appSettings->value("thumbSpacing").toInt();
 
 	setIconSize(QSize(thumbWidth, thumbHeight));
@@ -65,6 +65,8 @@ ThumbView::ThumbView(QWidget *parent, int thumbSize) : QListView(parent)
 				<< "*.PBM" << "*.PGM" << "*.PPM" << "*.XBM" << "*.XPM";
 	thumbsDir->setFilter(QDir::Files);
 	thumbsDir->setNameFilters(*fileFilters);
+
+	emptyImg.load(":/images/no_image.png");
 }
 
 ThumbView::~ThumbView()
@@ -157,47 +159,56 @@ void ThumbView::load()
 
 	initThumbs();
 	loadThumbs();
+
+	if ((thumbViewModel->rowCount() - 1) == 0)
+		emit updateState("No images");
+	else 
+	{
+		QString state = (QString::number(thumbViewModel->rowCount() - 1) + " images");
+		emit updateState(state);
+	}
 }
 
 void ThumbView::initThumbs()
 {
 	thumbFileInfoList = thumbsDir->entryInfoList();
 	QStandardItem *thumbIitem;
+	int currThumb;
 
 	setSpacing(GData::thumbSpacing);
 	thumbViewModel->clear();
 	thumbIsLoaded->clear();
-	if (m_needScroll)
-	{
-		scrollToTop();
-	}
 
-	QImage emptyImg;
-	emptyImg.load(":/images/no_image.png");
+	if (m_needScroll)
+		scrollToTop();
+
+	if (!GData::thumbsCompactLayout)
+		setUniformItemSizes(true);
+	else
+		setUniformItemSizes(false);
+
 	QPixmap emptyPixMap = QPixmap::fromImage(emptyImg).scaled(thumbWidth, thumbHeight);
 
-	int currThumb;
 	for (currThumb = 0; currThumb < thumbFileInfoList.size(); currThumb++)
 	{
 		thumbFileInfo = thumbFileInfoList.at(currThumb);
 		thumbIitem = new QStandardItem();
+		thumbIitem->setData(currThumb, SortRole);
+		thumbIitem->setData(thumbFileInfo.fileName(), FileNameRole);
+		if (!GData::thumbsCompactLayout)
+			thumbIitem->setData(thumbFileInfo.fileName(), Qt::DisplayRole);
 		thumbIitem->setIcon(emptyPixMap);
+
 		thumbViewModel->appendRow(thumbIitem);
 		thumbIsLoaded->append(false);
-
-		thumbViewModel->item(currThumb)->setData(currThumb, SortRole);
-		thumbViewModel->item(currThumb)->setData(thumbFileInfo.fileName(), FileNameRole);
-		if (GData::showThumbnailNames)
-			thumbViewModel->item(currThumb)->setData(thumbFileInfo.fileName(), Qt::DisplayRole);
 	}
 
-	if ((thumbViewModel->rowCount()) == 0)
-		emit updateState("No images");
-	else 
-	{
-		QString state = (QString::number(thumbViewModel->rowCount()) + " images");
-		emit updateState(state);
-	}
+	// Dummy image
+	thumbIitem = new QStandardItem("");
+	thumbIitem->setIcon(emptyPixMap);
+	thumbViewModel->appendRow(thumbIitem);
+	thumbIsLoaded->append(true);
+	setRowHidden(thumbViewModel->rowCount() - 1, true);
 }
 
 void ThumbView::loadThumbs()
@@ -212,7 +223,7 @@ void ThumbView::loadThumbs()
 	QPixmap errorPixMap = QPixmap::fromImage(errorImg);
 
 refreshThumbs:
-	for (int currThumb = 0; currThumb < thumbViewModel->rowCount(); currThumb++)
+	for (int currThumb = 0; currThumb < thumbViewModel->rowCount() - 1; currThumb++)
 	{
 		if (thumbIsLoaded->at(currThumb))
 			continue;
@@ -234,7 +245,9 @@ refreshThumbs:
 		else 
 			thumbViewModel->item(currThumb)->setIcon(errorPixMap);
 
-		setRowHidden(currThumb , false);
+		if (GData::thumbsCompactLayout)
+			setRowHidden(currThumb , false);
+
 		(*thumbIsLoaded)[currThumb] = true;
 
 		QApplication::processEvents();
@@ -266,8 +279,6 @@ void ThumbView::addNewThumb(QString &imageFileName)
 	QImageReader thumbReader;
 	QSize thumbSize;
 
-	QImage emptyImg;
-	emptyImg.load(":/images/no_image.png");
 	QPixmap emptyPixMap = QPixmap::fromImage(emptyImg).scaled(thumbWidth, thumbHeight);
 	
 	QImage errorImg;
@@ -279,7 +290,7 @@ void ThumbView::addNewThumb(QString &imageFileName)
 	thumbIitem->setIcon(emptyPixMap);
 	thumbIitem->setData(666, SortRole);
 	thumbIitem->setData(fInfo.fileName(), FileNameRole);
-	if (GData::showThumbnailNames)
+	if (!GData::thumbsCompactLayout)
 		thumbIitem->setData(fInfo.fileName(), Qt::DisplayRole);
 
 	thumbReader.setFileName(fInfo.filePath());
@@ -301,9 +312,6 @@ void ThumbView::addNewThumb(QString &imageFileName)
 
 
 	thumbViewModel->appendRow(thumbIitem);
-
-
-	
 }
 
 FSTree::FSTree(QWidget *parent) : QTreeView(parent)

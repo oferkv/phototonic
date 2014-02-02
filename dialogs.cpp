@@ -161,47 +161,41 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 {
 	setWindowTitle("Phototonic Settings");
 	resize(640, 480);
-	QVBoxLayout *optsLayout = new QVBoxLayout;
-	QWidget* optsWidgetArea = new QWidget(this);
-	optsWidgetArea->setLayout(optsLayout);
 
+	QWidget* optsWidgetArea = new QWidget(this);
 	QScrollArea *scrollArea = new QScrollArea;
 	scrollArea->setWidget(optsWidgetArea);
 	scrollArea->setWidgetResizable(true);
 	scrollArea->setFrameShadow(QFrame::Plain);
-
-	QHBoxLayout *okCancelLayout = new QHBoxLayout;
+	QHBoxLayout *buttonsHbox = new QHBoxLayout;
     QPushButton *okButton = new QPushButton(tr("OK"));
     okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	connect(okButton, SIGNAL(clicked()), this, SLOT(saveSettings()));
 	QPushButton *closeButton = new QPushButton(tr("Cancel"));
     closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
    	connect(closeButton, SIGNAL(clicked()), this, SLOT(abort()));
-	okCancelLayout->addWidget(closeButton, 1, Qt::AlignRight);
-	okCancelLayout->addWidget(okButton, 0, Qt::AlignRight);
+	buttonsHbox->addWidget(closeButton, 1, Qt::AlignRight);
+	buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);
 
-	QVBoxLayout *mainLayout = new QVBoxLayout;
-	mainLayout->addWidget(scrollArea);
-	mainLayout->addLayout(okCancelLayout);
-	setLayout(mainLayout);
+	QVBoxLayout *mainVbox = new QVBoxLayout;
+	mainVbox->addWidget(scrollArea);
+	mainVbox->addLayout(buttonsHbox);
+	setLayout(mainVbox);
 
 	// imageView background color
-	QGroupBox *colorsGroupBox = new QGroupBox(tr("Colors"));
-	QVBoxLayout *bgColsBox = new QVBoxLayout;
-	colorsGroupBox->setLayout(bgColsBox);
-	QLabel *bgTxtLab = new QLabel("Viewer background color:");
-	colButton = new QPushButton("");
+	QLabel *backgroundColorLab = new QLabel("Viewer background color: ");
+	backgroundColorButton = new QPushButton("");
 	QHBoxLayout *bgColBox = new QHBoxLayout;
-	bgColBox->addWidget(bgTxtLab);
-	bgColBox->addWidget(colButton);
+	bgColBox->addWidget(backgroundColorLab);
+	bgColBox->addWidget(backgroundColorButton);
 	bgColBox->addStretch(1);
-	connect(colButton, SIGNAL(clicked()), this, SLOT(pickColor()));
-	colButton->setPalette(QPalette(GData::backgroundColor));
-	colButton->setAutoFillBackground(true);
+	connect(backgroundColorButton, SIGNAL(clicked()), this, SLOT(pickColor()));
+	backgroundColorButton->setPalette(QPalette(GData::backgroundColor));
+	backgroundColorButton->setAutoFillBackground(true);
 	bgColor = GData::backgroundColor;
 
 	// thumbView background color
-	QLabel *bgThumbTxtLab = new QLabel("Thumbnails background color:");
+	QLabel *bgThumbTxtLab = new QLabel("Thumbnails background color: ");
 	colThumbButton = new QPushButton("");
 	QHBoxLayout *bgThumbColBox = new QHBoxLayout;
 	bgThumbColBox->addWidget(bgThumbTxtLab);
@@ -213,7 +207,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	thumbBgColor = GData::thumbsBackgroundColor;
 
 	// thumbView text color
-	QLabel *txtThumbTxtLab = new QLabel("Thumbnail text color:");
+	QLabel *txtThumbTxtLab = new QLabel("Thumbnail text color: ");
 	colThumbTextButton = new QPushButton("");
 	QHBoxLayout *txtThumbColBox = new QHBoxLayout;
 	txtThumbColBox->addWidget(txtThumbTxtLab);
@@ -224,37 +218,36 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	colThumbTextButton->setAutoFillBackground(true);
 	thumbTextColor = GData::thumbsTextColor;
 
-	bgColsBox->addLayout(bgColBox);
-	bgColsBox->addLayout(bgThumbColBox);
-	bgColsBox->addLayout(txtThumbColBox);
+	// Colors
+	QVBoxLayout *colorsVbox = new QVBoxLayout;
+	colorsVbox->addLayout(bgColBox);
+	colorsVbox->addLayout(bgThumbColBox);
+	colorsVbox->addLayout(txtThumbColBox);
+	QGroupBox *colorsGbox = new QGroupBox(tr("Colors"));
+	colorsGbox->setLayout(colorsVbox);
 
-	// Thumbnail names
-	QVBoxLayout *thumbsOptsBox = new QVBoxLayout;
-	QGroupBox *thumbOptsGroupBox = new QGroupBox(tr("Thumbnail Options"));
-	showImageNames = new QCheckBox("Show image names");
-	showImageNames->setChecked(GData::showThumbnailNames);
-	QVBoxLayout *imgNameBox = new QVBoxLayout;
-	imgNameBox->addWidget(showImageNames);
+	// Compact layout
+	compactLayoutCb = new QCheckBox("Compact layout");
+	compactLayoutCb->setChecked(GData::thumbsCompactLayout);
+	QVBoxLayout *compactLayoutVBox = new QVBoxLayout;
+	compactLayoutVBox->addWidget(compactLayoutCb);
 
 	// Thumbnail spacing
-	QHBoxLayout *thumbSpacingbox = new QHBoxLayout;
-	QLabel *thumbSpacingLab = new QLabel("Thumbnail spacing:");
+	QLabel *thumbSpacingLab = new QLabel("Thumbnail spacing: ");
 	thumbSpacingSpin = new QSpinBox;
 	thumbSpacingSpin->setRange(2, 10);
 	thumbSpacingSpin->setValue(GData::thumbSpacing);
-	thumbSpacingbox->addWidget(thumbSpacingLab);
-	thumbSpacingbox->addWidget(thumbSpacingSpin);
-	thumbSpacingbox->addStretch(1);
+	QHBoxLayout *thumbSpacingHbox = new QHBoxLayout;
+	thumbSpacingHbox->addWidget(thumbSpacingLab);
+	thumbSpacingHbox->addWidget(thumbSpacingSpin);
+	thumbSpacingHbox->addStretch(1);
 
-	thumbsOptsBox->addLayout(imgNameBox);
-	thumbsOptsBox->addLayout(thumbSpacingbox);
+	// Thumbnail options
+	QGroupBox *thumbOptsGroupBox = new QGroupBox(tr("Thumbnail Options"));
+	QVBoxLayout *thumbsOptsBox = new QVBoxLayout;
+	thumbsOptsBox->addLayout(compactLayoutVBox);
+	thumbsOptsBox->addLayout(thumbSpacingHbox);
 	thumbOptsGroupBox->setLayout(thumbsOptsBox);
-
-	// Zoom options
-	QGroupBox *zoomOpts = new QGroupBox(tr("Zoom Options"));
-	QHBoxLayout *zoomOptsBox = new QHBoxLayout;
-	zoomOptsBox->setAlignment(Qt::AlignTop);
-	zoomOpts->setLayout(zoomOptsBox);
 
 	// Zoom large images
 	QGroupBox *fitLargeGroupBox = new QGroupBox(tr("Fit Large Images"));
@@ -271,7 +264,6 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	}
 	fitLargeVbox->addStretch(1);
 	fitLargeGroupBox->setLayout(fitLargeVbox);
-	zoomOptsBox->addWidget(fitLargeGroupBox);
 	fitLargeRadios[GData::zoomOutFlags]->setChecked(true);
  	
 	// Zoom small images
@@ -281,7 +273,6 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	fitSmallRadios[2] = new QRadioButton(tr("By width"));
 	fitSmallRadios[3] = new QRadioButton(tr("By height"));
 	fitSmallRadios[4] = new QRadioButton(tr("Stretch disproportionly"));
-		
 	QVBoxLayout *fitSmallVbox = new QVBoxLayout;
 	for (int i = 0; i < nZoomRadios; i++)
 	{
@@ -290,13 +281,23 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	}
  	fitSmallVbox->addStretch(1);
 	fitSmallGroupBox->setLayout(fitSmallVbox);
-	zoomOptsBox->addWidget(fitSmallGroupBox);
 	fitSmallRadios[GData::zoomInFlags]->setChecked(true);
- 	
+
+	// Zoom options
+	QHBoxLayout *zoomOptsBox = new QHBoxLayout;
+	zoomOptsBox->setAlignment(Qt::AlignTop);
+	zoomOptsBox->addWidget(fitLargeGroupBox);
+	zoomOptsBox->addWidget(fitSmallGroupBox);
+	QGroupBox *zoomOpts = new QGroupBox(tr("Zoom Options"));
+	zoomOpts->setLayout(zoomOptsBox);
+
+	// General
+	QVBoxLayout *optsLayout = new QVBoxLayout;
+	optsWidgetArea->setLayout(optsLayout);
 	optsLayout->addWidget(zoomOpts);
 	optsLayout->addSpacerItem(new QSpacerItem(0, 5, QSizePolicy::Fixed, QSizePolicy::Expanding));
-	optsLayout->addWidget(colorsGroupBox);
 	optsLayout->addWidget(thumbOptsGroupBox);
+	optsLayout->addWidget(colorsGbox);
 	optsLayout->addStretch(1);
 }
 
@@ -325,7 +326,7 @@ void SettingsDialog::saveSettings()
 	GData::backgroundColor = bgColor;
 	GData::thumbsBackgroundColor = thumbBgColor;
 	GData::thumbsTextColor = thumbTextColor;
-	GData::showThumbnailNames = showImageNames->isChecked();
+	GData::thumbsCompactLayout = compactLayoutCb->isChecked();
 	GData::thumbSpacing = thumbSpacingSpin->value();
 
 	accept();
@@ -341,7 +342,7 @@ void SettingsDialog::pickColor()
 	QColor userColor = QColorDialog::getColor(GData::backgroundColor, this);
     if (userColor.isValid())
     {	
-        colButton->setPalette(QPalette(userColor));
+        backgroundColorButton->setPalette(QPalette(userColor));
         bgColor = userColor;
     }
 }

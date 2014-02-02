@@ -51,6 +51,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 	stackedWidget->addWidget(imageView);
     setCentralWidget(stackedWidget);
 
+	if (argIsImageFile())
+		loadImagefromCli(cliFileName);
+
     // Load current folder
    	initComplete = true;
     thumbViewBusy = false;
@@ -62,6 +65,28 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 MainWindow::~MainWindow()
 {
 
+}
+
+bool MainWindow::argIsImageFile()
+{
+	if (QCoreApplication::arguments().size() == 2)
+	{
+		QFileInfo cliArg(QCoreApplication::arguments().at(1));
+		if (cliArg.isDir())
+		{
+			thumbView->currentViewDir = QCoreApplication::arguments().at(1);
+			restoreCurrentIdx();
+			return false;
+		}
+		else
+		{
+			thumbView->currentViewDir = cliArg.absolutePath();
+			cliFileName = cliArg.fileName();
+			return true;
+		}
+	}
+	
+	return false;
 }
 
 static bool removeDirOp(QString dirToDelete)
@@ -447,7 +472,7 @@ void MainWindow::refreshThumbs(bool scrollToTop)
 
 void MainWindow::about()
 {
-    QMessageBox::about(this, tr("About Phototonic"), tr("<h2>Phototonic v0.1</h2>"
+	QMessageBox::about(this, tr("About Phototonic"), tr("<h2>Phototonic v0.1</h2>"
 											"<p>Copyright &copy; 2013 Ofer Kashayov"));
 }
 
@@ -750,7 +775,7 @@ void MainWindow::writeSettings()
 	GData::appSettings->setValue("backgroundColor", GData::backgroundColor);
 	GData::appSettings->setValue("backgroundThumbColor", GData::thumbsBackgroundColor);
 	GData::appSettings->setValue("textThumbColor", GData::thumbsTextColor);
-	GData::appSettings->setValue("showThumbNames", (bool)GData::showThumbnailNames);
+	GData::appSettings->setValue("showThumbNames", (bool)GData::thumbsCompactLayout);
 	GData::appSettings->setValue("thumbSpacing", (int)GData::thumbSpacing);
 }
 
@@ -824,6 +849,20 @@ void MainWindow::loadImagefromThumb(const QModelIndex &idx)
 		showFullScreen();
 	stackedWidget->setCurrentIndex(imageViewIdx);
 	setWindowTitle(thumbView->thumbViewModel->item(idx.row())->data(thumbView->FileNameRole).toString() + " - Phototonic");
+}
+
+void MainWindow::loadImagefromCli(const QString &imageFileName)
+{
+    currentImage = thumbView->currentViewDir;
+    currentImage += QDir::separator();
+	currentImage += imageFileName;
+	
+	imageView->loadImage(currentImage);
+	setThumbViewWidgetsVisible(false);
+	if (GData::isFullScreen == true)
+		showFullScreen();
+	stackedWidget->setCurrentIndex(imageViewIdx);
+	setWindowTitle(imageFileName + " - Phototonic");
 }
 
 void MainWindow::closeImage()
@@ -1053,7 +1092,7 @@ void MainWindow::rename()
 	if (ok)
 	{
 		thumbView->thumbViewModel->item(indexesList.first().row())->setData(newImageName, thumbView->FileNameRole);
-		if (GData::showThumbnailNames)
+		if (!GData::thumbsCompactLayout)
 			thumbView->thumbViewModel->item(indexesList.first().row())->setData(newImageName, Qt::DisplayRole);
 	}
 	else

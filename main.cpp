@@ -22,9 +22,16 @@
 int main(int argc, char *argv[])
 {
     QApplication QApp(argc, argv);
-    MainWindow MainWin;
-    MainWin.show();
-
-    return QApp.exec();
+   	if (QCoreApplication::arguments().size() > 2)
+   	{
+   		qDebug() << "Usage: phototonic [FILE or DIRECTORY]...";
+   		return -1;
+	}
+	else
+	{
+	    MainWindow MainWin;
+	    MainWin.show();
+	    return QApp.exec();
+    }
 }
 
