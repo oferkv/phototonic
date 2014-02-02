@@ -51,8 +51,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 	stackedWidget->addWidget(imageView);
     setCentralWidget(stackedWidget);
 
-	if (argIsImageFile())
-		loadImagefromCli(cliFileName);
+	cliImageLoaded = handleArgs();
+	if (cliImageLoaded)
+		loadImagefromCli();
 
     // Load current folder
    	initComplete = true;
@@ -67,7 +68,7 @@ MainWindow::~MainWindow()
 
 }
 
-bool MainWindow::argIsImageFile()
+bool MainWindow::handleArgs()
 {
 	if (QCoreApplication::arguments().size() == 2)
 	{
@@ -159,6 +160,14 @@ void MainWindow::createImageView()
 
 void MainWindow::createActions()
 {
+	thumbsGoTopAct = new QAction(tr("Top"), this);
+	connect(thumbsGoTopAct, SIGNAL(triggered()), this, SLOT(goTop()));
+	thumbsGoTopAct->setShortcut(QKeySequence::MoveToStartOfDocument);
+
+	thumbsGoBottomAct = new QAction(tr("Bottom"), this);
+	connect(thumbsGoBottomAct, SIGNAL(triggered()), this, SLOT(goBottom()));
+	thumbsGoBottomAct->setShortcut(QKeySequence::MoveToEndOfDocument);
+
 	closeImageAct = new QAction(tr("Close Image"), this);
 	connect(closeImageAct, SIGNAL(triggered()), this, SLOT(closeImage()));
 	closeImageAct->setShortcut(Qt::Key_Escape);
@@ -839,11 +848,8 @@ void MainWindow::setThumbViewWidgetsVisible(bool visible)
 
 void MainWindow::loadImagefromThumb(const QModelIndex &idx)
 {
-    currentImage = thumbView->currentViewDir;
-    currentImage += QDir::separator();
-	currentImage += thumbView->thumbViewModel->item(idx.row())->data(thumbView->FileNameRole).toString();
-	
-	imageView->loadImage(currentImage);
+	imageView->loadImage(thumbView->currentViewDir,
+							thumbView->thumbViewModel->item(idx.row())->data(thumbView->FileNameRole).toString());
 	setThumbViewWidgetsVisible(false);
 	if (GData::isFullScreen == true)
 		showFullScreen();
@@ -851,18 +857,14 @@ void MainWindow::loadImagefromThumb(const QModelIndex &idx)
 	setWindowTitle(thumbView->thumbViewModel->item(idx.row())->data(thumbView->FileNameRole).toString() + " - Phototonic");
 }
 
-void MainWindow::loadImagefromCli(const QString &imageFileName)
+void MainWindow::loadImagefromCli()
 {
-    currentImage = thumbView->currentViewDir;
-    currentImage += QDir::separator();
-	currentImage += imageFileName;
-	
-	imageView->loadImage(currentImage);
+	imageView->loadImage(thumbView->currentViewDir, cliFileName);
 	setThumbViewWidgetsVisible(false);
 	if (GData::isFullScreen == true)
 		showFullScreen();
 	stackedWidget->setCurrentIndex(imageViewIdx);
-	setWindowTitle(imageFileName + " - Phototonic");
+	setWindowTitle(cliFileName + " - Phototonic");
 }
 
 void MainWindow::closeImage()
@@ -872,6 +874,17 @@ void MainWindow::closeImage()
 	setThumbViewWidgetsVisible(true);
 	stackedWidget->setCurrentIndex(thumbViewIdx);
 	setWindowTitle(thumbView->currentViewDir + " - Phototonic");
+	thumbView->setCurrentIndexByName(imageView->currentImage);
+}
+
+void MainWindow::goBottom()
+{
+
+}
+
+void MainWindow::goTop()
+{
+
 }
 
 void MainWindow::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvDirPath)
@@ -1009,7 +1022,9 @@ void MainWindow::reloadThumbsSlot()
 	if (currentHistoryIdx > 0)
 		goBackAction->setEnabled(true);
 
-	setWindowTitle(thumbView->currentViewDir + " - Phototonic");
+	if (stackedWidget->currentIndex() == thumbViewIdx)
+		setWindowTitle(thumbView->currentViewDir + " - Phototonic");
+
 	thumbViewBusy = true;
 	thumbView->load();
 }

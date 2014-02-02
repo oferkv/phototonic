@@ -43,7 +43,6 @@ public:
 	void mouseDoubleClickEvent(QMouseEvent *event);
 	void mousePressEvent(QMouseEvent *event);
 	int copyCutCount;
-	QString currentImage;
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -56,7 +55,7 @@ public slots:
 	void updateState(QString state);
 	void dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvDirPath);
 	void loadImagefromThumb(const QModelIndex &idx);
-	void loadImagefromCli(const QString &imageFileName);
+	void loadImagefromCli();
 	void closeImage();
 
 private slots:
@@ -91,10 +90,12 @@ private slots:
 	void thumbsZoomIn();
 	void thumbsZoomOut();
 	void setThumbViewWidgetsVisible(bool visible);
+	void goTop();
+	void goBottom();
 
 private:
 	void restoreCurrentIdx();
-	bool argIsImageFile();
+	bool handleArgs();
 	void createImageView();
 	void createThumbView();
 	void createActions();
@@ -115,6 +116,7 @@ private:
 	void setCopyCutActions(bool setEnabled);
 
 	QString cliFileName;
+	bool cliImageLoaded;
 	bool thumbViewBusy;
 	QMenuBar *thumbsMenuBar;
 	QMenu *fileMenu;
@@ -146,6 +148,8 @@ private:
 	QAction *actReverse;
 	QAction *refreshAction;
 	QAction *fullScreenAct;
+	QAction *thumbsGoTopAct;
+	QAction *thumbsGoBottomAct;
 	QAction *closeImageAct;
 	QAction *settingsAction;
 	QAction *thumbsZoomInAct;

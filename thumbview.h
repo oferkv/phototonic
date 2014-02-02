@@ -53,6 +53,7 @@ public:
 	}
 	void addNewThumb(QString &imageFileName);
 	void setThumbColors();
+	void setCurrentIndexByName(QString &FileName);
 
 	QDir *thumbsDir;
 	QList<QStandardItem*> *thumbList;

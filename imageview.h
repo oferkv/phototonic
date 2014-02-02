@@ -31,8 +31,9 @@ class ImageView : public QWidget
 public:
     ImageView(QWidget *parent = 0);
     ~ImageView();
-	void loadImage(QString &imagePath);
+	void loadImage(QString &imagePath, QString imageFileName);
 	void resizeImage();
+	QString currentImage;
 
 	enum ZoomMethods
 	{

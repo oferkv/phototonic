@@ -160,19 +160,21 @@ void ImageView::resizeImage()
 	scrlArea->verticalScrollBar()->setValue(scrlArea->verticalScrollBar()->maximum() / 2);
 }
 
-void ImageView::loadImage(QString &imagePath)
+void ImageView::loadImage(QString &imagePath, QString imageFileName)
 {
 	QImageReader thumbReader;
-	thumbReader.setFileName(imagePath);
 	QPixmap pixmap1;
+    QString imageFullPath = imagePath + QDir::separator() + imageFileName;
+   	currentImage = imageFileName;
 
+   	thumbReader.setFileName(imageFullPath);
 	if (!thumbReader.size().isValid())
 	{
 		pixmap1.load(":/images/error_image.png");
 	}
 	else
 	{
-		pixmap1.load(imagePath);
+		pixmap1.load(imageFullPath);
 	}
 	imgLabel1->setPixmap(pixmap1);
 }
