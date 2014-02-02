@@ -52,17 +52,15 @@ ThumbView::ThumbView(QWidget *parent, int thumbSize) : QListView(parent)
 	setModel(thumbViewModel);
 
 	connect(verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(updateIndex()));
-
 	connect(this->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), 
-      this, SLOT(handleSelectionChanged(QItemSelection)));
+				this, SLOT(handleSelectionChanged(QItemSelection)));
    	connect(this, SIGNAL(doubleClicked(const QModelIndex &)), 
-		parent, SLOT(loadImagefromThumb(const QModelIndex &)));
-
+				parent, SLOT(loadImagefromThumb(const QModelIndex &)));
 
 	thumbsDir = new QDir();
 	QStringList *fileFilters = new QStringList;
 	*fileFilters << "*.BMP" << "*.GIF" << "*.JPG" << "*.JPEG" << "*.JPE" << "*.PNG"
-				<< "*.PBM" << "*.PGM" << "*.PPM" << "*.XBM" << "*.XPM";
+					<< "*.PBM" << "*.PGM" << "*.PPM" << "*.XBM" << "*.XPM";
 	thumbsDir->setFilter(QDir::Files);
 	thumbsDir->setNameFilters(*fileFilters);
 
@@ -316,8 +314,15 @@ void ThumbView::addNewThumb(QString &imageFileName)
 
 //		setRowHidden(currThumb , false);
 
-
 	thumbViewModel->appendRow(thumbIitem);
+}
+
+void ThumbView::wheelEvent(QWheelEvent *event)
+{
+	if (event->delta() < 0)
+		verticalScrollBar()->setValue(verticalScrollBar()->value() + thumbHeight);
+	else
+		verticalScrollBar()->setValue(verticalScrollBar()->value() - thumbHeight);
 }
 
 FSTree::FSTree(QWidget *parent) : QTreeView(parent)

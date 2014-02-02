@@ -52,6 +52,7 @@ public:
 		m_needScroll = needScroll;
 	}
 	void addNewThumb(QString &imageFileName);
+	void wheelEvent(QWheelEvent *event);
 	void setThumbColors();
 	void setCurrentIndexByName(QString &FileName);
 

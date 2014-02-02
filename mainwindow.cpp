@@ -319,6 +319,9 @@ void MainWindow::createMenus()
 	goMenu->addAction(goFrwdAction);
 	goMenu->addAction(goUpAction);
 	goMenu->addAction(goHomeAction);
+    goMenu->addSeparator();
+	goMenu->addAction(thumbsGoBottomAct);
+	goMenu->addAction(thumbsGoTopAct);
 
 	viewMenu = menuBar()->addMenu(tr("&View"));
    	viewMenu->addAction(thumbsZoomInAct);
@@ -879,12 +882,12 @@ void MainWindow::closeImage()
 
 void MainWindow::goBottom()
 {
-
+	thumbView->scrollToBottom();
 }
 
 void MainWindow::goTop()
 {
-
+	thumbView->scrollToTop();
 }
 
 void MainWindow::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvDirPath)
