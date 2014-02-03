@@ -102,8 +102,7 @@ void ImageView::resizeImage()
 			case Height:
 				if (imgSize.height() < size().height())
 				    imgSize.scale(getWidthByHeight(imgSize.height(), imgSize.width(), size().height()),
-				    	size().height(),
-			    		Qt::KeepAspectRatio);
+				    	size().height(), Qt::KeepAspectRatio);
 			
 				break;
 
@@ -131,15 +130,13 @@ void ImageView::resizeImage()
 			case Width:
 				if (imgSize.width() > size().width())
 				    imgSize.scale(size().width(), 
-				    	getHeightByWidth(imgSize.width(), imgSize.height(), size().width()),
-			    		Qt::KeepAspectRatio);
+				    	getHeightByWidth(imgSize.width(), imgSize.height(), size().width()), Qt::KeepAspectRatio);
 				break;
 				
 			case Height:
 				if (imgSize.height() > size().height())
 				    imgSize.scale(getWidthByHeight(imgSize.height(), imgSize.width(), size().height()),
-				    	size().height(),
-			    		Qt::KeepAspectRatio);
+				    	size().height(), Qt::KeepAspectRatio);
 			
 				break;
 

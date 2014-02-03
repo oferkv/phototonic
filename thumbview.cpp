@@ -26,9 +26,7 @@
 ThumbView::ThumbView(QWidget *parent, int thumbSize) : QListView(parent)
 {
 	thumbHeight = thumbSize;
-	if (!thumbHeight)
-		thumbHeight = 200;
-	thumbWidth = thumbHeight * GData::thumbAspect;
+	thumbWidth = GData::thumbsCompactLayout? thumbHeight * GData::thumbAspect : thumbHeight;
 
 	GData::thumbsBackgroundColor = GData::appSettings->value("backgroundThumbColor").value<QColor>();
 	GData::thumbsTextColor = GData::appSettings->value("textThumbColor").value<QColor>();
@@ -154,6 +152,7 @@ bool ThumbView::isItemVisible(QModelIndex idx)
 
 void ThumbView::load()
 {
+	thumbWidth = GData::thumbsCompactLayout? thumbHeight * GData::thumbAspect : thumbHeight;
 	setIconSize(QSize(thumbWidth, thumbHeight));
 	thumbsDir->setPath(currentViewDir);
 	thumbsDir->setSorting(thumbsSortFlags);
@@ -282,14 +281,12 @@ void ThumbView::addNewThumb(QString &imageFileName)
 	QStandardItem *thumbIitem;
 	QImageReader thumbReader;
 	QSize thumbSize;
-
 	QPixmap emptyPixMap = QPixmap::fromImage(emptyImg).scaled(thumbWidth, thumbHeight);
-	
 	QImage errorImg;
 	errorImg.load(":/images/error_image.png");
 	QPixmap errorPixMap = QPixmap::fromImage(errorImg);
-
 	QFileInfo fInfo = QFileInfo(imageFileName);
+
 	thumbIitem = new QStandardItem();
 	thumbIitem->setIcon(emptyPixMap);
 	thumbIitem->setData(666, SortRole);
@@ -312,9 +309,10 @@ void ThumbView::addNewThumb(QString &imageFileName)
 	else 
 		thumbIitem->setIcon(errorPixMap);
 
-//		setRowHidden(currThumb , false);
+	thumbViewModel->insertRow(0, thumbIitem);
 
-	thumbViewModel->appendRow(thumbIitem);
+	if (GData::thumbsCompactLayout)
+		setRowHidden(0, false);
 }
 
 void ThumbView::wheelEvent(QWheelEvent *event)

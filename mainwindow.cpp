@@ -559,7 +559,7 @@ void MainWindow::thumbsZoomIn()
 	if (thumbView->thumbHeight < 400)
 	{
 		thumbView->thumbHeight += 50;
-		thumbView->thumbWidth = thumbView->thumbHeight * GData::thumbAspect;
+		thumbView->thumbWidth = GData::thumbsCompactLayout? thumbView->thumbHeight * GData::thumbAspect : thumbView->thumbHeight;
 		thumbsZoomOutAct->setEnabled(true);
 		if (thumbView->thumbHeight == 400)
 			thumbsZoomInAct->setEnabled(false);
@@ -572,7 +572,7 @@ void MainWindow::thumbsZoomOut()
 	if (thumbView->thumbHeight > 100)
 	{
 		thumbView->thumbHeight -= 50;
-		thumbView->thumbWidth = thumbView->thumbHeight * GData::thumbAspect;
+		thumbView->thumbWidth = GData::thumbsCompactLayout? thumbView->thumbHeight * GData::thumbAspect : thumbView->thumbHeight;
 		thumbsZoomInAct->setEnabled(true);
 		if (thumbView->thumbHeight == 100)
 			thumbsZoomOutAct->setEnabled(false);
