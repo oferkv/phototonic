@@ -235,7 +235,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	// Thumbnail spacing
 	QLabel *thumbSpacingLab = new QLabel("Thumbnail spacing: ");
 	thumbSpacingSpin = new QSpinBox;
-	thumbSpacingSpin->setRange(2, 10);
+	thumbSpacingSpin->setRange(0, 15);
 	thumbSpacingSpin->setValue(GData::thumbSpacing);
 	QHBoxLayout *thumbSpacingHbox = new QHBoxLayout;
 	thumbSpacingHbox->addWidget(thumbSpacingLab);

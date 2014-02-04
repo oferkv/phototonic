@@ -201,6 +201,7 @@ void ThumbView::initThumbs()
 		if (!GData::thumbsCompactLayout)
 			thumbIitem->setData(thumbFileInfo.fileName(), Qt::DisplayRole);
 		thumbIitem->setIcon(emptyPixMap);
+//		thumbIitem->setTextAlignment(Qt::AlignTop);
 
 		thumbViewModel->appendRow(thumbIitem);
 		thumbIsLoaded->append(false);
@@ -236,17 +237,22 @@ refreshThumbs:
 		thumbReader.setFileName(thumbFileInfo.filePath());
 		thumbSize = thumbReader.size();
 
-		if (thumbSize.isValid())
-		{
-			if (thumbSize.height() > thumbHeight || thumbSize.width() > thumbWidth)
-			{
+		if (!thumbSize.isValid())
+			thumbReader.setFileName(":/images/error_image.png");
+
+		
+		
+//			if (thumbSize.height() > thumbHeight || thumbSize.width() > thumbWidth)
+	//		{
 				thumbSize.scale(QSize(thumbWidth, thumbHeight), Qt::KeepAspectRatio);
-			}
+	//		}
 			thumbReader.setScaledSize(thumbSize);
 			thumbViewModel->item(currThumb)->setIcon(QPixmap::fromImage(thumbReader.read()));
-		} 
-		else 
-			thumbViewModel->item(currThumb)->setIcon(errorPixMap);
+
+			int zz = thumbWidth /2 ;//- (thumbSize.width() / 2);
+			QSize hintSize(zz, zz);
+			thumbViewModel->item(currThumb)->setSizeHint(hintSize);
+		 
 
 		if (GData::thumbsCompactLayout)
 			setRowHidden(currThumb , false);

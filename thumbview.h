@@ -71,6 +71,13 @@ public:
 		SortRole
 	};
 
+	enum ThumbnailLayouts
+	{
+		Classic,
+		Squares,
+		Compact
+	};
+
 protected:
     void startDrag(Qt::DropActions);
 	
