@@ -226,12 +226,6 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	QGroupBox *colorsGbox = new QGroupBox(tr("Colors"));
 	colorsGbox->setLayout(colorsVbox);
 
-	// Compact layout
-	compactLayoutCb = new QCheckBox("Compact layout");
-	compactLayoutCb->setChecked(GData::thumbsCompactLayout);
-	QVBoxLayout *compactLayoutVBox = new QVBoxLayout;
-	compactLayoutVBox->addWidget(compactLayoutCb);
-
 	// Thumbnail spacing
 	QLabel *thumbSpacingLab = new QLabel("Thumbnail spacing: ");
 	thumbSpacingSpin = new QSpinBox;
@@ -245,7 +239,6 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	// Thumbnail options
 	QGroupBox *thumbOptsGroupBox = new QGroupBox(tr("Thumbnail Options"));
 	QVBoxLayout *thumbsOptsBox = new QVBoxLayout;
-	thumbsOptsBox->addLayout(compactLayoutVBox);
 	thumbsOptsBox->addLayout(thumbSpacingHbox);
 	thumbOptsGroupBox->setLayout(thumbsOptsBox);
 
@@ -326,7 +319,6 @@ void SettingsDialog::saveSettings()
 	GData::backgroundColor = bgColor;
 	GData::thumbsBackgroundColor = thumbBgColor;
 	GData::thumbsTextColor = thumbTextColor;
-	GData::thumbsCompactLayout = compactLayoutCb->isChecked();
 	GData::thumbSpacing = thumbSpacingSpin->value();
 
 	accept();

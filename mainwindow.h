@@ -92,6 +92,9 @@ private slots:
 	void setThumbViewWidgetsVisible(bool visible);
 	void goTop();
 	void goBottom();
+	void setClassicThumbs();
+	void setCompactThumbs();
+	void setSquarishThumbs();
 
 private:
 	void restoreCurrentIdx();
@@ -141,6 +144,7 @@ private:
 	QAction *selectAllAction;
 
 	QActionGroup *sortTypesGroup;
+	QActionGroup *thumbLayoutsGroup;
 	QAction *actName;
 	QAction *actTime;
 	QAction *actSize;
@@ -154,6 +158,10 @@ private:
 	QAction *settingsAction;
 	QAction *thumbsZoomInAct;
 	QAction *thumbsZoomOutAct;
+
+	QAction *actClassic;
+	QAction *actCompact;
+	QAction *actSquarish;
 
 	QAction *aboutAction;
 	QAction *aboutQtAction;

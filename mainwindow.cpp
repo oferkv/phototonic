@@ -117,9 +117,7 @@ void MainWindow::unsetBusy()
 
 void MainWindow::createThumbView()
 {
-	int thumbSize = GData::appSettings->value("thumbsZoomVal").toInt();
-
-	thumbView = new ThumbView(this, thumbSize);
+	thumbView = new ThumbView(this);
 	thumbView->thumbsSortFlags = (QDir::SortFlags)GData::appSettings->value("thumbsSortFlags").toInt();
 
 	connect(this, SIGNAL(abortThumbLoading()), thumbView, SLOT(abort()));
@@ -257,6 +255,19 @@ void MainWindow::createActions()
 	actType->setChecked(thumbView->thumbsSortFlags & QDir::Type); 
 	actReverse->setChecked(thumbView->thumbsSortFlags & QDir::Reversed); 
 
+	actClassic = new QAction(tr("Classic view"), this);
+	actCompact = new QAction(tr("Compact"), this);
+	actSquarish = new QAction(tr("Squarish"), this);
+	connect(actClassic, SIGNAL(triggered()), this, SLOT(setClassicThumbs()));
+	connect(actCompact, SIGNAL(triggered()), this, SLOT(setCompactThumbs()));
+	connect(actSquarish, SIGNAL(triggered()), this, SLOT(setSquarishThumbs()));
+    actClassic->setCheckable(true);
+    actCompact->setCheckable(true);
+	actSquarish->setCheckable(true);
+	actClassic->setChecked(GData::thumbsLayout == ThumbView::Classic); 
+	actCompact->setChecked(GData::thumbsLayout == ThumbView::Compact); 
+	actSquarish->setChecked(GData::thumbsLayout == ThumbView::Squares); 
+
 	refreshAction = new QAction(tr("Refresh"), this);
 	refreshAction->setShortcut(QKeySequence(tr("F5")));
 	refreshAction->setIcon(QIcon(":/images/refresh.png"));
@@ -313,6 +324,8 @@ void MainWindow::createMenus()
 	editMenu->addAction(pasteAction);
     editMenu->addSeparator();
    	editMenu->addAction(selectAllAction);
+	editMenu->addSeparator();
+   	editMenu->addAction(settingsAction);
 
     goMenu = menuBar()->addMenu(tr("&Go"));
 	goMenu->addAction(goBackAction);
@@ -336,9 +349,15 @@ void MainWindow::createMenus()
     sortMenu->addSeparator();
 	sortMenu->addAction(actReverse);
     viewMenu->addSeparator();
-   	viewMenu->addAction(refreshAction);
+
+	thumbLayoutsGroup = new QActionGroup(this);
+	thumbLayoutsGroup->addAction(actClassic);
+	thumbLayoutsGroup->addAction(actCompact);
+	thumbLayoutsGroup->addAction(actSquarish);
+	viewMenu->addActions(thumbLayoutsGroup->actions());
+
     viewMenu->addSeparator();
-   	viewMenu->addAction(settingsAction);
+   	viewMenu->addAction(refreshAction);
 
 	menuBar()->addSeparator();
     helpMenu = menuBar()->addMenu(tr("&Help"));
@@ -482,6 +501,24 @@ void MainWindow::refreshThumbs(bool scrollToTop)
 	}
 }
 
+void MainWindow::setClassicThumbs()
+{
+	GData::thumbsLayout = ThumbView::Classic;
+	refreshThumbs(true);
+}
+
+void MainWindow::setCompactThumbs()
+{
+	GData::thumbsLayout = ThumbView::Compact;
+	refreshThumbs(true);
+}
+
+void MainWindow::setSquarishThumbs()
+{
+	GData::thumbsLayout = ThumbView::Squares;
+	refreshThumbs(true);
+}
+
 void MainWindow::about()
 {
 	QMessageBox::about(this, tr("About Phototonic"), tr("<h2>Phototonic v0.1</h2>"
@@ -556,12 +593,11 @@ void MainWindow::copyImages()
 
 void MainWindow::thumbsZoomIn()
 {
-	if (thumbView->thumbHeight < 400)
+	if (thumbView->thumbSize < 400)
 	{
-		thumbView->thumbHeight += 50;
-		thumbView->thumbWidth = GData::thumbsCompactLayout? thumbView->thumbHeight * GData::thumbAspect : thumbView->thumbHeight;
+		thumbView->thumbSize += 50;
 		thumbsZoomOutAct->setEnabled(true);
-		if (thumbView->thumbHeight == 400)
+		if (thumbView->thumbSize == 400)
 			thumbsZoomInAct->setEnabled(false);
 		refreshThumbs(false);
 	}
@@ -569,12 +605,11 @@ void MainWindow::thumbsZoomIn()
 
 void MainWindow::thumbsZoomOut()
 {
-	if (thumbView->thumbHeight > 100)
+	if (thumbView->thumbSize > 100)
 	{
-		thumbView->thumbHeight -= 50;
-		thumbView->thumbWidth = GData::thumbsCompactLayout? thumbView->thumbHeight * GData::thumbAspect : thumbView->thumbHeight;
+		thumbView->thumbSize -= 50;
 		thumbsZoomInAct->setEnabled(true);
-		if (thumbView->thumbHeight == 100)
+		if (thumbView->thumbSize == 100)
 			thumbsZoomOutAct->setEnabled(false);
 		refreshThumbs(false);
 	}
@@ -787,8 +822,8 @@ void MainWindow::writeSettings()
 	GData::appSettings->setValue("backgroundColor", GData::backgroundColor);
 	GData::appSettings->setValue("backgroundThumbColor", GData::thumbsBackgroundColor);
 	GData::appSettings->setValue("textThumbColor", GData::thumbsTextColor);
-	GData::appSettings->setValue("showThumbNames", (bool)GData::thumbsCompactLayout);
 	GData::appSettings->setValue("thumbSpacing", (int)GData::thumbSpacing);
+	GData::appSettings->setValue("thumbLayout", (int)GData::thumbsLayout);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -1110,7 +1145,7 @@ void MainWindow::rename()
 	if (ok)
 	{
 		thumbView->thumbViewModel->item(indexesList.first().row())->setData(newImageName, thumbView->FileNameRole);
-		if (!GData::thumbsCompactLayout)
+		if (GData::thumbsLayout == ThumbView::Classic)
 			thumbView->thumbViewModel->item(indexesList.first().row())->setData(newImageName, Qt::DisplayRole);
 	}
 	else

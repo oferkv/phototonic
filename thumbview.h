@@ -44,7 +44,7 @@ public slots:
 	void handleSelectionChanged(const QItemSelection& selection);
 
 public:
-	ThumbView(QWidget *parent, int thumbSize);
+	ThumbView(QWidget *parent);
 	~ThumbView();
 	void load();
 	void setNeedScroll(bool needScroll)
@@ -62,6 +62,7 @@ public:
 	QStandardItemModel *thumbViewModel;
 	QString currentViewDir;
 	QDir::SortFlags thumbsSortFlags;
+	int thumbSize;
 	int thumbWidth;
 	int thumbHeight;
 
@@ -74,8 +75,8 @@ public:
 	enum ThumbnailLayouts
 	{
 		Classic,
-		Squares,
-		Compact
+		Compact,
+		Squares
 	};
 
 protected:
