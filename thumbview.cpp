@@ -30,12 +30,8 @@ ThumbView::ThumbView(QWidget *parent) : QListView(parent)
 	setThumbColors();
 	GData::thumbSpacing = GData::appSettings->value("thumbSpacing").toInt();
 	GData::thumbsLayout = GData::appSettings->value("thumbLayout").toInt();
-
 	thumbSize = GData::appSettings->value("thumbsZoomVal").toInt();
-	thumbHeight = thumbSize;
-	thumbWidth = GData::thumbsLayout == Compact? thumbHeight * GData::thumbAspect : thumbHeight;
 
-	setIconSize(QSize(thumbWidth, thumbHeight));
 	setViewMode(QListView::IconMode);
 	setSelectionMode(QAbstractItemView::ExtendedSelection);
 	setResizeMode(QListView::Adjust);
@@ -221,7 +217,7 @@ void ThumbView::initThumbs()
 void ThumbView::loadThumbs()
 {
 	QImageReader thumbReader;
-	QSize thumbSize;
+	QSize currThumbSize;
 	bool needRefresh = false;
 	thumbLoaderActive = true;
 
@@ -238,16 +234,16 @@ refreshThumbs:
 		thumbFileInfo = thumbFileInfoList.at(currThumb);
 
 		thumbReader.setFileName(thumbFileInfo.filePath());
-		thumbSize = thumbReader.size();
+		currThumbSize = thumbReader.size();
 
-		if (!thumbSize.isValid())
+		if (!currThumbSize.isValid())
 			thumbReader.setFileName(":/images/error_image.png");
 
 //			if (thumbSize.height() > thumbHeight || thumbSize.width() > thumbWidth)
 	//		{
-				thumbSize.scale(QSize(thumbWidth, thumbHeight), Qt::KeepAspectRatio);
+				currThumbSize.scale(QSize(thumbWidth, thumbHeight), Qt::KeepAspectRatio);
 	//		}
-			thumbReader.setScaledSize(thumbSize);
+			thumbReader.setScaledSize(currThumbSize);
 			thumbViewModel->item(currThumb)->setIcon(QPixmap::fromImage(thumbReader.read()));
 
 			if (GData::thumbsLayout == Squares)
@@ -290,7 +286,7 @@ void ThumbView::addNewThumb(QString &imageFileName)
 {
 	QStandardItem *thumbIitem;
 	QImageReader thumbReader;
-	QSize thumbSize;
+	QSize currThumbSize;
 	QPixmap emptyPixMap = QPixmap::fromImage(emptyImg).scaled(thumbWidth, thumbHeight);
 	QImage errorImg;
 	errorImg.load(":/images/error_image.png");
@@ -305,15 +301,15 @@ void ThumbView::addNewThumb(QString &imageFileName)
 		thumbIitem->setData(fInfo.fileName(), Qt::DisplayRole);
 
 	thumbReader.setFileName(fInfo.filePath());
-	thumbSize = thumbReader.size();
+	currThumbSize = thumbReader.size();
 
-	if (thumbSize.isValid())
+	if (currThumbSize.isValid())
 	{
-		if (thumbSize.height() > thumbHeight || thumbSize.width() > thumbWidth)
+		if (currThumbSize.height() > thumbHeight || currThumbSize.width() > thumbWidth)
 		{
-			thumbSize.scale(QSize(thumbWidth, thumbHeight), Qt::KeepAspectRatio);
+			currThumbSize.scale(QSize(thumbWidth, thumbHeight), Qt::KeepAspectRatio);
 		}
-		thumbReader.setScaledSize(thumbSize);
+		thumbReader.setScaledSize(currThumbSize);
 		thumbIitem->setIcon(QPixmap::fromImage(thumbReader.read()));
 	} 
 	else 

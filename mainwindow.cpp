@@ -817,7 +817,7 @@ void MainWindow::writeSettings()
 	GData::appSettings->setValue("MainWindowState", saveState());
 	GData::appSettings->setValue("splitterSizes", splitter->saveState());
 	GData::appSettings->setValue("thumbsSortFlags", (int)thumbView->thumbsSortFlags);
-	GData::appSettings->setValue("thumbsZoomVal", (int)thumbView->thumbHeight);
+	GData::appSettings->setValue("thumbsZoomVal", (int)thumbView->thumbSize);
 	GData::appSettings->setValue("isFullScreen", (bool)GData::isFullScreen);
 	GData::appSettings->setValue("backgroundColor", GData::backgroundColor);
 	GData::appSettings->setValue("backgroundThumbColor", GData::thumbsBackgroundColor);
@@ -913,6 +913,7 @@ void MainWindow::closeImage()
 	stackedWidget->setCurrentIndex(thumbViewIdx);
 	setWindowTitle(thumbView->currentViewDir + " - Phototonic");
 	thumbView->setCurrentIndexByName(imageView->currentImage);
+	QTimer::singleShot(100, thumbView, SLOT(updateIndex()));
 }
 
 void MainWindow::goBottom()
