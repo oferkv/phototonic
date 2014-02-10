@@ -77,10 +77,16 @@ void ThumbView::setThumbColors()
 	verticalScrollBar()->setPalette(sbOrig);
 }
 
+void ThumbView::selectCurrentIndex()
+{
+	setCurrentIndex(currentIndex);
+}
+
 void ThumbView::setCurrentIndexByName(QString &FileName)
 {
 	QModelIndexList indexList = thumbViewModel->match(thumbViewModel->index(0, 0), FileNameRole, FileName);
-	setCurrentIndex(indexList[0]);
+	if (indexList.size())
+	 	currentIndex = indexList[0];
 }
 
 void ThumbView::handleSelectionChanged(const QItemSelection&)

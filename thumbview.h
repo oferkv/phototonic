@@ -55,6 +55,7 @@ public:
 	void wheelEvent(QWheelEvent *event);
 	void setThumbColors();
 	void setCurrentIndexByName(QString &FileName);
+	void selectCurrentIndex();
 
 	QDir *thumbsDir;
 	QList<QStandardItem*> *thumbList;
@@ -95,6 +96,7 @@ private:
 	void loadThumbs();
 	int getFirstVisibleItem();
 	bool isItemVisible(QModelIndex idx);
+	QModelIndex currentIndex;
 };
 
 class FSTree : public QTreeView

@@ -140,9 +140,13 @@ void MainWindow::createImageView()
 	if (!GData::zoomInFlags)
 		GData::zoomInFlags = ImageView::Disable;
 
+  	imageView->addAction(nextImageAction);
+	QAction *sep = new QAction(this);
+	sep->setSeparator(true);
+	imageView->addAction(sep);
   	imageView->addAction(closeImageAct);
   	imageView->addAction(fullScreenAct);
-	QAction *sep = new QAction(this);
+	sep = new QAction(this);
 	sep->setSeparator(true);
 	imageView->addAction(sep);
    	imageView->addAction(settingsAction);
@@ -306,6 +310,9 @@ void MainWindow::createActions()
 	goHomeAction = new QAction(tr("&Home"), this);
 	connect(goHomeAction, SIGNAL(triggered()), this, SLOT(goHome()));	
 	goHomeAction->setIcon(QIcon(":/images/home.png"));
+
+	nextImageAction = new QAction(tr("&Next"), this);
+	connect(nextImageAction, SIGNAL(triggered()), this, SLOT(nextImage()));
 }
 
 void MainWindow::createMenus()
@@ -412,6 +419,10 @@ void MainWindow::createToolBars()
 	viewToolBar->addAction(thumbsZoomInAct);
 	viewToolBar->addAction(thumbsZoomOutAct);
 	viewToolBar->setObjectName("View");
+
+	viewToolBarWasVisible = GData::appSettings->value("viewToolBarWasVisible").toBool();
+	editToolBarWasVisible = GData::appSettings->value("editToolBarWasVisible").toBool();
+	goToolBarWasVisible = GData::appSettings->value("goToolBarWasVisible").toBool();
 }
 
 void MainWindow::createStatusBar()
@@ -782,6 +793,11 @@ void MainWindow::goHome()
 	goTo(QDir::homePath());
 }
 
+void MainWindow::nextImage()
+{
+
+}
+
 void MainWindow::setCopyCutActions(bool setEnabled)
 {
 	cutAction->setEnabled(setEnabled);
@@ -813,7 +829,10 @@ void MainWindow::writeSettings()
 		setThumbViewWidgetsVisible(true);
 
 	showNormal();
-    GData::appSettings->setValue("geometry", saveGeometry());
+	if (!GData::isFullScreen)
+	{
+    	GData::appSettings->setValue("geometry", saveGeometry());
+	}
 	GData::appSettings->setValue("MainWindowState", saveState());
 	GData::appSettings->setValue("splitterSizes", splitter->saveState());
 	GData::appSettings->setValue("thumbsSortFlags", (int)thumbView->thumbsSortFlags);
@@ -824,6 +843,9 @@ void MainWindow::writeSettings()
 	GData::appSettings->setValue("textThumbColor", GData::thumbsTextColor);
 	GData::appSettings->setValue("thumbSpacing", (int)GData::thumbSpacing);
 	GData::appSettings->setValue("thumbLayout", (int)GData::thumbsLayout);
+	GData::appSettings->setValue("viewToolBarWasVisible", (bool)viewToolBar->isVisible());
+	GData::appSettings->setValue("editToolBarWasVisible", (bool)editToolBar->isVisible());
+	GData::appSettings->setValue("goToolBarWasVisible", (bool)goToolBar->isVisible());
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -866,17 +888,6 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
 
 void MainWindow::setThumbViewWidgetsVisible(bool visible)
 {
-	static bool viewToolBarWasVisible;
-	static bool editToolBarWasVisible;
-	static bool goToolBarWasVisible;
-
-	if (!visible)
-	{
-		viewToolBarWasVisible = viewToolBar->isVisible();
-		editToolBarWasVisible = editToolBar->isVisible();
-		goToolBarWasVisible = goToolBar->isVisible();
-	}
-
 	menuBar()->setVisible(visible);
 	editToolBar->setVisible(visible? editToolBarWasVisible : false);
 	goToolBar->setVisible(visible? goToolBarWasVisible : false);
@@ -908,11 +919,12 @@ void MainWindow::loadImagefromCli()
 void MainWindow::closeImage()
 {
 	if(isFullScreen())
-	showNormal();
+		showNormal();
 	setThumbViewWidgetsVisible(true);
 	stackedWidget->setCurrentIndex(thumbViewIdx);
 	setWindowTitle(thumbView->currentViewDir + " - Phototonic");
 	thumbView->setCurrentIndexByName(imageView->currentImage);
+	thumbView->selectCurrentIndex();
 	QTimer::singleShot(100, thumbView, SLOT(updateIndex()));
 }
 

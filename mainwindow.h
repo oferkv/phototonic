@@ -82,6 +82,7 @@ private slots:
 	void goForward();
 	void goUp();
 	void goHome();
+	void nextImage();
 	void selectAllThumbs();
 	void deleteOp();
 	void cutImages();
@@ -175,6 +176,9 @@ private:
 	QAction *goUpAction;
 	QAction *goHomeAction;
 
+	QAction *nextImageAction;
+	QAction *prevImageAction;
+
 	QLineEdit *pathBar;
 	QCompleter *pathComplete;
 	QLabel *stateLabel;
@@ -190,8 +194,16 @@ private:
 	QList<QString> pathHistory;
 	int currentHistoryIdx;
 	bool needHistoryRecord;
-	enum CentralWidgets {thumbViewIdx = 0, imageViewIdx};
-	
+
+	enum CentralWidgets
+	{
+		thumbViewIdx = 0,
+		imageViewIdx
+	};
+
+	bool viewToolBarWasVisible;
+	bool editToolBarWasVisible;
+	bool goToolBarWasVisible;
 };
 
 #endif // MAINWINDOW_H
