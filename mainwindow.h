@@ -54,6 +54,7 @@ public slots:
 	void unsetBusy();
 	void updateState(QString state);
 	void dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvDirPath);
+	void loadImageFile(QString imageFileName);
 	void loadImagefromThumb(const QModelIndex &idx);
 	void loadImagefromCli();
 	void closeImage();
@@ -82,7 +83,8 @@ private slots:
 	void goForward();
 	void goUp();
 	void goHome();
-	void nextImage();
+	void loadNextImage();
+	void loadPrevImage();
 	void selectAllThumbs();
 	void deleteOp();
 	void cutImages();

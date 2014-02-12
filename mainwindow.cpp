@@ -141,6 +141,7 @@ void MainWindow::createImageView()
 		GData::zoomInFlags = ImageView::Disable;
 
   	imageView->addAction(nextImageAction);
+  	imageView->addAction(prevImageAction);
 	QAction *sep = new QAction(this);
 	sep->setSeparator(true);
 	imageView->addAction(sep);
@@ -312,7 +313,12 @@ void MainWindow::createActions()
 	goHomeAction->setIcon(QIcon(":/images/home.png"));
 
 	nextImageAction = new QAction(tr("&Next"), this);
-	connect(nextImageAction, SIGNAL(triggered()), this, SLOT(nextImage()));
+	nextImageAction->setShortcut(QKeySequence::MoveToNextPage);
+	connect(nextImageAction, SIGNAL(triggered()), this, SLOT(loadNextImage()));
+	
+	prevImageAction = new QAction(tr("&Previous"), this);
+	prevImageAction->setShortcut(QKeySequence::MoveToPreviousPage);
+	connect(prevImageAction, SIGNAL(triggered()), this, SLOT(loadPrevImage()));
 }
 
 void MainWindow::createMenus()
@@ -793,11 +799,6 @@ void MainWindow::goHome()
 	goTo(QDir::homePath());
 }
 
-void MainWindow::nextImage()
-{
-
-}
-
 void MainWindow::setCopyCutActions(bool setEnabled)
 {
 	cutAction->setEnabled(setEnabled);
@@ -895,25 +896,43 @@ void MainWindow::setThumbViewWidgetsVisible(bool visible)
 	statusBar()->setVisible(visible);
 }
 
+void MainWindow::loadImageFile(QString imageFileName)
+{
+	imageView->loadImage(thumbView->currentViewDir, imageFileName);
+
+	if (stackedWidget->currentIndex() != imageViewIdx)
+	{
+		setThumbViewWidgetsVisible(false);
+		if (GData::isFullScreen == true)
+			showFullScreen();
+		stackedWidget->setCurrentIndex(imageViewIdx);
+	}
+	setWindowTitle(imageFileName + " - Phototonic");
+}
+
 void MainWindow::loadImagefromThumb(const QModelIndex &idx)
 {
-	imageView->loadImage(thumbView->currentViewDir,
-							thumbView->thumbViewModel->item(idx.row())->data(thumbView->FileNameRole).toString());
-	setThumbViewWidgetsVisible(false);
-	if (GData::isFullScreen == true)
-		showFullScreen();
-	stackedWidget->setCurrentIndex(imageViewIdx);
-	setWindowTitle(thumbView->thumbViewModel->item(idx.row())->data(thumbView->FileNameRole).toString() + " - Phototonic");
+	thumbView->setCurrentRow(idx.row());
+	loadImageFile(thumbView->thumbViewModel->item(idx.row())->data(thumbView->FileNameRole).toString());
 }
 
 void MainWindow::loadImagefromCli()
 {
-	imageView->loadImage(thumbView->currentViewDir, cliFileName);
-	setThumbViewWidgetsVisible(false);
-	if (GData::isFullScreen == true)
-		showFullScreen();
-	stackedWidget->setCurrentIndex(imageViewIdx);
-	setWindowTitle(cliFileName + " - Phototonic");
+	loadImageFile(cliFileName);
+}
+
+void MainWindow::loadNextImage()
+{
+	int nextRow = thumbView->getNextRow();
+	loadImageFile(thumbView->thumbViewModel->item(nextRow)->data(thumbView->FileNameRole).toString());
+	thumbView->setCurrentRow(nextRow);
+}
+
+void MainWindow::loadPrevImage()
+{
+	int prevRow = thumbView->getPrevRow();
+	loadImageFile(thumbView->thumbViewModel->item(prevRow)->data(thumbView->FileNameRole).toString());
+	thumbView->setCurrentRow(prevRow);
 }
 
 void MainWindow::closeImage()
@@ -1077,7 +1096,7 @@ void MainWindow::reloadThumbsSlot()
 		setWindowTitle(thumbView->currentViewDir + " - Phototonic");
 
 	thumbViewBusy = true;
-	thumbView->load();
+	thumbView->load(cliFileName);
 }
 
 void MainWindow::renameDir()

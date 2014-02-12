@@ -16,8 +16,6 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QImageReader>
-#include <QScrollBar>
 #include "imageview.h"
 #include "thumbview.h"
 #include "global.h"
@@ -45,11 +43,6 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	scrlArea->setWidgetResizable(true);
 	
 	grid->addWidget(scrlArea, 0, 0, 0, 0);
-}
-
-ImageView::~ImageView()
-{
-
 }
 
 void ImageView::resizeEvent(QResizeEvent *event)
@@ -159,20 +152,19 @@ void ImageView::resizeImage()
 
 void ImageView::loadImage(QString &imagePath, QString imageFileName)
 {
-	QImageReader thumbReader;
-	QPixmap pixmap1;
-    QString imageFullPath = imagePath + QDir::separator() + imageFileName;
    	currentImage = imageFileName;
+    QString imageFullPath = imagePath + QDir::separator() + currentImage;
 
-   	thumbReader.setFileName(imageFullPath);
-	if (!thumbReader.size().isValid())
+   	imageReader.setFileName(imageFullPath);
+	if (!imageReader.size().isValid())
 	{
-		pixmap1.load(":/images/error_image.png");
+		pixmap0_0.load(":/images/error_image.png");
 	}
 	else
 	{
-		pixmap1.load(imageFullPath);
+		pixmap0_0.load(imageFullPath);
 	}
-	imgLabel1->setPixmap(pixmap1);
+	imgLabel1->setPixmap(pixmap0_0);
+	resizeImage();
 }
 

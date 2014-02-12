@@ -82,6 +82,27 @@ void ThumbView::selectCurrentIndex()
 	setCurrentIndex(currentIndex);
 }
 
+int ThumbView::getNextRow()
+{
+	if (currentRow ==  thumbFileInfoList.size() - 1)
+		return currentRow;
+
+	return currentRow + 1;
+}
+
+int ThumbView::getPrevRow()
+{
+	if (!currentRow)
+		return 0;
+
+	return currentRow - 1;
+}
+
+void ThumbView::setCurrentRow(int row)
+{
+	currentRow = row;
+}
+
 void ThumbView::setCurrentIndexByName(QString &FileName)
 {
 	QModelIndexList indexList = thumbViewModel->match(thumbViewModel->index(0, 0), FileNameRole, FileName);
@@ -153,7 +174,7 @@ bool ThumbView::isItemVisible(QModelIndex idx)
 	return false;
 }
 
-void ThumbView::load()
+void ThumbView::load(QString &cliImageName)
 {
 	thumbHeight = (GData::thumbsLayout == Squares)? thumbSize * 2 : thumbSize;
 	thumbWidth = GData::thumbsLayout != Classic? thumbHeight * GData::thumbAspect : thumbHeight;
@@ -166,6 +187,8 @@ void ThumbView::load()
 	newIndex = 0;
 
 	initThumbs();
+	if (!cliImageName.isNull())
+		setCurrentIndexByName(cliImageName);
 	loadThumbs();
 
 	if ((thumbViewModel->rowCount() - 1) == 0)

@@ -23,6 +23,9 @@
 #include <QGridLayout>
 #include <QDebug>
 #include <QScrollArea>
+#include <QImageReader>
+#include <QScrollBar>
+
 
 class ImageView : public QWidget
 {
@@ -30,7 +33,6 @@ class ImageView : public QWidget
 
 public:
     ImageView(QWidget *parent = 0);
-    ~ImageView();
 	void loadImage(QString &imagePath, QString imageFileName);
 	void resizeImage();
 	QString currentImage;
@@ -53,6 +55,8 @@ private:
 	QLabel *imgLabel1;
 	QLabel *imgLabel2;
 	QScrollArea *scrlArea;
+	QImageReader imageReader;
+	QPixmap pixmap0_0;
 };
 
 #endif // IMAGEVIEW_H

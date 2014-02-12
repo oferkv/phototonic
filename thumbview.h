@@ -46,7 +46,7 @@ public slots:
 public:
 	ThumbView(QWidget *parent);
 	~ThumbView();
-	void load();
+	void load(QString &cliImageName);
 	void setNeedScroll(bool needScroll)
 	{
 		m_needScroll = needScroll;
@@ -56,6 +56,9 @@ public:
 	void setThumbColors();
 	void setCurrentIndexByName(QString &FileName);
 	void selectCurrentIndex();
+	int getNextRow();
+	int getPrevRow();
+	void setCurrentRow(int row);
 
 	QDir *thumbsDir;
 	QList<QStandardItem*> *thumbList;
@@ -97,6 +100,7 @@ private:
 	int getFirstVisibleItem();
 	bool isItemVisible(QModelIndex idx);
 	QModelIndex currentIndex;
+	int currentRow;
 };
 
 class FSTree : public QTreeView
