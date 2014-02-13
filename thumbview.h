@@ -45,7 +45,6 @@ public slots:
 
 public:
 	ThumbView(QWidget *parent);
-	~ThumbView();
 	void load(QString &cliImageName);
 	void setNeedScroll(bool needScroll)
 	{

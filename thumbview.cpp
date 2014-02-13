@@ -31,6 +31,7 @@ ThumbView::ThumbView(QWidget *parent) : QListView(parent)
 	GData::thumbSpacing = GData::appSettings->value("thumbSpacing").toInt();
 	GData::thumbsLayout = GData::appSettings->value("thumbLayout").toInt();
 	thumbSize = GData::appSettings->value("thumbsZoomVal").toInt();
+	currentRow = 0;
 
 	setViewMode(QListView::IconMode);
 	setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -60,11 +61,6 @@ ThumbView::ThumbView(QWidget *parent) : QListView(parent)
 	thumbsDir->setNameFilters(*fileFilters);
 
 	emptyImg.load(":/images/no_image.png");
-}
-
-ThumbView::~ThumbView()
-{
-
 }
 
 void ThumbView::setThumbColors()
@@ -108,6 +104,7 @@ void ThumbView::setCurrentIndexByName(QString &FileName)
 	QModelIndexList indexList = thumbViewModel->match(thumbViewModel->index(0, 0), FileNameRole, FileName);
 	if (indexList.size())
 	 	currentIndex = indexList[0];
+ 	setCurrentRow(currentIndex.row());
 }
 
 void ThumbView::handleSelectionChanged(const QItemSelection&)
@@ -125,11 +122,11 @@ void ThumbView::handleSelectionChanged(const QItemSelection&)
 
 void ThumbView::startDrag(Qt::DropActions)
 {
-    QModelIndexList indexesList = selectionModel()->selectedIndexes();
-    if (indexesList.isEmpty())
+	QModelIndexList indexesList = selectionModel()->selectedIndexes();
+	if (indexesList.isEmpty())
 	{
-        return;
-    }
+		return;
+	}
 
 	QDrag *drag = new QDrag(this);
 	QMimeData *mimeData = new QMimeData;

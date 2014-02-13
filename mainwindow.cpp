@@ -22,7 +22,7 @@
 #include "dialogs.h"
 #include "global.h"
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
+Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 {
 	GData::appSettings = new QSettings("Phototonic", "Phototonic");
 	initComplete = false;
@@ -35,40 +35,36 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 	createFSTree();
 	createImageView();
 
-    restoreGeometry(GData::appSettings->value("geometry").toByteArray());
-    restoreState(GData::appSettings->value("MainWindowState").toByteArray());
-   	connect(qApp, SIGNAL(focusChanged(QWidget* , QWidget*)), this, SLOT(updateActions(QWidget*, QWidget*)));
+	restoreGeometry(GData::appSettings->value("geometry").toByteArray());
+	restoreState(GData::appSettings->value("MainWindowState").toByteArray());
+	connect(qApp, SIGNAL(focusChanged(QWidget* , QWidget*)), 
+				this, SLOT(updateActions(QWidget*, QWidget*)));
 	setWindowTitle("Phototonic");
 	setWindowIcon(QIcon(":/images/phototonic.png"));
 
 	splitter = new QSplitter(Qt::Horizontal);
 	splitter->addWidget(fsTree);
 	splitter->addWidget(thumbView);
-    splitter->restoreState(GData::appSettings->value("splitterSizes").toByteArray());
+	splitter->restoreState(GData::appSettings->value("splitterSizes").toByteArray());
 
-    stackedWidget = new QStackedWidget;
+	stackedWidget = new QStackedWidget;
 	stackedWidget->addWidget(splitter);
 	stackedWidget->addWidget(imageView);
-    setCentralWidget(stackedWidget);
+	setCentralWidget(stackedWidget);
 
 	cliImageLoaded = handleArgs();
 	if (cliImageLoaded)
 		loadImagefromCli();
 
-    // Load current folder
-   	initComplete = true;
-    thumbViewBusy = false;
+	// Load current folder
+	initComplete = true;
+	thumbViewBusy = false;
 	currentHistoryIdx = -1;
 	needHistoryRecord = true;
 	refreshThumbs(true);
 }
 
-MainWindow::~MainWindow()
-{
-
-}
-
-bool MainWindow::handleArgs()
+bool Phototonic::handleArgs()
 {
 	if (QCoreApplication::arguments().size() == 2)
 	{
@@ -94,8 +90,9 @@ static bool removeDirOp(QString dirToDelete)
 {
 	bool ok = true;
 	QDir dir(dirToDelete);
- 
-	Q_FOREACH(QFileInfo info, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files, QDir::DirsFirst))
+
+	Q_FOREACH(QFileInfo info, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden |
+					QDir::AllDirs | QDir::Files, QDir::DirsFirst))
 	{
 		if (info.isDir())
 			ok = removeDirOp(info.absoluteFilePath());
@@ -110,12 +107,12 @@ static bool removeDirOp(QString dirToDelete)
 	return ok;
 }
 
-void MainWindow::unsetBusy()
+void Phototonic::unsetBusy()
 {	
 	thumbViewBusy = false;
 }
 
-void MainWindow::createThumbView()
+void Phototonic::createThumbView()
 {
 	thumbView = new ThumbView(this);
 	thumbView->thumbsSortFlags = (QDir::SortFlags)GData::appSettings->value("thumbsSortFlags").toInt();
@@ -127,11 +124,10 @@ void MainWindow::createThumbView()
 				this, SLOT(changeActionsBySelection(QItemSelection, QItemSelection)));
 }
 
-void MainWindow::createImageView()
+void Phototonic::createImageView()
 {
 	GData::backgroundColor = GData::appSettings->value("backgroundColor").value<QColor>();
-   	imageView = new ImageView(this);
-   	imageView->setVisible(false);
+	imageView = new ImageView(this);
 
 	GData::zoomOutFlags = GData::appSettings->value("zoomOutFlags").toInt();
 	if (!GData::zoomOutFlags)
@@ -140,17 +136,17 @@ void MainWindow::createImageView()
 	if (!GData::zoomInFlags)
 		GData::zoomInFlags = ImageView::Disable;
 
-  	imageView->addAction(nextImageAction);
-  	imageView->addAction(prevImageAction);
+	imageView->addAction(nextImageAction);
+	imageView->addAction(prevImageAction);
 	QAction *sep = new QAction(this);
 	sep->setSeparator(true);
 	imageView->addAction(sep);
-  	imageView->addAction(closeImageAct);
-  	imageView->addAction(fullScreenAct);
+	imageView->addAction(closeImageAct);
+	imageView->addAction(fullScreenAct);
 	sep = new QAction(this);
 	sep->setSeparator(true);
 	imageView->addAction(sep);
-   	imageView->addAction(settingsAction);
+	imageView->addAction(settingsAction);
 	sep = new QAction(this);
 	sep->setSeparator(true);
 	imageView->addAction(sep);
@@ -161,207 +157,208 @@ void MainWindow::createImageView()
 	fullScreenAct->setChecked(GData::isFullScreen); 
 }
 
-void MainWindow::createActions()
+void Phototonic::createActions()
 {
-	thumbsGoTopAct = new QAction(tr("Top"), this);
+	thumbsGoTopAct = new QAction("Top", this);
 	connect(thumbsGoTopAct, SIGNAL(triggered()), this, SLOT(goTop()));
 	thumbsGoTopAct->setShortcut(QKeySequence::MoveToStartOfDocument);
 
-	thumbsGoBottomAct = new QAction(tr("Bottom"), this);
+	thumbsGoBottomAct = new QAction("Bottom", this);
 	connect(thumbsGoBottomAct, SIGNAL(triggered()), this, SLOT(goBottom()));
 	thumbsGoBottomAct->setShortcut(QKeySequence::MoveToEndOfDocument);
 
-	closeImageAct = new QAction(tr("Close Image"), this);
+	closeImageAct = new QAction("Close Image", this);
 	connect(closeImageAct, SIGNAL(triggered()), this, SLOT(closeImage()));
 	closeImageAct->setShortcut(Qt::Key_Escape);
 
-	fullScreenAct = new QAction(tr("Full Screen"), this);
-    fullScreenAct->setCheckable(true);
+	fullScreenAct = new QAction("Full Screen", this);
+	fullScreenAct->setCheckable(true);
 	connect(fullScreenAct, SIGNAL(triggered()), this, SLOT(toggleFullScreen()));
-	fullScreenAct->setShortcut(tr("f"));
+	fullScreenAct->setShortcut(QKeySequence("f"));
 	
-	settingsAction = new QAction(tr("Preferences"), this);
+	settingsAction = new QAction("Preferences", this);
 	settingsAction->setIcon(QIcon(":/images/settings.png"));
-	settingsAction->setShortcut(QKeySequence(tr("F10")));
+	settingsAction->setShortcut(QKeySequence("F10"));
 	connect(settingsAction, SIGNAL(triggered()), this, SLOT(showSettings()));
 
-	exitAction = new QAction(tr("E&xit"), this);
-	exitAction->setShortcut(tr("Ctrl+Q"));
+	exitAction = new QAction("E&xit", this);
+	exitAction->setShortcut(QKeySequence("Ctrl+Q"));
 	connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
 
-	thumbsZoomInAct = new QAction(tr("Zoom In"), this);
+	thumbsZoomInAct = new QAction("Zoom In", this);
 	thumbsZoomInAct->setShortcut(QKeySequence::ZoomIn);
 	connect(thumbsZoomInAct, SIGNAL(triggered()), this, SLOT(thumbsZoomIn()));
 	thumbsZoomInAct->setIcon(QIcon(":/images/zoom_in.png"));
 	if (thumbView->thumbHeight == 400)
 		thumbsZoomInAct->setEnabled(false);
 
-	thumbsZoomOutAct = new QAction(tr("Zoom Out"), this);
+	thumbsZoomOutAct = new QAction("Zoom Out", this);
 	thumbsZoomOutAct->setShortcut(QKeySequence::ZoomOut);
 	connect(thumbsZoomOutAct, SIGNAL(triggered()), this, SLOT(thumbsZoomOut()));
 	thumbsZoomOutAct->setIcon(QIcon(":/images/zoom_out.png"));
 	if (thumbView->thumbHeight == 100)
 		thumbsZoomOutAct->setEnabled(false);
 
-	cutAction = new QAction(tr("Cut"), this);
+	cutAction = new QAction("Cut", this);
 	cutAction->setShortcut(QKeySequence::Cut);
-   	cutAction->setIcon(QIcon(":/images/cut.png"));
+	cutAction->setIcon(QIcon(":/images/cut.png"));
 	connect(cutAction, SIGNAL(triggered()), this, SLOT(cutImages()));
 	cutAction->setEnabled(false);
 
-	copyAction = new QAction(tr("Copy"), this);
+	copyAction = new QAction("Copy", this);
 	copyAction->setShortcut(QKeySequence::Copy);
 	copyAction->setIcon(QIcon(":/images/copy.png"));
-   	connect(copyAction, SIGNAL(triggered()), this, SLOT(copyImages()));
+	connect(copyAction, SIGNAL(triggered()), this, SLOT(copyImages()));
 	copyAction->setEnabled(false);
 	
-	deleteAction = new QAction(tr("Delete"), this);
+	deleteAction = new QAction("Delete", this);
 	deleteAction->setShortcut(QKeySequence::Delete);
 	deleteAction->setIcon(QIcon(":/images/delete.png"));
 	connect(deleteAction, SIGNAL(triggered()), this, SLOT(deleteOp()));
 
-	copyToAction = new QAction(tr("Copy to"), this);
-	moveToAction = new QAction(tr("Move to"), this);
+	copyToAction = new QAction("Copy to", this);
+	moveToAction = new QAction("Move to", this);
 
-	renameAction = new QAction(tr("Rename"), this);
-	renameAction->setShortcut(QKeySequence(tr("F2")));
+	renameAction = new QAction("Rename", this);
+	renameAction->setShortcut(QKeySequence("F2"));
 	connect(renameAction, SIGNAL(triggered()), this, SLOT(rename()));
 
-	selectAllAction = new QAction(tr("Select All"), this);
+	selectAllAction = new QAction("Select All", this);
 	connect(selectAllAction, SIGNAL(triggered()), this, SLOT(selectAllThumbs()));
 
-	aboutAction = new QAction(tr("&About"), this);
+	aboutAction = new QAction("&About", this);
 	aboutAction->setIcon(QIcon(":/images/about.png"));
 	connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
 
-	aboutQtAction = new QAction(tr("About &Qt"), this);
+	aboutQtAction = new QAction("About &Qt", this);
 	connect(aboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
 	// Sort actions
-	actName = new QAction(tr("Name"), this);
-   	actTime = new QAction(tr("Time"), this);
-   	actSize = new QAction(tr("Size"), this);
-	actType = new QAction(tr("Type"), this);
-	actReverse = new QAction(tr("Reverse"), this);
-    actName->setCheckable(true);
-    actTime->setCheckable(true);
+	actName = new QAction("Name", this);
+	actTime = new QAction("Time", this);
+	actSize = new QAction("Size", this);
+	actType = new QAction("Type", this);
+	actReverse = new QAction("Reverse", this);
+	actName->setCheckable(true);
+	actTime->setCheckable(true);
 	actSize->setCheckable(true);
-    actType->setCheckable(true);
-    actReverse->setCheckable(true);
+	actType->setCheckable(true);
+	actReverse->setCheckable(true);
 	connect(actName, SIGNAL(triggered()), this, SLOT(setSortFlags()));
 	connect(actTime, SIGNAL(triggered()), this, SLOT(setSortFlags()));
 	connect(actSize, SIGNAL(triggered()), this, SLOT(setSortFlags()));
 	connect(actType, SIGNAL(triggered()), this, SLOT(setSortFlags()));
 	connect(actReverse, SIGNAL(triggered()), this, SLOT(setSortFlags()));
 
-	actName->setChecked(thumbView->thumbsSortFlags == QDir::Name || thumbView->thumbsSortFlags == QDir::Reversed); 
+	actName->setChecked(thumbView->thumbsSortFlags == QDir::Name || 
+						thumbView->thumbsSortFlags == QDir::Reversed); 
 	actTime->setChecked(thumbView->thumbsSortFlags & QDir::Time); 
 	actSize->setChecked(thumbView->thumbsSortFlags & QDir::Size); 
 	actType->setChecked(thumbView->thumbsSortFlags & QDir::Type); 
 	actReverse->setChecked(thumbView->thumbsSortFlags & QDir::Reversed); 
 
-	actClassic = new QAction(tr("Classic view"), this);
-	actCompact = new QAction(tr("Compact"), this);
-	actSquarish = new QAction(tr("Squarish"), this);
+	actClassic = new QAction("Classic view", this);
+	actCompact = new QAction("Compact", this);
+	actSquarish = new QAction("Squarish", this);
 	connect(actClassic, SIGNAL(triggered()), this, SLOT(setClassicThumbs()));
 	connect(actCompact, SIGNAL(triggered()), this, SLOT(setCompactThumbs()));
 	connect(actSquarish, SIGNAL(triggered()), this, SLOT(setSquarishThumbs()));
-    actClassic->setCheckable(true);
-    actCompact->setCheckable(true);
+	actClassic->setCheckable(true);
+	actCompact->setCheckable(true);
 	actSquarish->setCheckable(true);
 	actClassic->setChecked(GData::thumbsLayout == ThumbView::Classic); 
 	actCompact->setChecked(GData::thumbsLayout == ThumbView::Compact); 
 	actSquarish->setChecked(GData::thumbsLayout == ThumbView::Squares); 
 
-	refreshAction = new QAction(tr("Refresh"), this);
-	refreshAction->setShortcut(QKeySequence(tr("F5")));
+	refreshAction = new QAction("Refresh", this);
+	refreshAction->setShortcut(QKeySequence("F5"));
 	refreshAction->setIcon(QIcon(":/images/refresh.png"));
 	connect(refreshAction, SIGNAL(triggered()), this, SLOT(refreshThumbs()));
 
-	pasteAction = new QAction(tr("&Paste Here"), this);
+	pasteAction = new QAction("&Paste Here", this);
 	pasteAction->setShortcut(QKeySequence::Paste);
-   	pasteAction->setIcon(QIcon(":/images/paste.png"));    
-   	connect(pasteAction, SIGNAL(triggered()), this, SLOT(pasteImages()));
+	pasteAction->setIcon(QIcon(":/images/paste.png"));    
+	connect(pasteAction, SIGNAL(triggered()), this, SLOT(pasteImages()));
 	pasteAction->setEnabled(false);
 	
-	createDirAction = new QAction(tr("&New Folder"), this);
+	createDirAction = new QAction("&New Folder", this);
 	connect(createDirAction, SIGNAL(triggered()), this, SLOT(createSubDirectory()));
 	createDirAction->setIcon(QIcon(":/images/new_folder.png"));
 	
-	manageDirAction = new QAction(tr("&Manage"), this);
+	manageDirAction = new QAction("&Manage", this);
 	connect(manageDirAction, SIGNAL(triggered()), this, SLOT(manageDir()));
 
-	goBackAction = new QAction(tr("&Back"), this);
+	goBackAction = new QAction("&Back", this);
 	goBackAction->setIcon(QIcon(":/images/back.png"));
 	connect(goBackAction, SIGNAL(triggered()), this, SLOT(goBack()));
 	goBackAction->setEnabled(false);
 	goBackAction->setShortcut(QKeySequence::Back);
 	// goBackAction->setToolTip("Back");
 
-	goFrwdAction = new QAction(tr("&Forward"), this);
+	goFrwdAction = new QAction("&Forward", this);
 	goFrwdAction->setIcon(QIcon(":/images/next.png"));
 	connect(goFrwdAction, SIGNAL(triggered()), this, SLOT(goForward()));
 	goFrwdAction->setEnabled(false);
 	goFrwdAction->setShortcut(QKeySequence::Forward);
 
-	goUpAction = new QAction(tr("&Up"), this);
+	goUpAction = new QAction("&Up", this);
 	goUpAction->setIcon(QIcon(":/images/up.png"));
 	connect(goUpAction, SIGNAL(triggered()), this, SLOT(goUp()));
 
-	goHomeAction = new QAction(tr("&Home"), this);
+	goHomeAction = new QAction("&Home", this);
 	connect(goHomeAction, SIGNAL(triggered()), this, SLOT(goHome()));	
 	goHomeAction->setIcon(QIcon(":/images/home.png"));
 
-	nextImageAction = new QAction(tr("&Next"), this);
+	nextImageAction = new QAction("&Next", this);
 	nextImageAction->setShortcut(QKeySequence::MoveToNextPage);
 	connect(nextImageAction, SIGNAL(triggered()), this, SLOT(loadNextImage()));
 	
-	prevImageAction = new QAction(tr("&Previous"), this);
+	prevImageAction = new QAction("&Previous", this);
 	prevImageAction->setShortcut(QKeySequence::MoveToPreviousPage);
 	connect(prevImageAction, SIGNAL(triggered()), this, SLOT(loadPrevImage()));
 }
 
-void MainWindow::createMenus()
+void Phototonic::createMenus()
 {
-    fileMenu = menuBar()->addMenu(tr("&File"));
+	fileMenu = menuBar()->addMenu("&File");
 	fileMenu->addAction(createDirAction);
 	fileMenu->addSeparator();
 	fileMenu->addAction(exitAction);
 
-	editMenu = menuBar()->addMenu(tr("&Edit"));
+	editMenu = menuBar()->addMenu("&Edit");
 	editMenu->addAction(cutAction);
 	editMenu->addAction(copyAction);
 	editMenu->addAction(renameAction);
 	editMenu->addAction(deleteAction);
-    editMenu->addSeparator();
-	editMenu->addAction(pasteAction);
-    editMenu->addSeparator();
-   	editMenu->addAction(selectAllAction);
 	editMenu->addSeparator();
-   	editMenu->addAction(settingsAction);
+	editMenu->addAction(pasteAction);
+	editMenu->addSeparator();
+	editMenu->addAction(selectAllAction);
+	editMenu->addSeparator();
+	editMenu->addAction(settingsAction);
 
-    goMenu = menuBar()->addMenu(tr("&Go"));
+	goMenu = menuBar()->addMenu("&Go");
 	goMenu->addAction(goBackAction);
 	goMenu->addAction(goFrwdAction);
 	goMenu->addAction(goUpAction);
 	goMenu->addAction(goHomeAction);
-    goMenu->addSeparator();
+	goMenu->addSeparator();
 	goMenu->addAction(thumbsGoBottomAct);
 	goMenu->addAction(thumbsGoTopAct);
 
-	viewMenu = menuBar()->addMenu(tr("&View"));
-   	viewMenu->addAction(thumbsZoomInAct);
-   	viewMenu->addAction(thumbsZoomOutAct);
-    sortMenu = viewMenu->addMenu(tr("&Sort By"));
+	viewMenu = menuBar()->addMenu("&View");
+	viewMenu->addAction(thumbsZoomInAct);
+	viewMenu->addAction(thumbsZoomOutAct);
+	sortMenu = viewMenu->addMenu("&Sort By");
 	sortTypesGroup = new QActionGroup(this);
 	sortTypesGroup->addAction(actName);
 	sortTypesGroup->addAction(actTime);
 	sortTypesGroup->addAction(actSize);
 	sortTypesGroup->addAction(actType);
 	sortMenu->addActions(sortTypesGroup->actions());
-    sortMenu->addSeparator();
+	sortMenu->addSeparator();
 	sortMenu->addAction(actReverse);
-    viewMenu->addSeparator();
+	viewMenu->addSeparator();
 
 	thumbLayoutsGroup = new QActionGroup(this);
 	thumbLayoutsGroup->addAction(actClassic);
@@ -369,15 +366,15 @@ void MainWindow::createMenus()
 	thumbLayoutsGroup->addAction(actSquarish);
 	viewMenu->addActions(thumbLayoutsGroup->actions());
 
-    viewMenu->addSeparator();
-   	viewMenu->addAction(refreshAction);
+	viewMenu->addSeparator();
+	viewMenu->addAction(refreshAction);
 
 	menuBar()->addSeparator();
-    helpMenu = menuBar()->addMenu(tr("&Help"));
-    helpMenu->addAction(aboutAction);
-    helpMenu->addAction(aboutQtAction);
+	helpMenu = menuBar()->addMenu("&Help");
+	helpMenu->addAction(aboutAction);
+	helpMenu->addAction(aboutQtAction);
 
-    // thumbview context menu
+	// thumbview context menu
 	thumbView->addAction(cutAction);
 	thumbView->addAction(copyAction);
 	thumbView->addAction(renameAction);
@@ -389,20 +386,20 @@ void MainWindow::createMenus()
 	sep = new QAction(this);
 	sep->setSeparator(true);
 	thumbView->addAction(sep);
-   	thumbView->addAction(selectAllAction);
+	thumbView->addAction(selectAllAction);
 	thumbView->setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
-void MainWindow::createToolBars()
+void Phototonic::createToolBars()
 {
-	editToolBar = addToolBar(tr("Edit"));
+	editToolBar = addToolBar("Edit");
 	editToolBar->addAction(cutAction);
 	editToolBar->addAction(copyAction);
 	editToolBar->addAction(pasteAction);
 	editToolBar->addAction(deleteAction);
 	editToolBar->setObjectName("Edit");
 
-	goToolBar = addToolBar(tr("Navigation"));
+	goToolBar = addToolBar("Navigation");
 	goToolBar->addAction(goBackAction);
 	goToolBar->addAction(goFrwdAction);
 	goToolBar->addAction(goUpAction);
@@ -421,7 +418,7 @@ void MainWindow::createToolBars()
 	connect(pathBar, SIGNAL(returnPressed()), this, SLOT(goPathBarDir()));
 	goToolBar->addWidget(pathBar);
 
-	viewToolBar = addToolBar(tr("View"));
+	viewToolBar = addToolBar("View");
 	viewToolBar->addAction(thumbsZoomInAct);
 	viewToolBar->addAction(thumbsZoomOutAct);
 	viewToolBar->setObjectName("View");
@@ -431,13 +428,13 @@ void MainWindow::createToolBars()
 	goToolBarWasVisible = GData::appSettings->value("goToolBarWasVisible").toBool();
 }
 
-void MainWindow::createStatusBar()
+void Phototonic::createStatusBar()
 {
     stateLabel = new QLabel("Initializing...");
 	statusBar()->addWidget(stateLabel);
 }
 
-void MainWindow::createFSTree()
+void Phototonic::createFSTree()
 {
 	fsModel = new QFileSystemModel;
 	fsModel->setRootPath("");
@@ -469,11 +466,11 @@ void MainWindow::createFSTree()
 	for (int i = 1; i <= 3; i++)
 		fsTree->hideColumn(i);
 	fsTree->setHeaderHidden(true);
-    connect(fsTree, SIGNAL(clicked(const QModelIndex&)),
-    			this, SLOT(goSelectedDir(const QModelIndex &)));
+	connect(fsTree, SIGNAL(clicked(const QModelIndex&)),
+				this, SLOT(goSelectedDir(const QModelIndex &)));
 
 	connect(fsModel, SIGNAL(rowsRemoved(const QModelIndex &, int, int)),
-    			this, SLOT(checkDirState(const QModelIndex &, int, int)));
+				this, SLOT(checkDirState(const QModelIndex &, int, int)));
 
 	connect(fsTree, SIGNAL(dropOp(Qt::KeyboardModifiers, bool, QString)),
 				this, SLOT(dropOp(Qt::KeyboardModifiers, bool, QString)));
@@ -481,13 +478,13 @@ void MainWindow::createFSTree()
 	fsTree->setCurrentIndex(idx);
 }
 
-void MainWindow::setFlagsByQAction(QAction *act, QDir::SortFlags SortFlag)
+void Phototonic::setFlagsByQAction(QAction *act, QDir::SortFlags SortFlag)
 {
 	if (act->isChecked())
 		thumbView->thumbsSortFlags |= SortFlag;
 }
 
-void MainWindow::setSortFlags()
+void Phototonic::setSortFlags()
 {
 	thumbView->thumbsSortFlags = 0;
 	setFlagsByQAction(actName, QDir::Name);
@@ -498,12 +495,12 @@ void MainWindow::setSortFlags()
 	refreshThumbs(false);
 }
 
-void MainWindow::refreshThumbs()
+void Phototonic::refreshThumbs()
 {
 	refreshThumbs(false);
 }
 
-void MainWindow::refreshThumbs(bool scrollToTop)
+void Phototonic::refreshThumbs(bool scrollToTop)
 {
 	if (scrollToTop)
 	{
@@ -518,31 +515,31 @@ void MainWindow::refreshThumbs(bool scrollToTop)
 	}
 }
 
-void MainWindow::setClassicThumbs()
+void Phototonic::setClassicThumbs()
 {
 	GData::thumbsLayout = ThumbView::Classic;
 	refreshThumbs(true);
 }
 
-void MainWindow::setCompactThumbs()
+void Phototonic::setCompactThumbs()
 {
 	GData::thumbsLayout = ThumbView::Compact;
 	refreshThumbs(true);
 }
 
-void MainWindow::setSquarishThumbs()
+void Phototonic::setSquarishThumbs()
 {
 	GData::thumbsLayout = ThumbView::Squares;
 	refreshThumbs(true);
 }
 
-void MainWindow::about()
+void Phototonic::about()
 {
-	QMessageBox::about(this, tr("About Phototonic"), tr("<h2>Phototonic v0.1</h2>"
-											"<p>Copyright &copy; 2013 Ofer Kashayov"));
+	QMessageBox::about(this, "About Phototonic", "<h2>Phototonic v0.1</h2>"
+											"<p>Copyright &copy; 2013 Ofer Kashayov");
 }
 
-void MainWindow::showSettings()
+void Phototonic::showSettings()
 {
 	SettingsDialog *dialog = new SettingsDialog(this);
 
@@ -560,7 +557,7 @@ void MainWindow::showSettings()
 	delete dialog;
 }
 
-void MainWindow::toggleFullScreen()
+void Phototonic::toggleFullScreen()
 {
 	if (fullScreenAct->isChecked())
 	{
@@ -574,12 +571,12 @@ void MainWindow::toggleFullScreen()
 	}
 }
 
-void MainWindow::selectAllThumbs()
+void Phototonic::selectAllThumbs()
 {
 	thumbView->selectAll();
 }
 
-void MainWindow::createCopyCutFileList()
+void Phototonic::createCopyCutFileList()
 {
 	GData::copyCutFileList.clear();
 	for (int tn = 0; tn < copyCutCount; tn++)
@@ -590,7 +587,7 @@ void MainWindow::createCopyCutFileList()
 	}
 }
 
-void MainWindow::cutImages()
+void Phototonic::cutImages()
 {
 	GData::copyCutIdxList = thumbView->selectionModel()->selectedIndexes();
 	copyCutCount = GData::copyCutIdxList.size();
@@ -599,7 +596,7 @@ void MainWindow::cutImages()
 	pasteAction->setEnabled(true);
 }
 
-void MainWindow::copyImages()
+void Phototonic::copyImages()
 {
 	GData::copyCutIdxList = thumbView->selectionModel()->selectedIndexes();
 	copyCutCount = GData::copyCutIdxList.size();
@@ -608,7 +605,7 @@ void MainWindow::copyImages()
 	pasteAction->setEnabled(true);
 }
 
-void MainWindow::thumbsZoomIn()
+void Phototonic::thumbsZoomIn()
 {
 	if (thumbView->thumbSize < 400)
 	{
@@ -620,7 +617,7 @@ void MainWindow::thumbsZoomIn()
 	}
 }
 
-void MainWindow::thumbsZoomOut()
+void Phototonic::thumbsZoomOut()
 {
 	if (thumbView->thumbSize > 100)
 	{
@@ -632,7 +629,7 @@ void MainWindow::thumbsZoomOut()
 	}
 }
 
-bool MainWindow::isValidPath(QString &path)
+bool Phototonic::isValidPath(QString &path)
 {
 	QDir checkPath(path);
 	if (!checkPath.exists() || !checkPath.isReadable())
@@ -642,7 +639,7 @@ bool MainWindow::isValidPath(QString &path)
 	return true;
 }
 
-void MainWindow::pasteImages()
+void Phototonic::pasteImages()
 {
 	if (!copyCutCount)
 		return;
@@ -665,7 +662,8 @@ void MainWindow::pasteImages()
 	bool pasteInCurrDir = (thumbView->currentViewDir == destDir);
 		
 	dialog->exec(thumbView, destDir, pasteInCurrDir, thumbViewBusy);
-	QString state = QString((GData::copyOp? "Copied " : "Moved ") + QString::number(dialog->nfiles) + " images");
+	QString state = QString((GData::copyOp? "Copied " : "Moved ") + 
+								QString::number(dialog->nfiles) + " images");
 	updateState(state);
 
 	delete(dialog);
@@ -681,7 +679,7 @@ void MainWindow::pasteImages()
 		refreshThumbs(false);
 }
 
-void MainWindow::deleteOp()
+void Phototonic::deleteOp()
 {
 	if (QApplication::focusWidget() == fsTree)
 	{
@@ -689,7 +687,7 @@ void MainWindow::deleteOp()
 		return;
 	}
 
-	int ret = QMessageBox::warning(this, tr("Delete images"), "Permanently delete selected images?",
+	int ret = QMessageBox::warning(this, "Delete images", "Permanently delete selected images?",
 										QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
 
 	if (ret == QMessageBox::Yes)
@@ -727,7 +725,7 @@ void MainWindow::deleteOp()
 	}
 }
 
-void MainWindow::goTo(QString path)
+void Phototonic::goTo(QString path)
 {
 	thumbView->setNeedScroll(true);
 	fsTree->setCurrentIndex(fsModel->index(path));
@@ -735,14 +733,14 @@ void MainWindow::goTo(QString path)
 	refreshThumbs(false);
 }
 
-void MainWindow::goSelectedDir(const QModelIndex&)
+void Phototonic::goSelectedDir(const QModelIndex&)
 {
 	thumbView->setNeedScroll(true);
 	thumbView->currentViewDir = getSelectedPath();
 	refreshThumbs(true);
 }
 
-void MainWindow::goPathBarDir()
+void Phototonic::goPathBarDir()
 {
 	thumbView->setNeedScroll(true);
 
@@ -760,7 +758,7 @@ void MainWindow::goPathBarDir()
 	refreshThumbs(false);
 }
 
-void MainWindow::goBack()
+void Phototonic::goBack()
 {
 	if (currentHistoryIdx > 0)
 	{
@@ -772,7 +770,7 @@ void MainWindow::goBack()
 	}
 }
 
-void MainWindow::goForward()
+void Phototonic::goForward()
 {
 
 	if (currentHistoryIdx < pathHistory.size() - 1)
@@ -784,7 +782,7 @@ void MainWindow::goForward()
 	}
 }
 
-void MainWindow::goUp()
+void Phototonic::goUp()
 {
 	QString parentDir = 
 			thumbView->currentViewDir.left(thumbView->currentViewDir.lastIndexOf(QDir::separator()));
@@ -794,18 +792,18 @@ void MainWindow::goUp()
 	goTo(parentDir);
 }
 
-void MainWindow::goHome()
+void Phototonic::goHome()
 {
 	goTo(QDir::homePath());
 }
 
-void MainWindow::setCopyCutActions(bool setEnabled)
+void Phototonic::setCopyCutActions(bool setEnabled)
 {
 	cutAction->setEnabled(setEnabled);
 	copyAction->setEnabled(setEnabled);
 }
 
-void MainWindow::changeActionsBySelection(const QItemSelection&, const QItemSelection&)
+void Phototonic::changeActionsBySelection(const QItemSelection&, const QItemSelection&)
 {
 	if (thumbView->selectionModel()->selectedIndexes().size())
 		setCopyCutActions(true);
@@ -813,7 +811,7 @@ void MainWindow::changeActionsBySelection(const QItemSelection&, const QItemSele
 		setCopyCutActions(false);
 }
 
-void MainWindow::updateActions(QWidget*, QWidget *selectedWidget)
+void Phototonic::updateActions(QWidget*, QWidget *selectedWidget)
 {
 	if (selectedWidget == fsTree)
 		setCopyCutActions(false);
@@ -824,7 +822,7 @@ void MainWindow::updateActions(QWidget*, QWidget *selectedWidget)
 	}
 }
 
-void MainWindow::writeSettings()
+void Phototonic::writeSettings()
 {
 	if (stackedWidget->currentIndex() == imageViewIdx)
 		setThumbViewWidgetsVisible(true);
@@ -832,7 +830,7 @@ void MainWindow::writeSettings()
 	showNormal();
 	if (!GData::isFullScreen)
 	{
-    	GData::appSettings->setValue("geometry", saveGeometry());
+		GData::appSettings->setValue("geometry", saveGeometry());
 	}
 	GData::appSettings->setValue("MainWindowState", saveState());
 	GData::appSettings->setValue("splitterSizes", splitter->saveState());
@@ -849,19 +847,19 @@ void MainWindow::writeSettings()
 	GData::appSettings->setValue("goToolBarWasVisible", (bool)goToolBar->isVisible());
 }
 
-void MainWindow::closeEvent(QCloseEvent *event)
+void Phototonic::closeEvent(QCloseEvent *event)
 {
 	abortThumbsLoad();
 	writeSettings();
 	event->accept();
 }
 
-void MainWindow::updateState(QString state)
+void Phototonic::updateState(QString state)
 {
-    stateLabel->setText(state);
+	stateLabel->setText(state);
 }
 
-void MainWindow::mouseDoubleClickEvent(QMouseEvent *event)
+void Phototonic::mouseDoubleClickEvent(QMouseEvent *event)
 {
 	if (event->button() == Qt::LeftButton)
 	{
@@ -873,7 +871,7 @@ void MainWindow::mouseDoubleClickEvent(QMouseEvent *event)
 	}
 }
 
-void MainWindow::mousePressEvent(QMouseEvent *event)
+void Phototonic::mousePressEvent(QMouseEvent *event)
 {
 	if (event->button() == Qt::MiddleButton)
 	{
@@ -882,12 +880,12 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
 			fullScreenAct->setChecked(!(fullScreenAct->isChecked()));
 				
 			toggleFullScreen();
-	        event->accept();
+			event->accept();
 		}
 	}
 }
 
-void MainWindow::setThumbViewWidgetsVisible(bool visible)
+void Phototonic::setThumbViewWidgetsVisible(bool visible)
 {
 	menuBar()->setVisible(visible);
 	editToolBar->setVisible(visible? editToolBarWasVisible : false);
@@ -896,7 +894,7 @@ void MainWindow::setThumbViewWidgetsVisible(bool visible)
 	statusBar()->setVisible(visible);
 }
 
-void MainWindow::loadImageFile(QString imageFileName)
+void Phototonic::loadImageFile(QString imageFileName)
 {
 	imageView->loadImage(thumbView->currentViewDir, imageFileName);
 
@@ -910,32 +908,33 @@ void MainWindow::loadImageFile(QString imageFileName)
 	setWindowTitle(imageFileName + " - Phototonic");
 }
 
-void MainWindow::loadImagefromThumb(const QModelIndex &idx)
+void Phototonic::loadImagefromThumb(const QModelIndex &idx)
 {
 	thumbView->setCurrentRow(idx.row());
 	loadImageFile(thumbView->thumbViewModel->item(idx.row())->data(thumbView->FileNameRole).toString());
 }
 
-void MainWindow::loadImagefromCli()
+void Phototonic::loadImagefromCli()
 {
 	loadImageFile(cliFileName);
+	thumbView->setCurrentIndexByName(cliFileName);
 }
 
-void MainWindow::loadNextImage()
+void Phototonic::loadNextImage()
 {
 	int nextRow = thumbView->getNextRow();
 	loadImageFile(thumbView->thumbViewModel->item(nextRow)->data(thumbView->FileNameRole).toString());
 	thumbView->setCurrentRow(nextRow);
 }
 
-void MainWindow::loadPrevImage()
+void Phototonic::loadPrevImage()
 {
 	int prevRow = thumbView->getPrevRow();
 	loadImageFile(thumbView->thumbViewModel->item(prevRow)->data(thumbView->FileNameRole).toString());
 	thumbView->setCurrentRow(prevRow);
 }
 
-void MainWindow::closeImage()
+void Phototonic::closeImage()
 {
 	if(isFullScreen())
 		showNormal();
@@ -947,17 +946,17 @@ void MainWindow::closeImage()
 	QTimer::singleShot(100, thumbView, SLOT(updateIndex()));
 }
 
-void MainWindow::goBottom()
+void Phototonic::goBottom()
 {
 	thumbView->scrollToBottom();
 }
 
-void MainWindow::goTop()
+void Phototonic::goTop()
 {
 	thumbView->scrollToTop();
 }
 
-void MainWindow::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvDirPath)
+void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvDirPath)
 {
 	QApplication::restoreOverrideCursor();
 	GData::copyOp = (keyMods == Qt::ControlModifier);
@@ -1008,14 +1007,14 @@ void MainWindow::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvD
 		refreshThumbs(false);
 }
 
-void MainWindow::restoreCurrentIdx()
+void Phototonic::restoreCurrentIdx()
 {
 	QModelIndex idx = fsModel->index(thumbView->currentViewDir); 
 	if (idx.isValid())
 		fsTree->setCurrentIndex(idx);
 }
 
-void MainWindow::checkDirState(const QModelIndex &, int, int)
+void Phototonic::checkDirState(const QModelIndex &, int, int)
 {
 	if (!initComplete)
 	{
@@ -1034,12 +1033,12 @@ void MainWindow::checkDirState(const QModelIndex &, int, int)
 	}
 }
 
-void MainWindow::abortThumbsLoad()
+void Phototonic::abortThumbsLoad()
 {
 	emit abortThumbLoading();
 }
 
-void MainWindow::recordHistory(QString dir)
+void Phototonic::recordHistory(QString dir)
 {
 	if (!needHistoryRecord)
 	{
@@ -1063,7 +1062,7 @@ void MainWindow::recordHistory(QString dir)
 	}
 }
 
-void MainWindow::reloadThumbsSlot()
+void Phototonic::reloadThumbsSlot()
 {
 	if (thumbViewBusy || !initComplete)
 	{	
@@ -1099,7 +1098,7 @@ void MainWindow::reloadThumbsSlot()
 	thumbView->load(cliFileName);
 }
 
-void MainWindow::renameDir()
+void Phototonic::renameDir()
 {
 	QModelIndexList selectedDirs = fsTree->selectionModel()->selectedRows();
 	QFileInfo dirInfo = QFileInfo(fsModel->filePath(selectedDirs[0]));
@@ -1107,7 +1106,7 @@ void MainWindow::renameDir()
 	bool ok;
 	QString title = "Rename " + dirInfo.completeBaseName();
 	QString newDirName = QInputDialog::getText(this, title, 
-							tr("New name:"), QLineEdit::Normal, dirInfo.completeBaseName(), &ok);
+							"New name:", QLineEdit::Normal, dirInfo.completeBaseName(), &ok);
 
 	if (!ok)
 	{
@@ -1140,7 +1139,7 @@ void MainWindow::renameDir()
 		restoreCurrentIdx();
 }
 
-void MainWindow::rename()
+void Phototonic::rename()
 {
 	if (QApplication::focusWidget() == fsTree)
 	{
@@ -1155,10 +1154,11 @@ void MainWindow::rename()
 		return;
 
 	bool ok;
-	QString renameImageName = thumbView->thumbViewModel->item(indexesList.first().row())->data(thumbView->FileNameRole).toString();
+	QString renameImageName = 
+		thumbView->thumbViewModel->item(indexesList.first().row())->data(thumbView->FileNameRole).toString();
 	QString title = "Rename " + renameImageName;
 	QString newImageName = QInputDialog::getText(this, title, 
-										tr("New name:"), QLineEdit::Normal, renameImageName, &ok);
+										"New name:", QLineEdit::Normal, renameImageName, &ok);
 
 	if (!ok)													
 		return;
@@ -1187,16 +1187,16 @@ void MainWindow::rename()
 	}
 }
 
-void MainWindow::deleteDir()
+void Phototonic::deleteDir()
 {
-    bool ok = true;
+	bool ok = true;
 	QModelIndexList selectedDirs = fsTree->selectionModel()->selectedRows();
 	QString deletePath = fsModel->filePath(selectedDirs[0]);
 	QModelIndex idxAbove = fsTree->indexAbove(selectedDirs[0]);
 	QFileInfo dirInfo = QFileInfo(deletePath);
 	QString question = "Permanently delete " + dirInfo.completeBaseName() + " and all of its contents?";
 
-	int ret = QMessageBox::warning(this, tr("Delete folder"), question,
+	int ret = QMessageBox::warning(this, "Delete folder", question,
 								QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
 
 	if (ret == QMessageBox::Yes)
@@ -1226,14 +1226,14 @@ void MainWindow::deleteDir()
 		restoreCurrentIdx();
 }
 
-void MainWindow::createSubDirectory()
+void Phototonic::createSubDirectory()
 {
 	QModelIndexList selectedDirs = fsTree->selectionModel()->selectedRows();
 	QFileInfo dirInfo = QFileInfo(fsModel->filePath(selectedDirs[0]));
 
 	bool ok;
 	QString newDirName = QInputDialog::getText(this, "New Sub folder", 
-							tr("New folder name:"), QLineEdit::Normal, "", &ok);
+							"New folder name:", QLineEdit::Normal, "", &ok);
 
 	if (!ok)
 	{
@@ -1265,13 +1265,13 @@ void MainWindow::createSubDirectory()
 	restoreCurrentIdx();
 }
 
-void MainWindow::manageDir()
+void Phototonic::manageDir()
 {
 	updateState("Opening file manager...");
 	QDesktopServices::openUrl(QUrl("file:///" + getSelectedPath()));
 }
 
-QString MainWindow::getSelectedPath()
+QString Phototonic::getSelectedPath()
 {
 	QModelIndexList selectedDirs = fsTree->selectionModel()->selectedRows();
 	if (selectedDirs.size() && selectedDirs[0].isValid())

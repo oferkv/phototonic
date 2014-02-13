@@ -26,7 +26,7 @@ CpMvDialog::CpMvDialog(QWidget *parent) : QDialog(parent)
 
     opLabel = new QLabel("");
     
-    cancelButton = new QPushButton(tr("Cancel"));
+    cancelButton = new QPushButton("Cancel");
     cancelButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(cancelButton, SIGNAL(clicked()), this, SLOT(abort()));
 
@@ -168,12 +168,12 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	scrollArea->setWidgetResizable(true);
 	scrollArea->setFrameShadow(QFrame::Plain);
 	QHBoxLayout *buttonsHbox = new QHBoxLayout;
-    QPushButton *okButton = new QPushButton(tr("OK"));
+    QPushButton *okButton = new QPushButton("OK");
     okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	connect(okButton, SIGNAL(clicked()), this, SLOT(saveSettings()));
-	QPushButton *closeButton = new QPushButton(tr("Cancel"));
-    closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-   	connect(closeButton, SIGNAL(clicked()), this, SLOT(abort()));
+	QPushButton *closeButton = new QPushButton("Cancel");
+	closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+	connect(closeButton, SIGNAL(clicked()), this, SLOT(abort()));
 	buttonsHbox->addWidget(closeButton, 1, Qt::AlignRight);
 	buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);
 
@@ -223,7 +223,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	colorsVbox->addLayout(bgColBox);
 	colorsVbox->addLayout(bgThumbColBox);
 	colorsVbox->addLayout(txtThumbColBox);
-	QGroupBox *colorsGbox = new QGroupBox(tr("Colors"));
+	QGroupBox *colorsGbox = new QGroupBox("Colors");
 	colorsGbox->setLayout(colorsVbox);
 
 	// Thumbnail spacing
@@ -237,18 +237,18 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	thumbSpacingHbox->addStretch(1);
 
 	// Thumbnail options
-	QGroupBox *thumbOptsGroupBox = new QGroupBox(tr("Thumbnail Options"));
+	QGroupBox *thumbOptsGroupBox = new QGroupBox("Thumbnail Options");
 	QVBoxLayout *thumbsOptsBox = new QVBoxLayout;
 	thumbsOptsBox->addLayout(thumbSpacingHbox);
 	thumbOptsGroupBox->setLayout(thumbsOptsBox);
 
 	// Zoom large images
-	QGroupBox *fitLargeGroupBox = new QGroupBox(tr("Fit Large Images"));
-	fitLargeRadios[0] = new QRadioButton(tr("Disable"));
-	fitLargeRadios[1] = new QRadioButton(tr("By width and height"));
-	fitLargeRadios[2] = new QRadioButton(tr("By width"));
-	fitLargeRadios[3] = new QRadioButton(tr("By height"));
-	fitLargeRadios[4] = new QRadioButton(tr("Stretch disproportionly"));
+	QGroupBox *fitLargeGroupBox = new QGroupBox("Fit Large Images");
+	fitLargeRadios[0] = new QRadioButton("Disable");
+	fitLargeRadios[1] = new QRadioButton("By width and height");
+	fitLargeRadios[2] = new QRadioButton("By width");
+	fitLargeRadios[3] = new QRadioButton("By height");
+	fitLargeRadios[4] = new QRadioButton("Stretch disproportionly");
 	QVBoxLayout *fitLargeVbox = new QVBoxLayout;
 	for (int i = 0; i < nZoomRadios; i++)
 	{
@@ -260,19 +260,19 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	fitLargeRadios[GData::zoomOutFlags]->setChecked(true);
  	
 	// Zoom small images
-	QGroupBox *fitSmallGroupBox = new QGroupBox(tr("Fit Small Images"));
-	fitSmallRadios[0] = new QRadioButton(tr("Disable"));
-	fitSmallRadios[1] = new QRadioButton(tr("By width and height"));
-	fitSmallRadios[2] = new QRadioButton(tr("By width"));
-	fitSmallRadios[3] = new QRadioButton(tr("By height"));
-	fitSmallRadios[4] = new QRadioButton(tr("Stretch disproportionly"));
+	QGroupBox *fitSmallGroupBox = new QGroupBox("Fit Small Images");
+	fitSmallRadios[0] = new QRadioButton("Disable");
+	fitSmallRadios[1] = new QRadioButton("By width and height");
+	fitSmallRadios[2] = new QRadioButton("By width");
+	fitSmallRadios[3] = new QRadioButton("By height");
+	fitSmallRadios[4] = new QRadioButton("Stretch disproportionly");
 	QVBoxLayout *fitSmallVbox = new QVBoxLayout;
 	for (int i = 0; i < nZoomRadios; i++)
 	{
 		fitSmallVbox->addWidget(fitSmallRadios[i]);
 		fitSmallRadios[i]->setChecked(false);
 	}
- 	fitSmallVbox->addStretch(1);
+	fitSmallVbox->addStretch(1);
 	fitSmallGroupBox->setLayout(fitSmallVbox);
 	fitSmallRadios[GData::zoomInFlags]->setChecked(true);
 
@@ -281,7 +281,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	zoomOptsBox->setAlignment(Qt::AlignTop);
 	zoomOptsBox->addWidget(fitLargeGroupBox);
 	zoomOptsBox->addWidget(fitSmallGroupBox);
-	QGroupBox *zoomOpts = new QGroupBox(tr("Zoom Options"));
+	QGroupBox *zoomOpts = new QGroupBox("Zoom Options");
 	zoomOpts->setLayout(zoomOptsBox);
 
 	// General

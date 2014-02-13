@@ -33,19 +33,18 @@ class QAction;
 class QActionGroup;
 class QLabel;
 
-class MainWindow : public QMainWindow
+class Phototonic : public QMainWindow
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+	Phototonic(QWidget *parent = 0);
 	void mouseDoubleClickEvent(QMouseEvent *event);
 	void mousePressEvent(QMouseEvent *event);
 	int copyCutCount;
 
 protected:
-    void closeEvent(QCloseEvent *event);
+	void closeEvent(QCloseEvent *event);
 
 signals:
 	void abortThumbLoading();
@@ -60,14 +59,14 @@ public slots:
 	void closeImage();
 
 private slots:
-    void about();
+	void about();
 	void setSortFlags();
 	void refreshThumbs();
 	void refreshThumbs(bool noScroll);
 	void setFlagsByQAction(QAction *act, QDir::SortFlags SortFlag);
-    void showSettings();
+	void showSettings();
 	void toggleFullScreen();
-    void updateActions(QWidget *old, QWidget *now);
+	void updateActions(QWidget *old, QWidget *now);
 	void changeActionsBySelection(const QItemSelection&, const QItemSelection&);
 	void reloadThumbsSlot();
 	void renameDir();
@@ -187,7 +186,7 @@ private:
 	QFileSystemModel *fsModel;
 	FSTree *fsTree;
 	QSplitter *splitter;
- 	QGridLayout *imageLayout;
+	QGridLayout *imageLayout;
 	QStackedWidget *stackedWidget;
 	ThumbView *thumbView;
 	ImageView *imageView;

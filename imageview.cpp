@@ -107,7 +107,6 @@ void ImageView::resizeImage()
 				    newHeight = size().height();
 			    imgSize.scale(newWidth, newHeight, Qt::IgnoreAspectRatio);
 				break;
-
 		}
 	}
 
@@ -141,7 +140,6 @@ void ImageView::resizeImage()
 				    newHeight = size().height();
 			    imgSize.scale(newWidth, newHeight, Qt::IgnoreAspectRatio);
 				break;
-
 		}
 	}
 
@@ -152,10 +150,10 @@ void ImageView::resizeImage()
 
 void ImageView::loadImage(QString &imagePath, QString imageFileName)
 {
-   	currentImage = imageFileName;
-    QString imageFullPath = imagePath + QDir::separator() + currentImage;
+	currentImage = imageFileName;
+	QString imageFullPath = imagePath + QDir::separator() + currentImage;
 
-   	imageReader.setFileName(imageFullPath);
+	imageReader.setFileName(imageFullPath);
 	if (!imageReader.size().isValid())
 	{
 		pixmap0_0.load(":/images/error_image.png");

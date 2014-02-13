@@ -29,8 +29,8 @@ int main(int argc, char *argv[])
 	}
 	else
 	{
-	    MainWindow MainWin;
-	    MainWin.show();
+	    Phototonic phototonic;
+	    phototonic.show();
 	    return QApp.exec();
     }
 }
