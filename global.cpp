@@ -27,7 +27,6 @@ namespace GData
 	QColor backgroundColor;
 	QColor thumbsBackgroundColor;
 	QColor thumbsTextColor;
-	float thumbAspect = 1.33;
 	unsigned int thumbsLayout;
 	unsigned int thumbSpacing;
 

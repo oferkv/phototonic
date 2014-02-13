@@ -173,8 +173,13 @@ bool ThumbView::isItemVisible(QModelIndex idx)
 
 void ThumbView::load(QString &cliImageName)
 {
+	float thumbAspect = 1.33;
+	if (GData::thumbsLayout == Compact)
+		thumbAspect = 1.77;
+	else if (GData::thumbsLayout == Squares)
+		thumbAspect = 1.5;
 	thumbHeight = (GData::thumbsLayout == Squares)? thumbSize * 2 : thumbSize;
-	thumbWidth = GData::thumbsLayout != Classic? thumbHeight * GData::thumbAspect : thumbHeight;
+	thumbWidth = GData::thumbsLayout != Classic? thumbHeight * thumbAspect : thumbHeight;
 	setIconSize(QSize(thumbWidth, thumbHeight));
 
 	thumbsDir->setPath(currentViewDir);
@@ -226,7 +231,7 @@ void ThumbView::initThumbs()
 		if (GData::thumbsLayout == Classic)
 			thumbIitem->setData(thumbFileInfo.fileName(), Qt::DisplayRole);
 		thumbIitem->setIcon(emptyPixMap);
-		thumbIitem->setTextAlignment(Qt::AlignCenter);
+		thumbIitem->setTextAlignment(Qt::AlignTop | Qt::AlignHCenter);
 
 		thumbViewModel->appendRow(thumbIitem);
 		thumbIsLoaded->append(false);

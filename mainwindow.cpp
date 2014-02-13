@@ -35,10 +35,11 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	createFSTree();
 	createImageView();
 
-	restoreGeometry(GData::appSettings->value("geometry").toByteArray());
-	restoreState(GData::appSettings->value("MainWindowState").toByteArray());
 	connect(qApp, SIGNAL(focusChanged(QWidget* , QWidget*)), 
 				this, SLOT(updateActions(QWidget*, QWidget*)));
+
+	restoreGeometry(GData::appSettings->value("geometry").toByteArray());
+	restoreState(GData::appSettings->value("MainWindowState").toByteArray());
 	setWindowTitle("Phototonic");
 	setWindowIcon(QIcon(":/images/phototonic.png"));
 
@@ -189,7 +190,7 @@ void Phototonic::createActions()
 	thumbsZoomInAct->setShortcut(QKeySequence::ZoomIn);
 	connect(thumbsZoomInAct, SIGNAL(triggered()), this, SLOT(thumbsZoomIn()));
 	thumbsZoomInAct->setIcon(QIcon(":/images/zoom_in.png"));
-	if (thumbView->thumbHeight == 400)
+	if (thumbView->thumbHeight == 300)
 		thumbsZoomInAct->setEnabled(false);
 
 	thumbsZoomOutAct = new QAction("Zoom Out", this);
@@ -607,11 +608,11 @@ void Phototonic::copyImages()
 
 void Phototonic::thumbsZoomIn()
 {
-	if (thumbView->thumbSize < 400)
+	if (thumbView->thumbSize < 300)
 	{
 		thumbView->thumbSize += 50;
 		thumbsZoomOutAct->setEnabled(true);
-		if (thumbView->thumbSize == 400)
+		if (thumbView->thumbSize == 300)
 			thumbsZoomInAct->setEnabled(false);
 		refreshThumbs(false);
 	}
@@ -832,7 +833,7 @@ void Phototonic::writeSettings()
 	{
 		GData::appSettings->setValue("geometry", saveGeometry());
 	}
-	GData::appSettings->setValue("MainWindowState", saveState());
+	GData::appSettings->setValue("mainWindowState", saveState());
 	GData::appSettings->setValue("splitterSizes", splitter->saveState());
 	GData::appSettings->setValue("thumbsSortFlags", (int)thumbView->thumbsSortFlags);
 	GData::appSettings->setValue("thumbsZoomVal", (int)thumbView->thumbSize);
@@ -845,6 +846,11 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("viewToolBarWasVisible", (bool)viewToolBar->isVisible());
 	GData::appSettings->setValue("editToolBarWasVisible", (bool)editToolBar->isVisible());
 	GData::appSettings->setValue("goToolBarWasVisible", (bool)goToolBar->isVisible());
+}
+
+void Phototonic::loadDefaultSettings()
+{
+
 }
 
 void Phototonic::closeEvent(QCloseEvent *event)

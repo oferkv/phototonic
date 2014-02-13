@@ -109,6 +109,7 @@ private:
 	void createStatusBar();
 	void createFSTree();
 	void writeSettings();
+	void loadDefaultSettings();
 	void recordHistory(QString dir);
 	bool isValidPath(QString &path);
 	bool isBusy()

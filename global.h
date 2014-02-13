@@ -33,7 +33,6 @@ namespace GData
 	extern QColor backgroundColor;
 	extern QColor thumbsBackgroundColor;
 	extern QColor thumbsTextColor;
-	extern float thumbAspect;
 	extern unsigned int thumbsLayout;
 	extern unsigned int thumbSpacing;
 
