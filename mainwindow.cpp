@@ -849,6 +849,7 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("viewToolBarWasVisible", (bool)viewToolBar->isVisible());
 	GData::appSettings->setValue("editToolBarWasVisible", (bool)editToolBar->isVisible());
 	GData::appSettings->setValue("goToolBarWasVisible", (bool)goToolBar->isVisible());
+	GData::appSettings->setValue("exitInsteadOfClose", (int)GData::exitInsteadOfClose);
 }
 
 void Phototonic::loadDefaultSettings()
@@ -872,7 +873,10 @@ void Phototonic::loadDefaultSettings()
 		GData::appSettings->setValue("goToolBarWasVisible", (bool)true);
 		GData::appSettings->setValue("zoomOutFlags", (int)1);
 		GData::appSettings->setValue("zoomInFlags", (int)0);
+		GData::appSettings->setValue("exitInsteadOfClose", (int)0);
 	}
+
+	GData::exitInsteadOfClose = GData::appSettings->value("exitInsteadOfClose").toBool();
 }
 
 void Phototonic::closeEvent(QCloseEvent *event)
@@ -964,6 +968,9 @@ void Phototonic::loadPrevImage()
 
 void Phototonic::closeImage()
 {
+	if (cliImageLoaded && GData::exitInsteadOfClose)
+		close();
+
 	if(isFullScreen())
 		showNormal();
 	setThumbViewWidgetsVisible(true);

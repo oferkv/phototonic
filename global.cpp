@@ -29,6 +29,7 @@ namespace GData
 	QColor thumbsTextColor;
 	unsigned int thumbsLayout;
 	unsigned int thumbSpacing;
+	bool exitInsteadOfClose;
 
 	// app data
 	QModelIndexList copyCutIdxList;

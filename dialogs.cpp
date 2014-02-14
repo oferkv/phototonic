@@ -248,7 +248,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	fitLargeRadios[1] = new QRadioButton("By width and height");
 	fitLargeRadios[2] = new QRadioButton("By width");
 	fitLargeRadios[3] = new QRadioButton("By height");
-	fitLargeRadios[4] = new QRadioButton("Stretch disproportionly");
+	fitLargeRadios[4] = new QRadioButton("Stretch disproportionately");
 	QVBoxLayout *fitLargeVbox = new QVBoxLayout;
 	for (int i = 0; i < nZoomRadios; i++)
 	{
@@ -265,7 +265,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	fitSmallRadios[1] = new QRadioButton("By width and height");
 	fitSmallRadios[2] = new QRadioButton("By width");
 	fitSmallRadios[3] = new QRadioButton("By height");
-	fitSmallRadios[4] = new QRadioButton("Stretch disproportionly");
+	fitSmallRadios[4] = new QRadioButton("Stretch disproportionately");
 	QVBoxLayout *fitSmallVbox = new QVBoxLayout;
 	for (int i = 0; i < nZoomRadios; i++)
 	{
@@ -276,18 +276,25 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	fitSmallGroupBox->setLayout(fitSmallVbox);
 	fitSmallRadios[GData::zoomInFlags]->setChecked(true);
 
-	// Zoom options
+	// Exit when opening image
+	exitCliCb = new QCheckBox("Exit instead of returning to thumbnails, after loading a single image", this);
+	exitCliCb->setChecked(GData::exitInsteadOfClose);
+
+	// Viewer options
+	QVBoxLayout *viewerOptsBox = new QVBoxLayout;
 	QHBoxLayout *zoomOptsBox = new QHBoxLayout;
 	zoomOptsBox->setAlignment(Qt::AlignTop);
 	zoomOptsBox->addWidget(fitLargeGroupBox);
 	zoomOptsBox->addWidget(fitSmallGroupBox);
-	QGroupBox *zoomOpts = new QGroupBox("Zoom Options");
-	zoomOpts->setLayout(zoomOptsBox);
+	viewerOptsBox->addLayout(zoomOptsBox);
+	viewerOptsBox->addWidget(exitCliCb);
+	QGroupBox *viewerOptsGrp = new QGroupBox("Viewer Options");
+	viewerOptsGrp->setLayout(viewerOptsBox);
 
 	// General
 	QVBoxLayout *optsLayout = new QVBoxLayout;
 	optsWidgetArea->setLayout(optsLayout);
-	optsLayout->addWidget(zoomOpts);
+	optsLayout->addWidget(viewerOptsGrp);
 	optsLayout->addSpacerItem(new QSpacerItem(0, 5, QSizePolicy::Fixed, QSizePolicy::Expanding));
 	optsLayout->addWidget(thumbOptsGroupBox);
 	optsLayout->addWidget(colorsGbox);
@@ -320,6 +327,7 @@ void SettingsDialog::saveSettings()
 	GData::thumbsBackgroundColor = thumbBgColor;
 	GData::thumbsTextColor = thumbTextColor;
 	GData::thumbSpacing = thumbSpacingSpin->value();
+	GData::exitInsteadOfClose = exitCliCb->isChecked();
 
 	accept();
 }

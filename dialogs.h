@@ -76,6 +76,7 @@ private:
 	QColor bgColor;
 	QColor thumbBgColor;
 	QColor thumbTextColor;
+	QCheckBox *exitCliCb;
 };
 
 #endif // DIALOGS_H
