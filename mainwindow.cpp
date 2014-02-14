@@ -25,8 +25,7 @@
 Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 {
 	GData::appSettings = new QSettings("Phototonic", "Phototonic");
-	initComplete = false;
-
+	loadDefaultSettings();
 	createThumbView();
 	createActions();
 	createMenus();
@@ -79,6 +78,7 @@ bool Phototonic::handleArgs()
 		else
 		{
 			thumbView->currentViewDir = cliArg.absolutePath();
+			restoreCurrentIdx();
 			cliFileName = cliArg.fileName();
 			return true;
 		}
@@ -550,9 +550,12 @@ void Phototonic::showSettings()
 		thumbView->setThumbColors();
 
 		if (stackedWidget->currentIndex() == imageViewIdx)
+		{
 			imageView->resizeImage();
-
-		refreshThumbs(true);
+			settingsChangedNeedRefresh = true;
+		}
+		else
+			refreshThumbs(true);
 	}
 
 	delete dialog;
@@ -850,7 +853,26 @@ void Phototonic::writeSettings()
 
 void Phototonic::loadDefaultSettings()
 {
+	initComplete = false;
+	settingsChangedNeedRefresh = false;
 
+	if (!GData::appSettings->contains("thumbsZoomVal"))
+	{
+		resize(800, 600);
+		GData::appSettings->setValue("thumbsSortFlags", (int)0);
+		GData::appSettings->setValue("thumbsZoomVal", (int)200);
+		GData::appSettings->setValue("isFullScreen", (bool)false);
+		GData::appSettings->setValue("backgroundColor", QColor(25, 25, 25));
+		GData::appSettings->setValue("backgroundThumbColor", QColor(50, 50, 50));
+		GData::appSettings->setValue("textThumbColor", QColor(222, 222, 222));
+		GData::appSettings->setValue("thumbSpacing", (int)5);
+		GData::appSettings->setValue("thumbLayout", (int)GData::thumbsLayout);
+		GData::appSettings->setValue("viewToolBarWasVisible", (bool)true);
+		GData::appSettings->setValue("editToolBarWasVisible", (bool)true);
+		GData::appSettings->setValue("goToolBarWasVisible", (bool)true);
+		GData::appSettings->setValue("zoomOutFlags", (int)1);
+		GData::appSettings->setValue("zoomInFlags", (int)0);
+	}
 }
 
 void Phototonic::closeEvent(QCloseEvent *event)
@@ -950,6 +972,11 @@ void Phototonic::closeImage()
 	thumbView->setCurrentIndexByName(imageView->currentImage);
 	thumbView->selectCurrentIndex();
 	QTimer::singleShot(100, thumbView, SLOT(updateIndex()));
+	if (settingsChangedNeedRefresh)
+	{
+		settingsChangedNeedRefresh = false;
+		refreshThumbs(true);
+	}
 }
 
 void Phototonic::goBottom()

@@ -235,6 +235,13 @@ void ThumbView::initThumbs()
 
 		thumbViewModel->appendRow(thumbIitem);
 		thumbIsLoaded->append(false);
+
+		if (GData::thumbsLayout == Squares)
+		{
+			int sqrSz = thumbWidth / 2;
+			QSize hintSize(sqrSz, sqrSz);
+			thumbViewModel->item(currThumb)->setSizeHint(hintSize);
+		}
 	}
 
 	// Dummy image
@@ -270,22 +277,11 @@ refreshThumbs:
 		if (!currThumbSize.isValid())
 			thumbReader.setFileName(":/images/error_image.png");
 
-//			if (thumbSize.height() > thumbHeight || thumbSize.width() > thumbWidth)
-	//		{
-				currThumbSize.scale(QSize(thumbWidth, thumbHeight), Qt::KeepAspectRatio);
-	//		}
-			thumbReader.setScaledSize(currThumbSize);
-			thumbViewModel->item(currThumb)->setIcon(QPixmap::fromImage(thumbReader.read()));
+		currThumbSize.scale(QSize(thumbWidth, thumbHeight), Qt::KeepAspectRatio);
+		thumbReader.setScaledSize(currThumbSize);
+		thumbViewModel->item(currThumb)->setIcon(QPixmap::fromImage(thumbReader.read()));
 
-			if (GData::thumbsLayout == Squares)
-			{
-				int sqrSz = thumbWidth / 2;
-				QSize hintSize(sqrSz, sqrSz);
-				thumbViewModel->item(currThumb)->setSizeHint(hintSize);
-			}
-		 
-
-		if (GData::thumbsLayout != Classic)
+		if (GData::thumbsLayout == Compact)
 			setRowHidden(currThumb , false);
 
 		(*thumbIsLoaded)[currThumb] = true;

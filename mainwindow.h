@@ -192,6 +192,7 @@ private:
 	ThumbView *thumbView;
 	ImageView *imageView;
 	bool initComplete;
+	bool settingsChangedNeedRefresh;
 
 	QList<QString> pathHistory;
 	int currentHistoryIdx;
