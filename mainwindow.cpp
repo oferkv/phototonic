@@ -139,6 +139,8 @@ void Phototonic::createImageView()
 
 	imageView->addAction(nextImageAction);
 	imageView->addAction(prevImageAction);
+	imageView->addAction(firstImageAction);
+	imageView->addAction(lastImageAction);
 	QAction *sep = new QAction(this);
 	sep->setSeparator(true);
 	imageView->addAction(sep);
@@ -179,7 +181,7 @@ void Phototonic::createActions()
 	
 	settingsAction = new QAction("Preferences", this);
 	settingsAction->setIcon(QIcon(":/images/settings.png"));
-	settingsAction->setShortcut(QKeySequence("F10"));
+	settingsAction->setShortcut(QKeySequence("Ctrl+P"));
 	connect(settingsAction, SIGNAL(triggered()), this, SLOT(showSettings()));
 
 	exitAction = new QAction("E&xit", this);
@@ -317,6 +319,18 @@ void Phototonic::createActions()
 	prevImageAction = new QAction("&Previous", this);
 	prevImageAction->setShortcut(QKeySequence::MoveToPreviousPage);
 	connect(prevImageAction, SIGNAL(triggered()), this, SLOT(loadPrevImage()));
+
+	firstImageAction = new QAction("&First", this);
+	firstImageAction->setShortcut(QKeySequence::MoveToStartOfLine);
+	connect(firstImageAction, SIGNAL(triggered()), this, SLOT(loadFirstImage()));
+
+	lastImageAction = new QAction("&Last", this);
+	lastImageAction->setShortcut(QKeySequence::MoveToEndOfLine);
+	connect(lastImageAction, SIGNAL(triggered()), this, SLOT(loadLastImage()));
+
+	openImageAction = new QAction("Open", this);
+	openImageAction->setShortcut(QKeySequence::InsertParagraphSeparator);
+	connect(openImageAction, SIGNAL(triggered()), this, SLOT(loadImagefromAction()));
 }
 
 void Phototonic::createMenus()
@@ -376,6 +390,7 @@ void Phototonic::createMenus()
 	helpMenu->addAction(aboutQtAction);
 
 	// thumbview context menu
+	thumbView->addAction(openImageAction);
 	thumbView->addAction(cutAction);
 	thumbView->addAction(copyAction);
 	thumbView->addAction(renameAction);
@@ -946,6 +961,17 @@ void Phototonic::loadImagefromThumb(const QModelIndex &idx)
 	loadImageFile(thumbView->thumbViewModel->item(idx.row())->data(thumbView->FileNameRole).toString());
 }
 
+void Phototonic::loadImagefromAction()
+{
+	QModelIndexList indexesList;
+	indexesList = thumbView->selectionModel()->selectedIndexes();
+
+	if (indexesList.size() != 1)
+		return;
+
+	loadImagefromThumb(indexesList.first());
+}
+
 void Phototonic::loadImagefromCli()
 {
 	loadImageFile(cliFileName);
@@ -964,6 +990,19 @@ void Phototonic::loadPrevImage()
 	int prevRow = thumbView->getPrevRow();
 	loadImageFile(thumbView->thumbViewModel->item(prevRow)->data(thumbView->FileNameRole).toString());
 	thumbView->setCurrentRow(prevRow);
+}
+
+void Phototonic::loadFirstImage()
+{
+	loadImageFile(thumbView->thumbViewModel->item(0)->data(thumbView->FileNameRole).toString());
+	thumbView->setCurrentRow(0);
+}
+
+void Phototonic::loadLastImage()
+{
+	int lastRow = thumbView->getLastRow();
+	loadImageFile(thumbView->thumbViewModel->item(lastRow)->data(thumbView->FileNameRole).toString());
+	thumbView->setCurrentRow(lastRow);
 }
 
 void Phototonic::closeImage()

@@ -56,6 +56,7 @@ public slots:
 	void loadImageFile(QString imageFileName);
 	void loadImagefromThumb(const QModelIndex &idx);
 	void loadImagefromCli();
+	void loadImagefromAction();
 	void closeImage();
 
 private slots:
@@ -84,6 +85,8 @@ private slots:
 	void goHome();
 	void loadNextImage();
 	void loadPrevImage();
+	void loadFirstImage();
+	void loadLastImage();
 	void selectAllThumbs();
 	void deleteOp();
 	void cutImages();
@@ -180,7 +183,10 @@ private:
 
 	QAction *nextImageAction;
 	QAction *prevImageAction;
-
+	QAction *firstImageAction;
+	QAction *lastImageAction;
+	QAction *openImageAction;
+	
 	QLineEdit *pathBar;
 	QCompleter *pathComplete;
 	QLabel *stateLabel;

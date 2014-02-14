@@ -94,6 +94,11 @@ int ThumbView::getPrevRow()
 	return currentRow - 1;
 }
 
+int ThumbView::getLastRow()
+{
+	return thumbFileInfoList.size() - 1;
+}
+
 void ThumbView::setCurrentRow(int row)
 {
 	currentRow = row;
