@@ -43,6 +43,7 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	scrlArea->setWidgetResizable(true);
 	
 	grid->addWidget(scrlArea, 0, 0, 0, 0);
+	moveImageLocked = false;
 }
 
 void ImageView::resizeEvent(QResizeEvent *event)
@@ -170,6 +171,33 @@ void ImageView::loadImage(QString &imagePath, QString imageFileName)
 		pixmap0_0.load(imageFullPath);
 	}
 	imgLabel1->setPixmap(pixmap0_0);
+	if (!GData::keepZoomFactor)
+		GData::imageZoomFactor = 1.0;
+	
 	resizeImage();
+}
+
+void ImageView::setMouseMoveData(bool lockMove, int lMouseX, int lMouseY)
+{
+	moveImageLocked = lockMove;
+	mouseX = lMouseX;
+	mouseY = lMouseY;
+	layoutX = imgLabel1->pos().x();
+	layoutY = imgLabel1->pos().y();
+
+}
+
+void ImageView::mouseMoveEvent(QMouseEvent *event)
+{
+	if (moveImageLocked)
+	{
+		qDebug() << imgLabel1->pos();
+		QSize layoutSize = imgLabel1->size();
+		if (layoutSize.width() > size().width() || layoutSize.height() > size().height())
+		{
+//			if (imgLabel1->pos().x() >= 0)
+			imgLabel1->move(layoutX + (event->pos().x() - mouseX), layoutY + (event->pos().y() - mouseY));
+		}
+	}
 }
 

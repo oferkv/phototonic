@@ -25,7 +25,7 @@
 #include <QScrollArea>
 #include <QImageReader>
 #include <QScrollBar>
-
+#include <QMouseEvent>
 
 class ImageView : public QWidget
 {
@@ -36,6 +36,7 @@ public:
 	void loadImage(QString &imagePath, QString imageFileName);
 	void resizeImage();
 	QString currentImage;
+	void setMouseMoveData(bool lockMove, int lMouseX, int lMouseY);
 
 	enum ZoomMethods
 	{
@@ -57,6 +58,13 @@ private:
 	QScrollArea *scrlArea;
 	QImageReader imageReader;
 	QPixmap pixmap0_0;
+	bool moveImageLocked;
+	int mouseX;
+	int mouseY;
+	int layoutX;
+	int layoutY;
+
+	void mouseMoveEvent(QMouseEvent *event);
 };
 
 #endif // IMAGEVIEW_H

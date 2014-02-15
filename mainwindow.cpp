@@ -139,6 +139,7 @@ void Phototonic::createImageView()
 	imageView->addAction(zoomInAct);
 	imageView->addAction(zoomOutAct);
 	imageView->addAction(resetZoomAct);
+	imageView->addAction(keepZoomAct);
 	sep = new QAction(this);
 	sep->setSeparator(true);
 	imageView->addAction(sep);
@@ -343,6 +344,10 @@ void Phototonic::createActions()
 	resetZoomAct = new QAction("Reset Zoom", this);
 	resetZoomAct->setShortcut(QKeySequence("/"));
 	connect(resetZoomAct, SIGNAL(triggered()), this, SLOT(resetZoom()));
+
+	keepZoomAct = new QAction("Keep Zoom", this);
+	keepZoomAct->setCheckable(true);
+	connect(keepZoomAct, SIGNAL(triggered()), this, SLOT(keepZoom()));
 }
 
 void Phototonic::createMenus()
@@ -679,6 +684,14 @@ void Phototonic::resetZoom()
 	imageView->resizeImage();
 }
 
+void Phototonic::keepZoom()
+{
+	if (keepZoomAct->isChecked())
+		GData::keepZoomFactor = true;
+	else
+		GData::keepZoomFactor = false;
+}
+
 bool Phototonic::isValidPath(QString &path)
 {
 	QDir checkPath(path);
@@ -878,10 +891,7 @@ void Phototonic::writeSettings()
 		setThumbViewWidgetsVisible(true);
 
 	showNormal();
-	if (!GData::isFullScreen)
-	{
-		GData::appSettings->setValue("geometry", saveGeometry());
-	}
+	GData::appSettings->setValue("geometry", saveGeometry());
 	GData::appSettings->setValue("mainWindowState", saveState());
 	GData::appSettings->setValue("splitterSizes", splitter->saveState());
 	GData::appSettings->setValue("thumbsSortFlags", (int)thumbView->thumbsSortFlags);
@@ -956,14 +966,31 @@ void Phototonic::mouseDoubleClickEvent(QMouseEvent *event)
 
 void Phototonic::mousePressEvent(QMouseEvent *event)
 {
-	if (event->button() == Qt::MiddleButton)
+	if (stackedWidget->currentIndex() == imageViewIdx)
 	{
-		if (stackedWidget->currentIndex() == imageViewIdx)
+		if (event->button() == Qt::MiddleButton)
 		{
 			fullScreenAct->setChecked(!(fullScreenAct->isChecked()));
 				
 			toggleFullScreen();
 			event->accept();
+		}
+		else if (event->button() == Qt::LeftButton)
+		{
+			imageView->setMouseMoveData(true, event->x(), event->y());
+			QApplication::setOverrideCursor(Qt::ClosedHandCursor);
+		}
+	}
+}
+
+void Phototonic::mouseReleaseEvent(QMouseEvent *event)
+{
+	if (stackedWidget->currentIndex() == imageViewIdx)
+	{
+		if (event->button() == Qt::LeftButton)
+		{
+			imageView->setMouseMoveData(false, 0, 0);
+			QApplication::setOverrideCursor(Qt::OpenHandCursor);
 		}
 	}
 }
@@ -989,6 +1016,7 @@ void Phototonic::loadImageFile(QString imageFileName)
 		stackedWidget->setCurrentIndex(imageViewIdx);
 	}
 	setWindowTitle(imageFileName + " - Phototonic");
+	QApplication::setOverrideCursor(Qt::OpenHandCursor);
 }
 
 void Phototonic::loadImagefromThumb(const QModelIndex &idx)
@@ -1048,6 +1076,8 @@ void Phototonic::closeImage()
 
 	if(isFullScreen())
 		showNormal();
+	while (QApplication::overrideCursor())
+		QApplication::restoreOverrideCursor();
 	setThumbViewWidgetsVisible(true);
 	stackedWidget->setCurrentIndex(thumbViewIdx);
 	setWindowTitle(thumbView->currentViewDir + " - Phototonic");

@@ -37,6 +37,7 @@ namespace GData
 	extern unsigned int thumbSpacing;
 	extern bool exitInsteadOfClose;
 	extern float imageZoomFactor;
+	extern bool keepZoomFactor;
 
 	// app data
 	extern QModelIndexList copyCutIdxList;

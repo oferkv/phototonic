@@ -41,6 +41,7 @@ public:
 	Phototonic(QWidget *parent = 0);
 	void mouseDoubleClickEvent(QMouseEvent *event);
 	void mousePressEvent(QMouseEvent *event);
+	void mouseReleaseEvent(QMouseEvent *event);
 	int copyCutCount;
 
 protected:
@@ -97,6 +98,7 @@ private slots:
 	void zoomIn();
 	void zoomOut();
 	void resetZoom();
+	void keepZoom();
 	void setThumbViewWidgetsVisible(bool visible);
 	void goTop();
 	void goBottom();
@@ -170,6 +172,7 @@ private:
 	QAction *zoomInAct;
 	QAction *zoomOutAct;
 	QAction *resetZoomAct;
+	QAction *keepZoomAct;
 
 	QAction *actClassic;
 	QAction *actCompact;
