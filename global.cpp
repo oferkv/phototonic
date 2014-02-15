@@ -30,6 +30,7 @@ namespace GData
 	unsigned int thumbsLayout;
 	unsigned int thumbSpacing;
 	bool exitInsteadOfClose;
+	float imageZoomFactor;
 
 	// app data
 	QModelIndexList copyCutIdxList;

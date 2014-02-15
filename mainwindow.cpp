@@ -129,19 +129,17 @@ void Phototonic::createImageView()
 {
 	GData::backgroundColor = GData::appSettings->value("backgroundColor").value<QColor>();
 	imageView = new ImageView(this);
-
-	GData::zoomOutFlags = GData::appSettings->value("zoomOutFlags").toInt();
-	if (!GData::zoomOutFlags)
-		GData::zoomOutFlags = ImageView::WidthNHeight;
-	GData::zoomInFlags = GData::appSettings->value("zoomInFlags").toInt();
-	if (!GData::zoomInFlags)
-		GData::zoomInFlags = ImageView::Disable;
-
 	imageView->addAction(nextImageAction);
 	imageView->addAction(prevImageAction);
 	imageView->addAction(firstImageAction);
 	imageView->addAction(lastImageAction);
 	QAction *sep = new QAction(this);
+	sep->setSeparator(true);
+	imageView->addAction(sep);
+	imageView->addAction(zoomInAct);
+	imageView->addAction(zoomOutAct);
+	imageView->addAction(resetZoomAct);
+	sep = new QAction(this);
 	sep->setSeparator(true);
 	imageView->addAction(sep);
 	imageView->addAction(closeImageAct);
@@ -331,6 +329,20 @@ void Phototonic::createActions()
 	openImageAction = new QAction("Open", this);
 	openImageAction->setShortcut(QKeySequence::InsertParagraphSeparator);
 	connect(openImageAction, SIGNAL(triggered()), this, SLOT(loadImagefromAction()));
+
+	zoomOutAct = new QAction("Zoom Out", this);
+	zoomOutAct->setShortcut(QKeySequence("+"));
+	connect(zoomOutAct, SIGNAL(triggered()), this, SLOT(zoomOut()));
+	zoomOutAct->setIcon(QIcon(":/images/zoom_out.png"));
+
+	zoomInAct = new QAction("Zoom In", this);
+	zoomInAct->setShortcut(QKeySequence("-"));
+	connect(zoomInAct, SIGNAL(triggered()), this, SLOT(zoomIn()));
+	zoomInAct->setIcon(QIcon(":/images/zoom_out.png"));
+
+	resetZoomAct = new QAction("Reset Zoom", this);
+	resetZoomAct->setShortcut(QKeySequence("/"));
+	connect(resetZoomAct, SIGNAL(triggered()), this, SLOT(resetZoom()));
 }
 
 void Phototonic::createMenus()
@@ -563,6 +575,7 @@ void Phototonic::showSettings()
 	{
 		imageView->setPalette(QPalette(GData::backgroundColor));
 		thumbView->setThumbColors();
+		GData::imageZoomFactor = 1.0;
 
 		if (stackedWidget->currentIndex() == imageViewIdx)
 		{
@@ -646,6 +659,24 @@ void Phototonic::thumbsZoomOut()
 			thumbsZoomOutAct->setEnabled(false);
 		refreshThumbs(false);
 	}
+}
+
+void Phototonic::zoomOut()
+{
+	GData::imageZoomFactor += (GData::imageZoomFactor >= 2.5)? 0 : 0.25;
+	imageView->resizeImage();
+}
+
+void Phototonic::zoomIn()
+{
+	GData::imageZoomFactor -= (GData::imageZoomFactor <= 0.25)? 0 : 0.25;
+	imageView->resizeImage();
+}
+
+void Phototonic::resetZoom()
+{
+	GData::imageZoomFactor = 1.0;
+	imageView->resizeImage();
 }
 
 bool Phototonic::isValidPath(QString &path)
@@ -865,6 +896,7 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("editToolBarWasVisible", (bool)editToolBar->isVisible());
 	GData::appSettings->setValue("goToolBarWasVisible", (bool)goToolBar->isVisible());
 	GData::appSettings->setValue("exitInsteadOfClose", (int)GData::exitInsteadOfClose);
+	GData::appSettings->setValue("imageZoomFactor", (float)GData::imageZoomFactor);
 }
 
 void Phototonic::loadDefaultSettings()
@@ -889,9 +921,13 @@ void Phototonic::loadDefaultSettings()
 		GData::appSettings->setValue("zoomOutFlags", (int)1);
 		GData::appSettings->setValue("zoomInFlags", (int)0);
 		GData::appSettings->setValue("exitInsteadOfClose", (int)0);
+		GData::appSettings->setValue("imageZoomFactor", (float)1.0);
 	}
 
 	GData::exitInsteadOfClose = GData::appSettings->value("exitInsteadOfClose").toBool();
+	GData::imageZoomFactor = GData::appSettings->value("imageZoomFactor").toFloat();
+	GData::zoomOutFlags = GData::appSettings->value("zoomOutFlags").toInt();
+	GData::zoomInFlags = GData::appSettings->value("zoomInFlags").toInt();
 }
 
 void Phototonic::closeEvent(QCloseEvent *event)

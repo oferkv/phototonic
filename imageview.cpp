@@ -57,7 +57,6 @@ void ImageView::showEvent(QShowEvent *event)
 	resizeImage();
 }
 
-
 static unsigned int getHeightByWidth(int imgWidth, int imgHeight, int newWidth)
 {
 	float aspect;
@@ -72,79 +71,87 @@ static unsigned int getWidthByHeight(int imgHeight, int imgWidth, int newHeight)
 	return(imgWidth / aspect);
 }
 
+static inline int calcZoom(int size)
+{
+	return size * GData::imageZoomFactor;
+}
+
 void ImageView::resizeImage()
 {
-    QSize imgSize = imgLabel1->pixmap()->size();
+	QSize imgSize = imgLabel1->pixmap()->size();
 
-	if (GData::zoomInFlags)
+	switch(GData::zoomInFlags)
 	{
-		switch(GData::zoomInFlags)
-		{
-			case WidthNHeight:
-				if (imgSize.width() < size().width() && imgSize.height() < size().height())
-				    imgSize.scale(size(), Qt::KeepAspectRatio);
-				break;
-
-			case Width:
-				if (imgSize.width() < size().width())
-				    imgSize.scale(size().width(), 
-				    	getHeightByWidth(imgSize.width(), imgSize.height(), size().width()),
-			    		Qt::KeepAspectRatio);
-				break;
-				
-			case Height:
-				if (imgSize.height() < size().height())
-				    imgSize.scale(getWidthByHeight(imgSize.height(), imgSize.width(), size().height()),
-				    	size().height(), Qt::KeepAspectRatio);
+		case Disable:
+			if (imgSize.width() < size().width() && imgSize.height() < size().height())
+			    imgSize.scale(calcZoom(imgSize.width()), calcZoom(imgSize.height()), Qt::KeepAspectRatio);
+		    break;
 			
-				break;
+		case WidthNHeight:
+			if (imgSize.width() < size().width() && imgSize.height() < size().height())
+			    imgSize.scale(calcZoom(size().width()), calcZoom(size().height()), Qt::KeepAspectRatio);
+			break;
 
-			case Disprop:
-				int newWidth = imgSize.width(), newHeight = imgSize.height();
-				if (newWidth < size().width())
-					newWidth = size().width();
-				if (newHeight < size().height())
-				    newHeight = size().height();
-			    imgSize.scale(newWidth, newHeight, Qt::IgnoreAspectRatio);
-				break;
-		}
+		case Width:
+			if (imgSize.width() < size().width())
+			    imgSize.scale(calcZoom(size().width()), 
+			    	calcZoom(getHeightByWidth(imgSize.width(), imgSize.height(), size().width())),
+		    		Qt::KeepAspectRatio);
+			break;
+			
+		case Height:
+			if (imgSize.height() < size().height())
+			    imgSize.scale(calcZoom(getWidthByHeight(imgSize.height(), imgSize.width(), size().height())),
+			    	calcZoom(size().height()), Qt::KeepAspectRatio);
+			break;
+
+		case Disprop:
+			int newWidth = imgSize.width(), newHeight = imgSize.height();
+			if (newWidth < size().width())
+				newWidth = size().width();
+			if (newHeight < size().height())
+			    newHeight = size().height();
+		    imgSize.scale(calcZoom(newWidth), calcZoom(newHeight), Qt::IgnoreAspectRatio);
+			break;
 	}
 
-	if (GData::zoomOutFlags)
+	switch(GData::zoomOutFlags)
 	{
-		switch(GData::zoomOutFlags)
-		{
-			case WidthNHeight:
-				if (imgSize.width() > size().width() || imgSize.height() > size().height())
-				    imgSize.scale(size(), Qt::KeepAspectRatio);
-				break;
+		case Disable:
+			if (imgSize.width() >= size().width() || imgSize.height() >= size().height())
+				imgSize.scale(calcZoom(imgSize.width()), calcZoom(imgSize.height()), Qt::KeepAspectRatio);
+			break;
+	
+		case WidthNHeight:
+			if (imgSize.width() >= size().width() || imgSize.height() >= size().height())
+				imgSize.scale(calcZoom(size().width()), calcZoom(size().height()), Qt::KeepAspectRatio);
+			break;
 
-			case Width:
-				if (imgSize.width() > size().width())
-				    imgSize.scale(size().width(), 
-				    	getHeightByWidth(imgSize.width(), imgSize.height(), size().width()), Qt::KeepAspectRatio);
-				break;
-				
-			case Height:
-				if (imgSize.height() > size().height())
-				    imgSize.scale(getWidthByHeight(imgSize.height(), imgSize.width(), size().height()),
-				    	size().height(), Qt::KeepAspectRatio);
+		case Width:
+			if (imgSize.width() > size().width())
+			    imgSize.scale(calcZoom(size().width()), 
+					calcZoom(getHeightByWidth(imgSize.width(), imgSize.height(), size().width())), Qt::KeepAspectRatio);
+			break;
 			
-				break;
+		case Height:
+			if (imgSize.height() > size().height())
+			    imgSize.scale(calcZoom(getWidthByHeight(imgSize.height(), imgSize.width(), size().height())),
+			    	calcZoom(size().height()), Qt::KeepAspectRatio);
+		
+			break;
 
-			case Disprop:
-				int newWidth = imgSize.width(), newHeight = imgSize.height();
-				if (newWidth > size().width())
-					newWidth = size().width();
-				if (newHeight > size().height())
-				    newHeight = size().height();
-			    imgSize.scale(newWidth, newHeight, Qt::IgnoreAspectRatio);
-				break;
-		}
+		case Disprop:
+			int newWidth = imgSize.width(), newHeight = imgSize.height();
+			if (newWidth > size().width())
+				newWidth = size().width();
+			if (newHeight > size().height())
+			    newHeight = size().height();
+		    imgSize.scale(calcZoom(newWidth), calcZoom(newHeight), Qt::IgnoreAspectRatio);
+			break;
 	}
 
 	imgLabel1->setFixedSize(imgSize);
-    scrlArea->horizontalScrollBar()->setValue(scrlArea->horizontalScrollBar()->maximum() / 2);
+	scrlArea->horizontalScrollBar()->setValue(scrlArea->horizontalScrollBar()->maximum() / 2);
 	scrlArea->verticalScrollBar()->setValue(scrlArea->verticalScrollBar()->maximum() / 2);
 }
 

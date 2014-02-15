@@ -94,6 +94,9 @@ private slots:
 	void pasteImages();
 	void thumbsZoomIn();
 	void thumbsZoomOut();
+	void zoomIn();
+	void zoomOut();
+	void resetZoom();
 	void setThumbViewWidgetsVisible(bool visible);
 	void goTop();
 	void goBottom();
@@ -164,6 +167,9 @@ private:
 	QAction *settingsAction;
 	QAction *thumbsZoomInAct;
 	QAction *thumbsZoomOutAct;
+	QAction *zoomInAct;
+	QAction *zoomOutAct;
+	QAction *resetZoomAct;
 
 	QAction *actClassic;
 	QAction *actCompact;

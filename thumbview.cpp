@@ -385,9 +385,12 @@ void FSTree::dragMoveEvent(QDragMoveEvent *event)
 
 void FSTree::dropEvent(QDropEvent *event)
 {
-	QString fstreeStr="FSTree";
-	bool dirOp = (event->source()->metaObject()->className() == fstreeStr);
-	emit dropOp(event->keyboardModifiers(), dirOp, event->mimeData()->urls().at(0).toLocalFile());
-	setCurrentIndex(dndOrigSelection);
+	if (event->source())
+	{
+		QString fstreeStr="FSTree";
+		bool dirOp = (event->source()->metaObject()->className() == fstreeStr);
+		emit dropOp(event->keyboardModifiers(), dirOp, event->mimeData()->urls().at(0).toLocalFile());
+		setCurrentIndex(dndOrigSelection);
+	}
 }
 
