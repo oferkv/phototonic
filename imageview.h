@@ -52,6 +52,7 @@ protected:
     void showEvent(QShowEvent *event);
 
 private:
+	QWidget *mainWindow;
 	QGridLayout *grid;
 	QLabel *imgLabel1;
 	QLabel *imgLabel2;

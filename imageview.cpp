@@ -16,12 +16,14 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <QApplication>
 #include "imageview.h"
 #include "thumbview.h"
 #include "global.h"
 
 ImageView::ImageView(QWidget *parent) : QWidget(parent)
 {
+	mainWindow = parent;
 	grid = new QGridLayout();
 	grid->setContentsMargins(0,0,0,0);
 	grid->setSpacing(0);
@@ -38,6 +40,8 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	scrlArea->setAlignment(Qt::AlignCenter);
 	scrlArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	scrlArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	scrlArea->verticalScrollBar()->blockSignals(true);
+	scrlArea->horizontalScrollBar()->blockSignals(true);
 	scrlArea->setFrameStyle(0);
 	scrlArea->setWidget(imgLabel1);
 	scrlArea->setWidgetResizable(true);
@@ -184,20 +188,28 @@ void ImageView::setMouseMoveData(bool lockMove, int lMouseX, int lMouseY)
 	mouseY = lMouseY;
 	layoutX = imgLabel1->pos().x();
 	layoutY = imgLabel1->pos().y();
-
 }
+
+// pic from cli not centering image!
 
 void ImageView::mouseMoveEvent(QMouseEvent *event)
 {
 	if (moveImageLocked)
 	{
-		qDebug() << imgLabel1->pos();
-		QSize layoutSize = imgLabel1->size();
-		if (layoutSize.width() > size().width() || layoutSize.height() > size().height())
+		qDebug() << imgLabel1->pos().x() << imgLabel1->size().width() << mainWindow->size().width();
+		qDebug() << (mainWindow->size().width() - imgLabel1->size().width());
+
+
+
+		if (imgLabel1->pos().x() < (mainWindow->size().width() - imgLabel1->size().width())
+			|| imgLabel1->pos().x() > 0)
 		{
-//			if (imgLabel1->pos().x() >= 0)
-			imgLabel1->move(layoutX + (event->pos().x() - mouseX), layoutY + (event->pos().y() - mouseY));
-		}
+			if (imgLabel1->pos().x() < (mainWindow->size().width() - imgLabel1->size().width()))
+			imgLabel1->move(layoutX + (event->pos().x() - mouseX), layoutY);		
+			return;//qDebug() << "stop!!!";
+		} 
+
+		imgLabel1->move(layoutX + (event->pos().x() - mouseX), layoutY /*+ (event->pos().y() - mouseY)*/);
 	}
 }
 
