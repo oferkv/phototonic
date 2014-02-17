@@ -194,22 +194,47 @@ void ImageView::setMouseMoveData(bool lockMove, int lMouseX, int lMouseY)
 
 void ImageView::mouseMoveEvent(QMouseEvent *event)
 {
-	if (moveImageLocked)
+	if (moveImageLocked) 
 	{
-		qDebug() << imgLabel1->pos().x() << imgLabel1->size().width() << mainWindow->size().width();
-		qDebug() << (mainWindow->size().width() - imgLabel1->size().width());
+		bool needCorrection = false;
+		int newX = layoutX + (event->pos().x() - mouseX);
+		int newY = layoutY + (event->pos().y() - mouseY);
 
-
-
-		if (imgLabel1->pos().x() < (mainWindow->size().width() - imgLabel1->size().width())
-			|| imgLabel1->pos().x() > 0)
+		if (imgLabel1->size().width() > mainWindow->size().width())
 		{
 			if (imgLabel1->pos().x() < (mainWindow->size().width() - imgLabel1->size().width()))
-			imgLabel1->move(layoutX + (event->pos().x() - mouseX), layoutY);		
-			return;//qDebug() << "stop!!!";
-		} 
+			{
+				newX = mainWindow->size().width() - imgLabel1->size().width();
+				needCorrection = true;
+			}
 
-		imgLabel1->move(layoutX + (event->pos().x() - mouseX), layoutY /*+ (event->pos().y() - mouseY)*/);
+			if (imgLabel1->pos().x() > 0)
+			{
+				newX = 0;
+				needCorrection = true;
+			}
+		}
+
+		if (imgLabel1->size().height() > mainWindow->size().height())
+		{
+			if (imgLabel1->pos().y() < (mainWindow->size().height() - imgLabel1->size().height()))
+			{
+				newY = mainWindow->size().height() - imgLabel1->size().height();
+				needCorrection = true;
+			}
+
+
+			if (imgLabel1->pos().y() > 0)
+			{
+				newY = 0;
+				needCorrection = true;
+			}
+		}
+
+		imgLabel1->move(newX, newY);
+
+		if (needCorrection)
+			setMouseMoveData(true, event->pos().x(), event->pos().y());
 	}
 }
 
