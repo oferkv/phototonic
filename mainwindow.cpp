@@ -890,7 +890,9 @@ void Phototonic::writeSettings()
 	if (stackedWidget->currentIndex() == imageViewIdx)
 		setThumbViewWidgetsVisible(true);
 
-	showNormal();
+	if(isFullScreen())
+		showNormal();
+	QApplication::processEvents();
 	GData::appSettings->setValue("geometry", saveGeometry());
 	GData::appSettings->setValue("mainWindowState", saveState());
 	GData::appSettings->setValue("splitterSizes", splitter->saveState());

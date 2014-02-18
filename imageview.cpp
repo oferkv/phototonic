@@ -40,8 +40,6 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	scrlArea->setAlignment(Qt::AlignCenter);
 	scrlArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	scrlArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	scrlArea->verticalScrollBar()->blockSignals(true);
-	scrlArea->horizontalScrollBar()->blockSignals(true);
 	scrlArea->setFrameStyle(0);
 	scrlArea->setWidget(imgLabel1);
 	scrlArea->setWidgetResizable(true);
@@ -190,51 +188,38 @@ void ImageView::setMouseMoveData(bool lockMove, int lMouseX, int lMouseY)
 	layoutY = imgLabel1->pos().y();
 }
 
-// pic from cli not centering image!
-
 void ImageView::mouseMoveEvent(QMouseEvent *event)
 {
 	if (moveImageLocked) 
 	{
-		bool needCorrection = false;
 		int newX = layoutX + (event->pos().x() - mouseX);
 		int newY = layoutY + (event->pos().y() - mouseY);
+		bool needToMove = false;
 
 		if (imgLabel1->size().width() > mainWindow->size().width())
 		{
-			if (imgLabel1->pos().x() < (mainWindow->size().width() - imgLabel1->size().width()))
-			{
-				newX = mainWindow->size().width() - imgLabel1->size().width();
-				needCorrection = true;
-			}
-
-			if (imgLabel1->pos().x() > 0)
-			{
+			if (newX > 0)
 				newX = 0;
-				needCorrection = true;
-			}
+			else if (newX < (mainWindow->size().width() - imgLabel1->size().width()))
+				newX = (mainWindow->size().width() - imgLabel1->size().width());
+			needToMove = true;
 		}
+		else
+			newX = layoutX;
 
 		if (imgLabel1->size().height() > mainWindow->size().height())
 		{
-			if (imgLabel1->pos().y() < (mainWindow->size().height() - imgLabel1->size().height()))
-			{
-				newY = mainWindow->size().height() - imgLabel1->size().height();
-				needCorrection = true;
-			}
-
-
-			if (imgLabel1->pos().y() > 0)
-			{
+			if (newY > 0)
 				newY = 0;
-				needCorrection = true;
-			}
+			else if (newY < (mainWindow->size().height() - imgLabel1->size().height()))
+				newY = (mainWindow->size().height() - imgLabel1->size().height());
+			needToMove = true;
 		}
+		else
+			newY = layoutY;
 
-		imgLabel1->move(newX, newY);
-
-		if (needCorrection)
-			setMouseMoveData(true, event->pos().x(), event->pos().y());
+		if (needToMove)
+			imgLabel1->move(newX, newY);
 	}
 }
 
