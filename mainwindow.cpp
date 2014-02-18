@@ -375,8 +375,8 @@ void Phototonic::createMenus()
 	goMenu->addAction(goUpAction);
 	goMenu->addAction(goHomeAction);
 	goMenu->addSeparator();
-	goMenu->addAction(thumbsGoBottomAct);
 	goMenu->addAction(thumbsGoTopAct);
+	goMenu->addAction(thumbsGoBottomAct);
 
 	viewMenu = menuBar()->addMenu("&View");
 	viewMenu->addAction(thumbsZoomInAct);
@@ -1430,3 +1430,13 @@ QString Phototonic::getSelectedPath()
 		return 0;
 }
 
+void Phototonic::wheelEvent(QWheelEvent *event)
+{
+	if (stackedWidget->currentIndex() == imageViewIdx)
+	{
+		if (event->delta() < 0)
+			loadPrevImage();
+		else
+			loadNextImage();
+	}
+}

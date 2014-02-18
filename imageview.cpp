@@ -17,12 +17,14 @@
  */
 
 #include <QApplication>
+#include <QTimer>
 #include "imageview.h"
 #include "thumbview.h"
 #include "global.h"
 
 ImageView::ImageView(QWidget *parent) : QWidget(parent)
 {
+	mouseCursorHidden = false;
 	mainWindow = parent;
 	grid = new QGridLayout();
 	grid->setContentsMargins(0,0,0,0);
@@ -40,6 +42,8 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	scrlArea->setAlignment(Qt::AlignCenter);
 	scrlArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	scrlArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	scrlArea->verticalScrollBar()->blockSignals(true);
+	scrlArea->horizontalScrollBar()->blockSignals(true);
 	scrlArea->setFrameStyle(0);
 	scrlArea->setWidget(imgLabel1);
 	scrlArea->setWidgetResizable(true);
@@ -177,6 +181,13 @@ void ImageView::loadImage(QString &imagePath, QString imageFileName)
 		GData::imageZoomFactor = 1.0;
 	
 	resizeImage();
+	QTimer::singleShot(2000, this, SLOT(hideCursor()));
+}
+
+void ImageView::hideCursor()
+{
+	QApplication::setOverrideCursor(Qt::BlankCursor);
+	mouseCursorHidden = true;
 }
 
 void ImageView::setMouseMoveData(bool lockMove, int lMouseX, int lMouseY)
@@ -220,6 +231,12 @@ void ImageView::mouseMoveEvent(QMouseEvent *event)
 
 		if (needToMove)
 			imgLabel1->move(newX, newY);
+	}
+
+	if (mouseCursorHidden)
+	{
+		QApplication::restoreOverrideCursor();
+		mouseCursorHidden = false;
 	}
 }
 

@@ -64,8 +64,13 @@ private:
 	int mouseY;
 	int layoutX;
 	int layoutY;
+	bool mouseCursorHidden;
 
 	void mouseMoveEvent(QMouseEvent *event);
+
+private slots:
+	void hideCursor();
+
 };
 
 #endif // IMAGEVIEW_H

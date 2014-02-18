@@ -128,6 +128,7 @@ private:
 	QString getSelectedPath();
 	void createCopyCutFileList();
 	void setCopyCutActions(bool setEnabled);
+	void wheelEvent(QWheelEvent *event);
 
 	QString cliFileName;
 	bool cliImageLoaded;
