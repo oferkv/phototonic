@@ -600,10 +600,12 @@ void Phototonic::toggleFullScreen()
 	{
 		showFullScreen();
 		GData::isFullScreen = true;
+		imageView->setCursorHiding(true);
 	}
 	else
 	{
 		showNormal();
+		imageView->setCursorHiding(false);
 		GData::isFullScreen = false;
 	}
 }
@@ -981,6 +983,7 @@ void Phototonic::mousePressEvent(QMouseEvent *event)
 		{
 			imageView->setMouseMoveData(true, event->x(), event->y());
 			QApplication::setOverrideCursor(Qt::ClosedHandCursor);
+			event->accept();
 		}
 	}
 }
@@ -1014,17 +1017,20 @@ void Phototonic::loadImageFile(QString imageFileName)
 	{
 		setThumbViewWidgetsVisible(false);
 		if (GData::isFullScreen == true)
+		{
 			showFullScreen();
+			imageView->setCursorHiding(true);
+		}
 		stackedWidget->setCurrentIndex(imageViewIdx);
 	}
 	setWindowTitle(imageFileName + " - Phototonic");
-	QApplication::setOverrideCursor(Qt::OpenHandCursor);
 }
 
 void Phototonic::loadImagefromThumb(const QModelIndex &idx)
 {
 	thumbView->setCurrentRow(idx.row());
 	loadImageFile(thumbView->thumbViewModel->item(idx.row())->data(thumbView->FileNameRole).toString());
+	QApplication::setOverrideCursor(Qt::OpenHandCursor);
 }
 
 void Phototonic::loadImagefromAction()
@@ -1042,6 +1048,7 @@ void Phototonic::loadImagefromCli()
 {
 	loadImageFile(cliFileName);
 	thumbView->setCurrentIndexByName(cliFileName);
+	QApplication::setOverrideCursor(Qt::OpenHandCursor);
 }
 
 void Phototonic::loadNextImage()
@@ -1077,7 +1084,10 @@ void Phototonic::closeImage()
 		close();
 
 	if(isFullScreen())
+	{
+		imageView->setCursorHiding(false);
 		showNormal();
+	}
 	while (QApplication::overrideCursor())
 		QApplication::restoreOverrideCursor();
 	setThumbViewWidgetsVisible(true);
@@ -1440,3 +1450,4 @@ void Phototonic::wheelEvent(QWheelEvent *event)
 			loadNextImage();
 	}
 }
+

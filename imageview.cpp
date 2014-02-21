@@ -24,12 +24,12 @@
 
 ImageView::ImageView(QWidget *parent) : QWidget(parent)
 {
-	mouseCursorHidden = false;
 	mainWindow = parent;
 	grid = new QGridLayout();
 	grid->setContentsMargins(0,0,0,0);
 	grid->setSpacing(0);
 	this->setLayout(grid);
+	cursorIsHidden = false;
 
 	imgLabel1 = new QLabel;
 	imgLabel1->setScaledContents(true);
@@ -50,6 +50,8 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	
 	grid->addWidget(scrlArea, 0, 0, 0, 0);
 	moveImageLocked = false;
+	mouseMovementTimer = new QTimer(this);
+	connect(mouseMovementTimer, SIGNAL(timeout()), this, SLOT(monitorCursorState()));
 }
 
 void ImageView::resizeEvent(QResizeEvent *event)
@@ -181,13 +183,44 @@ void ImageView::loadImage(QString &imagePath, QString imageFileName)
 		GData::imageZoomFactor = 1.0;
 	
 	resizeImage();
-	QTimer::singleShot(2000, this, SLOT(hideCursor()));
 }
 
-void ImageView::hideCursor()
+void ImageView::monitorCursorState()
 {
-	QApplication::setOverrideCursor(Qt::BlankCursor);
-	mouseCursorHidden = true;
+	static QPoint lastPos;
+	
+	if (QCursor::pos() != lastPos)
+	{
+		lastPos = QCursor::pos();
+		if (cursorIsHidden) 
+		{
+			QApplication::restoreOverrideCursor();
+			cursorIsHidden = false;
+		}
+	}
+	else
+	{
+		if (!cursorIsHidden && !moveImageLocked)
+		{
+			QApplication::setOverrideCursor(Qt::BlankCursor);
+			cursorIsHidden = true;
+		}
+	}
+}
+
+void ImageView::setCursorHiding(bool hide)
+{
+	if (hide)
+		mouseMovementTimer->start(500);
+	else
+	{
+		mouseMovementTimer->stop();
+		if (cursorIsHidden) 
+		{
+			QApplication::restoreOverrideCursor();
+			cursorIsHidden = false;
+		}
+	}
 }
 
 void ImageView::setMouseMoveData(bool lockMove, int lMouseX, int lMouseY)
@@ -231,12 +264,6 @@ void ImageView::mouseMoveEvent(QMouseEvent *event)
 
 		if (needToMove)
 			imgLabel1->move(newX, newY);
-	}
-
-	if (mouseCursorHidden)
-	{
-		QApplication::restoreOverrideCursor();
-		mouseCursorHidden = false;
 	}
 }
 

@@ -26,17 +26,14 @@
 #include <QImageReader>
 #include <QScrollBar>
 #include <QMouseEvent>
+#include <QTimer>
 
 class ImageView : public QWidget
 {
     Q_OBJECT
 
 public:
-    ImageView(QWidget *parent = 0);
-	void loadImage(QString &imagePath, QString imageFileName);
-	void resizeImage();
 	QString currentImage;
-	void setMouseMoveData(bool lockMove, int lMouseX, int lMouseY);
 
 	enum ZoomMethods
 	{
@@ -47,9 +44,19 @@ public:
 		Disprop
 	};
 
+    ImageView(QWidget *parent = 0);
+	void loadImage(QString &imagePath, QString imageFileName);
+	void resizeImage();
+	void setMouseMoveData(bool lockMove, int lMouseX, int lMouseY);
+	void setCursorHiding(bool hide);
+
+public slots:
+	void monitorCursorState();
+
 protected:
     void resizeEvent(QResizeEvent *event);
     void showEvent(QShowEvent *event);
+	void mouseMoveEvent(QMouseEvent *event);
 
 private:
 	QWidget *mainWindow;
@@ -59,18 +66,14 @@ private:
 	QScrollArea *scrlArea;
 	QImageReader imageReader;
 	QPixmap pixmap0_0;
+	QTimer *mouseMovementTimer;
+
+	bool cursorIsHidden;
 	bool moveImageLocked;
 	int mouseX;
 	int mouseY;
 	int layoutX;
 	int layoutY;
-	bool mouseCursorHidden;
-
-	void mouseMoveEvent(QMouseEvent *event);
-
-private slots:
-	void hideCursor();
-
 };
 
 #endif // IMAGEVIEW_H

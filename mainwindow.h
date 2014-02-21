@@ -39,13 +39,13 @@ class Phototonic : public QMainWindow
 
 public:
 	Phototonic(QWidget *parent = 0);
-	void mouseDoubleClickEvent(QMouseEvent *event);
-	void mousePressEvent(QMouseEvent *event);
-	void mouseReleaseEvent(QMouseEvent *event);
 	int copyCutCount;
 
 protected:
+	void mouseDoubleClickEvent(QMouseEvent *event);
 	void closeEvent(QCloseEvent *event);
+	void mousePressEvent(QMouseEvent *event);
+	void mouseReleaseEvent(QMouseEvent *event);
 
 signals:
 	void abortThumbLoading();
@@ -107,32 +107,7 @@ private slots:
 	void setSquarishThumbs();
 
 private:
-	void restoreCurrentIdx();
-	bool handleArgs();
-	void createImageView();
-	void createThumbView();
-	void createActions();
-	void createMenus();
-	void createToolBars();
-	void createStatusBar();
-	void createFSTree();
-	void writeSettings();
-	void loadDefaultSettings();
-	void recordHistory(QString dir);
-	bool isValidPath(QString &path);
-	bool isBusy()
-	{
-		return thumbViewBusy;
-	}
-	void abortThumbsLoad();
-	QString getSelectedPath();
-	void createCopyCutFileList();
-	void setCopyCutActions(bool setEnabled);
-	void wheelEvent(QWheelEvent *event);
-
 	QString cliFileName;
-	bool cliImageLoaded;
-	bool thumbViewBusy;
 	QMenuBar *thumbsMenuBar;
 	QMenu *fileMenu;
 	QMenu *editMenu;
@@ -146,7 +121,6 @@ private:
 	QToolBar *goToolBar;
 
 	QAction *exitAction;
-
 	QAction *cutAction;
 	QAction *copyAction;
 	QAction *deleteAction;
@@ -207,12 +181,7 @@ private:
 	QStackedWidget *stackedWidget;
 	ThumbView *thumbView;
 	ImageView *imageView;
-	bool initComplete;
-	bool settingsChangedNeedRefresh;
-
 	QList<QString> pathHistory;
-	int currentHistoryIdx;
-	bool needHistoryRecord;
 
 	enum CentralWidgets
 	{
@@ -223,6 +192,35 @@ private:
 	bool viewToolBarWasVisible;
 	bool editToolBarWasVisible;
 	bool goToolBarWasVisible;
+	int currentHistoryIdx;
+	bool needHistoryRecord;
+	bool initComplete;
+	bool settingsChangedNeedRefresh;
+	bool cliImageLoaded;
+	bool thumbViewBusy;
+
+	void restoreCurrentIdx();
+	bool handleArgs();
+	void createImageView();
+	void createThumbView();
+	void createActions();
+	void createMenus();
+	void createToolBars();
+	void createStatusBar();
+	void createFSTree();
+	void writeSettings();
+	void loadDefaultSettings();
+	void recordHistory(QString dir);
+	bool isValidPath(QString &path);
+	bool isBusy()
+	{
+		return thumbViewBusy;
+	}
+	void abortThumbsLoad();
+	QString getSelectedPath();
+	void createCopyCutFileList();
+	void setCopyCutActions(bool setEnabled);
+	void wheelEvent(QWheelEvent *event);	
 };
 
 #endif // MAINWINDOW_H

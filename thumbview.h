@@ -51,7 +51,6 @@ public:
 		m_needScroll = needScroll;
 	}
 	void addNewThumb(QString &imageFileName);
-	void wheelEvent(QWheelEvent *event);
 	void setThumbColors();
 	void setCurrentIndexByName(QString &FileName);
 	void selectCurrentIndex();
@@ -85,22 +84,24 @@ public:
 
 protected:
     void startDrag(Qt::DropActions);
+	void wheelEvent(QWheelEvent *event);
 	
 private:
 	QFileInfo thumbFileInfo;
 	QFileInfoList thumbFileInfoList;
+	QImage emptyImg;
+	QModelIndex currentIndex;
+	
 	bool abortOp;
 	int newIndex;
 	bool thumbLoaderActive;
 	bool m_needScroll;
-	QImage emptyImg;
+	int currentRow;
 
 	void initThumbs();
 	void loadThumbs();
 	int getFirstVisibleItem();
 	bool isItemVisible(QModelIndex idx);
-	QModelIndex currentIndex;
-	int currentRow;
 };
 
 class FSTree : public QTreeView
