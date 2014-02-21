@@ -59,13 +59,23 @@ protected:
 	void mouseMoveEvent(QMouseEvent *event);
 
 private:
+	enum LayoutTypes
+	{
+		LaySingle = 0,
+		LayDual,
+		LayTriple,
+		LayQuad,
+		LayVDual,
+		NLayouts = 5
+	};
+	int layoutMode;
+
 	QWidget *mainWindow;
 	QGridLayout *grid;
-	QLabel *imgLabel1;
-	QLabel *imgLabel2;
 	QScrollArea *scrlArea;
 	QImageReader imageReader;
-	QPixmap pixmap0_0;
+	QLabel *imgLabels[NLayouts];
+	QPixmap pixmaps[NLayouts];
 	QTimer *mouseMovementTimer;
 
 	bool cursorIsHidden;

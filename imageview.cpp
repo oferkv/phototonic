@@ -25,17 +25,28 @@
 ImageView::ImageView(QWidget *parent) : QWidget(parent)
 {
 	mainWindow = parent;
+	cursorIsHidden = false;
+	moveImageLocked = false;
+	layoutMode = LayDual;
+
+	for (int i = 0; i < NLayouts; i++)
+	{
+		qDebug() << "doing " << i;
+		imgLabels[i] = new QLabel;
+		imgLabels[i]->setScaledContents(true);
+		imgLabels[i]->setFixedSize(0, 0);
+	}
+
+	setPalette(QPalette(GData::backgroundColor));
+
 	grid = new QGridLayout();
 	grid->setContentsMargins(0,0,0,0);
 	grid->setSpacing(0);
-	this->setLayout(grid);
-	cursorIsHidden = false;
-
-	imgLabel1 = new QLabel;
-	imgLabel1->setScaledContents(true);
-	imgLabel1->setFixedSize(0,0);
-
-	setPalette(QPalette(GData::backgroundColor));
+	grid->addWidget(imgLabels[0], 0, 0, Qt::AlignLeft);
+	grid->addWidget(imgLabels[1], 0, 1, Qt::AlignLeft);
+	grid->addWidget(imgLabels[2], 0, 2);
+	grid->addWidget(imgLabels[3], 1, 0);
+	grid->addWidget(imgLabels[4], 1, 1);
 
 	scrlArea = new QScrollArea;
 	scrlArea->setContentsMargins(0,0,0,0);
@@ -45,11 +56,15 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	scrlArea->verticalScrollBar()->blockSignals(true);
 	scrlArea->horizontalScrollBar()->blockSignals(true);
 	scrlArea->setFrameStyle(0);
-	scrlArea->setWidget(imgLabel1);
+	scrlArea->setLayout(grid);
 	scrlArea->setWidgetResizable(true);
+
+	QVBoxLayout *mainLayout = new QVBoxLayout;
+	mainLayout->setContentsMargins(0,0,0,0);
+	mainLayout->addWidget(scrlArea);
+		
+	this->setLayout(mainLayout);
 	
-	grid->addWidget(scrlArea, 0, 0, 0, 0);
-	moveImageLocked = false;
 	mouseMovementTimer = new QTimer(this);
 	connect(mouseMovementTimer, SIGNAL(timeout()), this, SLOT(monitorCursorState()));
 }
@@ -87,7 +102,7 @@ static inline int calcZoom(int size)
 
 void ImageView::resizeImage()
 {
-	QSize imgSize = imgLabel1->pixmap()->size();
+	QSize imgSize = imgLabels[0]->pixmap()->size();
 
 	switch(GData::zoomInFlags)
 	{
@@ -159,7 +174,8 @@ void ImageView::resizeImage()
 			break;
 	}
 
-	imgLabel1->setFixedSize(imgSize);
+	for (int i = 0; i <= layoutMode; i++)
+		imgLabels[i]->setFixedSize(imgSize);
 	scrlArea->horizontalScrollBar()->setValue(scrlArea->horizontalScrollBar()->maximum() / 2);
 	scrlArea->verticalScrollBar()->setValue(scrlArea->verticalScrollBar()->maximum() / 2);
 }
@@ -172,13 +188,18 @@ void ImageView::loadImage(QString &imagePath, QString imageFileName)
 	imageReader.setFileName(imageFullPath);
 	if (!imageReader.size().isValid())
 	{
-		pixmap0_0.load(":/images/error_image.png");
+		for (int i = 0; i <= layoutMode; i++)
+			pixmaps[0].load(":/images/error_image.png");
 	}
 	else
 	{
-		pixmap0_0.load(imageFullPath);
+		for (int i = 0; i <= layoutMode; i++)
+		{
+			pixmaps[0].load(imageFullPath);
+			imgLabels[i]->setPixmap(pixmaps[0]);
+		}
 	}
-	imgLabel1->setPixmap(pixmap0_0);
+
 	if (!GData::keepZoomFactor)
 		GData::imageZoomFactor = 1.0;
 	
@@ -228,8 +249,8 @@ void ImageView::setMouseMoveData(bool lockMove, int lMouseX, int lMouseY)
 	moveImageLocked = lockMove;
 	mouseX = lMouseX;
 	mouseY = lMouseY;
-	layoutX = imgLabel1->pos().x();
-	layoutY = imgLabel1->pos().y();
+	layoutX = imgLabels[0]->pos().x();
+	layoutY = imgLabels[0]->pos().y();
 }
 
 void ImageView::mouseMoveEvent(QMouseEvent *event)
@@ -240,30 +261,30 @@ void ImageView::mouseMoveEvent(QMouseEvent *event)
 		int newY = layoutY + (event->pos().y() - mouseY);
 		bool needToMove = false;
 
-		if (imgLabel1->size().width() > mainWindow->size().width())
+		if (imgLabels[0]->size().width() > mainWindow->size().width())
 		{
 			if (newX > 0)
 				newX = 0;
-			else if (newX < (mainWindow->size().width() - imgLabel1->size().width()))
-				newX = (mainWindow->size().width() - imgLabel1->size().width());
+			else if (newX < (mainWindow->size().width() - imgLabels[0]->size().width()))
+				newX = (mainWindow->size().width() - imgLabels[0]->size().width());
 			needToMove = true;
 		}
 		else
 			newX = layoutX;
 
-		if (imgLabel1->size().height() > mainWindow->size().height())
+		if (imgLabels[0]->size().height() > mainWindow->size().height())
 		{
 			if (newY > 0)
 				newY = 0;
-			else if (newY < (mainWindow->size().height() - imgLabel1->size().height()))
-				newY = (mainWindow->size().height() - imgLabel1->size().height());
+			else if (newY < (mainWindow->size().height() - imgLabels[0]->size().height()))
+				newY = (mainWindow->size().height() - imgLabels[0]->size().height());
 			needToMove = true;
 		}
 		else
 			newY = layoutY;
 
 		if (needToMove)
-			imgLabel1->move(newX, newY);
+			imgLabels[0]->move(newX, newY);
 	}
 }
 

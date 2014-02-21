@@ -670,7 +670,7 @@ void Phototonic::thumbsZoomOut()
 
 void Phototonic::zoomOut()
 {
-	GData::imageZoomFactor += (GData::imageZoomFactor >= 2.5)? 0 : 0.25;
+	GData::imageZoomFactor += (GData::imageZoomFactor >= 3)? 0 : 0.25;
 	imageView->resizeImage();
 }
 
