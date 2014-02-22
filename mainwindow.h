@@ -177,7 +177,6 @@ private:
 	QFileSystemModel *fsModel;
 	FSTree *fsTree;
 	QSplitter *splitter;
-	QGridLayout *imageLayout;
 	QStackedWidget *stackedWidget;
 	ThumbView *thumbView;
 	ImageView *imageView;
@@ -195,7 +194,7 @@ private:
 	int currentHistoryIdx;
 	bool needHistoryRecord;
 	bool initComplete;
-	bool settingsChangedNeedRefresh;
+	bool needThumbsRefresh;
 	bool cliImageLoaded;
 	bool thumbViewBusy;
 

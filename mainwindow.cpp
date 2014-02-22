@@ -543,8 +543,8 @@ void Phototonic::refreshThumbs(bool scrollToTop)
 	else
 	{
 		thumbView->setNeedScroll(false);
-		QTimer::singleShot(100, this, SLOT(reloadThumbsSlot()));
-		QTimer::singleShot(200, thumbView, SLOT(updateIndex()));
+		QTimer::singleShot(0, this, SLOT(reloadThumbsSlot()));
+		QTimer::singleShot(0, thumbView, SLOT(updateIndex()));
 	}
 }
 
@@ -585,7 +585,7 @@ void Phototonic::showSettings()
 		if (stackedWidget->currentIndex() == imageViewIdx)
 		{
 			imageView->resizeImage();
-			settingsChangedNeedRefresh = true;
+			needThumbsRefresh = true;
 		}
 		else
 			refreshThumbs(true);
@@ -916,7 +916,7 @@ void Phototonic::writeSettings()
 void Phototonic::loadDefaultSettings()
 {
 	initComplete = false;
-	settingsChangedNeedRefresh = false;
+	needThumbsRefresh = false;
 
 	if (!GData::appSettings->contains("thumbsZoomVal"))
 	{
@@ -1095,10 +1095,10 @@ void Phototonic::closeImage()
 	setWindowTitle(thumbView->currentViewDir + " - Phototonic");
 	thumbView->setCurrentIndexByName(imageView->currentImage);
 	thumbView->selectCurrentIndex();
-	QTimer::singleShot(100, thumbView, SLOT(updateIndex()));
-	if (settingsChangedNeedRefresh)
+	QTimer::singleShot(0, thumbView, SLOT(updateIndex()));
+	if (needThumbsRefresh)
 	{
-		settingsChangedNeedRefresh = false;
+		needThumbsRefresh = false;
 		refreshThumbs(true);
 	}
 }
@@ -1186,7 +1186,7 @@ void Phototonic::checkDirState(const QModelIndex &, int, int)
 	if (!QDir().exists(thumbView->currentViewDir))
 	{
 		thumbView->currentViewDir = "";
-		QTimer::singleShot(500, this, SLOT(reloadThumbsSlot()));
+		QTimer::singleShot(0, this, SLOT(reloadThumbsSlot()));
 	}
 }
 
@@ -1224,7 +1224,7 @@ void Phototonic::reloadThumbsSlot()
 	if (thumbViewBusy || !initComplete)
 	{	
 		abortThumbsLoad();
-		QTimer::singleShot(10, this, SLOT(reloadThumbsSlot()));
+		QTimer::singleShot(0, this, SLOT(reloadThumbsSlot()));
 		return;
 	}
 
@@ -1445,9 +1445,9 @@ void Phototonic::wheelEvent(QWheelEvent *event)
 	if (stackedWidget->currentIndex() == imageViewIdx)
 	{
 		if (event->delta() < 0)
-			loadPrevImage();
-		else
 			loadNextImage();
+		else
+			loadPrevImage();
 	}
 }
 

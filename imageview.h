@@ -47,6 +47,7 @@ public:
     ImageView(QWidget *parent = 0);
 	void loadImage(QString &imagePath, QString imageFileName);
 	void resizeImage();
+	void centerImage(QSize &imgSize);
 	void setMouseMoveData(bool lockMove, int lMouseX, int lMouseY);
 	void setCursorHiding(bool hide);
 
@@ -71,10 +72,10 @@ private:
 	int layoutMode;
 
 	QWidget *mainWindow;
-	QGridLayout *grid;
+	QHBoxLayout *mainLayout;
 	QScrollArea *scrlArea;
 	QImageReader imageReader;
-	QLabel *imgLabels[NLayouts];
+	QLabel *imageLabel[NLayouts];
 	QPixmap pixmaps[NLayouts];
 	QTimer *mouseMovementTimer;
 
