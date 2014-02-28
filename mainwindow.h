@@ -98,6 +98,7 @@ private slots:
 	void zoomIn();
 	void zoomOut();
 	void resetZoom();
+	void origZoom();
 	void keepZoom();
 	void setThumbViewWidgetsVisible(bool visible);
 	void goTop();
@@ -147,6 +148,7 @@ private:
 	QAction *zoomInAct;
 	QAction *zoomOutAct;
 	QAction *resetZoomAct;
+	QAction *origZoomAct;
 	QAction *keepZoomAct;
 
 	QAction *actClassic;
@@ -194,7 +196,7 @@ private:
 	int currentHistoryIdx;
 	bool needHistoryRecord;
 	bool initComplete;
-	bool needThumbsRefresh;
+	bool newSettingsRefreshThumbs;
 	bool cliImageLoaded;
 	bool thumbViewBusy;
 	bool shouldMaximize;

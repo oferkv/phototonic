@@ -138,6 +138,7 @@ void Phototonic::createImageView()
 	imageView->addAction(sep);
 	imageView->addAction(zoomInAct);
 	imageView->addAction(zoomOutAct);
+	imageView->addAction(origZoomAct);
 	imageView->addAction(resetZoomAct);
 	imageView->addAction(keepZoomAct);
 	sep = new QAction(this);
@@ -332,18 +333,22 @@ void Phototonic::createActions()
 	connect(openImageAction, SIGNAL(triggered()), this, SLOT(loadImagefromAction()));
 
 	zoomOutAct = new QAction("Zoom Out", this);
-	zoomOutAct->setShortcut(QKeySequence("+"));
+	zoomOutAct->setShortcut(QKeySequence("-"));
 	connect(zoomOutAct, SIGNAL(triggered()), this, SLOT(zoomOut()));
 	zoomOutAct->setIcon(QIcon(":/images/zoom_out.png"));
 
 	zoomInAct = new QAction("Zoom In", this);
-	zoomInAct->setShortcut(QKeySequence("-"));
+	zoomInAct->setShortcut(QKeySequence("+"));
 	connect(zoomInAct, SIGNAL(triggered()), this, SLOT(zoomIn()));
 	zoomInAct->setIcon(QIcon(":/images/zoom_out.png"));
 
 	resetZoomAct = new QAction("Reset Zoom", this);
-	resetZoomAct->setShortcut(QKeySequence("/"));
+	resetZoomAct->setShortcut(QKeySequence("*"));
 	connect(resetZoomAct, SIGNAL(triggered()), this, SLOT(resetZoom()));
+
+	origZoomAct = new QAction("Original Size", this);
+	origZoomAct->setShortcut(QKeySequence("/"));
+	connect(origZoomAct, SIGNAL(triggered()), this, SLOT(origZoom()));
 
 	keepZoomAct = new QAction("Keep Zoom", this);
 	keepZoomAct->setCheckable(true);
@@ -544,7 +549,7 @@ void Phototonic::refreshThumbs(bool scrollToTop)
 	{
 		thumbView->setNeedScroll(false);
 		QTimer::singleShot(0, this, SLOT(reloadThumbsSlot()));
-		QTimer::singleShot(0, thumbView, SLOT(updateIndex()));
+		QTimer::singleShot(100, thumbView, SLOT(updateIndex()));
 	}
 }
 
@@ -585,7 +590,7 @@ void Phototonic::showSettings()
 		if (stackedWidget->currentIndex() == imageViewIdx)
 		{
 			imageView->resizeImage();
-			needThumbsRefresh = true;
+			newSettingsRefreshThumbs = true;
 		}
 		else
 			refreshThumbs(true);
@@ -673,19 +678,29 @@ void Phototonic::thumbsZoomOut()
 
 void Phototonic::zoomOut()
 {
-	GData::imageZoomFactor += (GData::imageZoomFactor >= 3)? 0 : 0.25;
+	GData::imageZoomFactor -= (GData::imageZoomFactor <= 0.25)? 0 : 0.25;
+	imageView->tempDisableResize = false;
 	imageView->resizeImage();
 }
 
 void Phototonic::zoomIn()
 {
-	GData::imageZoomFactor -= (GData::imageZoomFactor <= 0.25)? 0 : 0.25;
+	GData::imageZoomFactor += (GData::imageZoomFactor >= 3.25)? 0 : 0.25;
+	imageView->tempDisableResize = false;
 	imageView->resizeImage();
 }
 
 void Phototonic::resetZoom()
 {
 	GData::imageZoomFactor = 1.0;
+	imageView->tempDisableResize = false;
+	imageView->resizeImage();
+}
+
+void Phototonic::origZoom()
+{
+	GData::imageZoomFactor = 1.0;
+	imageView->tempDisableResize = true;
 	imageView->resizeImage();
 }
 
@@ -925,7 +940,7 @@ void Phototonic::writeSettings()
 void Phototonic::loadDefaultSettings()
 {
 	initComplete = false;
-	needThumbsRefresh = false;
+	newSettingsRefreshThumbs = false;
 
 	if (!GData::appSettings->contains("thumbsZoomVal"))
 	{
@@ -1108,9 +1123,9 @@ void Phototonic::closeImage()
 	thumbView->setCurrentIndexByName(imageView->currentImage);
 	thumbView->selectCurrentIndex();
 	QTimer::singleShot(0, thumbView, SLOT(updateIndex()));
-	if (needThumbsRefresh)
+	if (newSettingsRefreshThumbs)
 	{
-		needThumbsRefresh = false;
+		newSettingsRefreshThumbs = false;
 		refreshThumbs(true);
 	}
 }

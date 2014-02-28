@@ -217,7 +217,7 @@ void ThumbView::initThumbs()
 	thumbViewModel->clear();
 	thumbIsLoaded->clear();
 
-	if (m_needScroll)
+	if (isNeedScroll)
 		scrollToTop();
 
 	if (GData::thumbsLayout == Classic)
@@ -293,7 +293,7 @@ refreshThumbs:
 
 		QApplication::processEvents();
 
-		if (newIndex)
+		if (newIndex && GData::thumbsLayout != Compact)
 		{
 			currThumb = newIndex - 1;
 			newIndex = 0;

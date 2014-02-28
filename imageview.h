@@ -34,6 +34,7 @@ class ImageView : public QWidget
 
 public:
 	QString currentImage;
+	bool tempDisableResize;
 
 	enum ZoomMethods
 	{
@@ -47,7 +48,6 @@ public:
     ImageView(QWidget *parent = 0);
 	void loadImage(QString &imagePath, QString imageFileName);
 	void resizeImage();
-	void centerImage(QSize &imgSize);
 	void setMouseMoveData(bool lockMove, int lMouseX, int lMouseY);
 	void setCursorHiding(bool hide);
 
@@ -84,6 +84,8 @@ private:
 	int mouseY;
 	int layoutX;
 	int layoutY;
+
+	void centerImage(QSize &imgSize);
 };
 
 #endif // IMAGEVIEW_H

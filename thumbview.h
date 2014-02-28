@@ -48,7 +48,7 @@ public:
 	void load(QString &cliImageName);
 	void setNeedScroll(bool needScroll)
 	{
-		m_needScroll = needScroll;
+		isNeedScroll = needScroll;
 	}
 	void addNewThumb(QString &imageFileName);
 	void setThumbColors();
@@ -95,7 +95,7 @@ private:
 	bool abortOp;
 	int newIndex;
 	bool thumbLoaderActive;
-	bool m_needScroll;
+	bool isNeedScroll;
 	int currentRow;
 
 	void initThumbs();
