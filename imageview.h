@@ -72,7 +72,6 @@ private:
 	int layoutMode;
 
 	QWidget *mainWindow;
-	QHBoxLayout *mainLayout;
 	QScrollArea *scrlArea;
 	QImageReader imageReader;
 	QLabel *imageLabel[NLayouts];

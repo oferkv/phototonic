@@ -38,27 +38,26 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 
 	setPalette(QPalette(GData::backgroundColor));
 
-	mainLayout = new QHBoxLayout();
-	mainLayout->setContentsMargins(0,0,0,0);
-	mainLayout->setSpacing(0);
-	mainLayout->addWidget(imageLabel[0]);
+	QHBoxLayout *mainHLayout = new QHBoxLayout();
+	mainHLayout->setContentsMargins(0, 0, 0, 0);
+	mainHLayout->setSpacing(0);
+	mainHLayout->addWidget(imageLabel[0]);
 
 	scrlArea = new QScrollArea;
-	scrlArea->setContentsMargins(0,0,0,0);
+	scrlArea->setContentsMargins(0, 0, 0, 0);
 	scrlArea->setAlignment(Qt::AlignCenter);
 	scrlArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	scrlArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	scrlArea->verticalScrollBar()->blockSignals(true);
 	scrlArea->horizontalScrollBar()->blockSignals(true);
 	scrlArea->setFrameStyle(0);
-	scrlArea->setLayout(mainLayout);
+	scrlArea->setLayout(mainHLayout);
 	scrlArea->setWidgetResizable(true);
 
-	QVBoxLayout *mainLayout = new QVBoxLayout;
-	mainLayout->setContentsMargins(0,0,0,0);
-	mainLayout->addWidget(scrlArea);
-		
-	this->setLayout(mainLayout);
+	QVBoxLayout *mainVLayout = new QVBoxLayout;
+	mainVLayout->setContentsMargins(0, 0, 0, 0);
+	mainVLayout->addWidget(scrlArea);
+	this->setLayout(mainVLayout);
 	
 	mouseMovementTimer = new QTimer(this);
 	connect(mouseMovementTimer, SIGNAL(timeout()), this, SLOT(monitorCursorState()));
@@ -98,11 +97,11 @@ static inline int calcZoom(int size)
 void ImageView::resizeImage()
 {
 	static bool busy = false;
-	if (busy)
+	if (busy || !imageLabel[0]->pixmap())
 		return;
-
 	busy = true;
 
+	imageLabel[0]->setVisible(false);
 	QSize imgSize = imageLabel[0]->pixmap()->size();
 	switch(GData::zoomInFlags)
 	{
@@ -175,6 +174,7 @@ void ImageView::resizeImage()
 	}
 
 	imageLabel[0]->setFixedSize(imgSize);
+	imageLabel[0]->setVisible(true);
 	centerImage(imgSize);
 	busy = false;
 }
@@ -183,21 +183,11 @@ void ImageView::centerImage(QSize &imgSize)
 {
 	int newX = imageLabel[0]->pos().x();
 	int newY = imageLabel[0]->pos().y();
-	bool newLoc = false;
 
-	if (imgSize.width() > size().width())
-	{
-		newX = (size().width() - imgSize.width()) / 2;
-		newLoc = true;
-	}
+	newX = (size().width() - imgSize.width()) / 2;
+	newY = (size().height() - imgSize.height()) / 2;
 
-	if (imgSize.height() > size().height())
-	{
-		newY = (size().height() - imgSize.height()) / 2;
-		newLoc = true;
-	}
-
-	if (newLoc)
+	if (newX !=imageLabel[0]->pos().x() || newY !=imageLabel[0]->pos().y())
 		imageLabel[0]->move(newX, newY);
 }
 

@@ -197,6 +197,7 @@ private:
 	bool needThumbsRefresh;
 	bool cliImageLoaded;
 	bool thumbViewBusy;
+	bool shouldMaximize;
 
 	void restoreCurrentIdx();
 	bool handleArgs();

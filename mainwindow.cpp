@@ -598,6 +598,7 @@ void Phototonic::toggleFullScreen()
 {
 	if (fullScreenAct->isChecked())
 	{
+		shouldMaximize = isMaximized();
 		showFullScreen();
 		GData::isFullScreen = true;
 		imageView->setCursorHiding(true);
@@ -605,6 +606,8 @@ void Phototonic::toggleFullScreen()
 	else
 	{
 		showNormal();
+		if (shouldMaximize)
+			showMaximized();
 		imageView->setCursorHiding(false);
 		GData::isFullScreen = false;
 	}
@@ -893,7 +896,12 @@ void Phototonic::writeSettings()
 		setThumbViewWidgetsVisible(true);
 
 	if(isFullScreen())
+	{
 		showNormal();
+		if (shouldMaximize)
+			showMaximized();
+	}
+
 	QApplication::processEvents();
 	GData::appSettings->setValue("geometry", saveGeometry());
 	GData::appSettings->setValue("mainWindowState", saveState());
@@ -911,6 +919,7 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("goToolBarWasVisible", (bool)goToolBar->isVisible());
 	GData::appSettings->setValue("exitInsteadOfClose", (int)GData::exitInsteadOfClose);
 	GData::appSettings->setValue("imageZoomFactor", (float)GData::imageZoomFactor);
+	GData::appSettings->setValue("shouldMaximize", (bool)isMaximized());
 }
 
 void Phototonic::loadDefaultSettings()
@@ -942,6 +951,7 @@ void Phototonic::loadDefaultSettings()
 	GData::imageZoomFactor = GData::appSettings->value("imageZoomFactor").toFloat();
 	GData::zoomOutFlags = GData::appSettings->value("zoomOutFlags").toInt();
 	GData::zoomInFlags = GData::appSettings->value("zoomInFlags").toInt();
+	shouldMaximize = GData::appSettings->value("shouldMaximize").toBool();
 }
 
 void Phototonic::closeEvent(QCloseEvent *event)
@@ -1011,18 +1021,18 @@ void Phototonic::setThumbViewWidgetsVisible(bool visible)
 
 void Phototonic::loadImageFile(QString imageFileName)
 {
-	imageView->loadImage(thumbView->currentViewDir, imageFileName);
-
 	if (stackedWidget->currentIndex() != imageViewIdx)
 	{
 		setThumbViewWidgetsVisible(false);
 		if (GData::isFullScreen == true)
 		{
+			shouldMaximize = isMaximized();
 			showFullScreen();
 			imageView->setCursorHiding(true);
 		}
 		stackedWidget->setCurrentIndex(imageViewIdx);
 	}
+	imageView->loadImage(thumbView->currentViewDir, imageFileName);
 	setWindowTitle(imageFileName + " - Phototonic");
 }
 
@@ -1087,6 +1097,8 @@ void Phototonic::closeImage()
 	{
 		imageView->setCursorHiding(false);
 		showNormal();
+		if (shouldMaximize)
+			showMaximized();
 	}
 	while (QApplication::overrideCursor())
 		QApplication::restoreOverrideCursor();
