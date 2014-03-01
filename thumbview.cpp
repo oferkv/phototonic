@@ -80,7 +80,7 @@ void ThumbView::selectCurrentIndex()
 
 int ThumbView::getNextRow()
 {
-	if (currentRow ==  thumbFileInfoList.size() - 1)
+	if (currentRow == thumbViewModel->rowCount() - 2)
 		return currentRow;
 
 	return currentRow + 1;
@@ -96,12 +96,20 @@ int ThumbView::getPrevRow()
 
 int ThumbView::getLastRow()
 {
-	return thumbFileInfoList.size() - 1;
+	return thumbViewModel->rowCount() - 2;
+}
+
+int ThumbView::getCurrentRow()
+{
+	return currentRow;
 }
 
 void ThumbView::setCurrentRow(int row)
 {
-	currentRow = row;
+	if (row >= 0)
+		currentRow = row;
+	else
+		currentRow = 0;
 }
 
 void ThumbView::setCurrentIndexByName(QString &FileName)

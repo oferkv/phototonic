@@ -144,6 +144,10 @@ void Phototonic::createImageView()
 	sep = new QAction(this);
 	sep->setSeparator(true);
 	imageView->addAction(sep);
+	imageView->addAction(deleteAction);
+	sep = new QAction(this);
+	sep->setSeparator(true);
+	imageView->addAction(sep);
 	imageView->addAction(closeImageAct);
 	imageView->addAction(fullScreenAct);
 	sep = new QAction(this);
@@ -247,11 +251,11 @@ void Phototonic::createActions()
 	actSize->setCheckable(true);
 	actType->setCheckable(true);
 	actReverse->setCheckable(true);
-	connect(actName, SIGNAL(triggered()), this, SLOT(setSortFlags()));
-	connect(actTime, SIGNAL(triggered()), this, SLOT(setSortFlags()));
-	connect(actSize, SIGNAL(triggered()), this, SLOT(setSortFlags()));
-	connect(actType, SIGNAL(triggered()), this, SLOT(setSortFlags()));
-	connect(actReverse, SIGNAL(triggered()), this, SLOT(setSortFlags()));
+	connect(actName, SIGNAL(triggered()), this, SLOT(sortThumbnains()));
+	connect(actTime, SIGNAL(triggered()), this, SLOT(sortThumbnains()));
+	connect(actSize, SIGNAL(triggered()), this, SLOT(sortThumbnains()));
+	connect(actType, SIGNAL(triggered()), this, SLOT(sortThumbnains()));
+	connect(actReverse, SIGNAL(triggered()), this, SLOT(sortThumbnains()));
 
 	actName->setChecked(thumbView->thumbsSortFlags == QDir::Name || 
 						thumbView->thumbsSortFlags == QDir::Reversed); 
@@ -522,7 +526,7 @@ void Phototonic::setFlagsByQAction(QAction *act, QDir::SortFlags SortFlag)
 		thumbView->thumbsSortFlags |= SortFlag;
 }
 
-void Phototonic::setSortFlags()
+void Phototonic::sortThumbnains()
 {
 	thumbView->thumbsSortFlags = 0;
 	setFlagsByQAction(actName, QDir::Name);
@@ -530,7 +534,7 @@ void Phototonic::setSortFlags()
 	setFlagsByQAction(actSize, QDir::Size);
 	setFlagsByQAction(actType, QDir::Type);
 	setFlagsByQAction(actReverse, QDir::Reversed);
-	refreshThumbs(false);
+	refreshThumbs(true);
 }
 
 void Phototonic::refreshThumbs()
@@ -549,7 +553,7 @@ void Phototonic::refreshThumbs(bool scrollToTop)
 	{
 		thumbView->setNeedScroll(false);
 		QTimer::singleShot(0, this, SLOT(reloadThumbsSlot()));
-		QTimer::singleShot(100, thumbView, SLOT(updateIndex()));
+		QTimer::singleShot(250, thumbView, SLOT(updateIndex()));
 	}
 }
 
@@ -770,19 +774,59 @@ void Phototonic::deleteOp()
 		return;
 	}
 
-	int ret = QMessageBox::warning(this, "Delete images", "Permanently delete selected images?",
+	bool ok;
+	int ret;
+
+	if (stackedWidget->currentIndex() == imageViewIdx)
+	{
+		ret = QMessageBox::warning(this, "Delete image", "Permanently delete this image?",
 										QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
 
-	if (ret == QMessageBox::Yes)
-	{
-		bool ok;
-		if (thumbViewBusy)
+		int currentRow = thumbView->getCurrentRow();
+		if (ret == QMessageBox::Yes)
 		{
-			abortThumbsLoad();
+			ok = QFile::remove(thumbView->currentViewDir + QDir::separator() + 
+				thumbView->thumbViewModel->item(currentRow)->data(thumbView->FileNameRole).toString());
+
+			if (ok)
+			{
+				 thumbView->thumbViewModel->removeRow(currentRow);
+			}
+			else
+			{
+				QMessageBox msgBox;
+				msgBox.critical(this, "Error", "failed to delete image");
+				return;
+			}
+			
+			
+			if (thumbView->getNextRow() > currentRow)
+			{
+				thumbView->setCurrentRow(currentRow - 1);
+				loadNextImage();	
+			}
+			else
+			{
+				thumbView->setCurrentRow(currentRow);
+				loadPrevImage();	
+			}
+				
 		}
 
-		QModelIndexList indexesList;
-		int nfiles = 0;
+		return;
+	}
+
+	ret = QMessageBox::warning(this, "Delete images", "Permanently delete selected images?",
+										QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
+
+	QModelIndexList indexesList;
+	int nfiles = 0;
+	if (ret == QMessageBox::Yes)
+	{
+
+		if (thumbViewBusy)
+			abortThumbsLoad();
+
 		while((indexesList = thumbView->selectionModel()->selectedIndexes()).size())
 		{
 			ok = QFile::remove(thumbView->currentViewDir + QDir::separator() + 
@@ -800,6 +844,7 @@ void Phototonic::deleteOp()
 				return;
 			}
 		}
+		
 		QString state = QString("Deleted " + QString::number(nfiles) + " images");
 		updateState(state);
 
@@ -1121,8 +1166,11 @@ void Phototonic::closeImage()
 	stackedWidget->setCurrentIndex(thumbViewIdx);
 	setWindowTitle(thumbView->currentViewDir + " - Phototonic");
 	thumbView->setCurrentIndexByName(imageView->currentImage);
-	thumbView->selectCurrentIndex();
-	QTimer::singleShot(0, thumbView, SLOT(updateIndex()));
+	if (GData::thumbsLayout != ThumbView::Compact || !thumbViewBusy)
+	{
+		thumbView->selectCurrentIndex();
+	}
+	QTimer::singleShot(250, thumbView, SLOT(updateIndex()));
 	if (newSettingsRefreshThumbs)
 	{
 		newSettingsRefreshThumbs = false;
@@ -1251,7 +1299,7 @@ void Phototonic::reloadThumbsSlot()
 	if (thumbViewBusy || !initComplete)
 	{	
 		abortThumbsLoad();
-		QTimer::singleShot(0, this, SLOT(reloadThumbsSlot()));
+		QTimer::singleShot(250, this, SLOT(reloadThumbsSlot()));
 		return;
 	}
 

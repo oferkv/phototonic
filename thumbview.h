@@ -57,6 +57,7 @@ public:
 	int getNextRow();
 	int getPrevRow();
 	int getLastRow();
+	int getCurrentRow();
 	void setCurrentRow(int row);
 
 	QDir *thumbsDir;

@@ -62,7 +62,7 @@ public slots:
 
 private slots:
 	void about();
-	void setSortFlags();
+	void sortThumbnains();
 	void refreshThumbs();
 	void refreshThumbs(bool noScroll);
 	void setFlagsByQAction(QAction *act, QDir::SortFlags SortFlag);
