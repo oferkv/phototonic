@@ -746,7 +746,7 @@ void Phototonic::pasteImages()
 	CpMvDialog *dialog = new CpMvDialog(this);
 	bool pasteInCurrDir = (thumbView->currentViewDir == destDir);
 		
-	dialog->exec(thumbView, destDir, pasteInCurrDir, thumbViewBusy);
+	dialog->exec(thumbView, destDir, pasteInCurrDir);
 	QString state = QString((GData::copyOp? "Copied " : "Moved ") + 
 								QString::number(dialog->nfiles) + " images");
 	updateState(state);
@@ -760,8 +760,7 @@ void Phototonic::pasteImages()
 	GData::copyCutFileList.clear();
 	pasteAction->setEnabled(false);
 
-	if (thumbViewBusy)
-		refreshThumbs(false);
+	refreshThumbs(false);
 }
 
 void Phototonic::deleteSingleImage()
@@ -1204,9 +1203,7 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvD
 	}
 
 	if (thumbViewBusy)
-	{
 		abortThumbsLoad();
-	}
 
 	if (dirOp)
 	{
@@ -1224,7 +1221,7 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvD
 	{
 		CpMvDialog *cpMvdialog = new CpMvDialog(this);
 		GData::copyCutIdxList = thumbView->selectionModel()->selectedIndexes();
-		cpMvdialog->exec(thumbView, destDir, false, thumbViewBusy);
+		cpMvdialog->exec(thumbView, destDir, false);
 		QString state = QString((GData::copyOp? "Copied " : "Moved ") + QString::number(cpMvdialog->nfiles) + " images");
 		updateState(state);
 		delete(cpMvdialog);

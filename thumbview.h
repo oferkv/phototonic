@@ -50,7 +50,6 @@ public:
 	{
 		isNeedScroll = needScroll;
 	}
-	void addNewThumb(QString &imageFileName);
 	void setThumbColors();
 	void setCurrentIndexByName(QString &FileName);
 	void selectCurrentIndex();

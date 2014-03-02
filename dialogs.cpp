@@ -87,7 +87,7 @@ static int cpMvFile(bool isCopy, QString &srcFile, QString &srcPath, QString &ds
 	return res;
 }
 
-void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDir, bool thumbViewBusy)
+void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDir)
 {
 	int res = 0;
 	nfiles = 0;
@@ -115,10 +115,6 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 				break;
 			}
 			nfiles++;
-
-			// The name is wrong here because cpMvFile might change the dest name, fix this when implementing interactive copy dialog
-			if (!thumbViewBusy)
-				thumbView->addNewThumb(destFile);
 		}
 	}
 	else

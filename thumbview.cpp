@@ -323,45 +323,6 @@ refreshThumbs:
 	emit unsetBusy();
 }
 
-void ThumbView::addNewThumb(QString &imageFileName)
-{
-	QStandardItem *thumbIitem;
-	QImageReader thumbReader;
-	QSize currThumbSize;
-	QPixmap emptyPixMap = QPixmap::fromImage(emptyImg).scaled(thumbWidth, thumbHeight);
-	QImage errorImg;
-	errorImg.load(":/images/error_image.png");
-	QPixmap errorPixMap = QPixmap::fromImage(errorImg);
-	QFileInfo fInfo = QFileInfo(imageFileName);
-
-	thumbIitem = new QStandardItem();
-	thumbIitem->setIcon(emptyPixMap);
-	thumbIitem->setData(666, SortRole);
-	thumbIitem->setData(fInfo.fileName(), FileNameRole);
-	if (GData::thumbsLayout == Classic)
-		thumbIitem->setData(fInfo.fileName(), Qt::DisplayRole);
-
-	thumbReader.setFileName(fInfo.filePath());
-	currThumbSize = thumbReader.size();
-
-	if (currThumbSize.isValid())
-	{
-		if (currThumbSize.height() > thumbHeight || currThumbSize.width() > thumbWidth)
-		{
-			currThumbSize.scale(QSize(thumbWidth, thumbHeight), Qt::KeepAspectRatio);
-		}
-		thumbReader.setScaledSize(currThumbSize);
-		thumbIitem->setIcon(QPixmap::fromImage(thumbReader.read()));
-	} 
-	else 
-		thumbIitem->setIcon(errorPixMap);
-
-	thumbViewModel->insertRow(0, thumbIitem);
-
-	if (GData::thumbsLayout != Classic)
-		setRowHidden(0, false);
-}
-
 void ThumbView::wheelEvent(QWheelEvent *event)
 {
 	if (event->delta() < 0)
