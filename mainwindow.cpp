@@ -56,7 +56,6 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	if (cliImageLoaded)
 		loadImagefromCli();
 
-	// Load current folder
 	initComplete = true;
 	thumbViewBusy = false;
 	currentHistoryIdx = -1;
@@ -534,7 +533,7 @@ void Phototonic::sortThumbnains()
 	setFlagsByQAction(actSize, QDir::Size);
 	setFlagsByQAction(actType, QDir::Type);
 	setFlagsByQAction(actReverse, QDir::Reversed);
-	refreshThumbs(true);
+	refreshThumbs(false);
 }
 
 void Phototonic::refreshThumbs()
@@ -553,14 +552,13 @@ void Phototonic::refreshThumbs(bool scrollToTop)
 	{
 		thumbView->setNeedScroll(false);
 		QTimer::singleShot(0, this, SLOT(reloadThumbsSlot()));
-		QTimer::singleShot(250, thumbView, SLOT(updateIndex()));
 	}
 }
 
 void Phototonic::setClassicThumbs()
 {
 	GData::thumbsLayout = ThumbView::Classic;
-	refreshThumbs(true);
+	refreshThumbs(false);
 }
 
 void Phototonic::setCompactThumbs()
@@ -572,7 +570,7 @@ void Phototonic::setCompactThumbs()
 void Phototonic::setSquarishThumbs()
 {
 	GData::thumbsLayout = ThumbView::Squares;
-	refreshThumbs(true);
+	refreshThumbs(false);
 }
 
 void Phototonic::about()
@@ -597,7 +595,7 @@ void Phototonic::showSettings()
 			newSettingsRefreshThumbs = true;
 		}
 		else
-			refreshThumbs(true);
+			refreshThumbs(false);
 	}
 
 	delete dialog;
@@ -766,6 +764,39 @@ void Phototonic::pasteImages()
 		refreshThumbs(false);
 }
 
+void Phototonic::deleteSingleImage()
+{
+	bool ok;
+	int ret;
+
+	ret = QMessageBox::warning(this, "Delete image", "Permanently delete this image?",
+									QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
+
+	int currentRow = thumbView->getCurrentRow();
+	if (ret == QMessageBox::Yes)
+	{
+		ok = QFile::remove(thumbView->currentViewDir + QDir::separator() + 
+			thumbView->thumbViewModel->item(currentRow)->data(thumbView->FileNameRole).toString());
+
+		if (ok)
+		{
+			 thumbView->thumbViewModel->removeRow(currentRow);
+		}
+		else
+		{
+			QMessageBox msgBox;
+			msgBox.critical(this, "Error", "failed to delete image");
+			return;
+		}
+
+		thumbView->setCurrentRow(currentRow - 1);
+		if (thumbView->getNextRow() > currentRow)
+			loadPrevImage();
+		else
+			loadNextImage();
+	}
+}
+
 void Phototonic::deleteOp()
 {
 	if (QApplication::focusWidget() == fsTree)
@@ -774,51 +805,15 @@ void Phototonic::deleteOp()
 		return;
 	}
 
-	bool ok;
-	int ret;
-
 	if (stackedWidget->currentIndex() == imageViewIdx)
 	{
-		ret = QMessageBox::warning(this, "Delete image", "Permanently delete this image?",
-										QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
-
-		int currentRow = thumbView->getCurrentRow();
-		if (ret == QMessageBox::Yes)
-		{
-			ok = QFile::remove(thumbView->currentViewDir + QDir::separator() + 
-				thumbView->thumbViewModel->item(currentRow)->data(thumbView->FileNameRole).toString());
-
-			if (ok)
-			{
-				 thumbView->thumbViewModel->removeRow(currentRow);
-			}
-			else
-			{
-				QMessageBox msgBox;
-				msgBox.critical(this, "Error", "failed to delete image");
-				return;
-			}
-			
-			
-			if (thumbView->getNextRow() > currentRow)
-			{
-				thumbView->setCurrentRow(currentRow - 1);
-				loadNextImage();	
-			}
-			else
-			{
-				thumbView->setCurrentRow(currentRow);
-				loadPrevImage();	
-			}
-				
-		}
-
+		deleteSingleImage();
 		return;
 	}
 
-	ret = QMessageBox::warning(this, "Delete images", "Permanently delete selected images?",
+	bool ok;
+	int ret = QMessageBox::warning(this, "Delete images", "Permanently delete selected images?",
 										QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
-
 	QModelIndexList indexesList;
 	int nfiles = 0;
 	if (ret == QMessageBox::Yes)
@@ -858,7 +853,7 @@ void Phototonic::goTo(QString path)
 	thumbView->setNeedScroll(true);
 	fsTree->setCurrentIndex(fsModel->index(path));
 	thumbView->currentViewDir = path;
-	refreshThumbs(false);
+	refreshThumbs(true);
 }
 
 void Phototonic::goSelectedDir(const QModelIndex&)
@@ -883,7 +878,7 @@ void Phototonic::goPathBarDir()
 	
 	thumbView->currentViewDir = pathBar->text();
 	restoreCurrentIdx();
-	refreshThumbs(false);
+	refreshThumbs(true);
 }
 
 void Phototonic::goBack()
@@ -1170,11 +1165,11 @@ void Phototonic::closeImage()
 	{
 		thumbView->selectCurrentIndex();
 	}
-	QTimer::singleShot(250, thumbView, SLOT(updateIndex()));
+
 	if (newSettingsRefreshThumbs)
 	{
 		newSettingsRefreshThumbs = false;
-		refreshThumbs(true);
+		refreshThumbs(false);
 	}
 }
 

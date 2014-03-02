@@ -275,6 +275,7 @@ void ThumbView::loadThumbs()
 	QImage errorImg;
 	errorImg.load(":/images/error_image.png");
 	QPixmap errorPixMap = QPixmap::fromImage(errorImg);
+	updateIndex();
 
 refreshThumbs:
 	for (int currThumb = 0; currThumb < thumbViewModel->rowCount() - 1; currThumb++)
@@ -307,7 +308,7 @@ refreshThumbs:
 			newIndex = 0;
 			needRefresh = true;
 		}
-		
+
 		if (abortOp)
 			break;
 	}

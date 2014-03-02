@@ -201,6 +201,7 @@ private:
 	bool thumbViewBusy;
 	bool shouldMaximize;
 
+	void deleteSingleImage();
 	void restoreCurrentIdx();
 	bool handleArgs();
 	void createImageView();
