@@ -276,6 +276,7 @@ void ThumbView::loadThumbs()
 	errorImg.load(":/images/error_image.png");
 	QPixmap errorPixMap = QPixmap::fromImage(errorImg);
 	updateIndex();
+	int crf = 0;
 
 refreshThumbs:
 	for (int currThumb = 0; currThumb < thumbViewModel->rowCount() - 1; currThumb++)
@@ -295,14 +296,21 @@ refreshThumbs:
 		thumbReader.setScaledSize(currThumbSize);
 		thumbViewModel->item(currThumb)->setIcon(QPixmap::fromImage(thumbReader.read()));
 
+		// Refresh at large intervals in compact mode
 		if (GData::thumbsLayout == Compact)
-			setRowHidden(currThumb , false);
+		{
+			if (++crf == 100)
+			{
+				setRowHidden(currThumb , false);
+				crf = 0;
+			}
+		}
 
 		(*thumbIsLoaded)[currThumb] = true;
 
 		QApplication::processEvents();
 
-		if (newIndex && GData::thumbsLayout != Compact)
+		if (newIndex)
 		{
 			currThumb = newIndex - 1;
 			newIndex = 0;
@@ -318,7 +326,11 @@ refreshThumbs:
 		needRefresh = false;
 		goto refreshThumbs;
 	}
-	
+
+	// Last refresh in compact mode
+	if (GData::thumbsLayout == Compact)
+		setRowHidden(0 , false);
+
 	thumbLoaderActive = false;
 	emit unsetBusy();
 }

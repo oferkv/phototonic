@@ -564,7 +564,7 @@ void Phototonic::setClassicThumbs()
 void Phototonic::setCompactThumbs()
 {
 	GData::thumbsLayout = ThumbView::Compact;
-	refreshThumbs(true);
+	refreshThumbs(false);
 }
 
 void Phototonic::setSquarishThumbs()
@@ -1160,10 +1160,7 @@ void Phototonic::closeImage()
 	stackedWidget->setCurrentIndex(thumbViewIdx);
 	setWindowTitle(thumbView->currentViewDir + " - Phototonic");
 	thumbView->setCurrentIndexByName(imageView->currentImage);
-	if (GData::thumbsLayout != ThumbView::Compact || !thumbViewBusy)
-	{
-		thumbView->selectCurrentIndex();
-	}
+	thumbView->selectCurrentIndex();
 
 	if (newSettingsRefreshThumbs)
 	{
