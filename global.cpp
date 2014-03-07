@@ -34,6 +34,8 @@ namespace GData
 	bool keepZoomFactor;
 	int rotation;
 	bool keepTransform;
+	bool flipH;
+	bool flipV;
 
 	// app data
 	QModelIndexList copyCutIdxList;

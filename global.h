@@ -40,6 +40,8 @@ namespace GData
 	extern bool keepZoomFactor;
 	extern int rotation;
 	extern bool keepTransform;
+	extern bool flipH;
+	extern bool flipV;
 
 	// app data
 	extern QModelIndexList copyCutIdxList;

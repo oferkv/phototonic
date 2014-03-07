@@ -205,6 +205,11 @@ void ImageView::transform()
 		trans.rotate(GData::rotation);
 		images[0] = images[0].transformed(trans);
 	}
+
+	if (GData::flipH || GData::flipV)
+	{
+		images[0] = images[0].mirrored(GData::flipH, GData::flipV);
+	}
 }
 
 void ImageView::reload()
@@ -236,6 +241,8 @@ void ImageView::loadImage(QString &imagePath, QString imageFileName)
 	if (!GData::keepTransform)
 	{
 		GData::rotation = 0;
+		GData::flipH = false;
+		GData::flipV = false;
 	}
 
 	reload();

@@ -161,6 +161,8 @@ void Phototonic::createImageView()
 	imageView->addAction(transformSubMenuAct);
 	transformSubMenu->addAction(rotateRightAct);
 	transformSubMenu->addAction(rotateLeftAct);
+	transformSubMenu->addAction(flipHAct);
+	transformSubMenu->addAction(flipVAct);
 	transformSubMenu->addAction(keepTransformAct);
 
 	addMenuSeparator(imageView);
@@ -334,18 +336,22 @@ void Phototonic::createActions()
 	goHomeAction->setIcon(QIcon(":/images/home.png"));
 
 	nextImageAction = new QAction("&Next", this);
+	nextImageAction->setIcon(QIcon(":/images/next.png"));
 	nextImageAction->setShortcut(QKeySequence::MoveToNextPage);
 	connect(nextImageAction, SIGNAL(triggered()), this, SLOT(loadNextImage()));
 	
 	prevImageAction = new QAction("&Previous", this);
+	prevImageAction->setIcon(QIcon(":/images/back.png"));
 	prevImageAction->setShortcut(QKeySequence::MoveToPreviousPage);
 	connect(prevImageAction, SIGNAL(triggered()), this, SLOT(loadPrevImage()));
 
 	firstImageAction = new QAction("&First", this);
+	firstImageAction->setIcon(QIcon(":/images/first.png"));
 	firstImageAction->setShortcut(QKeySequence::MoveToStartOfLine);
 	connect(firstImageAction, SIGNAL(triggered()), this, SLOT(loadFirstImage()));
 
 	lastImageAction = new QAction("&Last", this);
+	lastImageAction->setIcon(QIcon(":/images/last.png"));
 	lastImageAction->setShortcut(QKeySequence::MoveToEndOfLine);
 	connect(lastImageAction, SIGNAL(triggered()), this, SLOT(loadLastImage()));
 
@@ -385,6 +391,14 @@ void Phototonic::createActions()
 	rotateRightAct->setIcon(QIcon(":/images/rotate_right.png"));
 	connect(rotateRightAct, SIGNAL(triggered()), this, SLOT(rotateRight()));
 	rotateRightAct->setShortcut(QKeySequence::MoveToNextWord);
+
+	flipHAct = new QAction("Flip Horizontally", this);
+	connect(flipHAct, SIGNAL(triggered()), this, SLOT(flipHoriz()));
+	flipHAct->setShortcut(QKeySequence("Ctrl+Down"));
+
+	flipVAct = new QAction("Flip Vertically", this);
+	connect(flipVAct, SIGNAL(triggered()), this, SLOT(flipVert()));
+	flipVAct->setShortcut(QKeySequence("Ctrl+Up"));
 
 	keepTransformAct = new QAction("Keep Transformation", this);
 	keepTransformAct->setCheckable(true);
@@ -765,6 +779,18 @@ void Phototonic::rotateRight()
 	imageView->reload();
 }
 
+void Phototonic::flipVert()
+{
+	GData::flipV = !GData::flipV;
+	imageView->reload();
+}
+
+void Phototonic::flipHoriz()
+{
+	GData::flipH = !GData::flipH;
+	imageView->reload();
+}
+
 bool Phototonic::isValidPath(QString &path)
 {
 	QDir checkPath(path);
@@ -1059,6 +1085,8 @@ void Phototonic::loadDefaultSettings()
 	GData::rotation = 0;
 	GData::keepTransform = false;
 	shouldMaximize = GData::appSettings->value("shouldMaximize").toBool();
+	GData::flipH = false;
+	GData::flipV = false;
 }
 
 void Phototonic::closeEvent(QCloseEvent *event)

@@ -103,6 +103,8 @@ private slots:
 	void keepTransformClicked();
 	void rotateLeft();
 	void rotateRight();
+	void flipVert();
+	void flipHoriz();
 	void setThumbViewWidgetsVisible(bool visible);
 	void goTop();
 	void goBottom();
@@ -160,6 +162,8 @@ private:
 	QAction *transformSubMenuAct;
 	QAction *rotateLeftAct;
 	QAction *rotateRightAct;
+	QAction *flipHAct;
+	QAction *flipVAct;
 
 	QAction *actClassic;
 	QAction *actCompact;
