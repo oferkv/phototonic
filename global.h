@@ -38,6 +38,8 @@ namespace GData
 	extern bool exitInsteadOfClose;
 	extern float imageZoomFactor;
 	extern bool keepZoomFactor;
+	extern int rotation;
+	extern bool keepTransform;
 
 	// app data
 	extern QModelIndexList copyCutIdxList;

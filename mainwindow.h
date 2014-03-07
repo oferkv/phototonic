@@ -100,6 +100,9 @@ private slots:
 	void resetZoom();
 	void origZoom();
 	void keepZoom();
+	void keepTransformClicked();
+	void rotateLeft();
+	void rotateRight();
 	void setThumbViewWidgetsVisible(bool visible);
 	void goTop();
 	void goBottom();
@@ -116,6 +119,8 @@ private:
 	QMenu *sortMenu;
 	QMenu *viewMenu;
 	QMenu *helpMenu;
+	QMenu *zoomSubMenu;
+	QMenu *transformSubMenu;
 
 	QToolBar *viewToolBar;
 	QToolBar *editToolBar;
@@ -145,11 +150,16 @@ private:
 	QAction *settingsAction;
 	QAction *thumbsZoomInAct;
 	QAction *thumbsZoomOutAct;
+	QAction *zoomSubMenuAct;
 	QAction *zoomInAct;
 	QAction *zoomOutAct;
 	QAction *resetZoomAct;
 	QAction *origZoomAct;
 	QAction *keepZoomAct;
+	QAction *keepTransformAct;
+	QAction *transformSubMenuAct;
+	QAction *rotateLeftAct;
+	QAction *rotateRightAct;
 
 	QAction *actClassic;
 	QAction *actCompact;
@@ -204,6 +214,7 @@ private:
 	void deleteSingleImage();
 	void restoreCurrentIdx();
 	bool handleArgs();
+	void addMenuSeparator(QWidget *widget);
 	void createImageView();
 	void createThumbView();
 	void createActions();

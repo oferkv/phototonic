@@ -32,6 +32,8 @@ namespace GData
 	bool exitInsteadOfClose;
 	float imageZoomFactor;
 	bool keepZoomFactor;
+	int rotation;
+	bool keepTransform;
 
 	// app data
 	QModelIndexList copyCutIdxList;

@@ -56,7 +56,7 @@ ThumbView::ThumbView(QWidget *parent) : QListView(parent)
 	thumbsDir = new QDir();
 	QStringList *fileFilters = new QStringList;
 	*fileFilters << "*.BMP" << "*.GIF" << "*.JPG" << "*.JPEG" << "*.JPE" << "*.PNG"
-					<< "*.PBM" << "*.PGM" << "*.PPM" << "*.XBM" << "*.XPM";
+					<< "*.PBM" << "*.PGM" << "*.PPM" << "*.XBM" << "*.XPM" << "*.SVG";
 	thumbsDir->setFilter(QDir::Files);
 	thumbsDir->setNameFilters(*fileFilters);
 

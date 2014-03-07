@@ -124,38 +124,56 @@ void Phototonic::createThumbView()
 				this, SLOT(changeActionsBySelection(QItemSelection, QItemSelection)));
 }
 
+void Phototonic::addMenuSeparator(QWidget *widget)
+{
+	QAction *separator = new QAction(this);
+	separator->setSeparator(true);
+	widget->addAction(separator);
+}
+
 void Phototonic::createImageView()
 {
 	GData::backgroundColor = GData::appSettings->value("backgroundColor").value<QColor>();
 	imageView = new ImageView(this);
+
+	// Actions
 	imageView->addAction(nextImageAction);
 	imageView->addAction(prevImageAction);
 	imageView->addAction(firstImageAction);
 	imageView->addAction(lastImageAction);
-	QAction *sep = new QAction(this);
-	sep->setSeparator(true);
-	imageView->addAction(sep);
-	imageView->addAction(zoomInAct);
-	imageView->addAction(zoomOutAct);
-	imageView->addAction(origZoomAct);
-	imageView->addAction(resetZoomAct);
-	imageView->addAction(keepZoomAct);
-	sep = new QAction(this);
-	sep->setSeparator(true);
-	imageView->addAction(sep);
+
+	addMenuSeparator(imageView);
+	zoomSubMenu = new QMenu("Zoom");
+	zoomSubMenuAct = new QAction("Zoom", this);
+	zoomSubMenuAct->setIcon(QIcon(":/images/zoom.png"));
+	zoomSubMenuAct->setMenu(zoomSubMenu);
+	imageView->addAction(zoomSubMenuAct);
+	zoomSubMenu->addAction(zoomInAct);
+	zoomSubMenu->addAction(zoomOutAct);
+	zoomSubMenu->addAction(origZoomAct);
+	zoomSubMenu->addAction(resetZoomAct);
+	zoomSubMenu->addAction(keepZoomAct);
+
+	addMenuSeparator(imageView);
+	transformSubMenu = new QMenu("Transform");
+	transformSubMenuAct = new QAction("Transform", this);
+	transformSubMenuAct->setMenu(transformSubMenu);
+	imageView->addAction(transformSubMenuAct);
+	transformSubMenu->addAction(rotateRightAct);
+	transformSubMenu->addAction(rotateLeftAct);
+	transformSubMenu->addAction(keepTransformAct);
+
+	addMenuSeparator(imageView);
 	imageView->addAction(deleteAction);
-	sep = new QAction(this);
-	sep->setSeparator(true);
-	imageView->addAction(sep);
+
+	addMenuSeparator(imageView);
 	imageView->addAction(closeImageAct);
 	imageView->addAction(fullScreenAct);
-	sep = new QAction(this);
-	sep->setSeparator(true);
-	imageView->addAction(sep);
+
+	addMenuSeparator(imageView);
 	imageView->addAction(settingsAction);
-	sep = new QAction(this);
-	sep->setSeparator(true);
-	imageView->addAction(sep);
+
+	addMenuSeparator(imageView);
 	imageView->addAction(exitAction);
 
 	imageView->setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -350,12 +368,27 @@ void Phototonic::createActions()
 	connect(resetZoomAct, SIGNAL(triggered()), this, SLOT(resetZoom()));
 
 	origZoomAct = new QAction("Original Size", this);
+	origZoomAct->setIcon(QIcon(":/images/zoom1.png"));
 	origZoomAct->setShortcut(QKeySequence("/"));
 	connect(origZoomAct, SIGNAL(triggered()), this, SLOT(origZoom()));
 
 	keepZoomAct = new QAction("Keep Zoom", this);
 	keepZoomAct->setCheckable(true);
 	connect(keepZoomAct, SIGNAL(triggered()), this, SLOT(keepZoom()));
+
+	rotateLeftAct = new QAction("Rotate Left", this);
+	rotateLeftAct->setIcon(QIcon(":/images/rotate_left.png"));
+	connect(rotateLeftAct, SIGNAL(triggered()), this, SLOT(rotateLeft()));
+	rotateLeftAct->setShortcut(QKeySequence::MoveToPreviousWord);
+
+	rotateRightAct = new QAction("Rotate Right", this);
+	rotateRightAct->setIcon(QIcon(":/images/rotate_right.png"));
+	connect(rotateRightAct, SIGNAL(triggered()), this, SLOT(rotateRight()));
+	rotateRightAct->setShortcut(QKeySequence::MoveToNextWord);
+
+	keepTransformAct = new QAction("Keep Transformation", this);
+	keepTransformAct->setCheckable(true);
+	connect(keepTransformAct, SIGNAL(triggered()), this, SLOT(keepTransformClicked()));
 }
 
 void Phototonic::createMenus()
@@ -708,10 +741,28 @@ void Phototonic::origZoom()
 
 void Phototonic::keepZoom()
 {
-	if (keepZoomAct->isChecked())
-		GData::keepZoomFactor = true;
-	else
-		GData::keepZoomFactor = false;
+	GData::keepZoomFactor = keepZoomAct->isChecked();
+}
+
+void Phototonic::keepTransformClicked()
+{
+	GData::keepTransform = keepTransformAct->isChecked();
+}
+
+void Phototonic::rotateLeft()
+{
+	GData::rotation -= 90;
+	if (GData::rotation < 0)
+		GData::rotation = 270;
+	imageView->reload();
+}
+
+void Phototonic::rotateRight()
+{
+	GData::rotation += 90;
+	if (GData::rotation > 270)
+		GData::rotation = 0;
+	imageView->reload();
 }
 
 bool Phototonic::isValidPath(QString &path)
@@ -1005,6 +1056,8 @@ void Phototonic::loadDefaultSettings()
 	GData::imageZoomFactor = GData::appSettings->value("imageZoomFactor").toFloat();
 	GData::zoomOutFlags = GData::appSettings->value("zoomOutFlags").toInt();
 	GData::zoomInFlags = GData::appSettings->value("zoomInFlags").toInt();
+	GData::rotation = 0;
+	GData::keepTransform = false;
 	shouldMaximize = GData::appSettings->value("shouldMaximize").toBool();
 }
 

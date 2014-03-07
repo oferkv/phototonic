@@ -50,6 +50,7 @@ public:
 	void resizeImage();
 	void setMouseMoveData(bool lockMove, int lMouseX, int lMouseY);
 	void setCursorHiding(bool hide);
+	void reload();
 
 public slots:
 	void monitorCursorState();
@@ -76,6 +77,7 @@ private:
 	QImageReader imageReader;
 	QLabel *imageLabel[NLayouts];
 	QPixmap pixmaps[NLayouts];
+	QImage images[NLayouts];
 	QTimer *mouseMovementTimer;
 
 	bool cursorIsHidden;
@@ -84,8 +86,10 @@ private:
 	int mouseY;
 	int layoutX;
 	int layoutY;
+	QString currentImageFullPath;
 
 	void centerImage(QSize &imgSize);
+	void transform();
 };
 
 #endif // IMAGEVIEW_H

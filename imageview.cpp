@@ -197,20 +197,48 @@ void ImageView::centerImage(QSize &imgSize)
 		imageLabel[0]->move(newX, newY);
 }
 
+void ImageView::transform()
+{
+	if (GData::rotation)
+	{
+		QTransform trans;
+		trans.rotate(GData::rotation);
+		images[0] = images[0].transformed(trans);
+	}
+}
+
+void ImageView::reload()
+{
+	imageReader.setFileName(currentImageFullPath);
+
+	if (imageReader.size().isValid())
+	{
+		images[0].load(currentImageFullPath);
+		transform();
+		pixmaps[0] = QPixmap::fromImage(images[0]);
+	}
+	else
+		pixmaps[0].load(":/images/error_image.png");
+
+	imageLabel[0]->setPixmap(pixmaps[0]);
+	resizeImage();
+}
+
 void ImageView::loadImage(QString &imagePath, QString imageFileName)
 {
 	tempDisableResize = false;
 	currentImage = imageFileName;
-	QString imageFullPath = imagePath + QDir::separator() + currentImage;
+	currentImageFullPath = imagePath + QDir::separator() + currentImage;
 
 	if (!GData::keepZoomFactor)
 		GData::imageZoomFactor = 1.0;
 
-	imageReader.setFileName(imageFullPath);
-	pixmaps[0].load(imageReader.size().isValid()? imageFullPath : ":/images/error_image.png");
-	imageLabel[0]->setPixmap(pixmaps[0]);
-	
-	resizeImage();
+	if (!GData::keepTransform)
+	{
+		GData::rotation = 0;
+	}
+
+	reload();
 }
 
 void ImageView::monitorCursorState()
