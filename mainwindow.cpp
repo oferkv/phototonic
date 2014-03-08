@@ -137,52 +137,73 @@ void Phototonic::createImageView()
 	imageView = new ImageView(this);
 	connect(saveAction, SIGNAL(triggered()), imageView, SLOT(saveImage()));
 	connect(saveAsAction, SIGNAL(triggered()), imageView, SLOT(saveImageAs()));
+	imageView->ImagePopUpMenu = new QMenu();
 
-	// Actions
+	// Widget actions
 	imageView->addAction(nextImageAction);
 	imageView->addAction(prevImageAction);
 	imageView->addAction(firstImageAction);
 	imageView->addAction(lastImageAction);
+	imageView->addAction(zoomInAct);
+	imageView->addAction(zoomOutAct);
+	imageView->addAction(origZoomAct);
+	imageView->addAction(resetZoomAct);
+	imageView->addAction(rotateRightAct);
+	imageView->addAction(rotateLeftAct);
+	imageView->addAction(flipHAct);
+	imageView->addAction(flipVAct);
+	imageView->addAction(saveAction);
+	imageView->addAction(deleteAction);
+	imageView->addAction(closeImageAct);
+	imageView->addAction(fullScreenAct);
+	imageView->addAction(settingsAction);
+	imageView->addAction(exitAction);
 
-	addMenuSeparator(imageView);
+	// Actions
+	imageView->ImagePopUpMenu->addAction(nextImageAction);
+	imageView->ImagePopUpMenu->addAction(prevImageAction);
+	imageView->ImagePopUpMenu->addAction(firstImageAction);
+	imageView->ImagePopUpMenu->addAction(lastImageAction);
+
+	addMenuSeparator(imageView->ImagePopUpMenu);
 	zoomSubMenu = new QMenu("Zoom");
 	zoomSubMenuAct = new QAction("Zoom", this);
 	zoomSubMenuAct->setIcon(QIcon(":/images/zoom.png"));
 	zoomSubMenuAct->setMenu(zoomSubMenu);
-	imageView->addAction(zoomSubMenuAct);
+	imageView->ImagePopUpMenu->addAction(zoomSubMenuAct);
 	zoomSubMenu->addAction(zoomInAct);
 	zoomSubMenu->addAction(zoomOutAct);
 	zoomSubMenu->addAction(origZoomAct);
 	zoomSubMenu->addAction(resetZoomAct);
 	zoomSubMenu->addAction(keepZoomAct);
 
-	addMenuSeparator(imageView);
+	addMenuSeparator(imageView->ImagePopUpMenu);
 	transformSubMenu = new QMenu("Transform");
 	transformSubMenuAct = new QAction("Transform", this);
 	transformSubMenuAct->setMenu(transformSubMenu);
-	imageView->addAction(transformSubMenuAct);
+	imageView->ImagePopUpMenu->addAction(transformSubMenuAct);
 	transformSubMenu->addAction(rotateRightAct);
 	transformSubMenu->addAction(rotateLeftAct);
 	transformSubMenu->addAction(flipHAct);
 	transformSubMenu->addAction(flipVAct);
 	transformSubMenu->addAction(keepTransformAct);
 
-	addMenuSeparator(imageView);
-	imageView->addAction(saveAction);
-	imageView->addAction(saveAsAction);
-	imageView->addAction(deleteAction);
+	addMenuSeparator(imageView->ImagePopUpMenu);
+	imageView->ImagePopUpMenu->addAction(saveAction);
+	imageView->ImagePopUpMenu->addAction(saveAsAction);
+	imageView->ImagePopUpMenu->addAction(deleteAction);
 
-	addMenuSeparator(imageView);
-	imageView->addAction(closeImageAct);
-	imageView->addAction(fullScreenAct);
+	addMenuSeparator(imageView->ImagePopUpMenu);
+	imageView->ImagePopUpMenu->addAction(closeImageAct);
+	imageView->ImagePopUpMenu->addAction(fullScreenAct);
 
-	addMenuSeparator(imageView);
-	imageView->addAction(settingsAction);
+	addMenuSeparator(imageView->ImagePopUpMenu);
+	imageView->ImagePopUpMenu->addAction(settingsAction);
 
-	addMenuSeparator(imageView);
-	imageView->addAction(exitAction);
+	addMenuSeparator(imageView->ImagePopUpMenu);
+	imageView->ImagePopUpMenu->addAction(exitAction);
 
-	imageView->setContextMenuPolicy(Qt::ActionsContextMenu);
+	imageView->setContextMenuPolicy(Qt::DefaultContextMenu);
 	GData::isFullScreen = GData::appSettings->value("isFullScreen").toBool();
 	fullScreenAct->setChecked(GData::isFullScreen); 
 }
@@ -640,8 +661,9 @@ void Phototonic::about()
 
 void Phototonic::showSettings()
 {
+	imageView->setCursorOverrides(false);
+	
 	SettingsDialog *dialog = new SettingsDialog(this);
-
 	if (dialog->exec())
 	{
 		imageView->setPalette(QPalette(GData::backgroundColor));
@@ -658,6 +680,8 @@ void Phototonic::showSettings()
 	}
 
 	delete dialog;
+
+	imageView->setCursorOverrides(true);
 }
 
 void Phototonic::toggleFullScreen()

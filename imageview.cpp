@@ -337,14 +337,25 @@ void ImageView::saveImage()
 	}
 }
 
-void ImageView::saveImageAs()
+void ImageView::setCursorOverrides(bool override)
 {
-	if (GData::isFullScreen)
+	if (override)
+	{
+		QApplication::setOverrideCursor(Qt::OpenHandCursor);
+		if (mainWindow->isFullScreen())
+			setCursorHiding(true);
+	}
+	else
 	{
 		setCursorHiding(false);
 		while (QApplication::overrideCursor())
 			QApplication::restoreOverrideCursor();
 	}
+}
+
+void ImageView::saveImageAs()
+{
+	setCursorOverrides(false);
 
 	QString fileName = QFileDialog::getSaveFileName(this,
 		"Save image as",
@@ -359,10 +370,12 @@ void ImageView::saveImageAs()
 		}
 	}
 
-	if (GData::isFullScreen)
-	{
-		QApplication::setOverrideCursor(Qt::OpenHandCursor);
-		setCursorHiding(true);
-	}
+	setCursorOverrides(true);
 }
 
+void ImageView::contextMenuEvent(QContextMenuEvent *)
+{
+	setCursorOverrides(false, true);
+	ImagePopUpMenu->exec(QCursor::pos());
+	setCursorOverrides(true, true);
+}

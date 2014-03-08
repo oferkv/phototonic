@@ -29,6 +29,7 @@
 #include <QFileDialog>
 #include <QTimer>
 #include <QMessageBox>
+#include <QMenu>
 
 class ImageView : public QWidget
 {
@@ -37,6 +38,8 @@ class ImageView : public QWidget
 public:
 	QString currentImage;
 	bool tempDisableResize;
+
+	QMenu *ImagePopUpMenu;
 
 	enum ZoomMethods
 	{
@@ -53,6 +56,7 @@ public:
 	void setMouseMoveData(bool lockMove, int lMouseX, int lMouseY);
 	void setCursorHiding(bool hide);
 	void reload();
+	void setCursorOverrides(bool override);
 
 public slots:
 	void monitorCursorState();
@@ -63,6 +67,7 @@ protected:
     void resizeEvent(QResizeEvent *event);
     void showEvent(QShowEvent *event);
 	void mouseMoveEvent(QMouseEvent *event);
+	void contextMenuEvent(QContextMenuEvent *event);
 
 private:
 	enum LayoutTypes
