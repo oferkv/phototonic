@@ -19,14 +19,16 @@
 #ifndef IMAGEVIEW_H
 #define IMAGEVIEW_H
 
+#include <QApplication>
 #include <QLabel>
 #include <QGridLayout>
-#include <QDebug>
 #include <QScrollArea>
 #include <QImageReader>
 #include <QScrollBar>
 #include <QMouseEvent>
+#include <QFileDialog>
 #include <QTimer>
+#include <QMessageBox>
 
 class ImageView : public QWidget
 {
@@ -54,6 +56,8 @@ public:
 
 public slots:
 	void monitorCursorState();
+	void saveImage();
+	void saveImageAs();
 
 protected:
     void resizeEvent(QResizeEvent *event);

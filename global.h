@@ -42,6 +42,7 @@ namespace GData
 	extern bool keepTransform;
 	extern bool flipH;
 	extern bool flipV;
+	extern int defaultSaveQuality;
 
 	// app data
 	extern QModelIndexList copyCutIdxList;

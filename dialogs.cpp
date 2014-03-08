@@ -276,6 +276,16 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	exitCliCb = new QCheckBox("Exit instead of returning to thumbnails, after loading a single image", this);
 	exitCliCb->setChecked(GData::exitInsteadOfClose);
 
+	// Save quality
+	QLabel *saveQualityLab = new QLabel("Default quality when saving images: ");
+	saveQualitySpin = new QSpinBox;
+	saveQualitySpin->setRange(0, 100);
+	saveQualitySpin->setValue(GData::defaultSaveQuality);
+	QHBoxLayout *saveQualityHbox = new QHBoxLayout;
+	saveQualityHbox->addWidget(saveQualityLab);
+	saveQualityHbox->addWidget(saveQualitySpin);
+	saveQualityHbox->addStretch(1);
+
 	// Viewer options
 	QVBoxLayout *viewerOptsBox = new QVBoxLayout;
 	QHBoxLayout *zoomOptsBox = new QHBoxLayout;
@@ -284,6 +294,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	zoomOptsBox->addWidget(fitSmallGroupBox);
 	viewerOptsBox->addLayout(zoomOptsBox);
 	viewerOptsBox->addWidget(exitCliCb);
+	viewerOptsBox->addLayout(saveQualityHbox);
 	QGroupBox *viewerOptsGrp = new QGroupBox("Viewer Options");
 	viewerOptsGrp->setLayout(viewerOptsBox);
 
@@ -324,6 +335,7 @@ void SettingsDialog::saveSettings()
 	GData::thumbsTextColor = thumbTextColor;
 	GData::thumbSpacing = thumbSpacingSpin->value();
 	GData::exitInsteadOfClose = exitCliCb->isChecked();
+	GData::defaultSaveQuality = saveQualitySpin->value();
 
 	accept();
 }

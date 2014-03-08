@@ -73,6 +73,7 @@ private:
     QPushButton *colThumbButton;
     QPushButton *colThumbTextButton;
 	QSpinBox *thumbSpacingSpin;
+	QSpinBox *saveQualitySpin;
 	QColor bgColor;
 	QColor thumbBgColor;
 	QColor thumbTextColor;

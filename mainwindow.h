@@ -132,6 +132,8 @@ private:
 	QAction *cutAction;
 	QAction *copyAction;
 	QAction *deleteAction;
+	QAction *saveAction;
+	QAction *saveAsAction;
 	QAction *copyToAction;
 	QAction *moveToAction;
 	QAction *renameAction;

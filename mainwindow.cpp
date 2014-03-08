@@ -135,6 +135,8 @@ void Phototonic::createImageView()
 {
 	GData::backgroundColor = GData::appSettings->value("backgroundColor").value<QColor>();
 	imageView = new ImageView(this);
+	connect(saveAction, SIGNAL(triggered()), imageView, SLOT(saveImage()));
+	connect(saveAsAction, SIGNAL(triggered()), imageView, SLOT(saveImageAs()));
 
 	// Actions
 	imageView->addAction(nextImageAction);
@@ -166,6 +168,8 @@ void Phototonic::createImageView()
 	transformSubMenu->addAction(keepTransformAct);
 
 	addMenuSeparator(imageView);
+	imageView->addAction(saveAction);
+	imageView->addAction(saveAsAction);
 	imageView->addAction(deleteAction);
 
 	addMenuSeparator(imageView);
@@ -241,6 +245,11 @@ void Phototonic::createActions()
 	deleteAction->setShortcut(QKeySequence::Delete);
 	deleteAction->setIcon(QIcon(":/images/delete.png"));
 	connect(deleteAction, SIGNAL(triggered()), this, SLOT(deleteOp()));
+
+	saveAction = new QAction("Save", this);
+	saveAction->setShortcut(QKeySequence::Save);
+
+	saveAsAction = new QAction("Save As", this);
 
 	copyToAction = new QAction("Copy to", this);
 	moveToAction = new QAction("Move to", this);
@@ -1054,6 +1063,7 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("exitInsteadOfClose", (int)GData::exitInsteadOfClose);
 	GData::appSettings->setValue("imageZoomFactor", (float)GData::imageZoomFactor);
 	GData::appSettings->setValue("shouldMaximize", (bool)isMaximized());
+	GData::appSettings->setValue("defaultSaveQuality", (int)GData::defaultSaveQuality);
 }
 
 void Phototonic::loadDefaultSettings()
@@ -1068,8 +1078,8 @@ void Phototonic::loadDefaultSettings()
 		GData::appSettings->setValue("thumbsZoomVal", (int)200);
 		GData::appSettings->setValue("isFullScreen", (bool)false);
 		GData::appSettings->setValue("backgroundColor", QColor(25, 25, 25));
-		GData::appSettings->setValue("backgroundThumbColor", QColor(50, 50, 50));
-		GData::appSettings->setValue("textThumbColor", QColor(222, 222, 222));
+		GData::appSettings->setValue("backgroundThumbColor", QColor(200, 200, 200));
+		GData::appSettings->setValue("textThumbColor", QColor(25, 25, 25));
 		GData::appSettings->setValue("thumbSpacing", (int)5);
 		GData::appSettings->setValue("thumbLayout", (int)GData::thumbsLayout);
 		GData::appSettings->setValue("viewToolBarWasVisible", (bool)true);
@@ -1079,6 +1089,7 @@ void Phototonic::loadDefaultSettings()
 		GData::appSettings->setValue("zoomInFlags", (int)0);
 		GData::appSettings->setValue("exitInsteadOfClose", (int)0);
 		GData::appSettings->setValue("imageZoomFactor", (float)1.0);
+		GData::appSettings->setValue("defaultSaveQuality", (int)75);
 	}
 
 	GData::exitInsteadOfClose = GData::appSettings->value("exitInsteadOfClose").toBool();
@@ -1090,6 +1101,7 @@ void Phototonic::loadDefaultSettings()
 	shouldMaximize = GData::appSettings->value("shouldMaximize").toBool();
 	GData::flipH = false;
 	GData::flipV = false;
+	GData::defaultSaveQuality = GData::appSettings->value("defaultSaveQuality").toInt();
 }
 
 void Phototonic::closeEvent(QCloseEvent *event)
@@ -1171,6 +1183,7 @@ void Phototonic::loadImageFile(QString imageFileName)
 		stackedWidget->setCurrentIndex(imageViewIdx);
 	}
 	imageView->loadImage(thumbView->currentViewDir, imageFileName);
+	QApplication::setOverrideCursor(Qt::OpenHandCursor);
 	setWindowTitle(imageFileName + " - Phototonic");
 }
 
@@ -1178,7 +1191,6 @@ void Phototonic::loadImagefromThumb(const QModelIndex &idx)
 {
 	thumbView->setCurrentRow(idx.row());
 	loadImageFile(thumbView->thumbViewModel->item(idx.row())->data(thumbView->FileNameRole).toString());
-	QApplication::setOverrideCursor(Qt::OpenHandCursor);
 }
 
 void Phototonic::loadImagefromAction()
@@ -1196,7 +1208,6 @@ void Phototonic::loadImagefromCli()
 {
 	loadImageFile(cliFileName);
 	thumbView->setCurrentIndexByName(cliFileName);
-	QApplication::setOverrideCursor(Qt::OpenHandCursor);
 }
 
 void Phototonic::loadNextImage()

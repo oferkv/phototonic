@@ -299,7 +299,7 @@ refreshThumbs:
 		// Refresh at large intervals in compact mode
 		if (GData::thumbsLayout == Compact)
 		{
-			if (++crf == 100)
+			if (++crf == 50)
 			{
 				setRowHidden(currThumb , false);
 				crf = 0;

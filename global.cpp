@@ -36,6 +36,7 @@ namespace GData
 	bool keepTransform;
 	bool flipH;
 	bool flipV;
+	int defaultSaveQuality;
 
 	// app data
 	QModelIndexList copyCutIdxList;

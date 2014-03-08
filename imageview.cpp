@@ -16,8 +16,6 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QApplication>
-#include <QTimer>
 #include "imageview.h"
 #include "thumbview.h"
 #include "global.h"
@@ -327,6 +325,44 @@ void ImageView::mouseMoveEvent(QMouseEvent *event)
 
 		if (needToMove)
 			imageLabel[0]->move(newX, newY);
+	}
+}
+
+void ImageView::saveImage()
+{
+	if (!pixmaps[0].save(currentImageFullPath, 0, GData::defaultSaveQuality))
+	{
+		QMessageBox msgBox;
+		msgBox.critical(this, "Error", "Failed to save image");
+	}
+}
+
+void ImageView::saveImageAs()
+{
+	if (GData::isFullScreen)
+	{
+		setCursorHiding(false);
+		while (QApplication::overrideCursor())
+			QApplication::restoreOverrideCursor();
+	}
+
+	QString fileName = QFileDialog::getSaveFileName(this,
+		"Save image as",
+		currentImageFullPath,
+		"Image Files (*.gif *.jpg *.jpeg *.jpe *.png *.pbm *.pgm *.ppm *.xbm *.xpm *.svg)");
+	if (!fileName.isEmpty())
+	{
+		if (!pixmaps[0].save(fileName, 0, GData::defaultSaveQuality))
+		{
+			QMessageBox msgBox;
+			msgBox.critical(this, "Error", "Failed to save image");
+		}
+	}
+
+	if (GData::isFullScreen)
+	{
+		QApplication::setOverrideCursor(Qt::OpenHandCursor);
+		setCursorHiding(true);
 	}
 }
 
