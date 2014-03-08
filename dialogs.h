@@ -80,5 +80,22 @@ private:
 	QCheckBox *exitCliCb;
 };
 
+class CropDialog : public QDialog
+{
+    Q_OBJECT
+
+public:
+    CropDialog(QWidget *parent);
+
+private slots:
+
+public slots:
+	void abort();
+	void ok();
+
+private:
+
+};
+
 #endif // DIALOGS_H
 

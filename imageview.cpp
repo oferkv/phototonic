@@ -335,6 +335,8 @@ void ImageView::saveImage()
 		QMessageBox msgBox;
 		msgBox.critical(this, "Error", "Failed to save image");
 	}
+	else
+		reload();
 }
 
 void ImageView::setCursorOverrides(bool override)
@@ -375,7 +377,7 @@ void ImageView::saveImageAs()
 
 void ImageView::contextMenuEvent(QContextMenuEvent *)
 {
-	setCursorOverrides(false, true);
+	setCursorOverrides(false);
 	ImagePopUpMenu->exec(QCursor::pos());
-	setCursorOverrides(true, true);
+	setCursorOverrides(true);
 }

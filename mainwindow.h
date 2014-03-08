@@ -104,6 +104,7 @@ private slots:
 	void rotateLeft();
 	void rotateRight();
 	void flipVert();
+	void cropImage();
 	void flipHoriz();
 	void setThumbViewWidgetsVisible(bool visible);
 	void goTop();
@@ -166,6 +167,7 @@ private:
 	QAction *rotateRightAct;
 	QAction *flipHAct;
 	QAction *flipVAct;
+	QAction *cropAct;
 
 	QAction *actClassic;
 	QAction *actCompact;

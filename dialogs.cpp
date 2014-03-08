@@ -375,3 +375,42 @@ void SettingsDialog::pickThumbsTextColor()
     }
 }
 
+CropDialog::CropDialog(QWidget *parent) : QDialog(parent)
+{
+	setWindowTitle("Crop Image");
+	resize(480, 480);
+
+	QHBoxLayout *buttonsHbox = new QHBoxLayout;
+    QPushButton *okButton = new QPushButton("OK");
+    okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+	connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
+	QPushButton *closeButton = new QPushButton("Cancel");
+	closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+	connect(closeButton, SIGNAL(clicked()), this, SLOT(abort()));
+	buttonsHbox->addWidget(closeButton, 1, Qt::AlignRight);
+	buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);
+
+	QSlider *topSlide = new QSlider(Qt::Vertical);
+	QSlider *bottomSlide = new QSlider(Qt::Vertical);
+	QSlider *leftSlide = new QSlider(Qt::Horizontal);
+	QSlider *rightSlide = new QSlider(Qt::Horizontal);
+	QLabel *cropImgLab = new QLabel("here");
+
+	QGridLayout *mainGbox = new QGridLayout;
+	mainGbox->addWidget(topSlide, 1, 0, 2, 1);
+	mainGbox->addWidget(bottomSlide, 3, 0, 2, 1);
+	mainGbox->addWidget(leftSlide, 0, 1, 1, 2);
+	mainGbox->addWidget(rightSlide, 0, 3, 1, 2);
+	mainGbox->addLayout(buttonsHbox, 5, 3, 1, 2);
+	setLayout(mainGbox);
+}
+
+void CropDialog::abort()
+{
+	reject();
+}
+
+void CropDialog::ok()
+{
+	accept();
+}

@@ -152,6 +152,7 @@ void Phototonic::createImageView()
 	imageView->addAction(rotateLeftAct);
 	imageView->addAction(flipHAct);
 	imageView->addAction(flipVAct);
+	imageView->addAction(cropAct);
 	imageView->addAction(saveAction);
 	imageView->addAction(deleteAction);
 	imageView->addAction(closeImageAct);
@@ -186,6 +187,7 @@ void Phototonic::createImageView()
 	transformSubMenu->addAction(rotateLeftAct);
 	transformSubMenu->addAction(flipHAct);
 	transformSubMenu->addAction(flipVAct);
+	transformSubMenu->addAction(cropAct);
 	transformSubMenu->addAction(keepTransformAct);
 
 	addMenuSeparator(imageView->ImagePopUpMenu);
@@ -429,6 +431,10 @@ void Phototonic::createActions()
 	flipVAct = new QAction("Flip Vertically", this);
 	connect(flipVAct, SIGNAL(triggered()), this, SLOT(flipVert()));
 	flipVAct->setShortcut(QKeySequence("Ctrl+Up"));
+
+	cropAct = new QAction("Crop Image", this);
+	connect(cropAct, SIGNAL(triggered()), this, SLOT(cropImage()));
+	cropAct->setShortcut(QKeySequence("Ctrl+R"));
 
 	keepTransformAct = new QAction("Keep Transformation", this);
 	keepTransformAct->setCheckable(true);
@@ -819,6 +825,13 @@ void Phototonic::flipVert()
 {
 	GData::flipV = !GData::flipV;
 	imageView->reload();
+}
+
+void Phototonic::cropImage()
+{
+	CropDialog *dialog = new CropDialog(this);
+	if (dialog->exec())
+		qDebug() << "ok";
 }
 
 void Phototonic::flipHoriz()
