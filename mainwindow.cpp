@@ -159,6 +159,11 @@ void Phototonic::createImageView()
 	imageView->addAction(fullScreenAct);
 	imageView->addAction(settingsAction);
 	imageView->addAction(exitAction);
+	imageView->addAction(mirrorDisabledAct);
+	imageView->addAction(mirrorDualAct);
+	imageView->addAction(mirrorTripleAct);
+	imageView->addAction(mirrorVDualAct);
+	imageView->addAction(mirrorQuadAct);
 
 	// Actions
 	imageView->ImagePopUpMenu->addAction(nextImageAction);
@@ -189,6 +194,18 @@ void Phototonic::createImageView()
 	transformSubMenu->addAction(flipHAct);
 	transformSubMenu->addAction(flipVAct);
 	transformSubMenu->addAction(cropAct);
+
+	MirroringSubMenu = new QMenu("Mirror");
+	mirrorSubMenuAct = new QAction("Mirror", this);
+	mirrorSubMenuAct->setMenu(MirroringSubMenu);
+	imageView->ImagePopUpMenu->addAction(mirrorSubMenuAct);
+	mirroringGroup = new QActionGroup(this);
+	mirroringGroup->addAction(mirrorDisabledAct);
+	mirroringGroup->addAction(mirrorDualAct);
+	mirroringGroup->addAction(mirrorTripleAct);
+	mirroringGroup->addAction(mirrorVDualAct);
+	mirroringGroup->addAction(mirrorQuadAct);
+	MirroringSubMenu->addActions(mirroringGroup->actions());
 	addMenuSeparator(transformSubMenu);
 	transformSubMenu->addAction(keepTransformAct);
 
@@ -437,6 +454,29 @@ void Phototonic::createActions()
 	cropAct = new QAction("Cropping", this);
 	connect(cropAct, SIGNAL(triggered()), this, SLOT(cropImage()));
 	cropAct->setShortcut(QKeySequence("Ctrl+R"));
+
+	mirrorDisabledAct = new QAction("Disabled", this);
+	mirrorDisabledAct->setShortcut(QKeySequence("Ctrl+1"));
+	mirrorDualAct = new QAction("Dual", this);
+	mirrorDualAct->setShortcut(QKeySequence("Ctrl+2"));
+	mirrorTripleAct = new QAction("Triple", this);
+	mirrorTripleAct->setShortcut(QKeySequence("Ctrl+3"));
+	mirrorVDualAct = new QAction("Dual Vertical", this);
+	mirrorVDualAct->setShortcut(QKeySequence("Ctrl+4"));
+	mirrorQuadAct = new QAction("Quad", this);
+	mirrorQuadAct->setShortcut(QKeySequence("Ctrl+5"));
+
+	mirrorDisabledAct->setCheckable(true);
+	mirrorDualAct->setCheckable(true);
+	mirrorTripleAct->setCheckable(true);
+	mirrorVDualAct->setCheckable(true);
+	mirrorQuadAct->setCheckable(true);
+	connect(mirrorDisabledAct, SIGNAL(triggered()), this, SLOT(setMirrorDisabled()));
+	connect(mirrorDualAct, SIGNAL(triggered()), this, SLOT(setMirrorDual()));
+	connect(mirrorTripleAct, SIGNAL(triggered()), this, SLOT(setMirrorTriple()));
+	connect(mirrorVDualAct, SIGNAL(triggered()), this, SLOT(setMirrorVDual()));
+	connect(mirrorQuadAct, SIGNAL(triggered()), this, SLOT(setMirrorQuad()));
+	mirrorDisabledAct->setChecked(true); 
 
 	keepTransformAct = new QAction("Keep Transformations", this);
 	keepTransformAct->setCheckable(true);
@@ -843,6 +883,36 @@ void Phototonic::cropImage()
 void Phototonic::flipHoriz()
 {
 	GData::flipH = !GData::flipH;
+	imageView->refresh();
+}
+
+void Phototonic::setMirrorDisabled()
+{
+	imageView->mirrorLayout = ImageView::LayNone;
+	imageView->refresh();
+}
+
+void Phototonic::setMirrorDual()
+{
+	imageView->mirrorLayout = ImageView::LayDual;
+	imageView->refresh();
+}
+
+void Phototonic::setMirrorTriple()
+{
+	imageView->mirrorLayout = ImageView::LayTriple;
+	imageView->refresh();
+}
+
+void Phototonic::setMirrorVDual()
+{
+	imageView->mirrorLayout = ImageView::LayVDual;
+	imageView->refresh();
+}
+
+void Phototonic::setMirrorQuad()
+{
+	imageView->mirrorLayout = ImageView::LayQuad;
 	imageView->refresh();
 }
 

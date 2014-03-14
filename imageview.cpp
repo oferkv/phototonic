@@ -25,21 +25,18 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	mainWindow = parent;
 	cursorIsHidden = false;
 	moveImageLocked = false;
-	layoutMode = LaySingle;
+	mirrorLayout = LayNone;
 
-	for (int i = 0; i < NLayouts; i++)
-	{
-		imageLabel[i] = new QLabel;
-		imageLabel[i]->setScaledContents(true);
-		imageLabel[i]->setFixedSize(0, 0);
-	}
+	imageLabel = new QLabel;
+	imageLabel->setScaledContents(true);
+	imageLabel->setFixedSize(0, 0);
 
 	setPalette(QPalette(GData::backgroundColor));
 
 	QHBoxLayout *mainHLayout = new QHBoxLayout();
 	mainHLayout->setContentsMargins(0, 0, 0, 0);
 	mainHLayout->setSpacing(0);
-	mainHLayout->addWidget(imageLabel[0]);
+	mainHLayout->addWidget(imageLabel);
 
 	scrlArea = new QScrollArea;
 	scrlArea->setContentsMargins(0, 0, 0, 0);
@@ -100,12 +97,12 @@ static inline int calcZoom(int size)
 void ImageView::resizeImage()
 {
 	static bool busy = false;
-	if (busy || !imageLabel[0]->pixmap())
+	if (busy || !imageLabel->pixmap())
 		return;
 	busy = true;
 
-	imageLabel[0]->setVisible(false);
-	QSize imgSize = imageLabel[0]->pixmap()->size();
+	imageLabel->setVisible(false);
+	QSize imgSize = imageLabel->pixmap()->size();
 
 	if (tempDisableResize)
 		imgSize.scale(calcZoom(imgSize.width()), calcZoom(imgSize.height()), Qt::KeepAspectRatio);
@@ -182,71 +179,133 @@ void ImageView::resizeImage()
 		}
 	}
 
-	imageLabel[0]->setFixedSize(imgSize);
-	imageLabel[0]->setVisible(true);
+	imageLabel->setFixedSize(imgSize);
+	imageLabel->setVisible(true);
 	centerImage(imgSize);
 	busy = false;
 }
 
 void ImageView::centerImage(QSize &imgSize)
 {
-	int newX = imageLabel[0]->pos().x();
-	int newY = imageLabel[0]->pos().y();
+	int newX = imageLabel->pos().x();
+	int newY = imageLabel->pos().y();
 
 	newX = (size().width() - imgSize.width()) / 2;
 	newY = (size().height() - imgSize.height()) / 2;
 
-	if (newX !=imageLabel[0]->pos().x() || newY !=imageLabel[0]->pos().y())
-		imageLabel[0]->move(newX, newY);
+	if (newX != imageLabel->pos().x() || newY != imageLabel->pos().y())
+		imageLabel->move(newX, newY);
 }
 
 void ImageView::transform()
 {
 	if (GData::cropLeft || GData::cropTop || GData::cropWidth || GData::cropHeight)
 	{
-		images[0] = images[0].copy(	GData::cropLeft,
-									GData::cropTop,
-									origImage.width() - GData::cropWidth - GData::cropLeft,
-									origImage.height() - GData::cropHeight - GData::cropTop);
+		displayImage = displayImage.copy(	
+								GData::cropLeft,
+								GData::cropTop,
+								origImage.width() - GData::cropWidth - GData::cropLeft,
+								origImage.height() - GData::cropHeight - GData::cropTop);
 	}
 
 	if (GData::rotation)
 	{
 		QTransform trans;
 		trans.rotate(GData::rotation);
-		images[0] = images[0].transformed(trans);
+		displayImage = displayImage.transformed(trans);
 	}
 
 	if (GData::flipH || GData::flipV)
 	{
-		images[0] = images[0].mirrored(GData::flipH, GData::flipV);
+		displayImage = displayImage.mirrored(GData::flipH, GData::flipV);
+	}
+
+	if (mirrorLayout)
+	{	
+		QImage mirrorImage;
+		
+		switch(mirrorLayout)
+		{
+			case LayDual:
+			{
+				mirrorImage = QImage(displayImage.width() * 2, displayImage.height(), QImage::Format_ARGB32_Premultiplied);
+			    QPainter painter(&mirrorImage);
+			    painter.drawImage(0, 0, displayImage);
+		   	    painter.drawImage(displayImage.width(), 0, displayImage.mirrored(true, false));
+		   	    break;
+	   	    }
+
+	   	    case LayTriple:
+	   	    {
+				mirrorImage = QImage(displayImage.width() * 3, displayImage.height(), QImage::Format_ARGB32_Premultiplied);
+			    QPainter painter(&mirrorImage);
+			    painter.drawImage(0, 0, displayImage);
+		   	    painter.drawImage(displayImage.width(), 0, displayImage.mirrored(true, false));
+   		   	    painter.drawImage(displayImage.width() * 2, 0, displayImage.mirrored(false, false));
+		   	    break;
+	   	    }
+
+			case LayQuad:
+	   	    {
+				mirrorImage = QImage(displayImage.width() * 2, displayImage.height() * 2, QImage::Format_ARGB32_Premultiplied);
+			    QPainter painter(&mirrorImage);
+			    painter.drawImage(0, 0, displayImage);
+		   	    painter.drawImage(displayImage.width(), 0, displayImage.mirrored(true, false));
+   		   	    painter.drawImage(0, displayImage.height(), displayImage.mirrored(false, true));
+   		   	    painter.drawImage(displayImage.width(), displayImage.height(), displayImage.mirrored(true, true));
+
+		   	    break;
+	   	    }
+
+			case LayVDual:
+			{
+				mirrorImage = QImage(displayImage.width(), displayImage.height() * 2, QImage::Format_ARGB32_Premultiplied);
+			    QPainter painter(&mirrorImage);
+			    painter.drawImage(0, 0, displayImage);
+		   	    painter.drawImage(0, displayImage.height(), displayImage.mirrored(false, true));
+		   	    break;
+	   	    }
+		}
+
+		displayImage = mirrorImage;
 	}
 }
 
 void ImageView::refresh()
 {
-	images[0] = origImage;
+	displayImage = origImage;
 	transform();
-	pixmaps[0] = QPixmap::fromImage(images[0]);
-	imageLabel[0]->setPixmap(pixmaps[0]);
+	displayPixmap = QPixmap::fromImage(displayImage);
+	imageLabel->setPixmap(displayPixmap);
 	resizeImage();
 }
 
 void ImageView::reload()
 {
+	if (!GData::keepTransform)
+	{
+		GData::cropLeft = 0;
+		GData::cropTop = 0;
+		GData::cropWidth = 0;
+		GData::cropHeight = 0;
+		GData::rotation = 0;
+		GData::flipH = false;
+		GData::flipV = false;
+	}
+
 	imageReader.setFileName(currentImageFullPath);
 
 	if (imageReader.size().isValid())
 	{
 		origImage.load(currentImageFullPath);
-		images[0] = origImage;
+		displayImage = origImage;
 		transform();
-		pixmaps[0] = QPixmap::fromImage(images[0]);
+		displayPixmap = QPixmap::fromImage(displayImage);
 	}
 	else
-		pixmaps[0].load(":/images/error_image.png");
+		displayPixmap.load(":/images/error_image.png");
 
-	imageLabel[0]->setPixmap(pixmaps[0]);
+	imageLabel->setPixmap(displayPixmap);
 	resizeImage();
 }
 
@@ -258,17 +317,6 @@ void ImageView::loadImage(QString &imagePath, QString imageFileName)
 
 	if (!GData::keepZoomFactor)
 		GData::imageZoomFactor = 1.0;
-
-	if (!GData::keepTransform)
-	{
-		GData::cropLeft = 0;
-		GData::cropTop = 0;
-		GData::cropWidth = 0;
-		GData::cropHeight = 0;
-		GData::rotation = 0;
-		GData::flipH = false;
-		GData::flipV = false;
-	}
 
 	reload();
 }
@@ -316,8 +364,8 @@ void ImageView::setMouseMoveData(bool lockMove, int lMouseX, int lMouseY)
 	moveImageLocked = lockMove;
 	mouseX = lMouseX;
 	mouseY = lMouseY;
-	layoutX = imageLabel[0]->pos().x();
-	layoutY = imageLabel[0]->pos().y();
+	layoutX = imageLabel->pos().x();
+	layoutY = imageLabel->pos().y();
 }
 
 void ImageView::mouseMoveEvent(QMouseEvent *event)
@@ -328,36 +376,36 @@ void ImageView::mouseMoveEvent(QMouseEvent *event)
 		int newY = layoutY + (event->pos().y() - mouseY);
 		bool needToMove = false;
 
-		if (imageLabel[0]->size().width() > mainWindow->size().width())
+		if (imageLabel->size().width() > mainWindow->size().width())
 		{
 			if (newX > 0)
 				newX = 0;
-			else if (newX < (mainWindow->size().width() - imageLabel[0]->size().width()))
-				newX = (mainWindow->size().width() - imageLabel[0]->size().width());
+			else if (newX < (mainWindow->size().width() - imageLabel->size().width()))
+				newX = (mainWindow->size().width() - imageLabel->size().width());
 			needToMove = true;
 		}
 		else
 			newX = layoutX;
 
-		if (imageLabel[0]->size().height() > mainWindow->size().height())
+		if (imageLabel->size().height() > mainWindow->size().height())
 		{
 			if (newY > 0)
 				newY = 0;
-			else if (newY < (mainWindow->size().height() - imageLabel[0]->size().height()))
-				newY = (mainWindow->size().height() - imageLabel[0]->size().height());
+			else if (newY < (mainWindow->size().height() - imageLabel->size().height()))
+				newY = (mainWindow->size().height() - imageLabel->size().height());
 			needToMove = true;
 		}
 		else
 			newY = layoutY;
 
 		if (needToMove)
-			imageLabel[0]->move(newX, newY);
+			imageLabel->move(newX, newY);
 	}
 }
 
 void ImageView::saveImage()
 {
-	if (!pixmaps[0].save(currentImageFullPath, 0, GData::defaultSaveQuality))
+	if (!displayPixmap.save(currentImageFullPath, 0, GData::defaultSaveQuality))
 	{
 		QMessageBox msgBox;
 		msgBox.critical(this, "Error", "Failed to save image");
@@ -392,7 +440,7 @@ void ImageView::saveImageAs()
 		"Image Files (*.gif *.jpg *.jpeg *.jpe *.png *.pbm *.pgm *.ppm *.xbm *.xpm *.svg)");
 	if (!fileName.isEmpty())
 	{
-		if (!pixmaps[0].save(fileName, 0, GData::defaultSaveQuality))
+		if (!displayPixmap.save(fileName, 0, GData::defaultSaveQuality))
 		{
 			QMessageBox msgBox;
 			msgBox.critical(this, "Error", "Failed to save image");
@@ -412,11 +460,5 @@ void ImageView::contextMenuEvent(QContextMenuEvent *)
 QSize ImageView::getImageSize()
 {
 	return QSize(origImage.width(), origImage.height());
-}
-
-void ImageView::cropImage()
-{
-	refresh();
-	QApplication::processEvents();
 }
 

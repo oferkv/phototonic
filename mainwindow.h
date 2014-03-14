@@ -105,6 +105,11 @@ private slots:
 	void rotateRight();
 	void flipVert();
 	void cropImage();
+	void setMirrorDisabled();
+	void setMirrorDual();
+	void setMirrorTriple();
+	void setMirrorVDual();
+	void setMirrorQuad();
 	void flipHoriz();
 	void setThumbViewWidgetsVisible(bool visible);
 	void goTop();
@@ -124,6 +129,7 @@ private:
 	QMenu *helpMenu;
 	QMenu *zoomSubMenu;
 	QMenu *transformSubMenu;
+	QMenu *MirroringSubMenu;
 
 	QToolBar *viewToolBar;
 	QToolBar *editToolBar;
@@ -168,7 +174,14 @@ private:
 	QAction *flipHAct;
 	QAction *flipVAct;
 	QAction *cropAct;
-
+	QActionGroup *mirroringGroup;
+	QAction *mirrorSubMenuAct;
+	QAction *mirrorDisabledAct;
+	QAction *mirrorDualAct;
+	QAction *mirrorTripleAct;
+	QAction *mirrorVDualAct;
+	QAction *mirrorQuadAct;
+	
 	QAction *actClassic;
 	QAction *actCompact;
 	QAction *actSquarish;

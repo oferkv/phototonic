@@ -461,7 +461,7 @@ void CropDialog::applyCrop(int)
 	GData::cropTop = topSpin->value();
 	GData::cropWidth = rightSpin->value();
 	GData::cropHeight = bottomSpin->value();
-	imageView->cropImage();
+	imageView->refresh();
 }
 
 void CropDialog::ok()

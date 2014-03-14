@@ -30,6 +30,7 @@
 #include <QTimer>
 #include <QMessageBox>
 #include <QMenu>
+#include <QPainter>
 
 class ImageView : public QWidget
 {
@@ -38,6 +39,7 @@ class ImageView : public QWidget
 public:
 	QString currentImage;
 	bool tempDisableResize;
+	int mirrorLayout;
 
 	QMenu *ImagePopUpMenu;
 
@@ -50,6 +52,15 @@ public:
 		Disprop
 	};
 
+	enum MirrorLayouts
+	{
+		LayNone = 0,
+		LayDual,
+		LayTriple,
+		LayQuad,
+		LayVDual
+	};
+
     ImageView(QWidget *parent = 0);
 	void loadImage(QString &imagePath, QString imageFileName);
 	void resizeImage();
@@ -59,7 +70,6 @@ public:
 	void reload();
 	void setCursorOverrides(bool override);
 	QSize getImageSize();
-	void cropImage();
 
 public slots:
 	void monitorCursorState();
@@ -73,24 +83,13 @@ protected:
 	void contextMenuEvent(QContextMenuEvent *event);
 
 private:
-	enum LayoutTypes
-	{
-		LaySingle = 0,
-		LayDual,
-		LayTriple,
-		LayQuad,
-		LayVDual,
-		NLayouts = 5
-	};
-	int layoutMode;
-
 	QWidget *mainWindow;
 	QScrollArea *scrlArea;
 	QImageReader imageReader;
-	QLabel *imageLabel[NLayouts];
-	QPixmap pixmaps[NLayouts];
+	QLabel *imageLabel;
+	QPixmap displayPixmap;
 	QImage origImage;
-	QImage images[NLayouts];
+	QImage displayImage;
 	QTimer *mouseMovementTimer;
 
 	bool cursorIsHidden;
