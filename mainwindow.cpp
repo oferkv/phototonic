@@ -1287,6 +1287,7 @@ void Phototonic::loadImageFile(QString imageFileName)
 	if (stackedWidget->currentIndex() != imageViewIdx)
 	{
 		setThumbViewWidgetsVisible(false);
+		QApplication::setOverrideCursor(Qt::OpenHandCursor);
 		if (GData::isFullScreen == true)
 		{
 			shouldMaximize = isMaximized();
@@ -1295,8 +1296,8 @@ void Phototonic::loadImageFile(QString imageFileName)
 		}
 		stackedWidget->setCurrentIndex(imageViewIdx);
 	}
+	
 	imageView->loadImage(thumbView->currentViewDir, imageFileName);
-	QApplication::setOverrideCursor(Qt::OpenHandCursor);
 	setWindowTitle(imageFileName + " - Phototonic");
 }
 
