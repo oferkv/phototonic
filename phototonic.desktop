@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=Phototonic
+Comment=View photos on your computer
+GenericName=Image Viewer
+Exec=phototonic %F
+Icon=phototonic
+Terminal=false
+Type=Application
+Categories=Graphics;Viewer;
+StartupNotify=true
+MimeType=image/png;image/gif;image/jpeg;image/bmp;image/svg+xml
+StartupNotify=false

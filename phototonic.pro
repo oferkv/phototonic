@@ -8,5 +8,11 @@ SOURCES += dialogs.cpp main.cpp mainwindow.cpp thumbview.cpp imageview.cpp globa
 RESOURCES += phototonic.qrc
 
 target.path = /usr/bin/
-INSTALLS += target
 
+icon.files = images/phototonic.png
+icon.path = /usr/share/pixmaps
+
+desktop.files = phototonic.desktop
+desktop.path = /usr/share/applications
+
+INSTALLS += target icon desktop
