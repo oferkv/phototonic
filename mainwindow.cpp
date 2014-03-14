@@ -669,7 +669,8 @@ void Phototonic::about()
 
 void Phototonic::showSettings()
 {
-	imageView->setCursorOverrides(false);
+	if(isFullScreen())
+		imageView->setCursorOverrides(false);
 	
 	SettingsDialog *dialog = new SettingsDialog(this);
 	if (dialog->exec())
@@ -689,7 +690,8 @@ void Phototonic::showSettings()
 
 	delete dialog;
 
-	imageView->setCursorOverrides(true);
+	if(isFullScreen())
+		imageView->setCursorOverrides(true);
 }
 
 void Phototonic::toggleFullScreen()
