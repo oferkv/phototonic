@@ -176,6 +176,7 @@ void Phototonic::createImageView()
 	zoomSubMenu->addAction(zoomOutAct);
 	zoomSubMenu->addAction(origZoomAct);
 	zoomSubMenu->addAction(resetZoomAct);
+	addMenuSeparator(zoomSubMenu);
 	zoomSubMenu->addAction(keepZoomAct);
 
 	addMenuSeparator(imageView->ImagePopUpMenu);
@@ -188,6 +189,7 @@ void Phototonic::createImageView()
 	transformSubMenu->addAction(flipHAct);
 	transformSubMenu->addAction(flipVAct);
 	transformSubMenu->addAction(cropAct);
+	addMenuSeparator(transformSubMenu);
 	transformSubMenu->addAction(keepTransformAct);
 
 	addMenuSeparator(imageView->ImagePopUpMenu);
@@ -432,11 +434,11 @@ void Phototonic::createActions()
 	connect(flipVAct, SIGNAL(triggered()), this, SLOT(flipVert()));
 	flipVAct->setShortcut(QKeySequence("Ctrl+Up"));
 
-	cropAct = new QAction("Crop Image", this);
+	cropAct = new QAction("Cropping", this);
 	connect(cropAct, SIGNAL(triggered()), this, SLOT(cropImage()));
 	cropAct->setShortcut(QKeySequence("Ctrl+R"));
 
-	keepTransformAct = new QAction("Keep Transformation", this);
+	keepTransformAct = new QAction("Keep Transformations", this);
 	keepTransformAct->setCheckable(true);
 	connect(keepTransformAct, SIGNAL(triggered()), this, SLOT(keepTransformClicked()));
 }
@@ -810,7 +812,7 @@ void Phototonic::rotateLeft()
 	GData::rotation -= 90;
 	if (GData::rotation < 0)
 		GData::rotation = 270;
-	imageView->reload();
+	imageView->refresh();
 }
 
 void Phototonic::rotateRight()
@@ -818,26 +820,28 @@ void Phototonic::rotateRight()
 	GData::rotation += 90;
 	if (GData::rotation > 270)
 		GData::rotation = 0;
-	imageView->reload();
+	imageView->refresh();
 }
 
 void Phototonic::flipVert()
 {
 	GData::flipV = !GData::flipV;
-	imageView->reload();
+	imageView->refresh();
 }
 
 void Phototonic::cropImage()
 {
-	CropDialog *dialog = new CropDialog(this);
-	if (dialog->exec())
-		qDebug() << "ok";
+	CropDialog *dialog = new CropDialog(this, imageView);
+
+	imageView->setCursorOverrides(false);
+	dialog->exec();
+	imageView->setCursorOverrides(true);
 }
 
 void Phototonic::flipHoriz()
 {
 	GData::flipH = !GData::flipH;
-	imageView->reload();
+	imageView->refresh();
 }
 
 bool Phototonic::isValidPath(QString &path)

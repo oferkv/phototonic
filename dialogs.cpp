@@ -21,7 +21,6 @@
 
 CpMvDialog::CpMvDialog(QWidget *parent) : QDialog(parent)
 {
-	// setAttribute(Qt::WA_DeleteOnClose);
 	abortOp = false;
 
     opLabel = new QLabel("");
@@ -375,42 +374,98 @@ void SettingsDialog::pickThumbsTextColor()
     }
 }
 
-CropDialog::CropDialog(QWidget *parent) : QDialog(parent)
+CropDialog::CropDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
 {
-	setWindowTitle("Crop Image");
-	resize(480, 480);
+	setWindowTitle("Cropping");
+	resize(320, 200);
+	imageView = imageView_;
 
 	QHBoxLayout *buttonsHbox = new QHBoxLayout;
     QPushButton *okButton = new QPushButton("OK");
     okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
-	QPushButton *closeButton = new QPushButton("Cancel");
-	closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-	connect(closeButton, SIGNAL(clicked()), this, SLOT(abort()));
-	buttonsHbox->addWidget(closeButton, 1, Qt::AlignRight);
 	buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);
 
-	QSlider *topSlide = new QSlider(Qt::Vertical);
-	QSlider *bottomSlide = new QSlider(Qt::Vertical);
+	QSlider *topSlide = new QSlider(Qt::Horizontal);
+	QSlider *bottomSlide = new QSlider(Qt::Horizontal);
 	QSlider *leftSlide = new QSlider(Qt::Horizontal);
 	QSlider *rightSlide = new QSlider(Qt::Horizontal);
-	QLabel *cropImgLab = new QLabel("here");
+
+	QLabel *topLab = new QLabel("Top");
+	QLabel *leftLab = new QLabel("Left");
+	QLabel *rightLab = new QLabel("Right");
+	QLabel *bottomLab = new QLabel("Bottom");
+
+	topSpin = new QSpinBox;
+	bottomSpin = new QSpinBox;
+	leftSpin = new QSpinBox;
+	rightSpin = new QSpinBox;
 
 	QGridLayout *mainGbox = new QGridLayout;
-	mainGbox->addWidget(topSlide, 1, 0, 2, 1);
-	mainGbox->addWidget(bottomSlide, 3, 0, 2, 1);
-	mainGbox->addWidget(leftSlide, 0, 1, 1, 2);
-	mainGbox->addWidget(rightSlide, 0, 3, 1, 2);
-	mainGbox->addLayout(buttonsHbox, 5, 3, 1, 2);
+	mainGbox->setColumnStretch(1, 1);
+	
+	mainGbox->addWidget(topLab, 0, 0, 1, 1);
+	mainGbox->addWidget(topSlide, 0, 1, 1, 3);
+	mainGbox->addWidget(topSpin, 0, 4, 1, 1);
+
+	mainGbox->addWidget(bottomLab, 1, 0, 1, 1);
+	mainGbox->addWidget(bottomSlide, 1, 1, 1, 3);
+	mainGbox->addWidget(bottomSpin, 1, 4, 1, 1);
+
+	mainGbox->addWidget(leftLab, 2, 0, 1, 1);
+	mainGbox->addWidget(leftSlide, 2, 1, 1, 3);
+	mainGbox->addWidget(leftSpin, 2, 4, 1, 1);
+	
+	mainGbox->addWidget(rightLab, 3, 0, 1, 1);
+	mainGbox->addWidget(rightSlide, 3, 1, 1, 3);
+	mainGbox->addWidget(rightSpin, 3, 4, 1, 1);
+
+	mainGbox->addLayout(buttonsHbox, 4, 3, 1, 2);
 	setLayout(mainGbox);
+
+	int width = imageView->getImageSize().width();
+	int height = imageView->getImageSize().height();
+	
+	topSpin->setRange(0, height);
+	bottomSpin->setRange(0, height);
+	leftSpin->setRange(0, width);
+	rightSpin->setRange(0, width);
+	topSlide->setRange(0, height);
+	bottomSlide->setRange(0, height);
+	leftSlide->setRange(0, width);
+	rightSlide->setRange(0, width);
+
+	connect(topSlide, SIGNAL(valueChanged(int)), topSpin, SLOT(setValue(int)));
+	connect(bottomSlide, SIGNAL(valueChanged(int)), bottomSpin, SLOT(setValue(int)));
+	connect(leftSlide, SIGNAL(valueChanged(int)), leftSpin, SLOT(setValue(int)));
+	connect(rightSlide, SIGNAL(valueChanged(int)), rightSpin, SLOT(setValue(int)));
+	connect(topSpin, SIGNAL(valueChanged(int)), topSlide, SLOT(setValue(int)));
+	connect(bottomSpin, SIGNAL(valueChanged(int)), bottomSlide, SLOT(setValue(int)));
+	connect(leftSpin, SIGNAL(valueChanged(int)), leftSlide, SLOT(setValue(int)));
+	connect(rightSpin, SIGNAL(valueChanged(int)), rightSlide, SLOT(setValue(int)));
+
+	topSpin->setValue(GData::cropTop);
+	bottomSpin->setValue(GData::cropHeight);
+	leftSpin->setValue(GData::cropLeft);
+	rightSpin->setValue(GData::cropWidth);
+
+	connect(topSpin, SIGNAL(valueChanged(int)), this, SLOT(applyCrop(int)));
+	connect(bottomSpin, SIGNAL(valueChanged(int)), this, SLOT(applyCrop(int)));
+	connect(leftSpin, SIGNAL(valueChanged(int)), this, SLOT(applyCrop(int)));
+	connect(rightSpin, SIGNAL(valueChanged(int)), this, SLOT(applyCrop(int)));
 }
 
-void CropDialog::abort()
+void CropDialog::applyCrop(int)
 {
-	reject();
+	GData::cropLeft = leftSpin->value();
+	GData::cropTop = topSpin->value();
+	GData::cropWidth = rightSpin->value();
+	GData::cropHeight = bottomSpin->value();
+	imageView->cropImage();
 }
 
 void CropDialog::ok()
 {
 	accept();
 }
+

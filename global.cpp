@@ -37,6 +37,10 @@ namespace GData
 	bool flipH;
 	bool flipV;
 	int defaultSaveQuality;
+	int cropLeft;
+	int cropTop;
+	int cropWidth;
+	int cropHeight;
 
 	// app data
 	QModelIndexList copyCutIdxList;

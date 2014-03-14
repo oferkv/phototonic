@@ -43,6 +43,10 @@ namespace GData
 	extern bool flipH;
 	extern bool flipV;
 	extern int defaultSaveQuality;
+	extern int cropLeft;
+	extern int cropTop;
+	extern int cropWidth;
+	extern int cropHeight;
 
 	// app data
 	extern QModelIndexList copyCutIdxList;

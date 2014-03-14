@@ -55,8 +55,11 @@ public:
 	void resizeImage();
 	void setMouseMoveData(bool lockMove, int lMouseX, int lMouseY);
 	void setCursorHiding(bool hide);
+	void refresh();
 	void reload();
 	void setCursorOverrides(bool override);
+	QSize getImageSize();
+	void cropImage();
 
 public slots:
 	void monitorCursorState();
@@ -86,6 +89,7 @@ private:
 	QImageReader imageReader;
 	QLabel *imageLabel[NLayouts];
 	QPixmap pixmaps[NLayouts];
+	QImage origImage;
 	QImage images[NLayouts];
 	QTimer *mouseMovementTimer;
 

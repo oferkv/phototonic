@@ -21,13 +21,7 @@
 
 #include <QtGui>
 #include "thumbview.h"
-
-class QCheckBox;
-class QLabel;
-class QLineEdit;
-class QPushButton;
-class QRadioButton;
-class MainWindow;
+#include "imageview.h"
 
 class CpMvDialog : public QDialog
 {
@@ -85,16 +79,18 @@ class CropDialog : public QDialog
     Q_OBJECT
 
 public:
-    CropDialog(QWidget *parent);
-
-private slots:
+    CropDialog(QWidget *parent, ImageView *imageView);
 
 public slots:
-	void abort();
 	void ok();
+	void applyCrop(int);
 
 private:
-
+	QSpinBox *topSpin;
+	QSpinBox *bottomSpin;
+	QSpinBox *leftSpin;
+	QSpinBox *rightSpin;
+	ImageView *imageView;
 };
 
 #endif // DIALOGS_H

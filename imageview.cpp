@@ -59,6 +59,11 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	
 	mouseMovementTimer = new QTimer(this);
 	connect(mouseMovementTimer, SIGNAL(timeout()), this, SLOT(monitorCursorState()));
+
+	GData::cropLeft = 0;
+	GData::cropTop = 0;
+	GData::cropWidth = 0;
+	GData::cropHeight = 0;
 }
 
 void ImageView::resizeEvent(QResizeEvent *event)
@@ -197,6 +202,14 @@ void ImageView::centerImage(QSize &imgSize)
 
 void ImageView::transform()
 {
+	if (GData::cropLeft || GData::cropTop || GData::cropWidth || GData::cropHeight)
+	{
+		images[0] = images[0].copy(	GData::cropLeft,
+									GData::cropTop,
+									origImage.width() - GData::cropWidth - GData::cropLeft,
+									origImage.height() - GData::cropHeight - GData::cropTop);
+	}
+
 	if (GData::rotation)
 	{
 		QTransform trans;
@@ -210,13 +223,23 @@ void ImageView::transform()
 	}
 }
 
+void ImageView::refresh()
+{
+	images[0] = origImage;
+	transform();
+	pixmaps[0] = QPixmap::fromImage(images[0]);
+	imageLabel[0]->setPixmap(pixmaps[0]);
+	resizeImage();
+}
+
 void ImageView::reload()
 {
 	imageReader.setFileName(currentImageFullPath);
 
 	if (imageReader.size().isValid())
 	{
-		images[0].load(currentImageFullPath);
+		origImage.load(currentImageFullPath);
+		images[0] = origImage;
 		transform();
 		pixmaps[0] = QPixmap::fromImage(images[0]);
 	}
@@ -238,6 +261,10 @@ void ImageView::loadImage(QString &imagePath, QString imageFileName)
 
 	if (!GData::keepTransform)
 	{
+		GData::cropLeft = 0;
+		GData::cropTop = 0;
+		GData::cropWidth = 0;
+		GData::cropHeight = 0;
 		GData::rotation = 0;
 		GData::flipH = false;
 		GData::flipV = false;
@@ -381,3 +408,15 @@ void ImageView::contextMenuEvent(QContextMenuEvent *)
 	ImagePopUpMenu->exec(QCursor::pos());
 	setCursorOverrides(true);
 }
+
+QSize ImageView::getImageSize()
+{
+	return QSize(origImage.width(), origImage.height());
+}
+
+void ImageView::cropImage()
+{
+	refresh();
+	QApplication::processEvents();
+}
+
