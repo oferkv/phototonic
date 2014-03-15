@@ -140,10 +140,12 @@ void Phototonic::createImageView()
 	imageView->ImagePopUpMenu = new QMenu();
 
 	// Widget actions
+	imageView->addAction(slideShowAction);
 	imageView->addAction(nextImageAction);
 	imageView->addAction(prevImageAction);
 	imageView->addAction(firstImageAction);
 	imageView->addAction(lastImageAction);
+	imageView->addAction(randomImageAction);
 	imageView->addAction(zoomInAct);
 	imageView->addAction(zoomOutAct);
 	imageView->addAction(origZoomAct);
@@ -170,6 +172,8 @@ void Phototonic::createImageView()
 	imageView->ImagePopUpMenu->addAction(prevImageAction);
 	imageView->ImagePopUpMenu->addAction(firstImageAction);
 	imageView->ImagePopUpMenu->addAction(lastImageAction);
+	imageView->ImagePopUpMenu->addAction(slideShowAction);
+	imageView->ImagePopUpMenu->addAction(randomImageAction);
 
 	addMenuSeparator(imageView->ImagePopUpMenu);
 	zoomSubMenu = new QMenu("Zoom");
@@ -386,6 +390,10 @@ void Phototonic::createActions()
 	connect(goHomeAction, SIGNAL(triggered()), this, SLOT(goHome()));	
 	goHomeAction->setIcon(QIcon(":/images/home.png"));
 
+	slideShowAction = new QAction("Slide Show", this);
+	slideShowAction->setShortcut(QKeySequence("ctrl+w"));
+	connect(slideShowAction, SIGNAL(triggered()), this, SLOT(slideShow()));
+
 	nextImageAction = new QAction("&Next", this);
 	nextImageAction->setIcon(QIcon(":/images/next.png"));
 	nextImageAction->setShortcut(QKeySequence::MoveToNextPage);
@@ -405,6 +413,10 @@ void Phototonic::createActions()
 	lastImageAction->setIcon(QIcon(":/images/last.png"));
 	lastImageAction->setShortcut(QKeySequence::MoveToEndOfLine);
 	connect(lastImageAction, SIGNAL(triggered()), this, SLOT(loadLastImage()));
+
+	randomImageAction = new QAction("Random", this);
+	randomImageAction->setShortcut(QKeySequence("r"));
+	connect(randomImageAction, SIGNAL(triggered()), this, SLOT(loadRandomImage()));
 
 	openImageAction = new QAction("Open", this);
 	openImageAction->setShortcut(QKeySequence::InsertParagraphSeparator);
@@ -523,6 +535,9 @@ void Phototonic::createMenus()
 	sortMenu->addActions(sortTypesGroup->actions());
 	sortMenu->addSeparator();
 	sortMenu->addAction(actReverse);
+	viewMenu->addSeparator();
+
+	viewMenu->addAction(slideShowAction);
 	viewMenu->addSeparator();
 
 	thumbLayoutsGroup = new QActionGroup(this);
@@ -713,7 +728,7 @@ void Phototonic::about()
 
 void Phototonic::showSettings()
 {
-	if(isFullScreen())
+	if (stackedWidget->currentIndex() == imageViewIdx)
 		imageView->setCursorOverrides(false);
 	
 	SettingsDialog *dialog = new SettingsDialog(this);
@@ -734,7 +749,7 @@ void Phototonic::showSettings()
 
 	delete dialog;
 
-	if(isFullScreen())
+	if (stackedWidget->currentIndex() == imageViewIdx)
 		imageView->setCursorOverrides(true);
 }
 
@@ -1182,6 +1197,8 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("shouldMaximize", (bool)isMaximized());
 	GData::appSettings->setValue("defaultSaveQuality", (int)GData::defaultSaveQuality);
 	GData::appSettings->setValue("noEnlargeSmallThumb", (bool)GData::noEnlargeSmallThumb);
+	GData::appSettings->setValue("slideShowDelay", (int)GData::slideShowDelay);
+	GData::appSettings->setValue("slideShowRandom", (bool)GData::slideShowRandom);	
 }
 
 void Phototonic::loadDefaultSettings()
@@ -1209,6 +1226,8 @@ void Phototonic::loadDefaultSettings()
 		GData::appSettings->setValue("imageZoomFactor", (float)1.0);
 		GData::appSettings->setValue("defaultSaveQuality", (int)75);
 		GData::appSettings->setValue("noEnlargeSmallThumb", (bool)true);
+		GData::appSettings->setValue("slideShowDelay", (int)5);
+		GData::appSettings->setValue("slideShowRandom", (bool)false);
 	}
 
 	GData::exitInsteadOfClose = GData::appSettings->value("exitInsteadOfClose").toBool();
@@ -1222,6 +1241,13 @@ void Phototonic::loadDefaultSettings()
 	GData::flipV = false;
 	GData::defaultSaveQuality = GData::appSettings->value("defaultSaveQuality").toInt();
 	GData::noEnlargeSmallThumb = GData::appSettings->value("noEnlargeSmallThumb").toBool();
+	GData::slideShowDelay = GData::appSettings->value("slideShowDelay").toInt();
+	GData::slideShowRandom = GData::appSettings->value("slideShowRandom").toBool();
+	GData::slideShowActive = false;
+
+	// New config settings that need null protection
+	if (!GData::slideShowDelay)
+		GData::slideShowDelay = 5;
 }
 
 void Phototonic::closeEvent(QCloseEvent *event)
@@ -1327,8 +1353,7 @@ void Phototonic::loadImagefromThumb(const QModelIndex &idx)
 
 void Phototonic::loadImagefromAction()
 {
-	QModelIndexList indexesList;
-	indexesList = thumbView->selectionModel()->selectedIndexes();
+	QModelIndexList indexesList = thumbView->selectionModel()->selectedIndexes();
 
 	if (indexesList.size() != 1)
 		return;
@@ -1340,6 +1365,48 @@ void Phototonic::loadImagefromCli()
 {
 	loadImageFile(cliFileName);
 	thumbView->setCurrentIndexByName(cliFileName);
+}
+
+void Phototonic::slideShow()
+{
+	if (GData::slideShowActive)
+	{
+		GData::slideShowActive = false;
+		slideShowAction->setText("Slide Show");
+	}
+	else
+	{
+		if (stackedWidget->currentIndex() != imageViewIdx)
+		{
+			QModelIndexList indexesList = thumbView->selectionModel()->selectedIndexes();
+			if (indexesList.size() != 1)
+				thumbView->setCurrentRow(0);
+			else
+				thumbView->setCurrentRow(indexesList.first().row());
+		}
+	
+		GData::slideShowActive = true;
+		QTimer::singleShot(0, this, SLOT(slideShowHandler()));
+		slideShowAction->setText("End Slide Show");
+	}
+}
+
+void Phototonic::slideShowHandler()
+{
+	if (GData::slideShowActive)
+	{
+		if (!GData::slideShowRandom)
+		{
+			if (thumbView->getNextRow() == thumbView->getCurrentRow())
+				loadFirstImage();
+			else
+				loadNextImage();
+		}
+		else
+			loadRandomImage();
+
+		QTimer::singleShot(GData::slideShowDelay * 1000, this, SLOT(slideShowHandler()));
+	}
 }
 
 void Phototonic::loadNextImage()
@@ -1369,6 +1436,13 @@ void Phototonic::loadLastImage()
 	thumbView->setCurrentRow(lastRow);
 }
 
+void Phototonic::loadRandomImage()
+{
+	int randomRow = thumbView->getRandomRow();
+	loadImageFile(thumbView->thumbViewModel->item(randomRow)->data(thumbView->FileNameRole).toString());
+	thumbView->setCurrentRow(randomRow);
+}
+
 void Phototonic::closeImage()
 {
 	if (cliImageLoaded && GData::exitInsteadOfClose)
@@ -1394,6 +1468,9 @@ void Phototonic::closeImage()
 		newSettingsRefreshThumbs = false;
 		refreshThumbs(false);
 	}
+
+	if (GData::slideShowActive)
+		slideShow();
 }
 
 void Phototonic::goBottom()

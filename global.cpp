@@ -42,6 +42,9 @@ namespace GData
 	int cropWidth;
 	int cropHeight;
 	bool noEnlargeSmallThumb;
+	int slideShowDelay;
+	bool slideShowRandom;
+	bool slideShowActive;
 
 	// app data
 	QModelIndexList copyCutIdxList;

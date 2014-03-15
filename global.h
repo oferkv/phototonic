@@ -48,6 +48,9 @@ namespace GData
 	extern int cropWidth;
 	extern int cropHeight;
 	extern bool noEnlargeSmallThumb;
+	extern int slideShowDelay;
+	extern bool slideShowRandom;
+	extern bool slideShowActive;
 
 	// app data
 	extern QModelIndexList copyCutIdxList;

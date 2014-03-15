@@ -236,7 +236,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	noSmallThumbCb->setChecked(GData::noEnlargeSmallThumb);
 
 	// Thumbnail options
-	QGroupBox *thumbOptsGroupBox = new QGroupBox("Thumbnail Options");
+	QGroupBox *thumbOptsGroupBox = new QGroupBox("Thumbnails");
 	QVBoxLayout *thumbsOptsBox = new QVBoxLayout;
 	thumbsOptsBox->addLayout(thumbSpacingHbox);
 	thumbsOptsBox->addWidget(noSmallThumbCb);
@@ -299,8 +299,29 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	viewerOptsBox->addLayout(zoomOptsBox);
 	viewerOptsBox->addWidget(exitCliCb);
 	viewerOptsBox->addLayout(saveQualityHbox);
-	QGroupBox *viewerOptsGrp = new QGroupBox("Viewer Options");
+	QGroupBox *viewerOptsGrp = new QGroupBox("Viewer");
 	viewerOptsGrp->setLayout(viewerOptsBox);
+
+	// Slide show delay
+	QLabel *slideDelayLab = new QLabel("Delay between images: ");
+	slideDelaySpin = new QSpinBox;
+	slideDelaySpin->setRange(1, 3600);
+	slideDelaySpin->setValue(GData::slideShowDelay);
+	QHBoxLayout *slideDelayHbox = new QHBoxLayout;
+	slideDelayHbox->addWidget(slideDelayLab);
+	slideDelayHbox->addWidget(slideDelaySpin);
+	slideDelayHbox->addStretch(1);
+
+	// Slide show random
+	slideRandomCb = new QCheckBox("Random images", this);
+	slideRandomCb->setChecked(GData::slideShowRandom);
+
+	// Slide show options
+	QVBoxLayout *slideShowVbox = new QVBoxLayout;
+	slideShowVbox->addLayout(slideDelayHbox);
+	slideShowVbox->addWidget(slideRandomCb);
+	QGroupBox *slideShowGbox = new QGroupBox("Slide Show");
+	slideShowGbox->setLayout(slideShowVbox);
 
 	// General
 	QVBoxLayout *optsLayout = new QVBoxLayout;
@@ -309,6 +330,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	optsLayout->addSpacerItem(new QSpacerItem(0, 5, QSizePolicy::Fixed, QSizePolicy::Expanding));
 	optsLayout->addWidget(thumbOptsGroupBox);
 	optsLayout->addWidget(colorsGbox);
+	optsLayout->addWidget(slideShowGbox);
 	optsLayout->addStretch(1);
 }
 
@@ -341,6 +363,8 @@ void SettingsDialog::saveSettings()
 	GData::exitInsteadOfClose = exitCliCb->isChecked();
 	GData::defaultSaveQuality = saveQualitySpin->value();
 	GData::noEnlargeSmallThumb = noSmallThumbCb->isChecked();
+	GData::slideShowDelay = slideDelaySpin->value();
+	GData::slideShowRandom = slideRandomCb->isChecked();
 
 	accept();
 }

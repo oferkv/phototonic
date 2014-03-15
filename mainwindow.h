@@ -84,10 +84,13 @@ private slots:
 	void goForward();
 	void goUp();
 	void goHome();
+	void slideShow();
+	void slideShowHandler();
 	void loadNextImage();
 	void loadPrevImage();
 	void loadFirstImage();
 	void loadLastImage();
+	void loadRandomImage();
 	void selectAllThumbs();
 	void deleteOp();
 	void cutImages();
@@ -198,10 +201,12 @@ private:
 	QAction *goUpAction;
 	QAction *goHomeAction;
 
+	QAction *slideShowAction;
 	QAction *nextImageAction;
 	QAction *prevImageAction;
 	QAction *firstImageAction;
 	QAction *lastImageAction;
+	QAction *randomImageAction;
 	QAction *openImageAction;
 	
 	QLineEdit *pathBar;

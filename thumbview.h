@@ -57,6 +57,7 @@ public:
 	int getNextRow();
 	int getPrevRow();
 	int getLastRow();
+	int getRandomRow();
 	int getCurrentRow();
 	void setCurrentRow(int row);
 

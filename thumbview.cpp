@@ -62,6 +62,9 @@ ThumbView::ThumbView(QWidget *parent) : QListView(parent)
 	thumbsDir->setNameFilters(*fileFilters);
 
 	emptyImg.load(":/images/no_image.png");
+
+	QTime time = QTime::currentTime();
+	qsrand((uint)time.msec());
 }
 
 void ThumbView::setThumbColors()
@@ -98,6 +101,11 @@ int ThumbView::getPrevRow()
 int ThumbView::getLastRow()
 {
 	return thumbViewModel->rowCount() - 2;
+}
+
+int ThumbView::getRandomRow()
+{
+	return qrand() % (thumbViewModel->rowCount() - 1);
 }
 
 int ThumbView::getCurrentRow()
