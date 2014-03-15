@@ -41,6 +41,7 @@ namespace GData
 	int cropTop;
 	int cropWidth;
 	int cropHeight;
+	bool noEnlargeSmallThumb;
 
 	// app data
 	QModelIndexList copyCutIdxList;

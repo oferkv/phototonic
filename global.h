@@ -47,6 +47,7 @@ namespace GData
 	extern int cropTop;
 	extern int cropWidth;
 	extern int cropHeight;
+	extern bool noEnlargeSmallThumb;
 
 	// app data
 	extern QModelIndexList copyCutIdxList;

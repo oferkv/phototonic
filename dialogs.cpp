@@ -231,10 +231,15 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	thumbSpacingHbox->addWidget(thumbSpacingSpin);
 	thumbSpacingHbox->addStretch(1);
 
+	// Do not enlarge small thumbs
+	noSmallThumbCb = new QCheckBox("Do not enlarge thumbnails for images smaller than thumbnail size", this);
+	noSmallThumbCb->setChecked(GData::noEnlargeSmallThumb);
+
 	// Thumbnail options
 	QGroupBox *thumbOptsGroupBox = new QGroupBox("Thumbnail Options");
 	QVBoxLayout *thumbsOptsBox = new QVBoxLayout;
 	thumbsOptsBox->addLayout(thumbSpacingHbox);
+	thumbsOptsBox->addWidget(noSmallThumbCb);
 	thumbOptsGroupBox->setLayout(thumbsOptsBox);
 
 	// Zoom large images
@@ -335,6 +340,7 @@ void SettingsDialog::saveSettings()
 	GData::thumbSpacing = thumbSpacingSpin->value();
 	GData::exitInsteadOfClose = exitCliCb->isChecked();
 	GData::defaultSaveQuality = saveQualitySpin->value();
+	GData::noEnlargeSmallThumb = noSmallThumbCb->isChecked();
 
 	accept();
 }

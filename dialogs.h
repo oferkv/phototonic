@@ -72,6 +72,7 @@ private:
 	QColor thumbBgColor;
 	QColor thumbTextColor;
 	QCheckBox *exitCliCb;
+	QCheckBox *noSmallThumbCb;
 };
 
 class CropDialog : public QDialog

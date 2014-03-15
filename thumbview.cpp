@@ -21,6 +21,7 @@
 #include <QScrollBar>
 #include <QDragEnterEvent>
 #include <QUrl>
+#include <QDateTime>
 #include "thumbview.h"
 
 ThumbView::ThumbView(QWidget *parent) : QListView(parent)
@@ -123,14 +124,36 @@ void ThumbView::setCurrentIndexByName(QString &FileName)
 void ThumbView::handleSelectionChanged(const QItemSelection&)
 {
 	QString state;
-	int nSelected = selectionModel()->selectedIndexes().size();
+	QString info = "";
+	QModelIndexList indexesList = selectionModel()->selectedIndexes();
+	int nSelected = indexesList.size();
 	
-	if (nSelected)
-		state = QString("Selected " + QString::number(nSelected) + " images");
-	else
+	if (!nSelected)
 		state = "None selected";
-	
-	emit updateState(state);
+	else if (nSelected > 1)
+		state = QString("Selected " + QString::number(nSelected) + " images");
+	else if (nSelected == 1)
+	{
+		QString imageName = thumbViewModel->item(indexesList.first().row())->data(FileNameRole).toString();
+		state = QString(imageName);
+
+		imageInfoReader.setFileName(currentViewDir + QDir::separator() + imageName);
+		if (imageInfoReader.size().isValid())
+		{
+
+			QFileInfo imageInfo = QFileInfo(currentViewDir + QDir::separator() + imageName);
+			info =	QString::number(imageInfoReader.size().width())
+					+ "x"
+					+ QString::number(imageInfoReader.size().height())
+					+ "     "
+					+ QString::number(imageInfo.size() / 1024) + "K"
+					+ "     " + imageInfo.lastModified().toString(Qt::SystemLocaleShortDate);
+		}
+		else
+			info = imageInfoReader.errorString();
+	}
+
+	emit updateState(state, info);
 }
 
 void ThumbView::startDrag(Qt::DropActions)
@@ -204,15 +227,16 @@ void ThumbView::load(QString &cliImageName)
 	initThumbs();
 	if (!cliImageName.isNull())
 		setCurrentIndexByName(cliImageName);
-	loadThumbs();
 
-	if ((thumbViewModel->rowCount() - 1) == 0)
-		emit updateState("No images");
+	if ((thumbViewModel->rowCount()) == 1)
+		emit updateState("No images", "");
 	else 
 	{
 		QString state = (QString::number(thumbViewModel->rowCount() - 1) + " images");
-		emit updateState(state);
+		emit updateState(state, "");
 	}
+
+	loadThumbs();
 }
 
 void ThumbView::initThumbs()
@@ -291,7 +315,9 @@ refreshThumbs:
 		if (!currThumbSize.isValid())
 			thumbReader.setFileName(":/images/error_image.png");
 
-		currThumbSize.scale(QSize(thumbWidth, thumbHeight), Qt::KeepAspectRatio);
+		if (!GData::noEnlargeSmallThumb || (currThumbSize.width() > thumbWidth || currThumbSize.height() > thumbHeight))
+			currThumbSize.scale(QSize(thumbWidth, thumbHeight), Qt::KeepAspectRatio);
+			
 		thumbReader.setScaledSize(currThumbSize);
 		thumbViewModel->item(currThumb)->setIcon(QPixmap::fromImage(thumbReader.read()));
 

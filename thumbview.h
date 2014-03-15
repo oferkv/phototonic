@@ -25,6 +25,7 @@
 #include <QDebug>
 #include <QStandardItem>
 #include <QTreeView>
+#include <QImageReader>
 #include "global.h"
 
 class QListView;
@@ -36,7 +37,7 @@ class ThumbView : public QListView
 
 signals:
 	void unsetBusy();
-	void updateState(QString state);
+	void updateState(QString state, QString info);
 
 public slots:
 	void abort();
@@ -91,6 +92,7 @@ private:
 	QFileInfoList thumbFileInfoList;
 	QImage emptyImg;
 	QModelIndex currentIndex;
+	QImageReader imageInfoReader;
 	
 	bool abortOp;
 	int newIndex;

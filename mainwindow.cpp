@@ -119,7 +119,7 @@ void Phototonic::createThumbView()
 
 	connect(this, SIGNAL(abortThumbLoading()), thumbView, SLOT(abort()));
 	connect(thumbView, SIGNAL(unsetBusy()), this, SLOT(unsetBusy()));
-	connect(thumbView, SIGNAL(updateState(QString)), this, SLOT(updateState(QString)));
+	connect(thumbView, SIGNAL(updateState(QString, QString)), this, SLOT(updateState(QString, QString)));
 	connect(thumbView->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), 
 				this, SLOT(changeActionsBySelection(QItemSelection, QItemSelection)));
 }
@@ -455,7 +455,7 @@ void Phototonic::createActions()
 	connect(cropAct, SIGNAL(triggered()), this, SLOT(cropImage()));
 	cropAct->setShortcut(QKeySequence("Ctrl+R"));
 
-	mirrorDisabledAct = new QAction("Disabled", this);
+	mirrorDisabledAct = new QAction("Disable", this);
 	mirrorDisabledAct->setShortcut(QKeySequence("Ctrl+1"));
 	mirrorDualAct = new QAction("Dual", this);
 	mirrorDualAct->setShortcut(QKeySequence("Ctrl+2"));
@@ -596,8 +596,12 @@ void Phototonic::createToolBars()
 
 void Phototonic::createStatusBar()
 {
-    stateLabel = new QLabel("Initializing...");
+	stateLabel = new QLabel("Initializing...");
+	stateLabel->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+	infoLabel = new QLabel("");
+	infoLabel->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 	statusBar()->addWidget(stateLabel);
+	statusBar()->addWidget(infoLabel);
 }
 
 void Phototonic::createFSTree()
@@ -1177,6 +1181,7 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("imageZoomFactor", (float)GData::imageZoomFactor);
 	GData::appSettings->setValue("shouldMaximize", (bool)isMaximized());
 	GData::appSettings->setValue("defaultSaveQuality", (int)GData::defaultSaveQuality);
+	GData::appSettings->setValue("noEnlargeSmallThumb", (bool)GData::noEnlargeSmallThumb);
 }
 
 void Phototonic::loadDefaultSettings()
@@ -1203,6 +1208,7 @@ void Phototonic::loadDefaultSettings()
 		GData::appSettings->setValue("exitInsteadOfClose", (int)0);
 		GData::appSettings->setValue("imageZoomFactor", (float)1.0);
 		GData::appSettings->setValue("defaultSaveQuality", (int)75);
+		GData::appSettings->setValue("noEnlargeSmallThumb", (bool)true);
 	}
 
 	GData::exitInsteadOfClose = GData::appSettings->value("exitInsteadOfClose").toBool();
@@ -1215,6 +1221,7 @@ void Phototonic::loadDefaultSettings()
 	GData::flipH = false;
 	GData::flipV = false;
 	GData::defaultSaveQuality = GData::appSettings->value("defaultSaveQuality").toInt();
+	GData::noEnlargeSmallThumb = GData::appSettings->value("noEnlargeSmallThumb").toBool();
 }
 
 void Phototonic::closeEvent(QCloseEvent *event)
@@ -1224,9 +1231,20 @@ void Phototonic::closeEvent(QCloseEvent *event)
 	event->accept();
 }
 
-void Phototonic::updateState(QString state)
+void Phototonic::updateState(QString state, QString info)
 {
+	QString space("   ");
+	state = space + state + space;
 	stateLabel->setText(state);
+
+	if (info.isEmpty())
+		infoLabel->setVisible(false);
+	else
+	{
+		infoLabel->setVisible(true);
+		info = space + info + space;
+		infoLabel->setText(info);
+	}
 }
 
 void Phototonic::mouseDoubleClickEvent(QMouseEvent *event)
