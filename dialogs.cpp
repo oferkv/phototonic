@@ -407,7 +407,7 @@ void SettingsDialog::pickThumbsTextColor()
 CropDialog::CropDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
 {
 	setWindowTitle("Cropping");
-	resize(320, 200);
+	resize(340, 180);
 	imageView = imageView_;
 
 	QHBoxLayout *buttonsHbox = new QHBoxLayout;
@@ -421,10 +421,32 @@ CropDialog::CropDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
 	QSlider *leftSlide = new QSlider(Qt::Horizontal);
 	QSlider *rightSlide = new QSlider(Qt::Horizontal);
 
+	topSlide->setTickPosition(QSlider::TicksAbove);
+	topSlide->setTickInterval(100);
+	bottomSlide->setTickPosition(QSlider::TicksAbove);
+	bottomSlide->setTickInterval(100);
+	leftSlide->setTickPosition(QSlider::TicksAbove);
+	leftSlide->setTickInterval(100);
+	rightSlide->setTickPosition(QSlider::TicksAbove);
+	rightSlide->setTickInterval(100);
+
 	QLabel *topLab = new QLabel("Top");
 	QLabel *leftLab = new QLabel("Left");
 	QLabel *rightLab = new QLabel("Right");
 	QLabel *bottomLab = new QLabel("Bottom");
+	QLabel *topPixLab = new QLabel;
+	QLabel *leftPixLab = new QLabel;
+	QLabel *rightPixLab = new QLabel;
+	QLabel *bottomPixLab = new QLabel;
+
+	QPixmap topPix(":/images/top.png");
+	topPixLab->setPixmap(topPix);
+	QPixmap leftPix(":/images/first.png");
+	leftPixLab->setPixmap(leftPix);
+	QPixmap rightPix(":/images/last.png");
+	rightPixLab->setPixmap(rightPix);
+	QPixmap bottomPix(":/images/bottom.png");
+	bottomPixLab->setPixmap(bottomPix);
 
 	topSpin = new QSpinBox;
 	bottomSpin = new QSpinBox;
@@ -432,26 +454,33 @@ CropDialog::CropDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
 	rightSpin = new QSpinBox;
 
 	QGridLayout *mainGbox = new QGridLayout;
-	mainGbox->setColumnStretch(1, 1);
+	mainGbox->setColumnStretch(2, 1);
+
+	mainGbox->addWidget(topPixLab, 0, 0, 1, 1);
+	mainGbox->addWidget(topLab, 0, 1, 1, 1);
+	mainGbox->addWidget(topSlide, 0, 2, 1, 3);
+	mainGbox->addWidget(topSpin, 0, 5, 1, 1);
+
+	mainGbox->addWidget(bottomPixLab, 1, 0, 1, 1);
+	mainGbox->addWidget(bottomLab, 1, 1, 1, 1);
+	mainGbox->addWidget(bottomSlide, 1, 2, 1, 3);
+	mainGbox->addWidget(bottomSpin, 1, 5, 1, 1);
+
+	mainGbox->addWidget(leftPixLab, 2, 0, 1, 1);
+	mainGbox->addWidget(leftLab, 2, 1, 1, 1);
+	mainGbox->addWidget(leftSlide, 2, 2, 1, 3);
+	mainGbox->addWidget(leftSpin, 2, 5, 1, 1);
 	
-	mainGbox->addWidget(topLab, 0, 0, 1, 1);
-	mainGbox->addWidget(topSlide, 0, 1, 1, 3);
-	mainGbox->addWidget(topSpin, 0, 4, 1, 1);
+	mainGbox->addWidget(rightPixLab, 3, 0, 1, 1);
+	mainGbox->addWidget(rightLab, 3, 1, 1, 1);
+	mainGbox->addWidget(rightSlide, 3, 2, 1, 3);
+	mainGbox->addWidget(rightSpin, 3, 5, 1, 1);
 
-	mainGbox->addWidget(bottomLab, 1, 0, 1, 1);
-	mainGbox->addWidget(bottomSlide, 1, 1, 1, 3);
-	mainGbox->addWidget(bottomSpin, 1, 4, 1, 1);
-
-	mainGbox->addWidget(leftLab, 2, 0, 1, 1);
-	mainGbox->addWidget(leftSlide, 2, 1, 1, 3);
-	mainGbox->addWidget(leftSpin, 2, 4, 1, 1);
-	
-	mainGbox->addWidget(rightLab, 3, 0, 1, 1);
-	mainGbox->addWidget(rightSlide, 3, 1, 1, 3);
-	mainGbox->addWidget(rightSpin, 3, 4, 1, 1);
-
-	mainGbox->addLayout(buttonsHbox, 4, 3, 1, 2);
-	setLayout(mainGbox);
+	QVBoxLayout *mainVbox = new QVBoxLayout;
+	mainVbox->addLayout(mainGbox);
+	mainVbox->addStretch(1);	
+	mainVbox->addLayout(buttonsHbox);
+	setLayout(mainVbox);
 
 	int width = imageView->getImageSize().width();
 	int height = imageView->getImageSize().height();

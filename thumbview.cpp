@@ -304,9 +304,7 @@ void ThumbView::loadThumbs()
 	bool needRefresh = false;
 	thumbLoaderActive = true;
 
-	QImage errorImg;
-	errorImg.load(":/images/error_image.png");
-	QPixmap errorPixMap = QPixmap::fromImage(errorImg);
+	QPixmap errorPixMap(":/images/error_image.png");
 	updateIndex();
 
 refreshThumbs:
