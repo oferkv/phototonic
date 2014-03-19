@@ -719,11 +719,12 @@ void Phototonic::setSquarishThumbs()
 
 void Phototonic::about()
 {
-	QMessageBox::about(this, "About Phototonic", "<h2>Phototonic v0.90</h2>"
+	QMessageBox::about(this, "About Phototonic", "<h2>Phototonic v0.91</h2>"
 							"<p>Image viewer and organizer</p>"
-							"<p><a href=\"https://gitorious.org/phototonic\">Home page</a></p>"
-							"<p><a href=\"https://github.com/oferkv/phototonic/issues\">Bug reports</a></p>"
-							"<p>Copyright &copy; 2013 Ofer Kashayov</p>");
+							"<p><a href=\"http://oferkv.github.io/phototonic/\">Home page</a></p>"
+							"<p><a href=\"https://github.com/oferkv/phototonic/issues\">Reports Bugs</a></p>"
+							"<p>Copyright &copy; 2013-2014 Ofer Kashayov</p>"
+							"<p>Contact: oferkv@live.com</p>");
 }
 
 void Phototonic::showSettings()
