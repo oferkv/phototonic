@@ -1,9 +1,9 @@
 pkgname=phototonic
-pkgver=0.90
-pkgrel=1
+pkgver=git
+pkgrel=2
 pkgdesc="Image Viewer and Organizer"
 arch=('i686' 'x86_64')
-url="https://gitorious.org/phototonic"
+url="http://oferkv.github.io/phototonic/"
 license=('GPL3')
 depends=('qt4')
 source=("git://gitorious.org/phototonic/phototonic.git")

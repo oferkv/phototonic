@@ -57,7 +57,8 @@ ThumbView::ThumbView(QWidget *parent) : QListView(parent)
 	thumbsDir = new QDir();
 	QStringList *fileFilters = new QStringList;
 	*fileFilters << "*.BMP" << "*.GIF" << "*.JPG" << "*.JPEG" << "*.JPE" << "*.PNG"
-					<< "*.PBM" << "*.PGM" << "*.PPM" << "*.XBM" << "*.XPM" << "*.SVG";
+				 << "*.PBM" << "*.PGM" << "*.PPM" << "*.XBM" << "*.XPM" << "*.SVG"
+				 << "*.TIFF" << "*.TIF";
 	thumbsDir->setFilter(QDir::Files);
 	thumbsDir->setNameFilters(*fileFilters);
 
@@ -150,15 +151,19 @@ void ThumbView::handleSelectionChanged(const QItemSelection&)
 		{
 
 			QFileInfo imageInfo = QFileInfo(currentViewDir + QDir::separator() + imageName);
-			info =	QString::number(imageInfoReader.size().width())
-					+ "x"
+			info =	imageInfoReader.format().toUpper() + " File     "
+					+ QString::number(imageInfo.size() / 1024) + "K     "
 					+ QString::number(imageInfoReader.size().height())
-					+ "     "
-					+ QString::number(imageInfo.size() / 1024) + "K"
+					+ "x"
+					+ QString::number(imageInfoReader.size().width())
 					+ "     " + imageInfo.lastModified().toString(Qt::SystemLocaleShortDate);
+
 		}
 		else
+		{
+			imageInfoReader.read();
 			info = imageInfoReader.errorString();
+		}
 	}
 
 	emit updateState(state, info);
