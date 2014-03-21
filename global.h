@@ -23,6 +23,7 @@
 #include <QModelIndexList>
 #include <QStringList>
 #include <QColor>
+#include <QAction>
 
 namespace GData
 {
@@ -51,6 +52,7 @@ namespace GData
 	extern int slideShowDelay;
 	extern bool slideShowRandom;
 	extern bool slideShowActive;
+	extern QMap<QString, QAction *> actionKeys;
 
 	// app data
 	extern QModelIndexList copyCutIdxList;

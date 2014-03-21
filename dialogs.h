@@ -42,6 +42,20 @@ private:
 	bool abortOp;
 };
 
+class KeyGrabLineEdit : public QLineEdit
+{
+	Q_OBJECT
+ 
+public:
+	KeyGrabLineEdit(QWidget *parent, QComboBox *combo);
+
+protected:
+	void keyPressEvent(QKeyEvent *);
+
+private:
+	QComboBox *keysCombo;
+ };
+
 class SettingsDialog : public QDialog
 {
     Q_OBJECT
@@ -54,6 +68,7 @@ private slots:
 	void pickColor();
 	void pickThumbsColor();
 	void pickThumbsTextColor();
+	void setActionKeyText(const QString &text);
 
 public slots:
 	void abort();
@@ -75,6 +90,7 @@ private:
 	QCheckBox *noSmallThumbCb;
 	QSpinBox *slideDelaySpin;
 	QCheckBox *slideRandomCb;
+	KeyGrabLineEdit *keyLine;
 };
 
 class CropDialog : public QDialog

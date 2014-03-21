@@ -152,10 +152,59 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 	close();	
 }
 
+KeyGrabLineEdit::KeyGrabLineEdit(QWidget *parent, QComboBox *combo) : QLineEdit(parent)
+{
+	setReadOnly(true);
+	keysCombo = combo;
+}
+
+void KeyGrabLineEdit::keyPressEvent(QKeyEvent *e)
+{
+	QString keySeqText;
+	QString keyText("");
+	QString modifierText("");
+
+	if (e->modifiers() & Qt::ShiftModifier)
+		modifierText += "Shift+";		
+	if (e->modifiers() & Qt::ControlModifier)
+		modifierText += "Ctrl+";
+	if (e->modifiers() & Qt::AltModifier)
+		modifierText += "Alt+";
+
+	if ((e->key() < 16777248 ||  e->key() > 16777251) && e->key() > 0) 
+		keyText = QKeySequence(e->key()).toString();
+		
+	keySeqText = modifierText + keyText;
+
+	QMapIterator<QString, QAction *> it(GData::actionKeys);
+	while (it.hasNext())
+	{
+		it.next();
+		if (it.value()->shortcut().toString() == keySeqText)
+		{
+			QMessageBox msgBox;
+			msgBox.warning(this, "Set shortcut", "Already assigned to \"" + it.key() + "\" action");
+			return;
+		}
+	}
+	
+	setText(keySeqText);
+	GData::actionKeys.value(keysCombo->currentText())->setShortcut(QKeySequence(keySeqText));
+}
+
+void SettingsDialog::setActionKeyText(const QString &text)
+{
+	keyLine->setText(GData::actionKeys.value(text)->shortcut().toString());
+}
+
 SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 {
 	setWindowTitle("Phototonic Settings");
-	resize(640, 480);
+
+//	if (parent->isFullScreen())
+		resize(600, 480);
+//	else
+//		resize(600, parent->size().height() - 50);
 
 	QWidget* optsWidgetArea = new QWidget(this);
 	QScrollArea *scrollArea = new QScrollArea;
@@ -303,7 +352,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	viewerOptsGrp->setLayout(viewerOptsBox);
 
 	// Slide show delay
-	QLabel *slideDelayLab = new QLabel("Delay between images: ");
+	QLabel *slideDelayLab = new QLabel("Delay between slides in seconds: ");
 	slideDelaySpin = new QSpinBox;
 	slideDelaySpin->setRange(1, 3600);
 	slideDelaySpin->setValue(GData::slideShowDelay);
@@ -323,6 +372,28 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	QGroupBox *slideShowGbox = new QGroupBox("Slide Show");
 	slideShowGbox->setLayout(slideShowVbox);
 
+	// Keyboard shortcuts widgets
+	QComboBox *keysCombo = new QComboBox();
+	keyLine = new KeyGrabLineEdit(this, keysCombo);
+	connect(keysCombo, SIGNAL(activated(const QString &)),
+							this, SLOT(setActionKeyText(const QString &)));
+
+	QMapIterator<QString, QAction *> it(GData::actionKeys);
+	while (it.hasNext())
+	{
+		it.next();
+		keysCombo->addItem(it.key());
+	}
+	keyLine->setText(GData::actionKeys.value(keysCombo->currentText())->shortcut().toString());
+
+	// Keyboard shortcuts
+	QHBoxLayout *keyboardVbox = new QHBoxLayout;
+	keyboardVbox->addWidget(keysCombo);
+	keyboardVbox->addWidget(keyLine);
+	keyboardVbox->addStretch(1);
+	QGroupBox *keyboardGbox = new QGroupBox("Set Keyboard Shortcuts");
+	keyboardGbox->setLayout(keyboardVbox);
+
 	// General
 	QVBoxLayout *optsLayout = new QVBoxLayout;
 	optsWidgetArea->setLayout(optsLayout);
@@ -331,6 +402,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	optsLayout->addWidget(thumbOptsGroupBox);
 	optsLayout->addWidget(colorsGbox);
 	optsLayout->addWidget(slideShowGbox);
+	optsLayout->addWidget(keyboardGbox);
 	optsLayout->addStretch(1);
 }
 

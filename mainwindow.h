@@ -144,8 +144,6 @@ private:
 	QAction *deleteAction;
 	QAction *saveAction;
 	QAction *saveAsAction;
-	QAction *copyToAction;
-	QAction *moveToAction;
 	QAction *renameAction;
 	QAction *selectAllAction;
 
@@ -238,6 +236,7 @@ private:
 	bool thumbViewBusy;
 	bool shouldMaximize;
 
+	void loadShortcuts();
 	void deleteSingleImage();
 	void restoreCurrentIdx();
 	bool handleArgs();
@@ -250,7 +249,7 @@ private:
 	void createStatusBar();
 	void createFSTree();
 	void writeSettings();
-	void loadDefaultSettings();
+	void readSettings();
 	void recordHistory(QString dir);
 	bool isValidPath(QString &path);
 	bool isBusy()

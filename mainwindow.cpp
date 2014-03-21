@@ -25,7 +25,7 @@
 Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 {
 	GData::appSettings = new QSettings("Phototonic", "Phototonic");
-	loadDefaultSettings();
+	readSettings();
 	createThumbView();
 	createActions();
 	createMenus();
@@ -33,6 +33,7 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	createStatusBar();
 	createFSTree();
 	createImageView();
+	loadShortcuts();
 
 	connect(qApp, SIGNAL(focusChanged(QWidget* , QWidget*)), 
 				this, SLOT(updateActions(QWidget*, QWidget*)));
@@ -172,8 +173,8 @@ void Phototonic::createImageView()
 	imageView->ImagePopUpMenu->addAction(prevImageAction);
 	imageView->ImagePopUpMenu->addAction(firstImageAction);
 	imageView->ImagePopUpMenu->addAction(lastImageAction);
-	imageView->ImagePopUpMenu->addAction(slideShowAction);
 	imageView->ImagePopUpMenu->addAction(randomImageAction);
+	imageView->ImagePopUpMenu->addAction(slideShowAction);
 
 	addMenuSeparator(imageView->ImagePopUpMenu);
 	zoomSubMenu = new QMenu("Zoom");
@@ -237,77 +238,60 @@ void Phototonic::createActions()
 {
 	thumbsGoTopAct = new QAction("Top", this);
 	connect(thumbsGoTopAct, SIGNAL(triggered()), this, SLOT(goTop()));
-	thumbsGoTopAct->setShortcut(QKeySequence::MoveToStartOfDocument);
 
 	thumbsGoBottomAct = new QAction("Bottom", this);
 	connect(thumbsGoBottomAct, SIGNAL(triggered()), this, SLOT(goBottom()));
-	thumbsGoBottomAct->setShortcut(QKeySequence::MoveToEndOfDocument);
 
 	closeImageAct = new QAction("Close Image", this);
 	connect(closeImageAct, SIGNAL(triggered()), this, SLOT(closeImage()));
-	closeImageAct->setShortcut(Qt::Key_Escape);
 
 	fullScreenAct = new QAction("Full Screen", this);
 	fullScreenAct->setCheckable(true);
 	connect(fullScreenAct, SIGNAL(triggered()), this, SLOT(toggleFullScreen()));
-	fullScreenAct->setShortcut(QKeySequence("f"));
 	
 	settingsAction = new QAction("Preferences", this);
 	settingsAction->setIcon(QIcon(":/images/settings.png"));
-	settingsAction->setShortcut(QKeySequence("Ctrl+P"));
 	connect(settingsAction, SIGNAL(triggered()), this, SLOT(showSettings()));
 
-	exitAction = new QAction("E&xit", this);
-	exitAction->setShortcut(QKeySequence("Ctrl+Q"));
+	exitAction = new QAction("Exit", this);
 	connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
 
-	thumbsZoomInAct = new QAction("Zoom In", this);
-	thumbsZoomInAct->setShortcut(QKeySequence::ZoomIn);
+	thumbsZoomInAct = new QAction("Enlarge Thumbnails", this);
 	connect(thumbsZoomInAct, SIGNAL(triggered()), this, SLOT(thumbsZoomIn()));
 	thumbsZoomInAct->setIcon(QIcon(":/images/zoom_in.png"));
 	if (thumbView->thumbHeight == 300)
 		thumbsZoomInAct->setEnabled(false);
 
-	thumbsZoomOutAct = new QAction("Zoom Out", this);
-	thumbsZoomOutAct->setShortcut(QKeySequence::ZoomOut);
+	thumbsZoomOutAct = new QAction("Shrink Thumbnails", this);
 	connect(thumbsZoomOutAct, SIGNAL(triggered()), this, SLOT(thumbsZoomOut()));
 	thumbsZoomOutAct->setIcon(QIcon(":/images/zoom_out.png"));
 	if (thumbView->thumbHeight == 100)
 		thumbsZoomOutAct->setEnabled(false);
 
 	cutAction = new QAction("Cut", this);
-	cutAction->setShortcut(QKeySequence::Cut);
 	cutAction->setIcon(QIcon(":/images/cut.png"));
 	connect(cutAction, SIGNAL(triggered()), this, SLOT(cutImages()));
 	cutAction->setEnabled(false);
 
 	copyAction = new QAction("Copy", this);
-	copyAction->setShortcut(QKeySequence::Copy);
 	copyAction->setIcon(QIcon(":/images/copy.png"));
 	connect(copyAction, SIGNAL(triggered()), this, SLOT(copyImages()));
 	copyAction->setEnabled(false);
 	
 	deleteAction = new QAction("Delete", this);
-	deleteAction->setShortcut(QKeySequence::Delete);
 	deleteAction->setIcon(QIcon(":/images/delete.png"));
 	connect(deleteAction, SIGNAL(triggered()), this, SLOT(deleteOp()));
 
 	saveAction = new QAction("Save", this);
-	saveAction->setShortcut(QKeySequence::Save);
-
 	saveAsAction = new QAction("Save As", this);
 
-	copyToAction = new QAction("Copy to", this);
-	moveToAction = new QAction("Move to", this);
-
 	renameAction = new QAction("Rename", this);
-	renameAction->setShortcut(QKeySequence("F2"));
 	connect(renameAction, SIGNAL(triggered()), this, SLOT(rename()));
 
 	selectAllAction = new QAction("Select All", this);
 	connect(selectAllAction, SIGNAL(triggered()), this, SLOT(selectAllThumbs()));
 
-	aboutAction = new QAction("&About", this);
+	aboutAction = new QAction("About", this);
 	aboutAction->setIcon(QIcon(":/images/about.png"));
 	connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
 
@@ -351,94 +335,79 @@ void Phototonic::createActions()
 	actCompact->setChecked(GData::thumbsLayout == ThumbView::Compact); 
 	actSquarish->setChecked(GData::thumbsLayout == ThumbView::Squares); 
 
-	refreshAction = new QAction("Refresh", this);
-	refreshAction->setShortcut(QKeySequence("F5"));
+	refreshAction = new QAction("Reload Thumbnails", this);
 	refreshAction->setIcon(QIcon(":/images/refresh.png"));
 	connect(refreshAction, SIGNAL(triggered()), this, SLOT(refreshThumbs()));
 
-	pasteAction = new QAction("&Paste Here", this);
-	pasteAction->setShortcut(QKeySequence::Paste);
+	pasteAction = new QAction("Paste Here", this);
 	pasteAction->setIcon(QIcon(":/images/paste.png"));    
 	connect(pasteAction, SIGNAL(triggered()), this, SLOT(pasteImages()));
 	pasteAction->setEnabled(false);
 	
-	createDirAction = new QAction("&New Folder", this);
+	createDirAction = new QAction("New Folder", this);
 	connect(createDirAction, SIGNAL(triggered()), this, SLOT(createSubDirectory()));
 	createDirAction->setIcon(QIcon(":/images/new_folder.png"));
 	
-	manageDirAction = new QAction("&Manage", this);
+	manageDirAction = new QAction("Manage", this);
 	connect(manageDirAction, SIGNAL(triggered()), this, SLOT(manageDir()));
 
-	goBackAction = new QAction("&Back", this);
+	goBackAction = new QAction("Back", this);
 	goBackAction->setIcon(QIcon(":/images/back.png"));
 	connect(goBackAction, SIGNAL(triggered()), this, SLOT(goBack()));
 	goBackAction->setEnabled(false);
-	goBackAction->setShortcut(QKeySequence::Back);
 	// goBackAction->setToolTip("Back");
 
-	goFrwdAction = new QAction("&Forward", this);
+	goFrwdAction = new QAction("Forward", this);
 	goFrwdAction->setIcon(QIcon(":/images/next.png"));
 	connect(goFrwdAction, SIGNAL(triggered()), this, SLOT(goForward()));
 	goFrwdAction->setEnabled(false);
-	goFrwdAction->setShortcut(QKeySequence::Forward);
 
-	goUpAction = new QAction("&Up", this);
+	goUpAction = new QAction("Up", this);
 	goUpAction->setIcon(QIcon(":/images/up.png"));
 	connect(goUpAction, SIGNAL(triggered()), this, SLOT(goUp()));
 
-	goHomeAction = new QAction("&Home", this);
+	goHomeAction = new QAction("Home", this);
 	connect(goHomeAction, SIGNAL(triggered()), this, SLOT(goHome()));	
 	goHomeAction->setIcon(QIcon(":/images/home.png"));
 
 	slideShowAction = new QAction("Slide Show", this);
-	slideShowAction->setShortcut(QKeySequence("ctrl+w"));
 	connect(slideShowAction, SIGNAL(triggered()), this, SLOT(slideShow()));
 
-	nextImageAction = new QAction("&Next", this);
+	nextImageAction = new QAction("Next", this);
 	nextImageAction->setIcon(QIcon(":/images/next.png"));
-	nextImageAction->setShortcut(QKeySequence::MoveToNextPage);
 	connect(nextImageAction, SIGNAL(triggered()), this, SLOT(loadNextImage()));
 	
-	prevImageAction = new QAction("&Previous", this);
+	prevImageAction = new QAction("Previous", this);
 	prevImageAction->setIcon(QIcon(":/images/back.png"));
-	prevImageAction->setShortcut(QKeySequence::MoveToPreviousPage);
 	connect(prevImageAction, SIGNAL(triggered()), this, SLOT(loadPrevImage()));
 
-	firstImageAction = new QAction("&First", this);
+	firstImageAction = new QAction("First", this);
 	firstImageAction->setIcon(QIcon(":/images/first.png"));
-	firstImageAction->setShortcut(QKeySequence::MoveToStartOfLine);
 	connect(firstImageAction, SIGNAL(triggered()), this, SLOT(loadFirstImage()));
 
-	lastImageAction = new QAction("&Last", this);
+	lastImageAction = new QAction("Last", this);
 	lastImageAction->setIcon(QIcon(":/images/last.png"));
-	lastImageAction->setShortcut(QKeySequence::MoveToEndOfLine);
 	connect(lastImageAction, SIGNAL(triggered()), this, SLOT(loadLastImage()));
 
 	randomImageAction = new QAction("Random", this);
-	randomImageAction->setShortcut(QKeySequence("r"));
 	connect(randomImageAction, SIGNAL(triggered()), this, SLOT(loadRandomImage()));
 
-	openImageAction = new QAction("Open", this);
-	openImageAction->setShortcut(QKeySequence::InsertParagraphSeparator);
+	openImageAction = new QAction("View Image", this);
 	connect(openImageAction, SIGNAL(triggered()), this, SLOT(loadImagefromAction()));
 
 	zoomOutAct = new QAction("Zoom Out", this);
-	zoomOutAct->setShortcut(QKeySequence("-"));
 	connect(zoomOutAct, SIGNAL(triggered()), this, SLOT(zoomOut()));
 	zoomOutAct->setIcon(QIcon(":/images/zoom_out.png"));
 
 	zoomInAct = new QAction("Zoom In", this);
-	zoomInAct->setShortcut(QKeySequence("+"));
 	connect(zoomInAct, SIGNAL(triggered()), this, SLOT(zoomIn()));
 	zoomInAct->setIcon(QIcon(":/images/zoom_out.png"));
 
 	resetZoomAct = new QAction("Reset Zoom", this);
-	resetZoomAct->setShortcut(QKeySequence("*"));
 	connect(resetZoomAct, SIGNAL(triggered()), this, SLOT(resetZoom()));
 
 	origZoomAct = new QAction("Original Size", this);
 	origZoomAct->setIcon(QIcon(":/images/zoom1.png"));
-	origZoomAct->setShortcut(QKeySequence("/"));
 	connect(origZoomAct, SIGNAL(triggered()), this, SLOT(origZoom()));
 
 	keepZoomAct = new QAction("Keep Zoom", this);
@@ -448,35 +417,25 @@ void Phototonic::createActions()
 	rotateLeftAct = new QAction("Rotate Left", this);
 	rotateLeftAct->setIcon(QIcon(":/images/rotate_left.png"));
 	connect(rotateLeftAct, SIGNAL(triggered()), this, SLOT(rotateLeft()));
-	rotateLeftAct->setShortcut(QKeySequence::MoveToPreviousWord);
 
 	rotateRightAct = new QAction("Rotate Right", this);
 	rotateRightAct->setIcon(QIcon(":/images/rotate_right.png"));
 	connect(rotateRightAct, SIGNAL(triggered()), this, SLOT(rotateRight()));
-	rotateRightAct->setShortcut(QKeySequence::MoveToNextWord);
 
 	flipHAct = new QAction("Flip Horizontally", this);
 	connect(flipHAct, SIGNAL(triggered()), this, SLOT(flipHoriz()));
-	flipHAct->setShortcut(QKeySequence("Ctrl+Down"));
 
 	flipVAct = new QAction("Flip Vertically", this);
 	connect(flipVAct, SIGNAL(triggered()), this, SLOT(flipVert()));
-	flipVAct->setShortcut(QKeySequence("Ctrl+Up"));
 
 	cropAct = new QAction("Cropping", this);
 	connect(cropAct, SIGNAL(triggered()), this, SLOT(cropImage()));
-	cropAct->setShortcut(QKeySequence("Ctrl+R"));
 
 	mirrorDisabledAct = new QAction("Disable", this);
-	mirrorDisabledAct->setShortcut(QKeySequence("Ctrl+1"));
 	mirrorDualAct = new QAction("Dual", this);
-	mirrorDualAct->setShortcut(QKeySequence("Ctrl+2"));
 	mirrorTripleAct = new QAction("Triple", this);
-	mirrorTripleAct->setShortcut(QKeySequence("Ctrl+3"));
 	mirrorVDualAct = new QAction("Dual Vertical", this);
-	mirrorVDualAct->setShortcut(QKeySequence("Ctrl+4"));
 	mirrorQuadAct = new QAction("Quad", this);
-	mirrorQuadAct->setShortcut(QKeySequence("Ctrl+5"));
 
 	mirrorDisabledAct->setCheckable(true);
 	mirrorDualAct->setCheckable(true);
@@ -497,12 +456,12 @@ void Phototonic::createActions()
 
 void Phototonic::createMenus()
 {
-	fileMenu = menuBar()->addMenu("&File");
+	fileMenu = menuBar()->addMenu("File");
 	fileMenu->addAction(createDirAction);
 	fileMenu->addSeparator();
 	fileMenu->addAction(exitAction);
 
-	editMenu = menuBar()->addMenu("&Edit");
+	editMenu = menuBar()->addMenu("Edit");
 	editMenu->addAction(cutAction);
 	editMenu->addAction(copyAction);
 	editMenu->addAction(renameAction);
@@ -514,7 +473,7 @@ void Phototonic::createMenus()
 	editMenu->addSeparator();
 	editMenu->addAction(settingsAction);
 
-	goMenu = menuBar()->addMenu("&Go");
+	goMenu = menuBar()->addMenu("Go");
 	goMenu->addAction(goBackAction);
 	goMenu->addAction(goFrwdAction);
 	goMenu->addAction(goUpAction);
@@ -523,10 +482,10 @@ void Phototonic::createMenus()
 	goMenu->addAction(thumbsGoTopAct);
 	goMenu->addAction(thumbsGoBottomAct);
 
-	viewMenu = menuBar()->addMenu("&View");
+	viewMenu = menuBar()->addMenu("View");
 	viewMenu->addAction(thumbsZoomInAct);
 	viewMenu->addAction(thumbsZoomOutAct);
-	sortMenu = viewMenu->addMenu("&Sort By");
+	sortMenu = viewMenu->addMenu("Sort By");
 	sortTypesGroup = new QActionGroup(this);
 	sortTypesGroup->addAction(actName);
 	sortTypesGroup->addAction(actTime);
@@ -550,7 +509,7 @@ void Phototonic::createMenus()
 	viewMenu->addAction(refreshAction);
 
 	menuBar()->addSeparator();
-	helpMenu = menuBar()->addMenu("&Help");
+	helpMenu = menuBar()->addMenu("Help");
 	helpMenu->addAction(aboutAction);
 	helpMenu->addAction(aboutQtAction);
 
@@ -719,7 +678,7 @@ void Phototonic::setSquarishThumbs()
 
 void Phototonic::about()
 {
-	QMessageBox::about(this, "About Phototonic", "<h2>Phototonic v0.91</h2>"
+	QMessageBox::about(this, "About Phototonic", "<h2>Phototonic v0.93</h2>"
 							"<p>Image viewer and organizer</p>"
 							"<p><a href=\"http://oferkv.github.io/phototonic/\">Home page</a></p>"
 							"<p><a href=\"https://github.com/oferkv/phototonic/issues\">Reports Bugs</a></p>"
@@ -1200,9 +1159,19 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("noEnlargeSmallThumb", (bool)GData::noEnlargeSmallThumb);
 	GData::appSettings->setValue("slideShowDelay", (int)GData::slideShowDelay);
 	GData::appSettings->setValue("slideShowRandom", (bool)GData::slideShowRandom);	
+
+	/* Action shortcuts */
+	GData::appSettings->beginGroup("Shortcuts");
+	QMapIterator<QString, QAction *> it(GData::actionKeys);
+	while (it.hasNext())
+	{
+		it.next();
+		GData::appSettings->setValue(it.key(), it.value()->shortcut().toString());
+	}
+	GData::appSettings->endGroup();
 }
 
-void Phototonic::loadDefaultSettings()
+void Phototonic::readSettings()
 {
 	initComplete = false;
 	newSettingsRefreshThumbs = false;
@@ -1249,6 +1218,105 @@ void Phototonic::loadDefaultSettings()
 	// New config settings that need null protection
 	if (!GData::slideShowDelay)
 		GData::slideShowDelay = 5;
+}
+
+void Phototonic::loadShortcuts()
+{
+	// Add customizable key shortcut actions
+	GData::actionKeys[thumbsGoTopAct->text()] = thumbsGoTopAct;
+	GData::actionKeys[thumbsGoBottomAct->text()] = thumbsGoBottomAct;
+	GData::actionKeys[closeImageAct->text()] = closeImageAct;
+	GData::actionKeys[fullScreenAct->text()] = fullScreenAct;
+	GData::actionKeys[settingsAction->text()] = settingsAction;
+	GData::actionKeys[exitAction->text()] = exitAction;
+	GData::actionKeys[thumbsZoomInAct->text()] = thumbsZoomInAct;
+	GData::actionKeys[thumbsZoomOutAct->text()] = thumbsZoomOutAct;
+	GData::actionKeys[cutAction->text()] = cutAction;
+	GData::actionKeys[copyAction->text()] = copyAction;
+	GData::actionKeys[nextImageAction->text()] = nextImageAction;
+	GData::actionKeys[prevImageAction->text()] = prevImageAction;
+	GData::actionKeys[deleteAction->text()] = deleteAction;	
+	GData::actionKeys[saveAction->text()] = saveAction;		
+	GData::actionKeys[renameAction->text()] = renameAction;	
+	GData::actionKeys[refreshAction->text()] = refreshAction;	
+	GData::actionKeys[pasteAction->text()] = pasteAction;	
+	GData::actionKeys[goBackAction->text()] = goBackAction;	
+	GData::actionKeys[goFrwdAction->text()] = goFrwdAction;	
+	GData::actionKeys[slideShowAction->text()] = slideShowAction;	
+	GData::actionKeys[firstImageAction->text()] = firstImageAction;	
+	GData::actionKeys[lastImageAction->text()] = lastImageAction;	
+	GData::actionKeys[randomImageAction->text()] = randomImageAction;	
+	GData::actionKeys[openImageAction->text()] = openImageAction;	
+	GData::actionKeys[zoomOutAct->text()] = zoomOutAct;	
+	GData::actionKeys[zoomInAct->text()] = zoomInAct;	
+	GData::actionKeys[resetZoomAct->text()] = resetZoomAct;	
+	GData::actionKeys[origZoomAct->text()] = origZoomAct;	
+	GData::actionKeys[rotateLeftAct->text()] = rotateLeftAct;	
+	GData::actionKeys[rotateRightAct->text()] = rotateRightAct;	
+	GData::actionKeys[flipHAct->text()] = flipHAct;	
+	GData::actionKeys[flipVAct->text()] = flipVAct;	
+	GData::actionKeys[cropAct->text()] = cropAct;	
+	GData::actionKeys[mirrorDisabledAct->text()] = mirrorDisabledAct;	
+	GData::actionKeys[mirrorDualAct->text()] = mirrorDualAct;	
+	GData::actionKeys[mirrorTripleAct->text()] = mirrorTripleAct;	
+	GData::actionKeys[mirrorVDualAct->text()] = mirrorVDualAct;	
+	GData::actionKeys[mirrorQuadAct->text()] = mirrorQuadAct;	
+
+	GData::appSettings->beginGroup("Shortcuts");
+	QStringList groupKeys = GData::appSettings->childKeys();
+
+	if (groupKeys.size())
+	{
+		for (int i = 0; i < groupKeys.size(); ++i)
+		{
+			qDebug() << "setting " << groupKeys.at(i);
+			if (GData::actionKeys.value(groupKeys.at(i)))
+		    	GData::actionKeys.value(groupKeys.at(i))->setShortcut(GData::appSettings->value(groupKeys.at(i)).toString());
+    	}
+	}
+	else
+	{
+		thumbsGoTopAct->setShortcut(QKeySequence::MoveToStartOfDocument);
+		thumbsGoBottomAct->setShortcut(QKeySequence::MoveToEndOfDocument);
+		closeImageAct->setShortcut(Qt::Key_Escape);
+		fullScreenAct->setShortcut(QKeySequence("f"));
+		settingsAction->setShortcut(QKeySequence("Ctrl+P"));
+		exitAction->setShortcut(QKeySequence("Ctrl+Q"));
+		thumbsZoomInAct->setShortcut(QKeySequence::ZoomIn);
+		thumbsZoomOutAct->setShortcut(QKeySequence::ZoomOut);
+		cutAction->setShortcut(QKeySequence::Cut);
+		copyAction->setShortcut(QKeySequence::Copy);
+		deleteAction->setShortcut(QKeySequence::Delete);
+		saveAction->setShortcut(QKeySequence::Save);
+		renameAction->setShortcut(QKeySequence("F2"));
+		refreshAction->setShortcut(QKeySequence("F5"));
+		pasteAction->setShortcut(QKeySequence::Paste);
+		goBackAction->setShortcut(QKeySequence::Back);
+		goFrwdAction->setShortcut(QKeySequence::Forward);
+		slideShowAction->setShortcut(QKeySequence("ctrl+w"));
+		nextImageAction->setShortcut(QKeySequence::MoveToNextPage);
+		prevImageAction->setShortcut(QKeySequence::MoveToPreviousPage);
+		firstImageAction->setShortcut(QKeySequence::MoveToStartOfLine);
+		lastImageAction->setShortcut(QKeySequence::MoveToEndOfLine);
+		randomImageAction->setShortcut(QKeySequence("r"));
+		openImageAction->setShortcut(QKeySequence::InsertParagraphSeparator);
+		zoomOutAct->setShortcut(QKeySequence("-"));
+		zoomInAct->setShortcut(QKeySequence("+"));
+		resetZoomAct->setShortcut(QKeySequence("*"));
+		origZoomAct->setShortcut(QKeySequence("/"));
+		rotateLeftAct->setShortcut(QKeySequence::MoveToPreviousWord);
+		rotateRightAct->setShortcut(QKeySequence::MoveToNextWord);
+		flipHAct->setShortcut(QKeySequence("Ctrl+Down"));
+		flipVAct->setShortcut(QKeySequence("Ctrl+Up"));
+		cropAct->setShortcut(QKeySequence("Ctrl+R"));
+		mirrorDisabledAct->setShortcut(QKeySequence("Ctrl+1"));
+		mirrorDualAct->setShortcut(QKeySequence("Ctrl+2"));
+		mirrorTripleAct->setShortcut(QKeySequence("Ctrl+3"));
+		mirrorVDualAct->setShortcut(QKeySequence("Ctrl+4"));
+		mirrorQuadAct->setShortcut(QKeySequence("Ctrl+5"));
+	}
+		
+	GData::appSettings->endGroup();
 }
 
 void Phototonic::closeEvent(QCloseEvent *event)

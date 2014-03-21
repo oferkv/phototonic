@@ -45,6 +45,7 @@ namespace GData
 	int slideShowDelay;
 	bool slideShowRandom;
 	bool slideShowActive;
+	QMap<QString, QAction *> actionKeys;
 
 	// app data
 	QModelIndexList copyCutIdxList;
