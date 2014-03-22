@@ -1194,7 +1194,7 @@ void Phototonic::readSettings()
 		GData::appSettings->setValue("zoomInFlags", (int)0);
 		GData::appSettings->setValue("exitInsteadOfClose", (int)0);
 		GData::appSettings->setValue("imageZoomFactor", (float)1.0);
-		GData::appSettings->setValue("defaultSaveQuality", (int)75);
+		GData::appSettings->setValue("defaultSaveQuality", (int)85);
 		GData::appSettings->setValue("noEnlargeSmallThumb", (bool)true);
 		GData::appSettings->setValue("slideShowDelay", (int)5);
 		GData::appSettings->setValue("slideShowRandom", (bool)false);
@@ -1269,7 +1269,6 @@ void Phototonic::loadShortcuts()
 	{
 		for (int i = 0; i < groupKeys.size(); ++i)
 		{
-			qDebug() << "setting " << groupKeys.at(i);
 			if (GData::actionKeys.value(groupKeys.at(i)))
 		    	GData::actionKeys.value(groupKeys.at(i))->setShortcut(GData::appSettings->value(groupKeys.at(i)).toString());
     	}
@@ -1686,7 +1685,10 @@ void Phototonic::reloadThumbsSlot()
 		goBackAction->setEnabled(true);
 
 	if (stackedWidget->currentIndex() == thumbViewIdx)
+	{
 		setWindowTitle(thumbView->currentViewDir + " - Phototonic");
+		thumbView->setFocus(Qt::OtherFocusReason);
+	}
 
 	thumbViewBusy = true;
 	thumbView->load(cliFileName);

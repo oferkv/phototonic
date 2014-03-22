@@ -171,9 +171,13 @@ void KeyGrabLineEdit::keyPressEvent(QKeyEvent *e)
 	if (e->modifiers() & Qt::AltModifier)
 		modifierText += "Alt+";
 
-	if ((e->key() < 16777248 ||  e->key() > 16777251) && e->key() > 0) 
-		keyText = QKeySequence(e->key()).toString();
-		
+	if ((e->key() >= Qt::Key_Shift &&  e->key() <= Qt::Key_ScrollLock) || 
+			(e->key() >= Qt::Key_Super_L &&  e->key() <= Qt::Key_Direction_R) ||
+			e->key() == Qt::Key_AltGr ||
+			e->key() < 0) 
+		return;
+
+	keyText = QKeySequence(e->key()).toString();
 	keySeqText = modifierText + keyText;
 
 	QMapIterator<QString, QAction *> it(GData::actionKeys);
@@ -271,7 +275,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	colorsGbox->setLayout(colorsVbox);
 
 	// Thumbnail spacing
-	QLabel *thumbSpacingLab = new QLabel("Thumbnail spacing: ");
+	QLabel *thumbSpacingLab = new QLabel("Add space between thumbnails: ");
 	thumbSpacingSpin = new QSpinBox;
 	thumbSpacingSpin->setRange(0, 15);
 	thumbSpacingSpin->setValue(GData::thumbSpacing);
@@ -362,7 +366,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	slideDelayHbox->addStretch(1);
 
 	// Slide show random
-	slideRandomCb = new QCheckBox("Random images", this);
+	slideRandomCb = new QCheckBox("Show random images", this);
 	slideRandomCb->setChecked(GData::slideShowRandom);
 
 	// Slide show options
