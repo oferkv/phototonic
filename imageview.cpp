@@ -462,3 +462,9 @@ QSize ImageView::getImageSize()
 	return QSize(origImage.width(), origImage.height());
 }
 
+void ImageView::copyImage()
+{
+	QClipboard *clipboard = QApplication::clipboard();
+	clipboard->setImage(displayImage);
+}
+

@@ -49,6 +49,9 @@ class KeyGrabLineEdit : public QLineEdit
 public:
 	KeyGrabLineEdit(QWidget *parent, QComboBox *combo);
 
+public slots:
+	void clearShortcut();
+
 protected:
 	void keyPressEvent(QKeyEvent *);
 
@@ -78,9 +81,9 @@ private:
 	QRadioButton *fitLargeRadios[nZoomRadios];
 	QRadioButton *fitSmallRadios[nZoomRadios];
 	QCheckBox *compactLayoutCb;
-    QPushButton *backgroundColorButton;
-    QPushButton *colThumbButton;
-    QPushButton *colThumbTextButton;
+    QToolButton *backgroundColorButton;
+    QToolButton *colThumbButton;
+    QToolButton *colThumbTextButton;
 	QSpinBox *thumbSpacingSpin;
 	QSpinBox *saveQualitySpin;
 	QColor bgColor;

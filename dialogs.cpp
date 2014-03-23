@@ -196,6 +196,12 @@ void KeyGrabLineEdit::keyPressEvent(QKeyEvent *e)
 	GData::actionKeys.value(keysCombo->currentText())->setShortcut(QKeySequence(keySeqText));
 }
 
+void KeyGrabLineEdit::clearShortcut()
+{
+	clear();
+	GData::actionKeys.value(keysCombo->currentText())->setShortcut(QKeySequence(""));
+}
+
 void SettingsDialog::setActionKeyText(const QString &text)
 {
 	keyLine->setText(GData::actionKeys.value(text)->shortcut().toString());
@@ -232,7 +238,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 
 	// imageView background color
 	QLabel *backgroundColorLab = new QLabel("Viewer background color: ");
-	backgroundColorButton = new QPushButton("");
+	backgroundColorButton = new QToolButton();
 	QHBoxLayout *bgColBox = new QHBoxLayout;
 	bgColBox->addWidget(backgroundColorLab);
 	bgColBox->addWidget(backgroundColorButton);
@@ -244,7 +250,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 
 	// thumbView background color
 	QLabel *bgThumbTxtLab = new QLabel("Thumbnails background color: ");
-	colThumbButton = new QPushButton("");
+	colThumbButton = new QToolButton();
 	QHBoxLayout *bgThumbColBox = new QHBoxLayout;
 	bgThumbColBox->addWidget(bgThumbTxtLab);
 	bgThumbColBox->addWidget(colThumbButton);
@@ -256,7 +262,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 
 	// thumbView text color
 	QLabel *txtThumbTxtLab = new QLabel("Thumbnail text color: ");
-	colThumbTextButton = new QPushButton("");
+	colThumbTextButton = new QToolButton();
 	QHBoxLayout *txtThumbColBox = new QHBoxLayout;
 	txtThumbColBox->addWidget(txtThumbTxtLab);
 	txtThumbColBox->addWidget(colThumbTextButton);
@@ -390,10 +396,16 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	}
 	keyLine->setText(GData::actionKeys.value(keysCombo->currentText())->shortcut().toString());
 
+	QToolButton *clearShortCutButton = new QToolButton();
+	clearShortCutButton->setStyleSheet("QToolButton {  padding: 0px; }");
+	clearShortCutButton->setIcon(QIcon(":/images/delete.png"));
+	connect(clearShortCutButton, SIGNAL(clicked()), keyLine, SLOT(clearShortcut()));
+
 	// Keyboard shortcuts
 	QHBoxLayout *keyboardVbox = new QHBoxLayout;
 	keyboardVbox->addWidget(keysCombo);
 	keyboardVbox->addWidget(keyLine);
+	keyboardVbox->addWidget(clearShortCutButton);
 	keyboardVbox->addStretch(1);
 	QGroupBox *keyboardGbox = new QGroupBox("Set Keyboard Shortcuts");
 	keyboardGbox->setLayout(keyboardVbox);

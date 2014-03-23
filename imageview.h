@@ -31,6 +31,7 @@
 #include <QMessageBox>
 #include <QMenu>
 #include <QPainter>
+#include <QClipboard>
 
 class ImageView : public QWidget
 {
@@ -75,6 +76,7 @@ public slots:
 	void monitorCursorState();
 	void saveImage();
 	void saveImageAs();
+	void copyImage();
 
 protected:
     void resizeEvent(QResizeEvent *event);

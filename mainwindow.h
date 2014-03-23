@@ -146,6 +146,7 @@ private:
 	QAction *saveAsAction;
 	QAction *renameAction;
 	QAction *selectAllAction;
+	QAction *copyImageAction;
 
 	QActionGroup *sortTypesGroup;
 	QActionGroup *thumbLayoutsGroup;

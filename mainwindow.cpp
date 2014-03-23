@@ -138,6 +138,7 @@ void Phototonic::createImageView()
 	imageView = new ImageView(this);
 	connect(saveAction, SIGNAL(triggered()), imageView, SLOT(saveImage()));
 	connect(saveAsAction, SIGNAL(triggered()), imageView, SLOT(saveImageAs()));
+	connect(copyImageAction, SIGNAL(triggered()), imageView, SLOT(copyImage()));
 	imageView->ImagePopUpMenu = new QMenu();
 
 	// Widget actions
@@ -157,6 +158,8 @@ void Phototonic::createImageView()
 	imageView->addAction(flipVAct);
 	imageView->addAction(cropAct);
 	imageView->addAction(saveAction);
+	imageView->addAction(saveAsAction);
+	imageView->addAction(copyImageAction);
 	imageView->addAction(deleteAction);
 	imageView->addAction(closeImageAct);
 	imageView->addAction(fullScreenAct);
@@ -167,6 +170,8 @@ void Phototonic::createImageView()
 	imageView->addAction(mirrorTripleAct);
 	imageView->addAction(mirrorVDualAct);
 	imageView->addAction(mirrorQuadAct);
+	imageView->addAction(keepTransformAct);
+	imageView->addAction(keepZoomAct);
 
 	// Actions
 	imageView->ImagePopUpMenu->addAction(nextImageAction);
@@ -216,6 +221,7 @@ void Phototonic::createImageView()
 
 	addMenuSeparator(imageView->ImagePopUpMenu);
 	imageView->ImagePopUpMenu->addAction(saveAction);
+	imageView->ImagePopUpMenu->addAction(copyImageAction);
 	imageView->ImagePopUpMenu->addAction(saveAsAction);
 	imageView->ImagePopUpMenu->addAction(deleteAction);
 
@@ -284,6 +290,7 @@ void Phototonic::createActions()
 
 	saveAction = new QAction("Save", this);
 	saveAsAction = new QAction("Save As", this);
+	copyImageAction = new QAction("Copy Image", this);
 
 	renameAction = new QAction("Rename", this);
 	connect(renameAction, SIGNAL(triggered()), this, SLOT(rename()));
@@ -1235,32 +1242,36 @@ void Phototonic::loadShortcuts()
 	GData::actionKeys[copyAction->text()] = copyAction;
 	GData::actionKeys[nextImageAction->text()] = nextImageAction;
 	GData::actionKeys[prevImageAction->text()] = prevImageAction;
-	GData::actionKeys[deleteAction->text()] = deleteAction;	
-	GData::actionKeys[saveAction->text()] = saveAction;		
-	GData::actionKeys[renameAction->text()] = renameAction;	
-	GData::actionKeys[refreshAction->text()] = refreshAction;	
-	GData::actionKeys[pasteAction->text()] = pasteAction;	
-	GData::actionKeys[goBackAction->text()] = goBackAction;	
-	GData::actionKeys[goFrwdAction->text()] = goFrwdAction;	
-	GData::actionKeys[slideShowAction->text()] = slideShowAction;	
-	GData::actionKeys[firstImageAction->text()] = firstImageAction;	
-	GData::actionKeys[lastImageAction->text()] = lastImageAction;	
-	GData::actionKeys[randomImageAction->text()] = randomImageAction;	
-	GData::actionKeys[openImageAction->text()] = openImageAction;	
-	GData::actionKeys[zoomOutAct->text()] = zoomOutAct;	
-	GData::actionKeys[zoomInAct->text()] = zoomInAct;	
-	GData::actionKeys[resetZoomAct->text()] = resetZoomAct;	
-	GData::actionKeys[origZoomAct->text()] = origZoomAct;	
-	GData::actionKeys[rotateLeftAct->text()] = rotateLeftAct;	
-	GData::actionKeys[rotateRightAct->text()] = rotateRightAct;	
-	GData::actionKeys[flipHAct->text()] = flipHAct;	
-	GData::actionKeys[flipVAct->text()] = flipVAct;	
-	GData::actionKeys[cropAct->text()] = cropAct;	
-	GData::actionKeys[mirrorDisabledAct->text()] = mirrorDisabledAct;	
-	GData::actionKeys[mirrorDualAct->text()] = mirrorDualAct;	
-	GData::actionKeys[mirrorTripleAct->text()] = mirrorTripleAct;	
-	GData::actionKeys[mirrorVDualAct->text()] = mirrorVDualAct;	
-	GData::actionKeys[mirrorQuadAct->text()] = mirrorQuadAct;	
+	GData::actionKeys[deleteAction->text()] = deleteAction;
+	GData::actionKeys[saveAction->text()] = saveAction;
+	GData::actionKeys[saveAsAction->text()] = saveAsAction;
+	GData::actionKeys[keepTransformAct->text()] = keepTransformAct;
+	GData::actionKeys[keepZoomAct->text()] = keepZoomAct;
+	GData::actionKeys[copyImageAction->text()] = copyImageAction;
+	GData::actionKeys[renameAction->text()] = renameAction;
+	GData::actionKeys[refreshAction->text()] = refreshAction;
+	GData::actionKeys[pasteAction->text()] = pasteAction;
+	GData::actionKeys[goBackAction->text()] = goBackAction;
+	GData::actionKeys[goFrwdAction->text()] = goFrwdAction;
+	GData::actionKeys[slideShowAction->text()] = slideShowAction;
+	GData::actionKeys[firstImageAction->text()] = firstImageAction;
+	GData::actionKeys[lastImageAction->text()] = lastImageAction;
+	GData::actionKeys[randomImageAction->text()] = randomImageAction;
+	GData::actionKeys[openImageAction->text()] = openImageAction;
+	GData::actionKeys[zoomOutAct->text()] = zoomOutAct;
+	GData::actionKeys[zoomInAct->text()] = zoomInAct;
+	GData::actionKeys[resetZoomAct->text()] = resetZoomAct;
+	GData::actionKeys[origZoomAct->text()] = origZoomAct;
+	GData::actionKeys[rotateLeftAct->text()] = rotateLeftAct;
+	GData::actionKeys[rotateRightAct->text()] = rotateRightAct;
+	GData::actionKeys[flipHAct->text()] = flipHAct;
+	GData::actionKeys[flipVAct->text()] = flipVAct;
+	GData::actionKeys[cropAct->text()] = cropAct;
+	GData::actionKeys[mirrorDisabledAct->text()] = mirrorDisabledAct;
+	GData::actionKeys[mirrorDualAct->text()] = mirrorDualAct;
+	GData::actionKeys[mirrorTripleAct->text()] = mirrorTripleAct;
+	GData::actionKeys[mirrorVDualAct->text()] = mirrorVDualAct;
+	GData::actionKeys[mirrorQuadAct->text()] = mirrorQuadAct;
 
 	GData::appSettings->beginGroup("Shortcuts");
 	QStringList groupKeys = GData::appSettings->childKeys();
@@ -1287,6 +1298,7 @@ void Phototonic::loadShortcuts()
 		copyAction->setShortcut(QKeySequence::Copy);
 		deleteAction->setShortcut(QKeySequence::Delete);
 		saveAction->setShortcut(QKeySequence::Save);
+		copyImageAction->setShortcut(QKeySequence("Ctrl+Shift+C"));
 		renameAction->setShortcut(QKeySequence("F2"));
 		refreshAction->setShortcut(QKeySequence("F5"));
 		pasteAction->setShortcut(QKeySequence::Paste);
