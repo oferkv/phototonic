@@ -309,7 +309,6 @@ void ThumbView::loadThumbs()
 	bool needRefresh = false;
 	thumbLoaderActive = true;
 
-	QPixmap errorPixMap(":/images/error_image.png");
 	updateIndex();
 
 refreshThumbs:
@@ -323,14 +322,18 @@ refreshThumbs:
 		thumbReader.setFileName(thumbFileInfo.filePath());
 		currThumbSize = thumbReader.size();
 
-		if (!currThumbSize.isValid())
-			thumbReader.setFileName(":/images/error_image.png");
-
-		if (!GData::noEnlargeSmallThumb || (currThumbSize.width() > thumbWidth || currThumbSize.height() > thumbHeight))
-			currThumbSize.scale(QSize(thumbWidth, thumbHeight), Qt::KeepAspectRatio);
-			
-		thumbReader.setScaledSize(currThumbSize);
-		thumbViewModel->item(currThumb)->setIcon(QPixmap::fromImage(thumbReader.read()));
+		if (currThumbSize.isValid())
+		{
+			if (!GData::noEnlargeSmallThumb || (currThumbSize.width() > thumbWidth || currThumbSize.height() > thumbHeight))
+				currThumbSize.scale(QSize(thumbWidth, thumbHeight), Qt::KeepAspectRatio);
+				
+			thumbReader.setScaledSize(currThumbSize);
+			thumbViewModel->item(currThumb)->setIcon(QPixmap::fromImage(thumbReader.read()));
+		}
+		else
+		{
+			thumbViewModel->item(currThumb)->setIcon(QIcon::fromTheme("image-missing").pixmap(64, 64));
+		}
 
 		if (GData::thumbsLayout == Compact)
 		{

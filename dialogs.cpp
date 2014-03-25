@@ -397,8 +397,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	keyLine->setText(GData::actionKeys.value(keysCombo->currentText())->shortcut().toString());
 
 	QToolButton *clearShortCutButton = new QToolButton();
-	clearShortCutButton->setStyleSheet("QToolButton {  padding: 0px; }");
-	clearShortCutButton->setIcon(QIcon(":/images/delete.png"));
+	clearShortCutButton->setStyleSheet("QToolButton {padding: 0px;}");
+	clearShortCutButton->setIcon(QIcon::fromTheme("edit-delete"));
 	connect(clearShortCutButton, SIGNAL(clicked()), keyLine, SLOT(clearShortcut()));
 
 	// Keyboard shortcuts

@@ -1,29 +1,5 @@
 <!DOCTYPE RCC><RCC version="1.0">
 	<qresource>
-		<file>images/error_image.png</file>
 		<file>images/no_image.png</file>
-		<file>images/home.png</file>
-		<file>images/next.png</file>
-		<file>images/back.png</file>
-		<file>images/up.png</file>
-		<file>images/refresh.png</file>
-		<file>images/cut.png</file>
-		<file>images/copy.png</file>
-		<file>images/paste.png</file>
-		<file>images/delete.png</file>
-		<file>images/about.png</file>
-		<file>images/new_folder.png</file>
-		<file>images/settings.png</file>
-		<file>images/phototonic.png</file>
-		<file>images/zoom_in.png</file>
-		<file>images/zoom_out.png</file>
-		<file>images/first.png</file>
-		<file>images/last.png</file>
-		<file>images/top.png</file>
-		<file>images/bottom.png</file>
-		<file>images/zoom.png</file>
-		<file>images/zoom1.png</file>
-		<file>images/rotate_left.png</file>
-		<file>images/rotate_right.png</file>
 	</qresource>
 </RCC>

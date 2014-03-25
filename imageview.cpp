@@ -303,7 +303,7 @@ void ImageView::reload()
 		displayPixmap = QPixmap::fromImage(displayImage);
 	}
 	else
-		displayPixmap.load(":/images/error_image.png");
+		displayPixmap = QIcon::fromTheme("image-missing").pixmap(128, 128);
 
 	imageLabel->setPixmap(displayPixmap);
 	resizeImage();
