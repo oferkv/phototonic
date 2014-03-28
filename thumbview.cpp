@@ -83,6 +83,14 @@ void ThumbView::selectCurrentIndex()
 	setCurrentIndex(currentIndex);
 }
 
+QString ThumbView::getSingleSelectionFilename()
+{
+	if (selectionModel()->selectedIndexes().size() == 1)
+		return thumbViewModel->item(selectionModel()->selectedIndexes().first().row())->data(FileNameRole).toString();
+
+	return("");
+}
+
 int ThumbView::getNextRow()
 {
 	if (currentRow == thumbViewModel->rowCount() - 2)

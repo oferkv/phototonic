@@ -41,7 +41,7 @@ public:
 	QString currentImage;
 	bool tempDisableResize;
 	int mirrorLayout;
-
+	QString currentImageFullPath;
 	QMenu *ImagePopUpMenu;
 
 	enum ZoomMethods
@@ -100,7 +100,6 @@ private:
 	int mouseY;
 	int layoutX;
 	int layoutY;
-	QString currentImageFullPath;
 
 	void centerImage(QSize &imgSize);
 	void transform();

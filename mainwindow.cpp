@@ -16,7 +16,6 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QtGui>
 #include "mainwindow.h"
 #include "thumbview.h"
 #include "dialogs.h"
@@ -33,6 +32,7 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	createStatusBar();
 	createFSTree();
 	createImageView();
+	updateExternalApps();
 	loadShortcuts();
 
 	connect(qApp, SIGNAL(focusChanged(QWidget* , QWidget*)), 
@@ -172,6 +172,7 @@ void Phototonic::createImageView()
 	imageView->addAction(mirrorQuadAct);
 	imageView->addAction(keepTransformAct);
 	imageView->addAction(keepZoomAct);
+	imageView->addAction(refreshAction);
 
 	// Actions
 	imageView->ImagePopUpMenu->addAction(nextImageAction);
@@ -194,7 +195,6 @@ void Phototonic::createImageView()
 	addMenuSeparator(zoomSubMenu);
 	zoomSubMenu->addAction(keepZoomAct);
 
-	addMenuSeparator(imageView->ImagePopUpMenu);
 	transformSubMenu = new QMenu("Transform");
 	transformSubMenuAct = new QAction("Transform", this);
 	transformSubMenuAct->setMenu(transformSubMenu);
@@ -224,15 +224,15 @@ void Phototonic::createImageView()
 	imageView->ImagePopUpMenu->addAction(saveAction);
 	imageView->ImagePopUpMenu->addAction(saveAsAction);
 	imageView->ImagePopUpMenu->addAction(deleteAction);
+	imageView->ImagePopUpMenu->addAction(openWithMenuAct);
 
 	addMenuSeparator(imageView->ImagePopUpMenu);
-	imageView->ImagePopUpMenu->addAction(closeImageAct);
 	imageView->ImagePopUpMenu->addAction(fullScreenAct);
+	imageView->ImagePopUpMenu->addAction(refreshAction);
+	imageView->ImagePopUpMenu->addAction(closeImageAct);
 
 	addMenuSeparator(imageView->ImagePopUpMenu);
 	imageView->ImagePopUpMenu->addAction(settingsAction);
-
-	addMenuSeparator(imageView->ImagePopUpMenu);
 	imageView->ImagePopUpMenu->addAction(exitAction);
 
 	imageView->setContextMenuPolicy(Qt::DefaultContextMenu);
@@ -304,9 +304,6 @@ void Phototonic::createActions()
 	aboutAction->setIcon(QIcon::fromTheme("help-about"));
 	connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
 
-	aboutQtAction = new QAction("About Qt", this);
-	connect(aboutQtAction, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
-
 	// Sort actions
 	actName = new QAction("Name", this);
 	actTime = new QAction("Time", this);
@@ -344,9 +341,9 @@ void Phototonic::createActions()
 	actCompact->setChecked(GData::thumbsLayout == ThumbView::Compact); 
 	actSquarish->setChecked(GData::thumbsLayout == ThumbView::Squares); 
 
-	refreshAction = new QAction("Reload Thumbnails", this);
+	refreshAction = new QAction("Reload", this);
 	refreshAction->setIcon(QIcon::fromTheme("view-refresh"));
-	connect(refreshAction, SIGNAL(triggered()), this, SLOT(refreshThumbs()));
+	connect(refreshAction, SIGNAL(triggered()), this, SLOT(reload()));
 
 	pasteAction = new QAction("Paste Here", this);
 	pasteAction->setIcon(QIcon::fromTheme("edit-paste"));
@@ -401,8 +398,21 @@ void Phototonic::createActions()
 	randomImageAction = new QAction("Random", this);
 	connect(randomImageAction, SIGNAL(triggered()), this, SLOT(loadRandomImage()));
 
-	openImageAction = new QAction("View Image", this);
+	openImageAction = new QAction("Open", this);
+	openImageAction->setIcon(QIcon::fromTheme("document-open"));
 	connect(openImageAction, SIGNAL(triggered()), this, SLOT(loadImagefromAction()));
+
+	openWithSubMenu = new QMenu("Open With");
+	openWithMenuAct = new QAction("Open With", this);
+	openWithExteralApp = new QAction("", this);
+	openWithMenuAct->setMenu(openWithSubMenu);
+	chooseAppAct = new QAction("Choose...", this);
+	openWithSubMenu->addAction(openWithExteralApp);
+	openWithExteralApp->setVisible(false);
+	openWithSubMenu->addSeparator();
+	openWithSubMenu->addAction(chooseAppAct);
+	connect(chooseAppAct, SIGNAL(triggered()), this, SLOT(chooseExternalApp()));
+	connect(openWithExteralApp, SIGNAL(triggered()), this, SLOT(runExternalApp()));
 
 	zoomOutAct = new QAction("Zoom Out", this);
 	connect(zoomOutAct, SIGNAL(triggered()), this, SLOT(zoomOut()));
@@ -523,10 +533,10 @@ void Phototonic::createMenus()
 	menuBar()->addSeparator();
 	helpMenu = menuBar()->addMenu("Help");
 	helpMenu->addAction(aboutAction);
-	helpMenu->addAction(aboutQtAction);
 
 	// thumbview context menu
 	thumbView->addAction(openImageAction);
+	thumbView->addAction(openWithMenuAct);
 	thumbView->addAction(cutAction);
 	thumbView->addAction(copyAction);
 	thumbView->addAction(renameAction);
@@ -651,9 +661,14 @@ void Phototonic::sortThumbnains()
 	refreshThumbs(false);
 }
 
-void Phototonic::refreshThumbs()
+void Phototonic::reload()
 {
-	refreshThumbs(false);
+	if (stackedWidget->currentIndex() == imageViewIdx)
+	{
+		imageView->reload();
+	}
+	else
+		refreshThumbs(false);
 }
 
 void Phototonic::refreshThumbs(bool scrollToTop)
@@ -690,12 +705,71 @@ void Phototonic::setSquarishThumbs()
 
 void Phototonic::about()
 {
-	QMessageBox::about(this, "About Phototonic", "<h2>Phototonic v0.93</h2>"
+	QMessageBox::about(this, "About Phototonic", "<h2>Phototonic v0.95</h2>"
 							"<p>Image viewer and organizer</p>"
 							"<p><a href=\"http://oferkv.github.io/phototonic/\">Home page</a></p>"
 							"<p><a href=\"https://github.com/oferkv/phototonic/issues\">Reports Bugs</a></p>"
 							"<p>Copyright &copy; 2013-2014 Ofer Kashayov</p>"
 							"<p>Contact: oferkv@live.com</p>");
+}
+
+void Phototonic::runExternalApp()
+{
+	QString imageFileFullPath;
+	QString CurrentSelectionFilename("");
+
+	if (stackedWidget->currentIndex() == imageViewIdx)
+	{
+		imageFileFullPath = externalAppPath + " \"" + imageView->currentImageFullPath + "\"";
+	}
+	else
+	{
+		CurrentSelectionFilename = thumbView->getSingleSelectionFilename();
+		if (CurrentSelectionFilename.isEmpty())
+		{
+			updateState("Invalid selection");
+			return;
+		}
+
+		imageFileFullPath = externalAppPath + " \"" + thumbView->currentViewDir
+							+ QDir::separator() + CurrentSelectionFilename + "\"";
+	}
+
+	externalProcess.start(imageFileFullPath);
+}
+
+void Phototonic::updateExternalApps()
+{
+	if(!externalAppPath.isEmpty())
+	{
+		GData::actionKeys.remove(openWithExteralApp->text());
+		QFileInfo fileInfo = QFileInfo(externalAppPath);
+		openWithExteralApp->setVisible(true);
+		openWithExteralApp->setText(fileInfo.fileName());
+		openWithExteralApp->setIcon(QIcon::fromTheme(fileInfo.fileName()));
+		GData::actionKeys[openWithExteralApp->text()] = openWithExteralApp;
+	}
+}
+
+void Phototonic::chooseExternalApp()
+{
+	QString fileName = QFileDialog::getOpenFileName(this, "Choose Application",
+							thumbView->currentViewDir, "");
+	if (fileName.isEmpty())
+		return;
+		
+	QFileInfo fileInfo = QFileInfo(fileName);
+	if (!fileInfo.isExecutable())
+	{
+		QMessageBox msgBox;
+		msgBox.critical(this, "Error", "Not an executable");
+		return;
+	}
+
+	externalAppPath = fileName;
+	openWithExteralApp->setShortcut(QKeySequence(""));
+	updateExternalApps();
+	runExternalApp();
 }
 
 void Phototonic::showSettings()
@@ -1048,11 +1122,12 @@ void Phototonic::goTo(QString path)
 	refreshThumbs(true);
 }
 
-void Phototonic::goSelectedDir(const QModelIndex&)
+void Phototonic::goSelectedDir(const QModelIndex &idx)
 {
 	thumbView->setNeedScroll(true);
 	thumbView->currentViewDir = getSelectedPath();
 	refreshThumbs(true);
+	fsTree->expand(idx);
 }
 
 void Phototonic::goPathBarDir()
@@ -1171,6 +1246,7 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("noEnlargeSmallThumb", (bool)GData::noEnlargeSmallThumb);
 	GData::appSettings->setValue("slideShowDelay", (int)GData::slideShowDelay);
 	GData::appSettings->setValue("slideShowRandom", (bool)GData::slideShowRandom);	
+	GData::appSettings->setValue("externalApp", externalAppPath);	
 
 	/* Action shortcuts */
 	GData::appSettings->beginGroup("Shortcuts");
@@ -1226,6 +1302,7 @@ void Phototonic::readSettings()
 	GData::slideShowDelay = GData::appSettings->value("slideShowDelay").toInt();
 	GData::slideShowRandom = GData::appSettings->value("slideShowRandom").toBool();
 	GData::slideShowActive = false;
+	externalAppPath = GData::appSettings->value("externalApp").toString();
 
 	// New config settings that need null protection
 	if (!GData::slideShowDelay)
@@ -1760,18 +1837,17 @@ void Phototonic::rename()
 		return;
 	}
 		
-	QModelIndexList indexesList;
-	indexesList = thumbView->selectionModel()->selectedIndexes();
-
-	if (indexesList.size() != 1)
+	QString selectedImageFileName = thumbView->getSingleSelectionFilename();
+	if (selectedImageFileName.isEmpty())
+	{
+		updateState("Invalid selection");
 		return;
+	}
 
 	bool ok;
-	QString renameImageName = 
-		thumbView->thumbViewModel->item(indexesList.first().row())->data(thumbView->FileNameRole).toString();
-	QString title = "Rename " + renameImageName;
+	QString title = "Rename " + selectedImageFileName;
 	QString newImageName = QInputDialog::getText(this, title, 
-										"New name:", QLineEdit::Normal, renameImageName, &ok);
+								"New name:", QLineEdit::Normal, selectedImageFileName, &ok);
 
 	if (!ok)													
 		return;
@@ -1783,12 +1859,13 @@ void Phototonic::rename()
 		return;
 	}
 
-	QString currnetFilePath = thumbView->currentViewDir + QDir::separator() + renameImageName;
+	QString currnetFilePath = thumbView->currentViewDir + QDir::separator() + selectedImageFileName;
 	QFile currentFile(currnetFilePath);
 	ok = currentFile.rename(thumbView->currentViewDir + QDir::separator() + newImageName);
 
 	if (ok)
 	{
+		QModelIndexList indexesList = thumbView->selectionModel()->selectedIndexes();
 		thumbView->thumbViewModel->item(indexesList.first().row())->setData(newImageName, thumbView->FileNameRole);
 		if (GData::thumbsLayout == ThumbView::Classic)
 			thumbView->thumbViewModel->item(indexesList.first().row())->setData(newImageName, Qt::DisplayRole);

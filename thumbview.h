@@ -60,6 +60,7 @@ public:
 	int getRandomRow();
 	int getCurrentRow();
 	void setCurrentRow(int row);
+	QString getSingleSelectionFilename();
 
 	QDir *thumbsDir;
 	QList<QStandardItem*> *thumbList;

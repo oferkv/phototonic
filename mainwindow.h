@@ -19,19 +19,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include <QFileSystemModel>
-#include <QTreeView>
-#include <QSplitter>
-#include <QCompleter>
-#include <QSettings>
-#include <QStackedWidget>
+#include <QtGui>
 #include "thumbview.h"
 #include "imageview.h"
-
-class QAction;
-class QActionGroup;
-class QLabel;
 
 class Phototonic : public QMainWindow
 {
@@ -63,7 +53,7 @@ public slots:
 private slots:
 	void about();
 	void sortThumbnains();
-	void refreshThumbs();
+	void reload();
 	void refreshThumbs(bool noScroll);
 	void setFlagsByQAction(QAction *act, QDir::SortFlags SortFlag);
 	void showSettings();
@@ -120,6 +110,9 @@ private slots:
 	void setClassicThumbs();
 	void setCompactThumbs();
 	void setSquarishThumbs();
+	void chooseExternalApp();
+	void updateExternalApps();
+	void runExternalApp();
 
 private:
 	QString cliFileName;
@@ -133,6 +126,7 @@ private:
 	QMenu *zoomSubMenu;
 	QMenu *transformSubMenu;
 	QMenu *MirroringSubMenu;
+	QMenu *openWithSubMenu;
 
 	QToolBar *viewToolBar;
 	QToolBar *editToolBar;
@@ -187,9 +181,7 @@ private:
 	QAction *actClassic;
 	QAction *actCompact;
 	QAction *actSquarish;
-
 	QAction *aboutAction;
-	QAction *aboutQtAction;
 
 	QAction *pasteAction;
 	QAction *createDirAction;
@@ -207,6 +199,10 @@ private:
 	QAction *lastImageAction;
 	QAction *randomImageAction;
 	QAction *openImageAction;
+
+	QAction *openWithMenuAct;
+	QAction *chooseAppAct;
+	QAction *openWithExteralApp;
 	
 	QLineEdit *pathBar;
 	QCompleter *pathComplete;
@@ -219,6 +215,8 @@ private:
 	ThumbView *thumbView;
 	ImageView *imageView;
 	QList<QString> pathHistory;
+	QProcess externalProcess;
+	QString externalAppPath;
 
 	enum CentralWidgets
 	{
