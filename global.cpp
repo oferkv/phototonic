@@ -30,6 +30,7 @@ namespace GData
 	unsigned int thumbsLayout;
 	unsigned int thumbSpacing;
 	bool exitInsteadOfClose;
+	bool wrapImageList;
 	float imageZoomFactor;
 	bool keepZoomFactor;
 	int rotation;

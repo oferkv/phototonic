@@ -372,8 +372,10 @@ refreshThumbs:
 		goto refreshThumbs;
 	}
 
-	if (GData::thumbsLayout == Compact)
+	if (GData::thumbsLayout == Compact && thumbViewModel->rowCount() > 1)
+	{
 		setRowHidden(0 , false);
+	}
 
 	thumbLoaderActive = false;
 	emit unsetBusy();

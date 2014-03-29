@@ -1,5 +1,5 @@
 pkgname=phototonic-git
-pkgver=git
+pkgver=1
 pkgrel=1
 pkgdesc="Image Viewer and Organizer"
 arch=('i686' 'x86_64')
@@ -12,13 +12,13 @@ makedepends=('git')
 provides=('phototonic')
 
 build() {
-  cd "$srcdir/$pkgname"
+  cd "$srcdir/phototonic"
   qmake-qt4 PREFIX="/usr"
   make
 }
 
 package() {
-  cd "$srcdir/$pkgname"
+  cd "$srcdir/phototonic"
   make INSTALL_ROOT="$pkgdir/" install
 }
 

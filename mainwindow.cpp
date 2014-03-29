@@ -1046,15 +1046,18 @@ void Phototonic::deleteSingleImage()
 		else
 		{
 			QMessageBox msgBox;
-			msgBox.critical(this, "Error", "failed to delete image");
+			msgBox.critical(this, "Error", "Failed to delete image");
 			return;
 		}
 
+		bool wrapImageListTmp = GData::wrapImageList;
+		GData::wrapImageList = false;
 		thumbView->setCurrentRow(currentRow - 1);
 		if (thumbView->getNextRow() > currentRow)
 			loadPrevImage();
 		else
 			loadNextImage();
+		GData::wrapImageList = wrapImageListTmp;
 	}
 }
 
@@ -1235,6 +1238,7 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("editToolBarWasVisible", (bool)editToolBar->isVisible());
 	GData::appSettings->setValue("goToolBarWasVisible", (bool)goToolBar->isVisible());
 	GData::appSettings->setValue("exitInsteadOfClose", (int)GData::exitInsteadOfClose);
+	GData::appSettings->setValue("wrapImageList", (bool)GData::wrapImageList);
 	GData::appSettings->setValue("imageZoomFactor", (float)GData::imageZoomFactor);
 	GData::appSettings->setValue("shouldMaximize", (bool)isMaximized());
 	GData::appSettings->setValue("defaultSaveQuality", (int)GData::defaultSaveQuality);
@@ -1275,6 +1279,7 @@ void Phototonic::readSettings()
 		GData::appSettings->setValue("goToolBarWasVisible", (bool)true);
 		GData::appSettings->setValue("zoomOutFlags", (int)1);
 		GData::appSettings->setValue("zoomInFlags", (int)0);
+		GData::appSettings->setValue("wrapImageList", (bool)false);
 		GData::appSettings->setValue("exitInsteadOfClose", (int)0);
 		GData::appSettings->setValue("imageZoomFactor", (float)1.0);
 		GData::appSettings->setValue("defaultSaveQuality", (int)85);
@@ -1284,6 +1289,7 @@ void Phototonic::readSettings()
 	}
 
 	GData::exitInsteadOfClose = GData::appSettings->value("exitInsteadOfClose").toBool();
+	GData::wrapImageList = GData::appSettings->value("wrapImageList").toBool();
 	GData::imageZoomFactor = GData::appSettings->value("imageZoomFactor").toFloat();
 	GData::zoomOutFlags = GData::appSettings->value("zoomOutFlags").toInt();
 	GData::zoomInFlags = GData::appSettings->value("zoomInFlags").toInt();
@@ -1560,15 +1566,17 @@ void Phototonic::slideShowHandler()
 {
 	if (GData::slideShowActive)
 	{
-		if (!GData::slideShowRandom)
+		if (GData::slideShowRandom)
+		{
+			loadRandomImage();
+		}
+		else
 		{
 			if (thumbView->getNextRow() == thumbView->getCurrentRow())
 				loadFirstImage();
 			else
 				loadNextImage();
 		}
-		else
-			loadRandomImage();
 
 		QTimer::singleShot(GData::slideShowDelay * 1000, this, SLOT(slideShowHandler()));
 	}
@@ -1577,6 +1585,9 @@ void Phototonic::slideShowHandler()
 void Phototonic::loadNextImage()
 {
 	int nextRow = thumbView->getNextRow();
+	if (GData::wrapImageList && nextRow == thumbView->getCurrentRow())
+		nextRow = 0;
+
 	loadImageFile(thumbView->thumbViewModel->item(nextRow)->data(thumbView->FileNameRole).toString());
 	thumbView->setCurrentRow(nextRow);
 }
@@ -1584,6 +1595,9 @@ void Phototonic::loadNextImage()
 void Phototonic::loadPrevImage()
 {
 	int prevRow = thumbView->getPrevRow();
+	if (GData::wrapImageList && prevRow == thumbView->getCurrentRow())
+		prevRow = thumbView->getLastRow();
+	
 	loadImageFile(thumbView->thumbViewModel->item(prevRow)->data(thumbView->FileNameRole).toString());
 	thumbView->setCurrentRow(prevRow);
 }

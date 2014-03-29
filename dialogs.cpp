@@ -336,8 +336,12 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	fitSmallRadios[GData::zoomInFlags]->setChecked(true);
 
 	// Exit when opening image
-	exitCliCb = new QCheckBox("Exit instead of returning to thumbnails, after loading a single image", this);
+	exitCliCb = new QCheckBox("Exit instead of close, when image is loaded from command line", this);
 	exitCliCb->setChecked(GData::exitInsteadOfClose);
+
+	// Exit when opening image
+	wrapListCb = new QCheckBox("Wrap image list when reaching last or first image", this);
+	wrapListCb->setChecked(GData::wrapImageList);
 
 	// Save quality
 	QLabel *saveQualityLab = new QLabel("Default quality when saving images: ");
@@ -357,6 +361,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	zoomOptsBox->addWidget(fitSmallGroupBox);
 	viewerOptsBox->addLayout(zoomOptsBox);
 	viewerOptsBox->addWidget(exitCliCb);
+	viewerOptsBox->addWidget(wrapListCb);
 	viewerOptsBox->addLayout(saveQualityHbox);
 	QGroupBox *viewerOptsGrp = new QGroupBox("Viewer");
 	viewerOptsGrp->setLayout(viewerOptsBox);
@@ -449,6 +454,7 @@ void SettingsDialog::saveSettings()
 	GData::thumbsTextColor = thumbTextColor;
 	GData::thumbSpacing = thumbSpacingSpin->value();
 	GData::exitInsteadOfClose = exitCliCb->isChecked();
+	GData::wrapImageList = wrapListCb->isChecked();
 	GData::defaultSaveQuality = saveQualitySpin->value();
 	GData::noEnlargeSmallThumb = noSmallThumbCb->isChecked();
 	GData::slideShowDelay = slideDelaySpin->value();

@@ -37,6 +37,7 @@ namespace GData
 	extern unsigned int thumbsLayout;
 	extern unsigned int thumbSpacing;
 	extern bool exitInsteadOfClose;
+	extern bool wrapImageList;
 	extern float imageZoomFactor;
 	extern bool keepZoomFactor;
 	extern int rotation;

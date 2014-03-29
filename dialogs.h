@@ -90,6 +90,7 @@ private:
 	QColor thumbBgColor;
 	QColor thumbTextColor;
 	QCheckBox *exitCliCb;
+	QCheckBox *wrapListCb;
 	QCheckBox *noSmallThumbCb;
 	QSpinBox *slideDelaySpin;
 	QCheckBox *slideRandomCb;
