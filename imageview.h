@@ -92,6 +92,7 @@ private:
 	QPixmap displayPixmap;
 	QImage origImage;
 	QImage displayImage;
+	QImage mirrorImage;
 	QTimer *mouseMovementTimer;
 
 	bool cursorIsHidden;
@@ -103,6 +104,7 @@ private:
 
 	void centerImage(QSize &imgSize);
 	void transform();
+	void colorizationTests();
 };
 
 #endif // IMAGEVIEW_H

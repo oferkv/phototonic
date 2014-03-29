@@ -63,6 +63,7 @@ private slots:
 	void reloadThumbsSlot();
 	void renameDir();
 	void rename();
+	void openOp();
 	void deleteDir();
 	void manageDir();
 	void createSubDirectory();
@@ -198,7 +199,7 @@ private:
 	QAction *firstImageAction;
 	QAction *lastImageAction;
 	QAction *randomImageAction;
-	QAction *openImageAction;
+	QAction *openAction;
 
 	QAction *openWithMenuAct;
 	QAction *chooseAppAct;

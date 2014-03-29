@@ -114,7 +114,7 @@ class FSTree : public QTreeView
 
 public:
 	FSTree(QWidget *parent);
-	~FSTree();
+	QModelIndex getCurrentIndex();
 
 protected:
 	void dragEnterEvent(QDragEnterEvent *event);
@@ -126,7 +126,9 @@ signals:
 
 private:
 	QModelIndex dndOrigSelection;
-	
+
+private slots:
+	void resizeTreeColumn(const QModelIndex &);
 };
 
 #endif // THUMBVIEW_H

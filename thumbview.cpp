@@ -390,11 +390,23 @@ void ThumbView::wheelEvent(QWheelEvent *event)
 FSTree::FSTree(QWidget *parent) : QTreeView(parent)
 {
 	setAcceptDrops(true);
+	setDragEnabled(true);
+	setDragDropMode(QAbstractItemView::InternalMove);
+
+	connect(this, SIGNAL(expanded(const QModelIndex &)),
+								this, SLOT(resizeTreeColumn(const QModelIndex &)));
+	connect(this, SIGNAL(collapsed(const QModelIndex &)),
+								this, SLOT(resizeTreeColumn(const QModelIndex &)));
 }
 
-FSTree::~FSTree()
+QModelIndex FSTree::getCurrentIndex()
 {
+	return selectedIndexes().first();
+}
 
+void FSTree::resizeTreeColumn(const QModelIndex &)
+{
+	resizeColumnToContents(0);
 }
 
 void FSTree::dragEnterEvent(QDragEnterEvent *event)

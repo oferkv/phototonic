@@ -222,13 +222,11 @@ void ImageView::transform()
 
 	if (mirrorLayout)
 	{	
-		QImage mirrorImage;
-		
 		switch(mirrorLayout)
 		{
 			case LayDual:
 			{
-				mirrorImage = QImage(displayImage.width() * 2, displayImage.height(), QImage::Format_ARGB32_Premultiplied);
+				mirrorImage = QImage(displayImage.width() * 2, displayImage.height(), QImage::QImage::Format_ARGB32);
 			    QPainter painter(&mirrorImage);
 			    painter.drawImage(0, 0, displayImage);
 		   	    painter.drawImage(displayImage.width(), 0, displayImage.mirrored(true, false));
@@ -237,7 +235,7 @@ void ImageView::transform()
 
 	   	    case LayTriple:
 	   	    {
-				mirrorImage = QImage(displayImage.width() * 3, displayImage.height(), QImage::Format_ARGB32_Premultiplied);
+				mirrorImage = QImage(displayImage.width() * 3, displayImage.height(), QImage::QImage::Format_ARGB32);
 			    QPainter painter(&mirrorImage);
 			    painter.drawImage(0, 0, displayImage);
 		   	    painter.drawImage(displayImage.width(), 0, displayImage.mirrored(true, false));
@@ -247,7 +245,7 @@ void ImageView::transform()
 
 			case LayQuad:
 	   	    {
-				mirrorImage = QImage(displayImage.width() * 2, displayImage.height() * 2, QImage::Format_ARGB32_Premultiplied);
+				mirrorImage = QImage(displayImage.width() * 2, displayImage.height() * 2, QImage::QImage::Format_ARGB32);
 			    QPainter painter(&mirrorImage);
 			    painter.drawImage(0, 0, displayImage);
 		   	    painter.drawImage(displayImage.width(), 0, displayImage.mirrored(true, false));
@@ -259,7 +257,7 @@ void ImageView::transform()
 
 			case LayVDual:
 			{
-				mirrorImage = QImage(displayImage.width(), displayImage.height() * 2, QImage::Format_ARGB32_Premultiplied);
+				mirrorImage = QImage(displayImage.width(), displayImage.height() * 2, QImage::QImage::Format_ARGB32);
 			    QPainter painter(&mirrorImage);
 			    painter.drawImage(0, 0, displayImage);
 		   	    painter.drawImage(0, displayImage.height(), displayImage.mirrored(false, true));
@@ -269,6 +267,26 @@ void ImageView::transform()
 
 		displayImage = mirrorImage;
 	}
+}
+
+void ImageView::colorizationTests()
+{
+/*
+    QImage newImage = QImage(displayImage.width(), displayImage.height(), QImage::Format_ARGB32);
+ 
+    for(int y = 0; y < newImage.height(); y++)
+    {
+        QRgb * line = (QRgb *)displayImage.scanLine(y);
+ 
+        for(int x = 0; x < newImage.width(); x++)
+        {
+    		QColor col = QColor(line[x]);
+	        newImage.setPixel(x,y, qRgb(qRed(line[x]), qRed(line[x]), qGreen(line[x])));
+        }
+     }
+ 
+    displayImage = newImage;
+*/
 }
 
 void ImageView::refresh()

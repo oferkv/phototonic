@@ -62,6 +62,9 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	currentHistoryIdx = -1;
 	needHistoryRecord = true;
 	refreshThumbs(true);
+
+	if (stackedWidget->currentIndex() == thumbViewIdx)
+		thumbView->setFocus(Qt::OtherFocusReason);
 }
 
 bool Phototonic::handleArgs()
@@ -172,6 +175,7 @@ void Phototonic::createImageView()
 	imageView->addAction(mirrorQuadAct);
 	imageView->addAction(keepTransformAct);
 	imageView->addAction(keepZoomAct);
+	imageView->addAction(openWithExteralApp);
 	imageView->addAction(refreshAction);
 
 	// Actions
@@ -361,7 +365,6 @@ void Phototonic::createActions()
 	goBackAction->setIcon(QIcon::fromTheme("go-previous"));
 	connect(goBackAction, SIGNAL(triggered()), this, SLOT(goBack()));
 	goBackAction->setEnabled(false);
-	// goBackAction->setToolTip("Back");
 
 	goFrwdAction = new QAction("Forward", this);
 	goFrwdAction->setIcon(QIcon::fromTheme("go-next"));
@@ -398,9 +401,9 @@ void Phototonic::createActions()
 	randomImageAction = new QAction("Random", this);
 	connect(randomImageAction, SIGNAL(triggered()), this, SLOT(loadRandomImage()));
 
-	openImageAction = new QAction("Open", this);
-	openImageAction->setIcon(QIcon::fromTheme("document-open"));
-	connect(openImageAction, SIGNAL(triggered()), this, SLOT(loadImagefromAction()));
+	openAction = new QAction("Open", this);
+	openAction->setIcon(QIcon::fromTheme("document-open"));
+	connect(openAction, SIGNAL(triggered()), this, SLOT(openOp()));
 
 	openWithSubMenu = new QMenu("Open With");
 	openWithMenuAct = new QAction("Open With", this);
@@ -479,6 +482,7 @@ void Phototonic::createActions()
 void Phototonic::createMenus()
 {
 	fileMenu = menuBar()->addMenu("File");
+	fileMenu->addAction(openAction);
 	fileMenu->addAction(createDirAction);
 	fileMenu->addSeparator();
 	fileMenu->addAction(exitAction);
@@ -535,7 +539,7 @@ void Phototonic::createMenus()
 	helpMenu->addAction(aboutAction);
 
 	// thumbview context menu
-	thumbView->addAction(openImageAction);
+	thumbView->addAction(openAction);
 	thumbView->addAction(openWithMenuAct);
 	thumbView->addAction(cutAction);
 	thumbView->addAction(copyAction);
@@ -608,26 +612,17 @@ void Phototonic::createFSTree()
 
 	fsTree = new FSTree(this);
 
-	QAction *sep1 = new QAction(this);
-	QAction *sep2 = new QAction(this);
-	sep1->setSeparator(true);
-	sep2->setSeparator(true);
-
 	// Context menu
+	fsTree->addAction(openAction);
 	fsTree->addAction(createDirAction);
 	fsTree->addAction(renameAction);
 	fsTree->addAction(deleteAction);
-	fsTree->addAction(sep1);
+	addMenuSeparator(fsTree);
 	fsTree->addAction(pasteAction);
-	fsTree->addAction(sep2);
+	addMenuSeparator(fsTree);
 	fsTree->addAction(manageDirAction);
 	fsTree->setContextMenuPolicy(Qt::ActionsContextMenu);
 
-	fsTree->setDragEnabled(true);
-	fsTree->setAcceptDrops(true);
-	fsTree->setDragDropMode(QAbstractItemView::InternalMove);
-
-	
 	fsTree->setModel(fsModel);
 	for (int i = 1; i <= 3; i++)
 		fsTree->hideColumn(i);
@@ -640,8 +635,8 @@ void Phototonic::createFSTree()
 
 	connect(fsTree, SIGNAL(dropOp(Qt::KeyboardModifiers, bool, QString)),
 				this, SLOT(dropOp(Qt::KeyboardModifiers, bool, QString)));
-	QModelIndex idx = fsModel->index(QDir::currentPath()); 
-	fsTree->setCurrentIndex(idx);
+
+	fsTree->setCurrentIndex(fsModel->index(QDir::currentPath()));
 }
 
 void Phototonic::setFlagsByQAction(QAction *act, QDir::SortFlags SortFlag)
@@ -705,7 +700,7 @@ void Phototonic::setSquarishThumbs()
 
 void Phototonic::about()
 {
-	QMessageBox::about(this, "About Phototonic", "<h2>Phototonic v0.95</h2>"
+	QMessageBox::about(this, "About Phototonic", "<h2>Phototonic v0.96</h2>"
 							"<p>Image viewer and organizer</p>"
 							"<p><a href=\"http://oferkv.github.io/phototonic/\">Home page</a></p>"
 							"<p><a href=\"https://github.com/oferkv/phototonic/issues\">Reports Bugs</a></p>"
@@ -1339,7 +1334,7 @@ void Phototonic::loadShortcuts()
 	GData::actionKeys[firstImageAction->text()] = firstImageAction;
 	GData::actionKeys[lastImageAction->text()] = lastImageAction;
 	GData::actionKeys[randomImageAction->text()] = randomImageAction;
-	GData::actionKeys[openImageAction->text()] = openImageAction;
+	GData::actionKeys[openAction->text()] = openAction;
 	GData::actionKeys[zoomOutAct->text()] = zoomOutAct;
 	GData::actionKeys[zoomInAct->text()] = zoomInAct;
 	GData::actionKeys[resetZoomAct->text()] = resetZoomAct;
@@ -1392,7 +1387,7 @@ void Phototonic::loadShortcuts()
 		firstImageAction->setShortcut(QKeySequence::MoveToStartOfLine);
 		lastImageAction->setShortcut(QKeySequence::MoveToEndOfLine);
 		randomImageAction->setShortcut(QKeySequence("r"));
-		openImageAction->setShortcut(QKeySequence::InsertParagraphSeparator);
+		openAction->setShortcut(QKeySequence::InsertParagraphSeparator);
 		zoomOutAct->setShortcut(QKeySequence("-"));
 		zoomInAct->setShortcut(QKeySequence("+"));
 		resetZoomAct->setShortcut(QKeySequence("*"));
@@ -1486,6 +1481,14 @@ void Phototonic::setThumbViewWidgetsVisible(bool visible)
 	goToolBar->setVisible(visible? goToolBarWasVisible : false);
 	viewToolBar->setVisible(visible? viewToolBarWasVisible : false);
 	statusBar()->setVisible(visible);
+}
+
+void Phototonic::openOp()
+{
+	if (QApplication::focusWidget() == fsTree)
+		goSelectedDir(fsTree->getCurrentIndex());
+	else
+		loadImagefromAction();
 }
 
 void Phototonic::loadImageFile(QString imageFileName)
@@ -1633,6 +1636,8 @@ void Phototonic::closeImage()
 
 	if (GData::slideShowActive)
 		slideShow();
+
+	thumbView->setFocus(Qt::OtherFocusReason);
 }
 
 void Phototonic::goBottom()
@@ -1781,7 +1786,6 @@ void Phototonic::reloadThumbsSlot()
 	if (stackedWidget->currentIndex() == thumbViewIdx)
 	{
 		setWindowTitle(thumbView->currentViewDir + " - Phototonic");
-		thumbView->setFocus(Qt::OtherFocusReason);
 	}
 
 	thumbViewBusy = true;
