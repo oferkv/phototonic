@@ -58,7 +58,7 @@ static QString autoRename(QString &destDir, QString &currFile)
 	do
 	{
 		newFile = QString(nameOnly + "_copy_%1." + extOnly).arg(idx);
-		idx++;
+		++idx;
 	} 
 	while (idx && (QFile::exists(destDir + QDir::separator() + newFile)));
 
@@ -96,7 +96,7 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 	if (pasteInCurrDir)
 	{
 		int tn = 0;
-		for (tn = 0; tn < GData::copyCutFileList.size(); tn++)
+		for (tn = 0; tn < GData::copyCutFileList.size(); ++tn)
 		{
 			QString sourceFile = GData::copyCutFileList[tn];
 			QFileInfo fInfo = QFileInfo(sourceFile);
@@ -110,10 +110,10 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 
 			if (!res || abortOp)
 			{
-				nfiles++;
+				++nfiles;
 				break;
 			}
-			nfiles++;
+			++nfiles;
 		}
 	}
 	else
@@ -133,11 +133,11 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 
 			if (!res || abortOp)
 			{
-				nfiles++;
+				++nfiles;
 				break;
 			}
 
-			nfiles++;
+			++nfiles;
 			rowList.append(GData::copyCutIdxList[tn].row());
 		}
 
@@ -309,7 +309,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	fitLargeRadios[3] = new QRadioButton("By height");
 	fitLargeRadios[4] = new QRadioButton("Stretch disproportionately");
 	QVBoxLayout *fitLargeVbox = new QVBoxLayout;
-	for (int i = 0; i < nZoomRadios; i++)
+	for (int i = 0; i < nZoomRadios; ++i)
 	{
 		fitLargeVbox->addWidget(fitLargeRadios[i]);
 		fitLargeRadios[i]->setChecked(false);
@@ -326,7 +326,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	fitSmallRadios[3] = new QRadioButton("By height");
 	fitSmallRadios[4] = new QRadioButton("Stretch disproportionately");
 	QVBoxLayout *fitSmallVbox = new QVBoxLayout;
-	for (int i = 0; i < nZoomRadios; i++)
+	for (int i = 0; i < nZoomRadios; ++i)
 	{
 		fitSmallVbox->addWidget(fitSmallRadios[i]);
 		fitSmallRadios[i]->setChecked(false);
@@ -429,7 +429,9 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 
 void SettingsDialog::saveSettings()
 {
-	for (int i = 0; i < nZoomRadios; i++)
+	int i;
+
+	for (i = 0; i < nZoomRadios; ++i)
 	{
 		if (fitLargeRadios[i]->isChecked())
 		{
@@ -439,7 +441,7 @@ void SettingsDialog::saveSettings()
 		}
 	}
 
-	for (int i = 0; i < nZoomRadios; i++)
+	for (i = 0; i < nZoomRadios; ++i)
 	{
 		if (fitSmallRadios[i]->isChecked())
 		{

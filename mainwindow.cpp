@@ -35,12 +35,11 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	updateExternalApps();
 	loadShortcuts();
 
-	connect(qApp, SIGNAL(focusChanged(QWidget* , QWidget*)), 
+	connect(qApp, SIGNAL(focusChanged(QWidget*, QWidget*)), 
 				this, SLOT(updateActions(QWidget*, QWidget*)));
 
 	restoreGeometry(GData::appSettings->value("geometry").toByteArray());
 	restoreState(GData::appSettings->value("MainWindowState").toByteArray());
-	setWindowTitle("Phototonic");
 	setWindowIcon(QIcon(":/images/phototonic.png"));
 
 	splitter = new QSplitter(Qt::Horizontal);
@@ -624,7 +623,7 @@ void Phototonic::createFSTree()
 	fsTree->setContextMenuPolicy(Qt::ActionsContextMenu);
 
 	fsTree->setModel(fsModel);
-	for (int i = 1; i <= 3; i++)
+	for (int i = 1; i <= 3; ++i)
 		fsTree->hideColumn(i);
 	fsTree->setHeaderHidden(true);
 	connect(fsTree, SIGNAL(clicked(const QModelIndex&)),
@@ -821,7 +820,7 @@ void Phototonic::selectAllThumbs()
 void Phototonic::createCopyCutFileList()
 {
 	GData::copyCutFileList.clear();
-	for (int tn = 0; tn < copyCutCount; tn++)
+	for (int tn = 0; tn < copyCutCount; ++tn)
 	{
 		QString sourceFile = thumbView->currentViewDir + QDir::separator() +
 			thumbView->thumbViewModel->item(GData::copyCutIdxList[tn].row())->data(thumbView->FileNameRole).toString();
@@ -1075,6 +1074,12 @@ void Phototonic::deleteOp()
 		return;
 	}
 
+	if (thumbView->selectionModel()->selectedIndexes().size() < 1)
+	{
+		updateState("Invalid selection");
+		return;
+	}
+
 	bool ok;
 	int ret = QMessageBox::warning(this, "Delete images", "Permanently delete selected images?",
 										QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
@@ -1091,7 +1096,7 @@ void Phototonic::deleteOp()
 			ok = QFile::remove(thumbView->currentViewDir + QDir::separator() + 
 				thumbView->thumbViewModel->item(indexesList.first().row())->data(thumbView->FileNameRole).toString());
 				
-			nfiles++;
+			++nfiles;
 			if (ok)
 			{
 				 thumbView->thumbViewModel->removeRow(indexesList.first().row());
@@ -1099,7 +1104,7 @@ void Phototonic::deleteOp()
 			else
 			{
 				QMessageBox msgBox;
-				msgBox.critical(this, "Error", "failed to delete image");
+				msgBox.critical(this, "Error", "Failed to delete image");
 				return;
 			}
 		}
@@ -1193,10 +1198,7 @@ void Phototonic::setCopyCutActions(bool setEnabled)
 
 void Phototonic::changeActionsBySelection(const QItemSelection&, const QItemSelection&)
 {
-	if (thumbView->selectionModel()->selectedIndexes().size())
-		setCopyCutActions(true);
-	else
-		setCopyCutActions(false);
+	setCopyCutActions(thumbView->selectionModel()->selectedIndexes().size());
 }
 
 void Phototonic::updateActions(QWidget*, QWidget *selectedWidget)
@@ -1204,10 +1206,7 @@ void Phototonic::updateActions(QWidget*, QWidget *selectedWidget)
 	if (selectedWidget == fsTree)
 		setCopyCutActions(false);
 	else if (selectedWidget == thumbView)
-	{
-		if (thumbView->selectionModel()->selectedIndexes().size())
-			setCopyCutActions(true);
-	}
+		setCopyCutActions(thumbView->selectionModel()->selectedIndexes().size());
 }
 
 void Phototonic::writeSettings()
@@ -1494,7 +1493,16 @@ void Phototonic::openOp()
 	if (QApplication::focusWidget() == fsTree)
 		goSelectedDir(fsTree->getCurrentIndex());
 	else
-		loadImagefromAction();
+	{
+		QModelIndexList indexesList = thumbView->selectionModel()->selectedIndexes();
+		if (indexesList.size() != 1)
+		{
+			updateState("Invalid selection");
+			return;
+		}
+
+		loadImagefromThumb(indexesList.first());
+	}
 }
 
 void Phototonic::loadImageFile(QString imageFileName)
@@ -1513,7 +1521,6 @@ void Phototonic::loadImageFile(QString imageFileName)
 	}
 	
 	imageView->loadImage(thumbView->currentViewDir, imageFileName);
-	setWindowTitle(imageFileName + " - Phototonic");
 }
 
 void Phototonic::loadImagefromThumb(const QModelIndex &idx)
@@ -1522,18 +1529,17 @@ void Phototonic::loadImagefromThumb(const QModelIndex &idx)
 	loadImageFile(thumbView->thumbViewModel->item(idx.row())->data(thumbView->FileNameRole).toString());
 }
 
-void Phototonic::loadImagefromAction()
-{
-	QModelIndexList indexesList = thumbView->selectionModel()->selectedIndexes();
-
-	if (indexesList.size() != 1)
-		return;
-
-	loadImagefromThumb(indexesList.first());
-}
-
 void Phototonic::loadImagefromCli()
 {
+	QFile imageFile(thumbView->currentViewDir + QDir::separator() + cliFileName);
+	if(!imageFile.exists()) 
+	{
+		QMessageBox msgBox;
+		msgBox.critical(this, "Error", "Failed to open file \"" + cliFileName + "\", file does not exist");
+		cliFileName = "";
+		return;
+	}
+
 	loadImageFile(cliFileName);
 	thumbView->setCurrentIndexByName(cliFileName);
 }
@@ -1636,9 +1642,9 @@ void Phototonic::closeImage()
 	}
 	while (QApplication::overrideCursor())
 		QApplication::restoreOverrideCursor();
+
 	setThumbViewWidgetsVisible(true);
 	stackedWidget->setCurrentIndex(thumbViewIdx);
-	setWindowTitle(thumbView->currentViewDir + " - Phototonic");
 	thumbView->setCurrentIndexByName(imageView->currentImage);
 	thumbView->selectCurrentIndex();
 
@@ -1652,6 +1658,7 @@ void Phototonic::closeImage()
 		slideShow();
 
 	thumbView->setFocus(Qt::OtherFocusReason);
+	setWindowTitle(thumbView->currentViewDir + " - Phototonic");
 }
 
 void Phototonic::goBottom()
@@ -1695,7 +1702,7 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvD
 		if (!ok)
 		{
 			QMessageBox msgBox;
-			msgBox.critical(this, "Error", "failed to move folder");
+			msgBox.critical(this, "Error", "Failed to move folder");
 		}
 		updateState("Folder moved");
 	}
@@ -1836,7 +1843,7 @@ void Phototonic::renameDir()
 	if (!ok)
 	{
 		QMessageBox msgBox;
-		msgBox.critical(this, "Error", "failed to rename folder");
+		msgBox.critical(this, "Error", "Failed to rename folder");
 		restoreCurrentIdx();
 		return;
 	}
@@ -1891,7 +1898,7 @@ void Phototonic::rename()
 	else
 	{
 		QMessageBox msgBox;
-		msgBox.critical(this, "Error", "failed to rename file");
+		msgBox.critical(this, "Error", "Failed to rename file");
 	}
 }
 
@@ -1918,7 +1925,7 @@ void Phototonic::deleteDir()
 	if (!ok)
 	{
 		QMessageBox msgBox;
-		msgBox.critical(this, "Error", "failed to delete folder");
+		msgBox.critical(this, "Error", "Failed to delete folder");
 		restoreCurrentIdx();
 	}
 
@@ -1963,7 +1970,7 @@ void Phototonic::createSubDirectory()
 	if (!ok)
 	{
 		QMessageBox msgBox;
-		msgBox.critical(this, "Error", "failed to create new folder");
+		msgBox.critical(this, "Error", "Failed to create new folder");
 		restoreCurrentIdx();
 		return;
 	}

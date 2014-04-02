@@ -26,10 +26,8 @@
 #include <QStandardItem>
 #include <QTreeView>
 #include <QImageReader>
+#include <QMainWindow>
 #include "global.h"
-
-class QListView;
-class QStandardItemModel;
 
 class ThumbView : public QListView
 {
@@ -95,6 +93,7 @@ private:
 	QImage emptyImg;
 	QModelIndex currentIndex;
 	QImageReader imageInfoReader;
+	QWidget *mainWindow;
 	
 	bool abortOp;
 	int newIndex;

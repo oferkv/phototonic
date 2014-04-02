@@ -66,6 +66,7 @@ ThumbView::ThumbView(QWidget *parent) : QListView(parent)
 
 	QTime time = QTime::currentTime();
 	qsrand((uint)time.msec());
+	mainWindow = parent;
 }
 
 void ThumbView::setThumbColors()
@@ -128,27 +129,38 @@ void ThumbView::setCurrentRow(int row)
 		currentRow = row;
 	else
 		currentRow = 0;
+
+	QString title = thumbViewModel->item(currentRow)->data(FileNameRole).toString()
+			+ " - ["
+			+ QString::number(currentRow + 1)
+			+ "/"
+			+ QString::number(thumbViewModel->rowCount() - 1)
+			+ "] - Phototonic";
+	mainWindow->setWindowTitle(title);
 }
 
 void ThumbView::setCurrentIndexByName(QString &FileName)
 {
 	QModelIndexList indexList = thumbViewModel->match(thumbViewModel->index(0, 0), FileNameRole, FileName);
 	if (indexList.size())
+	{
 	 	currentIndex = indexList[0];
- 	setCurrentRow(currentIndex.row());
+	 	setCurrentRow(currentIndex.row());
+ 	}
 }
 
 void ThumbView::handleSelectionChanged(const QItemSelection&)
 {
+	QString info;
 	QString state;
-	QString info = "";
 	QModelIndexList indexesList = selectionModel()->selectedIndexes();
 	int nSelected = indexesList.size();
 	
 	if (!nSelected)
-		state = "None selected";
+		state = QString::number(thumbFileInfoList.size()) + " images";
 	else if (nSelected > 1)
-		state = QString("Selected " + QString::number(nSelected) + " images");
+		state = QString("Selected " + QString::number(nSelected) + " of "
+							+ QString::number(thumbFileInfoList.size()) + " images");
 	else if (nSelected == 1)
 	{
 		QString imageName = thumbViewModel->item(indexesList.first().row())->data(FileNameRole).toString();
@@ -159,12 +171,12 @@ void ThumbView::handleSelectionChanged(const QItemSelection&)
 		{
 
 			QFileInfo imageInfo = QFileInfo(currentViewDir + QDir::separator() + imageName);
-			info =	imageInfoReader.format().toUpper() + " File     "
-					+ QString::number(imageInfo.size() / 1024) + "K     "
-					+ QString::number(imageInfoReader.size().height())
-					+ "x"
+			info =	"Image " + QString::number(indexesList.first().row() + 1) + " of " + QString::number(thumbFileInfoList.size())
+					+ "      " + imageInfoReader.format().toUpper() + " File      "
+					+ QString::number(imageInfoReader.size().height()) + "x"
 					+ QString::number(imageInfoReader.size().width())
-					+ "     " + imageInfo.lastModified().toString(Qt::SystemLocaleShortDate);
+					+ "      " + QString::number(imageInfo.size() / 1024) + "K      "
+					+  imageInfo.lastModified().toString(Qt::SystemLocaleShortDate);
 
 		}
 		else
@@ -206,7 +218,7 @@ int ThumbView::getFirstVisibleItem()
 {
 	QModelIndex idx;
 
-	for (int currThumb = 0; currThumb < thumbViewModel->rowCount() - 1; currThumb++)
+	for (int currThumb = 0; currThumb < thumbViewModel->rowCount() - 1; ++currThumb)
 	{
 		idx = thumbViewModel->indexFromItem(thumbViewModel->item(currThumb));
 		if (viewport()->rect().contains(QPoint(0, visualRect(idx).y() + visualRect(idx).height() + 1)))
@@ -246,8 +258,10 @@ void ThumbView::load(QString &cliImageName)
 	newIndex = 0;
 
 	initThumbs();
-	if (!cliImageName.isNull())
+	if (!cliImageName.isEmpty())
+	{
 		setCurrentIndexByName(cliImageName);
+	}
 
 	if ((thumbViewModel->rowCount()) == 1)
 		emit updateState("No images", "");
@@ -280,7 +294,7 @@ void ThumbView::initThumbs()
 
 	QPixmap emptyPixMap = QPixmap::fromImage(emptyImg).scaled(thumbWidth, thumbHeight);
 
-	for (currThumb = 0; currThumb < thumbFileInfoList.size(); currThumb++)
+	for (currThumb = 0; currThumb < thumbFileInfoList.size(); ++currThumb)
 	{
 		thumbFileInfo = thumbFileInfoList.at(currThumb);
 		thumbIitem = new QStandardItem();
@@ -320,7 +334,7 @@ void ThumbView::loadThumbs()
 	updateIndex();
 
 refreshThumbs:
-	for (int currThumb = 0; currThumb < thumbViewModel->rowCount() - 1; currThumb++)
+	for (int currThumb = 0; currThumb < thumbViewModel->rowCount() - 1; ++currThumb)
 	{
 		if (thumbIsLoaded->at(currThumb))
 			continue;

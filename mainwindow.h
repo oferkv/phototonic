@@ -47,7 +47,6 @@ public slots:
 	void loadImageFile(QString imageFileName);
 	void loadImagefromThumb(const QModelIndex &idx);
 	void loadImagefromCli();
-	void loadImagefromAction();
 	void closeImage();
 
 private slots:

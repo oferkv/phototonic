@@ -272,13 +272,14 @@ void ImageView::transform()
 void ImageView::colorizationTests()
 {
 /*
+	int y, x;
     QImage newImage = QImage(displayImage.width(), displayImage.height(), QImage::Format_ARGB32);
  
-    for(int y = 0; y < newImage.height(); y++)
+    for(y = 0; y < newImage.height(); ++y)
     {
         QRgb * line = (QRgb *)displayImage.scanLine(y);
  
-        for(int x = 0; x < newImage.width(); x++)
+        for(x = 0; x < newImage.width(); ++x)
         {
     		QColor col = QColor(line[x]);
 	        newImage.setPixel(x,y, qRgb(qRed(line[x]), qRed(line[x]), qGreen(line[x])));
