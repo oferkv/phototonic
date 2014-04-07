@@ -188,7 +188,7 @@ void Phototonic::createImageView()
 	addMenuSeparator(imageView->ImagePopUpMenu);
 	zoomSubMenu = new QMenu("Zoom");
 	zoomSubMenuAct = new QAction("Zoom", this);
-	zoomSubMenuAct->setIcon(QIcon::fromTheme("zoom-fit-best"));
+	zoomSubMenuAct->setIcon(QIcon::fromTheme("zoom-fit-best", QIcon(":/images/zoom.png")));
 	zoomSubMenuAct->setMenu(zoomSubMenu);
 	imageView->ImagePopUpMenu->addAction(zoomSubMenuAct);
 	zoomSubMenu->addAction(zoomInAct);
@@ -259,7 +259,7 @@ void Phototonic::createActions()
 	connect(fullScreenAct, SIGNAL(triggered()), this, SLOT(toggleFullScreen()));
 	
 	settingsAction = new QAction("Preferences", this);
-	settingsAction->setIcon(QIcon::fromTheme("document-properties"));
+	settingsAction->setIcon(QIcon::fromTheme("document-properties", QIcon(":/images/settings.png")));
 	connect(settingsAction, SIGNAL(triggered()), this, SLOT(showSettings()));
 
 	exitAction = new QAction("Exit", this);
@@ -267,28 +267,28 @@ void Phototonic::createActions()
 
 	thumbsZoomInAct = new QAction("Enlarge Thumbnails", this);
 	connect(thumbsZoomInAct, SIGNAL(triggered()), this, SLOT(thumbsZoomIn()));
-	thumbsZoomInAct->setIcon(QIcon::fromTheme("zoom-in"));
+	thumbsZoomInAct->setIcon(QIcon::fromTheme("zoom-in", QIcon(":/images/zoom_in.png")));
 	if (thumbView->thumbHeight == 300)
 		thumbsZoomInAct->setEnabled(false);
 
 	thumbsZoomOutAct = new QAction("Shrink Thumbnails", this);
 	connect(thumbsZoomOutAct, SIGNAL(triggered()), this, SLOT(thumbsZoomOut()));
-	thumbsZoomOutAct->setIcon(QIcon::fromTheme("zoom-out"));
+	thumbsZoomOutAct->setIcon(QIcon::fromTheme("zoom-out", QIcon(":/images/zoom_out.png")));
 	if (thumbView->thumbHeight == 100)
 		thumbsZoomOutAct->setEnabled(false);
 
 	cutAction = new QAction("Cut", this);
-	cutAction->setIcon(QIcon::fromTheme("edit-cut"));
+	cutAction->setIcon(QIcon::fromTheme("edit-cut", QIcon(":/images/cut.png")));
 	connect(cutAction, SIGNAL(triggered()), this, SLOT(cutImages()));
 	cutAction->setEnabled(false);
 
 	copyAction = new QAction("Copy", this);
-	copyAction->setIcon(QIcon::fromTheme("edit-copy"));
+	copyAction->setIcon(QIcon::fromTheme("edit-copy", QIcon(":/images/copy.png")));
 	connect(copyAction, SIGNAL(triggered()), this, SLOT(copyImages()));
 	copyAction->setEnabled(false);
 	
 	deleteAction = new QAction("Delete", this);
-	deleteAction->setIcon(QIcon::fromTheme("edit-delete"));
+	deleteAction->setIcon(QIcon::fromTheme("edit-delete", QIcon(":/images/delete.png")));
 	connect(deleteAction, SIGNAL(triggered()), this, SLOT(deleteOp()));
 
 	saveAction = new QAction("Save", this);
@@ -304,7 +304,7 @@ void Phototonic::createActions()
 	connect(selectAllAction, SIGNAL(triggered()), this, SLOT(selectAllThumbs()));
 
 	aboutAction = new QAction("About", this);
-	aboutAction->setIcon(QIcon::fromTheme("help-about"));
+	aboutAction->setIcon(QIcon::fromTheme("help-about", QIcon(":/images/about.png")));
 	connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
 
 	// Sort actions
@@ -345,56 +345,56 @@ void Phototonic::createActions()
 	actSquarish->setChecked(GData::thumbsLayout == ThumbView::Squares); 
 
 	refreshAction = new QAction("Reload", this);
-	refreshAction->setIcon(QIcon::fromTheme("view-refresh"));
+	refreshAction->setIcon(QIcon::fromTheme("view-refresh", QIcon(":/images/refresh.png")));
 	connect(refreshAction, SIGNAL(triggered()), this, SLOT(reload()));
 
 	pasteAction = new QAction("Paste Here", this);
-	pasteAction->setIcon(QIcon::fromTheme("edit-paste"));
+	pasteAction->setIcon(QIcon::fromTheme("edit-paste", QIcon(":/images/paste.png")));
 	connect(pasteAction, SIGNAL(triggered()), this, SLOT(pasteImages()));
 	pasteAction->setEnabled(false);
 	
 	createDirAction = new QAction("New Folder", this);
 	connect(createDirAction, SIGNAL(triggered()), this, SLOT(createSubDirectory()));
-	createDirAction->setIcon(QIcon::fromTheme("folder-new"));
+	createDirAction->setIcon(QIcon::fromTheme("folder-new", QIcon(":/images/new_folder.png")));
 	
 	manageDirAction = new QAction("Manage", this);
 	connect(manageDirAction, SIGNAL(triggered()), this, SLOT(manageDir()));
 
 	goBackAction = new QAction("Back", this);
-	goBackAction->setIcon(QIcon::fromTheme("go-previous"));
+	goBackAction->setIcon(QIcon::fromTheme("go-previous", QIcon(":/images/back.png")));
 	connect(goBackAction, SIGNAL(triggered()), this, SLOT(goBack()));
 	goBackAction->setEnabled(false);
 
 	goFrwdAction = new QAction("Forward", this);
-	goFrwdAction->setIcon(QIcon::fromTheme("go-next"));
+	goFrwdAction->setIcon(QIcon::fromTheme("go-next", QIcon(":/images/next.png")));
 	connect(goFrwdAction, SIGNAL(triggered()), this, SLOT(goForward()));
 	goFrwdAction->setEnabled(false);
 
 	goUpAction = new QAction("Up", this);
-	goUpAction->setIcon(QIcon::fromTheme("go-up"));
+	goUpAction->setIcon(QIcon::fromTheme("go-up", QIcon(":/images/up.png")));
 	connect(goUpAction, SIGNAL(triggered()), this, SLOT(goUp()));
 
 	goHomeAction = new QAction("Home", this);
 	connect(goHomeAction, SIGNAL(triggered()), this, SLOT(goHome()));	
-	goHomeAction->setIcon(QIcon::fromTheme("go-home"));
+	goHomeAction->setIcon(QIcon::fromTheme("go-home", QIcon(":/images/home.png")));
 
 	slideShowAction = new QAction("Slide Show", this);
 	connect(slideShowAction, SIGNAL(triggered()), this, SLOT(slideShow()));
 
 	nextImageAction = new QAction("Next", this);
-	nextImageAction->setIcon(QIcon::fromTheme("go-next"));
+	nextImageAction->setIcon(QIcon::fromTheme("go-next", QIcon(":/images/next.png")));
 	connect(nextImageAction, SIGNAL(triggered()), this, SLOT(loadNextImage()));
 	
 	prevImageAction = new QAction("Previous", this);
-	prevImageAction->setIcon(QIcon::fromTheme("go-previous"));
+	prevImageAction->setIcon(QIcon::fromTheme("go-previous", QIcon(":/images/back.png")));
 	connect(prevImageAction, SIGNAL(triggered()), this, SLOT(loadPrevImage()));
 
 	firstImageAction = new QAction("First", this);
-	firstImageAction->setIcon(QIcon::fromTheme("go-first"));
+	firstImageAction->setIcon(QIcon::fromTheme("go-first", QIcon(":/images/first.png")));
 	connect(firstImageAction, SIGNAL(triggered()), this, SLOT(loadFirstImage()));
 
 	lastImageAction = new QAction("Last", this);
-	lastImageAction->setIcon(QIcon::fromTheme("go-last"));
+	lastImageAction->setIcon(QIcon::fromTheme("go-last", QIcon(":/images/last.png")));
 	connect(lastImageAction, SIGNAL(triggered()), this, SLOT(loadLastImage()));
 
 	randomImageAction = new QAction("Random", this);
@@ -418,18 +418,18 @@ void Phototonic::createActions()
 
 	zoomOutAct = new QAction("Zoom Out", this);
 	connect(zoomOutAct, SIGNAL(triggered()), this, SLOT(zoomOut()));
-	zoomOutAct->setIcon(QIcon::fromTheme("zoom-out"));
+	zoomOutAct->setIcon(QIcon::fromTheme("zoom-out", QIcon(":/images/zoom_out.png")));
 
 	zoomInAct = new QAction("Zoom In", this);
 	connect(zoomInAct, SIGNAL(triggered()), this, SLOT(zoomIn()));
-	zoomInAct->setIcon(QIcon::fromTheme("zoom-in"));
+	zoomInAct->setIcon(QIcon::fromTheme("zoom-in", QIcon(":/images/zoom_out.png")));
 
 	resetZoomAct = new QAction("Reset Zoom", this);
 	resetZoomAct->setIcon(QIcon::fromTheme("zoom-fit-best"));
 	connect(resetZoomAct, SIGNAL(triggered()), this, SLOT(resetZoom()));
 
 	origZoomAct = new QAction("Original Size", this);
-	origZoomAct->setIcon(QIcon::fromTheme("zoom-original"));
+	origZoomAct->setIcon(QIcon::fromTheme("zoom-original", QIcon(":/images/zoom1.png")));
 	connect(origZoomAct, SIGNAL(triggered()), this, SLOT(origZoom()));
 
 	keepZoomAct = new QAction("Keep Zoom", this);
@@ -437,11 +437,11 @@ void Phototonic::createActions()
 	connect(keepZoomAct, SIGNAL(triggered()), this, SLOT(keepZoom()));
 
 	rotateLeftAct = new QAction("Rotate Left", this);
-	rotateLeftAct->setIcon(QIcon::fromTheme("object-rotate-left"));
+	rotateLeftAct->setIcon(QIcon::fromTheme("object-rotate-left", QIcon(":/images/rotate_left.png")));
 	connect(rotateLeftAct, SIGNAL(triggered()), this, SLOT(rotateLeft()));
 
 	rotateRightAct = new QAction("Rotate Right", this);
-	rotateRightAct->setIcon(QIcon::fromTheme("object-rotate-right"));
+	rotateRightAct->setIcon(QIcon::fromTheme("object-rotate-right", QIcon(":/images/rotate_right.png")));
 	connect(rotateRightAct, SIGNAL(triggered()), this, SLOT(rotateRight()));
 
 	flipHAct = new QAction("Flip Horizontally", this);
@@ -1141,7 +1141,7 @@ void Phototonic::goPathBarDir()
 	if (!checkPath.exists() || !checkPath.isReadable())
 	{
 		QMessageBox msgBox;
-		msgBox.critical(this, "Error", "Invalid Path: " + thumbView->currentViewDir);
+		msgBox.critical(this, "Error", "Invalid Path: " + pathBar->text());
 		pathBar->setText(thumbView->currentViewDir);
 		return;
 	}

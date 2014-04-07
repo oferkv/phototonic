@@ -248,7 +248,7 @@ void ThumbView::load(QString &cliImageName)
 	else if (GData::thumbsLayout == Squares)
 		thumbAspect = 1.5;
 	thumbHeight = (GData::thumbsLayout == Squares)? thumbSize * 2 : thumbSize;
-	thumbWidth = GData::thumbsLayout != Classic? thumbHeight * thumbAspect : thumbHeight;
+	thumbWidth = (GData::thumbsLayout != Classic)? thumbHeight * thumbAspect : thumbHeight;
 	setIconSize(QSize(thumbWidth, thumbHeight));
 
 	thumbsDir->setPath(currentViewDir);

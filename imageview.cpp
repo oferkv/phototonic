@@ -319,6 +319,7 @@ void ImageView::reload()
 		origImage.load(currentImageFullPath);
 		displayImage = origImage;
 		transform();
+//		colorizationTests();
 		displayPixmap = QPixmap::fromImage(displayImage);
 	}
 	else
