@@ -20,13 +20,19 @@
 #define THUMBVIEW_H
 
 #include <QListView>
-#include <QList>
 #include <QDir>
 #include <QDebug>
 #include <QStandardItem>
 #include <QTreeView>
 #include <QImageReader>
 #include <QMainWindow>
+#include <QWidget>
+#include <QDrag>
+#include <QApplication>
+#include <QScrollBar>
+#include <QMimeData>
+#include <QDragEnterEvent>
+#include <QDateTime>
 #include "global.h"
 
 class ThumbView : public QListView

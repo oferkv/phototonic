@@ -292,7 +292,7 @@ void Phototonic::createActions()
 	connect(deleteAction, SIGNAL(triggered()), this, SLOT(deleteOp()));
 
 	saveAction = new QAction("Save", this);
-	saveAction->setIcon(QIcon::fromTheme("document-save"));
+	saveAction->setIcon(QIcon::fromTheme("document-save", QIcon(":/images/save.png")));
 
 	saveAsAction = new QAction("Save As", this);
 	copyImageAction = new QAction("Copy Image", this);
@@ -401,7 +401,7 @@ void Phototonic::createActions()
 	connect(randomImageAction, SIGNAL(triggered()), this, SLOT(loadRandomImage()));
 
 	openAction = new QAction("Open", this);
-	openAction->setIcon(QIcon::fromTheme("document-open"));
+	openAction->setIcon(QIcon::fromTheme("document-open", QIcon(":/images/open.png")));
 	connect(openAction, SIGNAL(triggered()), this, SLOT(openOp()));
 
 	openWithSubMenu = new QMenu("Open With");
@@ -445,11 +445,11 @@ void Phototonic::createActions()
 	connect(rotateRightAct, SIGNAL(triggered()), this, SLOT(rotateRight()));
 
 	flipHAct = new QAction("Flip Horizontally", this);
-	flipHAct->setIcon(QIcon::fromTheme("object-flip-horizontal"));
+	flipHAct->setIcon(QIcon::fromTheme("object-flip-horizontal", QIcon(":/images/flipH.png")));
 	connect(flipHAct, SIGNAL(triggered()), this, SLOT(flipHoriz()));
 
 	flipVAct = new QAction("Flip Vertically", this);
-	flipVAct->setIcon(QIcon::fromTheme("object-flip-vertical"));
+	flipVAct->setIcon(QIcon::fromTheme("object-flip-vertical", QIcon(":/images/flipV.png")));
 	connect(flipVAct, SIGNAL(triggered()), this, SLOT(flipVert()));
 
 	cropAct = new QAction("Cropping", this);

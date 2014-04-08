@@ -19,7 +19,7 @@
 #ifndef DIALOGS_H
 #define DIALOGS_H
 
-#include <QtGui>
+#include <QtWidgets>
 #include "thumbview.h"
 #include "imageview.h"
 

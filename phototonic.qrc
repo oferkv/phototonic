@@ -25,5 +25,9 @@
 		<file>images/zoom1.png</file>
 		<file>images/rotate_left.png</file>
 		<file>images/rotate_right.png</file>
+		<file>images/flipH.png</file>
+		<file>images/flipV.png</file>
+		<file>images/save.png</file>
+		<file>images/open.png</file>
 	</qresource>
 </RCC>

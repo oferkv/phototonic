@@ -16,12 +16,6 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QApplication>
-#include <QImageReader>
-#include <QScrollBar>
-#include <QDragEnterEvent>
-#include <QUrl>
-#include <QDateTime>
 #include "thumbview.h"
 
 ThumbView::ThumbView(QWidget *parent) : QListView(parent)
@@ -58,7 +52,7 @@ ThumbView::ThumbView(QWidget *parent) : QListView(parent)
 	QStringList *fileFilters = new QStringList;
 	*fileFilters << "*.BMP" << "*.GIF" << "*.JPG" << "*.JPEG" << "*.JPE" << "*.PNG"
 				 << "*.PBM" << "*.PGM" << "*.PPM" << "*.XBM" << "*.XPM" << "*.SVG"
-				 << "*.TIFF" << "*.TIF";
+				 << "*.TIFF" << "*.TIF" << "*.TGA";
 	thumbsDir->setFilter(QDir::Files);
 	thumbsDir->setNameFilters(*fileFilters);
 
@@ -354,7 +348,8 @@ refreshThumbs:
 		}
 		else
 		{
-			thumbViewModel->item(currThumb)->setIcon(QIcon::fromTheme("image-missing").pixmap(64, 64));
+			thumbViewModel->item(currThumb)->setIcon(QIcon::fromTheme("image-missing",
+													QIcon(":/images/error_image.png")).pixmap(64, 64));
 		}
 
 		if (GData::thumbsLayout == Compact)

@@ -403,7 +403,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 
 	QToolButton *clearShortCutButton = new QToolButton();
 	clearShortCutButton->setStyleSheet("QToolButton {padding: 0px;}");
-	clearShortCutButton->setIcon(QIcon::fromTheme("edit-delete"));
+	clearShortCutButton->setIcon(QIcon::fromTheme("edit-delete", QIcon(":/images/delete.png")));
 	connect(clearShortCutButton, SIGNAL(clicked()), keyLine, SLOT(clearShortcut()));
 
 	// Keyboard shortcuts

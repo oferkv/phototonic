@@ -1,6 +1,7 @@
 TEMPLATE = app
 TARGET = phototonic
 INCLUDEPATH += .
+QT += widgets
 
 # Input
 HEADERS += dialogs.h mainwindow.h thumbview.h imageview.h global.h
