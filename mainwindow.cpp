@@ -699,12 +699,12 @@ void Phototonic::setSquarishThumbs()
 
 void Phototonic::about()
 {
-	QMessageBox::about(this, "About Phototonic", "<h2>Phototonic v0.96</h2>"
+	QMessageBox::about(this, "About Phototonic", "<h2>Phototonic v0.97</h2>"
 							"<p>Image viewer and organizer</p>"
 							"<p><a href=\"http://oferkv.github.io/phototonic/\">Home page</a></p>"
 							"<p><a href=\"https://github.com/oferkv/phototonic/issues\">Reports Bugs</a></p>"
 							"<p>Copyright &copy; 2013-2014 Ofer Kashayov</p>"
-							"<p>Contact: oferkv@live.com</p>");
+							"<p>Contact: oferkv@live.com</p>" "Built with Qt" QT_VERSION_STR);
 }
 
 void Phototonic::runExternalApp()
