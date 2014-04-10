@@ -37,7 +37,7 @@
 
 class ThumbView : public QListView
 {
-    Q_OBJECT
+	Q_OBJECT
 
 signals:
 	void unsetBusy();
@@ -90,7 +90,7 @@ public:
 	};
 
 protected:
-    void startDrag(Qt::DropActions);
+	void startDrag(Qt::DropActions);
 	void wheelEvent(QWheelEvent *event);
 	
 private:
@@ -115,7 +115,7 @@ private:
 
 class FSTree : public QTreeView
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
 	FSTree(QWidget *parent);

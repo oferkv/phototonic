@@ -74,13 +74,13 @@ bool Phototonic::handleArgs()
 		if (cliArg.isDir())
 		{
 			thumbView->currentViewDir = QCoreApplication::arguments().at(1);
-			restoreCurrentIdx();
+			selectCurrentViewDir();
 			return false;
 		}
 		else
 		{
 			thumbView->currentViewDir = cliArg.absolutePath();
-			restoreCurrentIdx();
+			selectCurrentViewDir();
 			cliFileName = cliArg.fileName();
 			return true;
 		}
@@ -995,7 +995,7 @@ void Phototonic::pasteImages()
 	{
 		QMessageBox msgBox;
 		msgBox.critical(this, "Error", "Can not paste in " + destDir);
-		restoreCurrentIdx();
+		selectCurrentViewDir();
 		return;
 	}
 
@@ -1014,7 +1014,7 @@ void Phototonic::pasteImages()
 
 	delete(dialog);
 
-	restoreCurrentIdx();
+	selectCurrentViewDir();
 
 	copyCutCount = 0;
 	GData::copyCutIdxList.clear();
@@ -1130,7 +1130,11 @@ void Phototonic::goSelectedDir(const QModelIndex &idx)
 	thumbView->setNeedScroll(true);
 	thumbView->currentViewDir = getSelectedPath();
 	refreshThumbs(true);
-	fsTree->expand(idx);
+
+	if (fsTree->isExpanded(idx))
+		fsTree->collapse(idx);
+	else
+		fsTree->expand(idx);
 }
 
 void Phototonic::goPathBarDir()
@@ -1147,7 +1151,7 @@ void Phototonic::goPathBarDir()
 	}
 	
 	thumbView->currentViewDir = pathBar->text();
-	restoreCurrentIdx();
+	selectCurrentViewDir();
 	refreshThumbs(true);
 }
 
@@ -1363,8 +1367,8 @@ void Phototonic::loadShortcuts()
 		for (int i = 0; i < groupKeys.size(); ++i)
 		{
 			if (GData::actionKeys.value(groupKeys.at(i)))
-		    	GData::actionKeys.value(groupKeys.at(i))->setShortcut(GData::appSettings->value(groupKeys.at(i)).toString());
-    	}
+				GData::actionKeys.value(groupKeys.at(i))->setShortcut(GData::appSettings->value(groupKeys.at(i)).toString());
+		}
 	}
 	else
 	{
@@ -1442,7 +1446,7 @@ void Phototonic::mouseDoubleClickEvent(QMouseEvent *event)
 		if (stackedWidget->currentIndex() == imageViewIdx)
 		{
 			closeImage();
-		    event->accept();
+			event->accept();
 		}
 	}
 }
@@ -1681,7 +1685,7 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvD
 	if (!isValidPath(destDir))
 	{
 		msgBox.critical(this, "Error", "Can not move or copy images to this folder");
-		restoreCurrentIdx();
+		selectCurrentViewDir();
 		return;
 	}
 	
@@ -1720,11 +1724,14 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvD
 		refreshThumbs(false);
 }
 
-void Phototonic::restoreCurrentIdx()
+void Phototonic::selectCurrentViewDir()
 {
 	QModelIndex idx = fsModel->index(thumbView->currentViewDir); 
 	if (idx.isValid())
+	{
 		fsTree->setCurrentIndex(idx);
+		fsTree->expand(idx);
+	}
 }
 
 void Phototonic::checkDirState(const QModelIndex &, int, int)
@@ -1825,7 +1832,7 @@ void Phototonic::renameDir()
 
 	if (!ok)
 	{
-		restoreCurrentIdx();
+		selectCurrentViewDir();
 		return;
 	}
 
@@ -1833,7 +1840,7 @@ void Phototonic::renameDir()
 	{
 		QMessageBox msgBox;
 		msgBox.critical(this, "Error", "Invalid name entered");
-		restoreCurrentIdx();
+		selectCurrentViewDir();
 		return;
 	}
 
@@ -1844,14 +1851,14 @@ void Phototonic::renameDir()
 	{
 		QMessageBox msgBox;
 		msgBox.critical(this, "Error", "Failed to rename folder");
-		restoreCurrentIdx();
+		selectCurrentViewDir();
 		return;
 	}
 
 	if (thumbView->currentViewDir == dirInfo.absoluteFilePath()) 
 		fsTree->setCurrentIndex(fsModel->index(newFullPathName));
 	else
-		restoreCurrentIdx();
+		selectCurrentViewDir();
 }
 
 void Phototonic::rename()
@@ -1918,7 +1925,7 @@ void Phototonic::deleteDir()
 		ok = removeDirOp(deletePath);
 	else
 	{
-		restoreCurrentIdx();
+		selectCurrentViewDir();
 		return;
 	}
 
@@ -1926,7 +1933,7 @@ void Phototonic::deleteDir()
 	{
 		QMessageBox msgBox;
 		msgBox.critical(this, "Error", "Failed to delete folder");
-		restoreCurrentIdx();
+		selectCurrentViewDir();
 	}
 
 	QString state = QString("Removed " + deletePath);
@@ -1938,7 +1945,7 @@ void Phototonic::deleteDir()
 			fsTree->setCurrentIndex(idxAbove);
 	}
 	else
-		restoreCurrentIdx();
+		selectCurrentViewDir();
 }
 
 void Phototonic::createSubDirectory()
@@ -1952,7 +1959,7 @@ void Phototonic::createSubDirectory()
 
 	if (!ok)
 	{
-		restoreCurrentIdx();
+		selectCurrentViewDir();
 		return;
 	}
 
@@ -1960,7 +1967,7 @@ void Phototonic::createSubDirectory()
 	{
 		QMessageBox msgBox;
 		msgBox.critical(this, "Error", "Invalid name entered");
-		restoreCurrentIdx();
+		selectCurrentViewDir();
 		return;
 	}
 
@@ -1971,13 +1978,13 @@ void Phototonic::createSubDirectory()
 	{
 		QMessageBox msgBox;
 		msgBox.critical(this, "Error", "Failed to create new folder");
-		restoreCurrentIdx();
+		selectCurrentViewDir();
 		return;
 	}
 
 	updateState("Created " + newDirName);
 	fsTree->expand(selectedDirs[0]);
-	restoreCurrentIdx();
+	selectCurrentViewDir();
 }
 
 void Phototonic::manageDir()

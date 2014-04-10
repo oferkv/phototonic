@@ -237,7 +237,7 @@ private:
 
 	void loadShortcuts();
 	void deleteSingleImage();
-	void restoreCurrentIdx();
+	void selectCurrentViewDir();
 	bool handleArgs();
 	void addMenuSeparator(QWidget *widget);
 	void createImageView();
