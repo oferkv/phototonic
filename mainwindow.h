@@ -98,6 +98,7 @@ private slots:
 	void rotateRight();
 	void flipVert();
 	void cropImage();
+	void showColorsDialog();
 	void setMirrorDisabled();
 	void setMirrorDual();
 	void setMirrorTriple();
@@ -170,6 +171,7 @@ private:
 	QAction *flipHAct;
 	QAction *flipVAct;
 	QAction *cropAct;
+	QAction *colorsAct;
 	QActionGroup *mirroringGroup;
 	QAction *mirrorSubMenuAct;
 	QAction *mirrorDisabledAct;

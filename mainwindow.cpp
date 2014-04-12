@@ -176,6 +176,7 @@ void Phototonic::createImageView()
 	imageView->addAction(keepZoomAct);
 	imageView->addAction(openWithExteralApp);
 	imageView->addAction(refreshAction);
+	imageView->addAction(colorsAct);
 
 	// Actions
 	imageView->ImagePopUpMenu->addAction(nextImageAction);
@@ -222,6 +223,8 @@ void Phototonic::createImageView()
 	addMenuSeparator(transformSubMenu);
 	transformSubMenu->addAction(keepTransformAct);
 
+	imageView->ImagePopUpMenu->addAction(colorsAct);
+	
 	addMenuSeparator(imageView->ImagePopUpMenu);
 	imageView->ImagePopUpMenu->addAction(copyImageAction);
 	imageView->ImagePopUpMenu->addAction(saveAction);
@@ -331,7 +334,7 @@ void Phototonic::createActions()
 	actType->setChecked(thumbView->thumbsSortFlags & QDir::Type); 
 	actReverse->setChecked(thumbView->thumbsSortFlags & QDir::Reversed); 
 
-	actClassic = new QAction("Classic view", this);
+	actClassic = new QAction("Classic Thumbs", this);
 	actCompact = new QAction("Compact", this);
 	actSquarish = new QAction("Squarish", this);
 	connect(actClassic, SIGNAL(triggered()), this, SLOT(setClassicThumbs()));
@@ -454,6 +457,10 @@ void Phototonic::createActions()
 
 	cropAct = new QAction("Cropping", this);
 	connect(cropAct, SIGNAL(triggered()), this, SLOT(cropImage()));
+
+	colorsAct = new QAction("Colors", this);
+	connect(colorsAct, SIGNAL(triggered()), this, SLOT(showColorsDialog()));
+	colorsAct->setIcon(QIcon(":/images/colors.png"));
 
 	mirrorDisabledAct = new QAction("Disable", this);
 	mirrorDualAct = new QAction("Dual", this);
@@ -939,6 +946,14 @@ void Phototonic::cropImage()
 	imageView->setCursorOverrides(true);
 }
 
+void Phototonic::showColorsDialog()
+{
+	ColorsDialog *dialog = new ColorsDialog(this, imageView);
+	imageView->setCursorOverrides(false);
+	dialog->exec();
+	imageView->setCursorOverrides(true);
+}
+
 void Phototonic::flipHoriz()
 {
 	GData::flipH = !GData::flipH;
@@ -1353,6 +1368,7 @@ void Phototonic::loadShortcuts()
 	GData::actionKeys[flipHAct->text()] = flipHAct;
 	GData::actionKeys[flipVAct->text()] = flipVAct;
 	GData::actionKeys[cropAct->text()] = cropAct;
+	GData::actionKeys[colorsAct->text()] = colorsAct;
 	GData::actionKeys[mirrorDisabledAct->text()] = mirrorDisabledAct;
 	GData::actionKeys[mirrorDualAct->text()] = mirrorDualAct;
 	GData::actionKeys[mirrorTripleAct->text()] = mirrorTripleAct;
@@ -1405,7 +1421,8 @@ void Phototonic::loadShortcuts()
 		rotateRightAct->setShortcut(QKeySequence::MoveToNextWord);
 		flipHAct->setShortcut(QKeySequence("Ctrl+Down"));
 		flipVAct->setShortcut(QKeySequence("Ctrl+Up"));
-		cropAct->setShortcut(QKeySequence("Ctrl+R"));
+		cropAct->setShortcut(QKeySequence("R"));
+		colorsAct->setShortcut(QKeySequence("C"));
 		mirrorDisabledAct->setShortcut(QKeySequence("Ctrl+1"));
 		mirrorDualAct->setShortcut(QKeySequence("Ctrl+2"));
 		mirrorTripleAct->setShortcut(QKeySequence("Ctrl+3"));

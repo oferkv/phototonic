@@ -1,18 +1,18 @@
 pkgname=phototonic
-pkgver=0.96
-pkgrel=1
+pkgver=0.97
+pkgrel=2
 pkgdesc="Image Viewer and Organizer"
 arch=('i686' 'x86_64')
 url="http://oferkv.github.io/phototonic/"
 license=('GPL3')
-depends=('qt4')
+depends=('qt5-base')
 source=("https://github.com/oferkv/phototonic/archive/v${pkgver}.tar.gz")
-md5sums=('d298f9f99fc779ef87676c1b91d7426e')
+md5sums=('8ed9b7621bdb748d1efb7cd5f04e64ae')
 provides=('phototonic')
 
 build() {
   cd "$srcdir/$pkgname-$pkgver"
-  qmake-qt4 PREFIX="/usr" QMAKE_CFLAGS_RELEASE="$CPPFLAGS $CFLAGS" QMAKE_CXXFLAGS_RELEASE="$CPPFLAGS $CXXFLAGS" QMAKE_LFLAGS_RELEASE="$LDFLAGS"
+  qmake PREFIX="/usr" QMAKE_CFLAGS_RELEASE="$CPPFLAGS $CFLAGS" QMAKE_CXXFLAGS_RELEASE="$CPPFLAGS $CXXFLAGS" QMAKE_LFLAGS_RELEASE="$LDFLAGS"
   make
 }
 

@@ -55,6 +55,10 @@ namespace GData
 	extern bool slideShowActive;
 	extern QMap<QString, QAction *> actionKeys;
 
+	extern int redChanColor;
+	extern int greenChanColor;
+	extern int blueChanColor;
+
 	// app data
 	extern QModelIndexList copyCutIdxList;
 	extern bool copyOp;

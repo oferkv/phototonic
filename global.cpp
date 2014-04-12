@@ -48,6 +48,10 @@ namespace GData
 	bool slideShowActive;
 	QMap<QString, QAction *> actionKeys;
 
+	int redChanColor;
+	int greenChanColor;
+	int blueChanColor;
+	
 	// app data
 	QModelIndexList copyCutIdxList;
 	bool copyOp;

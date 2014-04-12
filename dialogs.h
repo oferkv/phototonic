@@ -81,7 +81,7 @@ private:
 	QRadioButton *fitLargeRadios[nZoomRadios];
 	QRadioButton *fitSmallRadios[nZoomRadios];
 	QCheckBox *compactLayoutCb;
-    QToolButton *backgroundColorButton;
+	QToolButton *backgroundColorButton;
     QToolButton *colThumbButton;
     QToolButton *colThumbTextButton;
 	QSpinBox *thumbSpacingSpin;
@@ -114,6 +114,30 @@ private:
 	QSpinBox *leftSpin;
 	QSpinBox *rightSpin;
 	ImageView *imageView;
+};
+
+class ColorsDialog : public QDialog
+{
+    Q_OBJECT
+
+public:
+    ColorsDialog(QWidget *parent, ImageView *imageView);
+
+public slots:
+	void ok();
+	void reset();
+	void applyColors(int value);
+
+private:
+	ImageView *imageView;
+	QSlider *redSlide;
+	QSlider *greenSlide;
+	QSlider *blueSlide;
+	QLabel *redLab;
+	QLabel *greenLab;
+	QLabel *blueLab;
+
+	QString intToRgbStr(int color);
 };
 
 #endif // DIALOGS_H
