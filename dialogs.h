@@ -130,14 +130,15 @@ public slots:
 
 private:
 	ImageView *imageView;
-	QSlider *redSlide;
-	QSlider *greenSlide;
-	QSlider *blueSlide;
-	QLabel *redLab;
-	QLabel *greenLab;
-	QLabel *blueLab;
-
-	QString intToRgbStr(int color);
+	QSlider *redRedChanSlide;
+	QSlider *redGreenChanSlide;
+	QSlider *redBlueChanSlide;
+	QSlider *greenRedChanSlide;
+	QSlider *greenGreenChanSlide;
+	QSlider *greenBlueChanSlide;
+	QSlider *blueRedChanSlide;
+	QSlider *blueGreenChanSlide;
+	QSlider *blueBlueChanSlide;
 };
 
 #endif // DIALOGS_H

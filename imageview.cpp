@@ -61,6 +61,15 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	GData::cropTop = 0;
 	GData::cropWidth = 0;
 	GData::cropHeight = 0;
+	GData::redRedChanVal = 100;
+	GData::redGreenChanVal = 0;
+	GData::redBlueChanVal = 0;
+	GData::greenRedChanVal = 0;
+	GData::greenGreenChanVal = 100;
+	GData::greenBlueChanVal = 0;
+	GData::blueRedChanVal = 0;
+	GData::blueGreenChanVal = 0;
+	GData::blueBlueChanVal = 100;
 }
 
 void ImageView::resizeEvent(QResizeEvent *event)
@@ -272,26 +281,41 @@ void ImageView::transform()
 void ImageView::colorizationTests()
 {
 	int y, x;
+	float r, g, b;
     QImage newImage = QImage(displayImage.width(), displayImage.height(), QImage::Format_ARGB32);
  
     for(y = 0; y < newImage.height(); ++y)
     {
-        QRgb * line = (QRgb *)displayImage.scanLine(y);
+        QRgb *line = (QRgb *)displayImage.scanLine(y);
  
+		
         for(x = 0; x < newImage.width(); ++x)
         {
-//    		QColor col = QColor(line[x]);
-	        newImage.setPixel(x, y, qRgb(qRed(line[x]), qBlue(line[x]), qGreen(line[x])));
+			r = qBound(0.0, qRed(line[x]) / 100.0 * GData::redRedChanVal
+							+ qGreen(line[x]) / 100.0 * GData::redGreenChanVal
+							+ qBlue(line[x]) / 100.0 * GData::redBlueChanVal, 255.0);
+												
+			g = qBound(0.0, qRed(line[x]) / 100.0 * GData::greenRedChanVal
+							+ qGreen(line[x]) / 100.0 * GData::greenGreenChanVal
+							+ qBlue(line[x]) / 100.0 * GData::greenBlueChanVal, 255.0);
+												
+			b = qBound(0.0, qRed(line[x]) / 100.0 * GData::blueRedChanVal
+							+ qGreen(line[x]) / 100.0 * GData::blueGreenChanVal
+							+ qBlue(line[x]) / 100.0 * GData::blueBlueChanVal, 255.0);
+
+	        newImage.setPixel(x, y, qRgb((int)r, (int)g, (int)b));
         }
      }
  
     displayImage = newImage;
+    // QColor col = QColor(line[x]);
 }
 
 void ImageView::refresh()
 {
 	displayImage = origImage;
 	transform();
+//	colorizationTests();
 	displayPixmap = QPixmap::fromImage(displayImage);
 	imageLabel->setPixmap(displayPixmap);
 	resizeImage();

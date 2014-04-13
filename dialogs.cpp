@@ -627,7 +627,7 @@ void CropDialog::ok()
 ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
 {
 	setWindowTitle("Colors");
-	resize(640, 480);
+	resize(500, 200);
 	imageView = imageView_;
 
 	QHBoxLayout *buttonsHbox = new QHBoxLayout;
@@ -636,57 +636,111 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
 	buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);
 
-	redLab = new QLabel("Red");
-	greenLab = new QLabel("Green");
-	blueLab = new QLabel("Blue");
+
+	QPixmap redPix(":/images/red.png");
+	QPixmap greenPix(":/images/green.png");
+	QPixmap bluePix(":/images/blue.png");
+
 	QLabel *redPixLab = new QLabel;
 	QLabel *greenPixLab = new QLabel;
 	QLabel *bluePixLab = new QLabel;
+	QLabel *redPixLab2 = new QLabel;
+	QLabel *greenPixLab2 = new QLabel;
+	QLabel *bluePixLab2 = new QLabel;
+	redPixLab->setPixmap(redPix);
+	greenPixLab->setPixmap(greenPix);
+	bluePixLab->setPixmap(bluePix);
+	redPixLab2->setPixmap(redPix);
+	greenPixLab2->setPixmap(greenPix);
+	bluePixLab2->setPixmap(bluePix);
 
-	QPixmap topPix(":/images/red.png");
-	redPixLab->setPixmap(topPix);
-	QPixmap leftPix(":/images/green.png");
-	greenPixLab->setPixmap(leftPix);
-	QPixmap rightPix(":/images/blue.png");
-	bluePixLab->setPixmap(rightPix);
+	redRedChanSlide = new QSlider(Qt::Horizontal);
+	redRedChanSlide->setTickPosition(QSlider::TicksAbove);
+	redRedChanSlide->setTickInterval(25);
+	redRedChanSlide->setRange(-200, 200);
+	redRedChanSlide->setValue(GData::redRedChanVal);
+	connect(redRedChanSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
 
-	redSlide = new QSlider(Qt::Horizontal);
-	redSlide->setTickPosition(QSlider::TicksAbove);
-	redSlide->setTickInterval(1);
-	redSlide->setRange(0, 2);
-	connect(redSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
+	redGreenChanSlide = new QSlider(Qt::Horizontal);
+	redGreenChanSlide->setTickPosition(QSlider::TicksAbove);
+	redGreenChanSlide->setTickInterval(25);
+	redGreenChanSlide->setRange(-200, 200);
+	redGreenChanSlide->setValue(GData::redGreenChanVal);
+	connect(redGreenChanSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
 
-	greenSlide = new QSlider(Qt::Horizontal);
-	greenSlide->setTickPosition(QSlider::TicksAbove);
-	greenSlide->setTickInterval(1);
-	greenSlide->setRange(0, 2);
-	connect(greenSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
+	redBlueChanSlide = new QSlider(Qt::Horizontal);
+	redBlueChanSlide->setTickPosition(QSlider::TicksAbove);
+	redBlueChanSlide->setTickInterval(25);
+	redBlueChanSlide->setRange(-200, 200);
+	redBlueChanSlide->setValue(GData::redBlueChanVal);
+	connect(redBlueChanSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
 
-	blueSlide = new QSlider(Qt::Horizontal);
-	blueSlide->setTickPosition(QSlider::TicksAbove);
-	blueSlide->setTickInterval(1);
-	blueSlide->setRange(0, 2);
-	connect(blueSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
+	greenRedChanSlide = new QSlider(Qt::Horizontal);
+	greenRedChanSlide->setTickPosition(QSlider::TicksAbove);
+	greenRedChanSlide->setTickInterval(25);
+	greenRedChanSlide->setRange(-200, 200);
+	greenRedChanSlide->setValue(GData::greenRedChanVal);
+	connect(greenRedChanSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
+
+	greenGreenChanSlide = new QSlider(Qt::Horizontal);
+	greenGreenChanSlide->setTickPosition(QSlider::TicksAbove);
+	greenGreenChanSlide->setTickInterval(25);
+	greenGreenChanSlide->setRange(-200, 200);
+	greenGreenChanSlide->setValue(GData::greenGreenChanVal);
+	connect(greenGreenChanSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
+
+	greenBlueChanSlide = new QSlider(Qt::Horizontal);
+	greenBlueChanSlide->setTickPosition(QSlider::TicksAbove);
+	greenBlueChanSlide->setTickInterval(25);
+	greenBlueChanSlide->setRange(-200, 200);
+	greenBlueChanSlide->setValue(GData::greenBlueChanVal);
+	connect(greenBlueChanSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
+
+	blueRedChanSlide = new QSlider(Qt::Horizontal);
+	blueRedChanSlide->setTickPosition(QSlider::TicksAbove);
+	blueRedChanSlide->setTickInterval(25);
+	blueRedChanSlide->setRange(-200, 200);
+	blueRedChanSlide->setValue(GData::blueRedChanVal);
+	connect(blueRedChanSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
+
+	blueGreenChanSlide = new QSlider(Qt::Horizontal);
+	blueGreenChanSlide->setTickPosition(QSlider::TicksAbove);
+	blueGreenChanSlide->setTickInterval(25);
+	blueGreenChanSlide->setRange(-200, 200);
+	blueGreenChanSlide->setValue(GData::blueGreenChanVal);
+	connect(blueGreenChanSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
+
+	blueBlueChanSlide = new QSlider(Qt::Horizontal);
+	blueBlueChanSlide->setTickPosition(QSlider::TicksAbove);
+	blueBlueChanSlide->setTickInterval(25);
+	blueBlueChanSlide->setRange(-200, 200);
+	blueBlueChanSlide->setValue(GData::blueBlueChanVal);
+	connect(blueBlueChanSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));	
 
 	QGridLayout *colChannelbox = new QGridLayout;
-	colChannelbox->setColumnStretch(3, 1);
+//	colChannelbox->setColumnStretch(3, 1);
 
-	colChannelbox->addWidget(redPixLab, 0, 0, 1, 1);
-	colChannelbox->addWidget(redSlide, 0, 1, 1, 1);
-	colChannelbox->addWidget(redLab, 0, 2, 1, 1);
+	colChannelbox->addWidget(redPixLab2,				0, 1, Qt::AlignHCenter);
+	colChannelbox->addWidget(greenPixLab2,			0, 2, Qt::AlignHCenter);
+	colChannelbox->addWidget(bluePixLab2,			0, 3, Qt::AlignHCenter);
 
-	colChannelbox->addWidget(greenPixLab, 1, 0, 1, 1);
-	colChannelbox->addWidget(greenSlide, 1, 1, 1, 1);
-	colChannelbox->addWidget(greenLab, 1, 2, 1, 1);
+	colChannelbox->addWidget(redPixLab,				1, 0, 1, 1);
+	colChannelbox->addWidget(redRedChanSlide,		1, 1, 1, 1);
+	colChannelbox->addWidget(redGreenChanSlide,		1, 2, 1, 1);
+	colChannelbox->addWidget(redBlueChanSlide,		1, 3, 1, 1);
+
+	colChannelbox->addWidget(greenPixLab,			2, 0, 1, 1);
+	colChannelbox->addWidget(greenRedChanSlide,		2, 1, 1, 1);
+	colChannelbox->addWidget(greenGreenChanSlide,	2, 2, 1, 1);
+	colChannelbox->addWidget(greenBlueChanSlide, 	2, 3, 1, 1);
 	
-	colChannelbox->addWidget(bluePixLab, 2, 0, 1, 1);
-	colChannelbox->addWidget(blueSlide, 2, 1, 1, 1);
-	colChannelbox->addWidget(blueLab, 2, 2, 1, 1);
+	colChannelbox->addWidget(bluePixLab, 			3, 0, 1, 1);
+	colChannelbox->addWidget(blueRedChanSlide,		3, 1, 1, 1);
+	colChannelbox->addWidget(blueGreenChanSlide,		3, 2, 1, 1);
+	colChannelbox->addWidget(blueBlueChanSlide,		3, 3, 1, 1);
 
-	QGroupBox *colChannelgrp = new QGroupBox("Channels");
+	QGroupBox *colChannelgrp = new QGroupBox("Channel Mixer");
 	colChannelgrp->setLayout(colChannelbox);
-
-
 	QVBoxLayout *mainVbox = new QVBoxLayout;
 	mainVbox->addWidget(colChannelgrp);
 	mainVbox->addStretch(1);	
@@ -694,30 +748,19 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	setLayout(mainVbox);
 }
 
-QString ColorsDialog::intToRgbStr(int color)
-{
-	switch(color)
-	{
-		case 0:
-			return("red");
-		case 1:
-			return("green");
-		case 2:
-			return("blue");
-	}
-
-	return("");
-}
-
 void ColorsDialog::applyColors(int)
 {
-	GData::redChanColor = redSlide->value();
-	GData::greenChanColor = greenSlide->value();
-	GData::blueChanColor = blueSlide->value();
+	GData::redRedChanVal = redRedChanSlide->value();
+	GData::redGreenChanVal = redGreenChanSlide->value();
+	GData::redBlueChanVal = redBlueChanSlide->value();
+	GData::greenRedChanVal = greenRedChanSlide->value();
+	GData::greenGreenChanVal = greenGreenChanSlide->value();
+	GData::greenBlueChanVal = greenBlueChanSlide->value();
+	GData::blueRedChanVal = blueRedChanSlide->value();
+	GData::blueGreenChanVal = blueGreenChanSlide->value();
+	GData::blueBlueChanVal = blueBlueChanSlide->value();
 
-	redLab->setText(intToRgbStr(GData::redChanColor));
-	greenLab->setText(intToRgbStr(GData::greenChanColor));
-	blueLab->setText(intToRgbStr(GData::blueChanColor));
+	imageView->refresh();
 }
 
 void ColorsDialog::ok()
