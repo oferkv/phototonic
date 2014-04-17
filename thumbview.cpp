@@ -333,7 +333,7 @@ refreshThumbs:
 	{
 		if (thumbIsLoaded->at(currThumb))
 			continue;
-		
+
 		thumbFileInfo = thumbFileInfoList.at(currThumb);
 
 		thumbReader.setFileName(thumbFileInfo.filePath());
@@ -366,6 +366,8 @@ refreshThumbs:
 		if (newIndex)
 		{
 			currThumb = newIndex - 1;
+			if (currThumb < 0)
+				currThumb = 0;
 			newIndex = 0;
 			needRefresh = true;
 			if (GData::thumbsLayout == Compact)

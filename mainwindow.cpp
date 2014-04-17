@@ -576,6 +576,7 @@ void Phototonic::createMenus()
 	sep->setSeparator(true);
 	thumbView->addAction(sep);
 	thumbView->addAction(selectAllAction);
+	thumbView->addAction(invertSelectionAct);
 	thumbView->setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
@@ -1451,7 +1452,7 @@ void Phototonic::loadShortcuts()
 		nextImageAction->setShortcut(QKeySequence::MoveToNextPage);
 		prevImageAction->setShortcut(QKeySequence::MoveToPreviousPage);
 		firstImageAction->setShortcut(QKeySequence::MoveToStartOfLine);
-		lastImageAction->setShortcut(QKeySequence::MoveToEndOfLine);
+		lastImageAction->setShortcut(QKeySequence("End"));
 		randomImageAction->setShortcut(QKeySequence("r"));
 		openAction->setShortcut(QKeySequence::InsertParagraphSeparator);
 		zoomOutAct->setShortcut(QKeySequence("-"));

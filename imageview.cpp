@@ -30,10 +30,8 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	cursorIsHidden = false;
 	moveImageLocked = false;
 	mirrorLayout = LayNone;
-
 	imageLabel = new QLabel;
 	imageLabel->setScaledContents(true);
-	imageLabel->setFixedSize(0, 0);
 
 	setPalette(QPalette(GData::backgroundColor));
 
@@ -471,6 +469,7 @@ void ImageView::reload()
 	}
 
 	imageReader.setFileName(currentImageFullPath);
+	isAnimation = imageReader.supportsAnimation();
 
 	if (imageReader.size().isValid())
 	{
@@ -483,7 +482,16 @@ void ImageView::reload()
 	else
 		displayPixmap = QIcon::fromTheme("image-missing", QIcon(":/images/error_image.png")).pixmap(128, 128);
 
-	imageLabel->setPixmap(displayPixmap);
+
+	if (isAnimation)
+	{
+		QMovie *movie = new QMovie(currentImageFullPath);
+		imageLabel->setMovie(movie);
+		movie->start();
+	}
+	else
+		imageLabel->setPixmap(displayPixmap);
+
 	resizeImage();
 }
 
@@ -715,3 +723,4 @@ void ImageView::copyImage()
 	QClipboard *clipboard = QApplication::clipboard();
 	clipboard->setImage(displayImage);
 }
+

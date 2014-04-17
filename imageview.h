@@ -32,6 +32,7 @@
 #include <QMenu>
 #include <QPainter>
 #include <QClipboard>
+#include <QMovie>
 
 class ImageView : public QWidget
 {
@@ -110,6 +111,7 @@ private:
 	int mouseY;
 	int layoutX;
 	int layoutY;
+	bool isAnimation;
 
 	void centerImage(QSize &imgSize);
 	void transform();
