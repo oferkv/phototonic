@@ -177,6 +177,10 @@ void Phototonic::createImageView()
 	imageView->addAction(openWithExteralApp);
 	imageView->addAction(refreshAction);
 	imageView->addAction(colorsAct);
+	imageView->addAction(moveRightAct);
+	imageView->addAction(moveLeftAct);
+	imageView->addAction(moveUpAct);
+	imageView->addAction(moveDownAct);
 
 	// Actions
 	imageView->ImagePopUpMenu->addAction(nextImageAction);
@@ -483,6 +487,18 @@ void Phototonic::createActions()
 	keepTransformAct = new QAction("Keep Transformations", this);
 	keepTransformAct->setCheckable(true);
 	connect(keepTransformAct, SIGNAL(triggered()), this, SLOT(keepTransformClicked()));
+
+	moveLeftAct = new QAction("Move Left", this);
+	connect(moveLeftAct, SIGNAL(triggered()), this, SLOT(moveLeft()));
+	moveRightAct = new QAction("Move Right", this);
+	connect(moveRightAct, SIGNAL(triggered()), this, SLOT(moveRight()));
+	moveUpAct = new QAction("Move Up", this);
+	connect(moveUpAct, SIGNAL(triggered()), this, SLOT(moveUp()));
+	moveDownAct = new QAction("Move Down", this);
+	connect(moveDownAct, SIGNAL(triggered()), this, SLOT(moveDown()));
+
+	invertSelectionAct = new QAction("Invert Selection", this);
+	connect(invertSelectionAct, SIGNAL(triggered()), thumbView, SLOT(invertSelection()));
 }
 
 void Phototonic::createMenus()
@@ -502,6 +518,7 @@ void Phototonic::createMenus()
 	editMenu->addAction(pasteAction);
 	editMenu->addSeparator();
 	editMenu->addAction(selectAllAction);
+	editMenu->addAction(invertSelectionAct);
 	editMenu->addSeparator();
 	editMenu->addAction(settingsAction);
 
@@ -706,7 +723,7 @@ void Phototonic::setSquarishThumbs()
 
 void Phototonic::about()
 {
-	QMessageBox::about(this, "About Phototonic", "<h2>Phototonic v0.97</h2>"
+	QMessageBox::about(this, "About Phototonic", "<h2>Phototonic v0.98</h2>"
 							"<p>Image viewer and organizer</p>"
 							"<p><a href=\"http://oferkv.github.io/phototonic/\">Home page</a></p>"
 							"<p><a href=\"https://github.com/oferkv/phototonic/issues\">Reports Bugs</a></p>"
@@ -958,6 +975,26 @@ void Phototonic::flipHoriz()
 {
 	GData::flipH = !GData::flipH;
 	imageView->refresh();
+}
+
+void Phototonic::moveRight()
+{
+	imageView->keyMoveEvent(ImageView::MoveRight);
+}
+
+void Phototonic::moveLeft()
+{
+	imageView->keyMoveEvent(ImageView::MoveLeft);
+}
+
+void Phototonic::moveUp()
+{
+	imageView->keyMoveEvent(ImageView::MoveUp);
+}
+
+void Phototonic::moveDown()
+{
+	imageView->keyMoveEvent(ImageView::MoveDown);
 }
 
 void Phototonic::setMirrorDisabled()
@@ -1374,6 +1411,10 @@ void Phototonic::loadShortcuts()
 	GData::actionKeys[mirrorTripleAct->text()] = mirrorTripleAct;
 	GData::actionKeys[mirrorVDualAct->text()] = mirrorVDualAct;
 	GData::actionKeys[mirrorQuadAct->text()] = mirrorQuadAct;
+	GData::actionKeys[moveDownAct->text()] = moveDownAct;
+	GData::actionKeys[moveUpAct->text()] = moveUpAct;
+	GData::actionKeys[moveRightAct->text()] = moveRightAct;
+	GData::actionKeys[moveLeftAct->text()] = moveLeftAct;
 
 	GData::appSettings->beginGroup("Shortcuts");
 	QStringList groupKeys = GData::appSettings->childKeys();
@@ -1428,6 +1469,10 @@ void Phototonic::loadShortcuts()
 		mirrorTripleAct->setShortcut(QKeySequence("Ctrl+3"));
 		mirrorVDualAct->setShortcut(QKeySequence("Ctrl+4"));
 		mirrorQuadAct->setShortcut(QKeySequence("Ctrl+5"));
+		moveDownAct->setShortcut(QKeySequence("Down"));
+		moveUpAct->setShortcut(QKeySequence("Up"));
+		moveLeftAct->setShortcut(QKeySequence("Left"));
+		moveRightAct->setShortcut(QKeySequence("Right"));
 	}
 		
 	GData::appSettings->endGroup();

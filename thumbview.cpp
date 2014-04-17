@@ -399,6 +399,17 @@ void ThumbView::wheelEvent(QWheelEvent *event)
 		verticalScrollBar()->setValue(verticalScrollBar()->value() - thumbHeight);
 }
 
+void ThumbView::invertSelection()
+{
+	QModelIndex idx;
+
+	for (int currThumb = 0; currThumb < thumbViewModel->rowCount() - 1; ++currThumb)
+	{
+		idx = thumbViewModel->indexFromItem(thumbViewModel->item(currThumb));
+		selectionModel()->select(idx, QItemSelectionModel::Toggle);
+	}
+}
+
 FSTree::FSTree(QWidget *parent) : QTreeView(parent)
 {
 	setAcceptDrops(true);

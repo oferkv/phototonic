@@ -321,13 +321,13 @@ void rgb_to_hsl(unsigned char red, unsigned char green, unsigned char blue,
 
 	if (r > g)	
 	{
-		max = MAX (r, b);
-		min = MIN (g, b);
+		max = MAX(r, b);
+		min = MIN(g, b);
 	}
 	else
 	{
-		max = MAX (g, b);
-		min = MIN (r, b);
+		max = MAX(g, b);
+		min = MIN(r, b);
 	}
 
 	l = (max + min) / 2.0;
@@ -361,12 +361,13 @@ void rgb_to_hsl(unsigned char red, unsigned char green, unsigned char blue,
 			h -= 255;
 	}
 
-	*hue = ROUND (h);
-	*sat = ROUND (s);
-	*light  = ROUND (l);
+	*hue = ROUND(h);
+	*sat = ROUND(s);
+	*light  = ROUND(l);
 }
 
-void hsl_to_rgb(unsigned char hue, unsigned char sat, unsigned char light, unsigned char *red, unsigned char *green, unsigned char *blue)
+void hsl_to_rgb(unsigned char hue, unsigned char sat, unsigned char light,
+					unsigned char *red, unsigned char *green, unsigned char *blue)
 {
 	double h, s, l;
 
@@ -580,6 +581,76 @@ void ImageView::mouseMoveEvent(QMouseEvent *event)
 	}
 }
 
+void ImageView::keyMoveEvent(int direction)
+{
+	int newX = imageLabel->pos().x();
+	int newY = imageLabel->pos().y();
+	bool needToMove = false;
+
+	switch (direction)
+	{
+		case MoveLeft:
+			newX += 50;
+			break;
+		case MoveRight:
+			newX -= 50;
+			break;
+		case MoveUp:
+			newY += 50;
+			break;
+		case MoveDown:
+			newY -= 50;
+			break;
+	}
+
+	if (imageLabel->size().width() > mainWindow->size().width())
+	{
+		if (newX > 0)
+			newX = 0;
+		else if (newX < (mainWindow->size().width() - imageLabel->size().width()))
+			newX = (mainWindow->size().width() - imageLabel->size().width());
+		needToMove = true;
+	}
+	else
+		newX = layoutX;
+
+	if (imageLabel->size().height() > mainWindow->size().height())
+	{
+		if (newY > 0)
+			newY = 0;
+		else if (newY < (mainWindow->size().height() - imageLabel->size().height()))
+			newY = (mainWindow->size().height() - imageLabel->size().height());
+		needToMove = true;
+	}
+	else
+		newY = layoutY;
+
+	if (needToMove)
+	{
+		int i;
+
+		switch (direction)
+		{
+			case MoveLeft:
+				for (i = imageLabel->pos().x(); i <= newX; ++i)
+					imageLabel->move(newX, newY);
+				break;
+			case MoveRight:
+				for (i = imageLabel->pos().x(); i >= newX; --i)
+					imageLabel->move(newX, newY);
+				break;
+			case MoveUp:
+				for (i = imageLabel->pos().y(); i <= newY; ++i)
+					imageLabel->move(newX, newY);
+				break;
+			case MoveDown:
+				for (i = imageLabel->pos().y(); i >= newY; --i)
+					imageLabel->move(newX, newY);
+				break;
+		}
+	}
+}
+
 void ImageView::saveImage()
 {
 	if (!displayPixmap.save(currentImageFullPath, 0, GData::defaultSaveQuality))
@@ -644,4 +715,3 @@ void ImageView::copyImage()
 	QClipboard *clipboard = QApplication::clipboard();
 	clipboard->setImage(displayImage);
 }
-

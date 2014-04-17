@@ -105,6 +105,10 @@ private slots:
 	void setMirrorVDual();
 	void setMirrorQuad();
 	void flipHoriz();
+	void moveRight();
+	void moveLeft();
+	void moveUp();
+	void moveDown();
 	void setThumbViewWidgetsVisible(bool visible);
 	void goTop();
 	void goBottom();
@@ -179,6 +183,10 @@ private:
 	QAction *mirrorTripleAct;
 	QAction *mirrorVDualAct;
 	QAction *mirrorQuadAct;
+	QAction *moveLeftAct;
+	QAction *moveRightAct;
+	QAction *moveUpAct;
+	QAction *moveDownAct;
 	
 	QAction *actClassic;
 	QAction *actCompact;
@@ -205,6 +213,7 @@ private:
 	QAction *openWithMenuAct;
 	QAction *chooseAppAct;
 	QAction *openWithExteralApp;
+	QAction *invertSelectionAct;
 	
 	QLineEdit *pathBar;
 	QCompleter *pathComplete;

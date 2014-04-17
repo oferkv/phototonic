@@ -47,6 +47,7 @@ public slots:
 	void abort();
 	void updateIndex();
 	void handleSelectionChanged(const QItemSelection& selection);
+	void invertSelection();
 
 public:
 	ThumbView(QWidget *parent);

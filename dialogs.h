@@ -53,7 +53,7 @@ public slots:
 	void clearShortcut();
 
 protected:
-	void keyPressEvent(QKeyEvent *);
+	void keyPressEvent(QKeyEvent *e);
 
 private:
 	QComboBox *keysCombo;

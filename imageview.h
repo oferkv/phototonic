@@ -62,6 +62,14 @@ public:
 		LayVDual
 	};
 
+	enum Movement
+	{
+		MoveUp = 0,
+		MoveDown,
+		MoveLeft,
+		MoveRight
+	};
+
     ImageView(QWidget *parent = 0);
 	void loadImage(QString &imagePath, QString imageFileName);
 	void resizeImage();
@@ -71,6 +79,7 @@ public:
 	void reload();
 	void setCursorOverrides(bool override);
 	QSize getImageSize();
+	void keyMoveEvent(int direction);
 
 public slots:
 	void monitorCursorState();
