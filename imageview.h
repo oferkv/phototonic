@@ -104,7 +104,7 @@ private:
 
 	void centerImage(QSize &imgSize);
 	void transform();
-	void colorizationTests();
+	void colorize();
 };
 
 #endif // IMAGEVIEW_H

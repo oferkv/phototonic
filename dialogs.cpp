@@ -631,115 +631,84 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	imageView = imageView_;
 
 	QHBoxLayout *buttonsHbox = new QHBoxLayout;
+    QPushButton *resetButton = new QPushButton("Reset");
+    resetButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+	connect(resetButton, SIGNAL(clicked()), this, SLOT(reset()));
+	buttonsHbox->addWidget(resetButton, 0, Qt::AlignLeft);
     QPushButton *okButton = new QPushButton("OK");
     okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
 	buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);
 
+	QLabel *hueLab = new QLabel("Hue");
+	QLabel *satLab = new QLabel("Saturation");
+	QLabel *lightLab = new QLabel("Lightness");
+	QLabel *channelsLab = new QLabel("Channels");
 
-	QPixmap redPix(":/images/red.png");
-	QPixmap greenPix(":/images/green.png");
-	QPixmap bluePix(":/images/blue.png");
+	hueSatEnabledCb = new QCheckBox("Enable", this);
+	hueSatEnabledCb->setCheckState(GData::hueSatEnabled? Qt::Checked : Qt::Unchecked);
+	connect(hueSatEnabledCb, SIGNAL(stateChanged(int)), this, SLOT(enableHueSat(int)));	
 
-	QLabel *redPixLab = new QLabel;
-	QLabel *greenPixLab = new QLabel;
-	QLabel *bluePixLab = new QLabel;
-	QLabel *redPixLab2 = new QLabel;
-	QLabel *greenPixLab2 = new QLabel;
-	QLabel *bluePixLab2 = new QLabel;
-	redPixLab->setPixmap(redPix);
-	greenPixLab->setPixmap(greenPix);
-	bluePixLab->setPixmap(bluePix);
-	redPixLab2->setPixmap(redPix);
-	greenPixLab2->setPixmap(greenPix);
-	bluePixLab2->setPixmap(bluePix);
+	hueSlide = new QSlider(Qt::Horizontal);
+	hueSlide->setTickPosition(QSlider::TicksAbove);
+	hueSlide->setTickInterval(25);
+	hueSlide->setRange(0, 255);
+	hueSlide->setValue(GData::hueVal);
+	connect(hueSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
 
-	redRedChanSlide = new QSlider(Qt::Horizontal);
-	redRedChanSlide->setTickPosition(QSlider::TicksAbove);
-	redRedChanSlide->setTickInterval(25);
-	redRedChanSlide->setRange(-200, 200);
-	redRedChanSlide->setValue(GData::redRedChanVal);
-	connect(redRedChanSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
+	colorizeCb = new QCheckBox("Colorize", this);
+	colorizeCb->setCheckState(GData::colorizeEnabled? Qt::Checked : Qt::Unchecked);
+	connect(colorizeCb, SIGNAL(stateChanged(int)), this, SLOT(enableColorize(int)));	
 
-	redGreenChanSlide = new QSlider(Qt::Horizontal);
-	redGreenChanSlide->setTickPosition(QSlider::TicksAbove);
-	redGreenChanSlide->setTickInterval(25);
-	redGreenChanSlide->setRange(-200, 200);
-	redGreenChanSlide->setValue(GData::redGreenChanVal);
-	connect(redGreenChanSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
+	saturationSlide = new QSlider(Qt::Horizontal);
+	saturationSlide->setTickPosition(QSlider::TicksAbove);
+	saturationSlide->setTickInterval(25);
+	saturationSlide->setRange(0, 500);
+	saturationSlide->setValue(GData::saturationVal);
+	connect(saturationSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
 
-	redBlueChanSlide = new QSlider(Qt::Horizontal);
-	redBlueChanSlide->setTickPosition(QSlider::TicksAbove);
-	redBlueChanSlide->setTickInterval(25);
-	redBlueChanSlide->setRange(-200, 200);
-	redBlueChanSlide->setValue(GData::redBlueChanVal);
-	connect(redBlueChanSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
+	lightnessSlide = new QSlider(Qt::Horizontal);
+	lightnessSlide->setTickPosition(QSlider::TicksAbove);
+	lightnessSlide->setTickInterval(25);
+	lightnessSlide->setRange(0, 500);
+	lightnessSlide->setValue(GData::lightnessVal);
+	connect(lightnessSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
 
-	greenRedChanSlide = new QSlider(Qt::Horizontal);
-	greenRedChanSlide->setTickPosition(QSlider::TicksAbove);
-	greenRedChanSlide->setTickInterval(25);
-	greenRedChanSlide->setRange(-200, 200);
-	greenRedChanSlide->setValue(GData::greenRedChanVal);
-	connect(greenRedChanSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
-
-	greenGreenChanSlide = new QSlider(Qt::Horizontal);
-	greenGreenChanSlide->setTickPosition(QSlider::TicksAbove);
-	greenGreenChanSlide->setTickInterval(25);
-	greenGreenChanSlide->setRange(-200, 200);
-	greenGreenChanSlide->setValue(GData::greenGreenChanVal);
-	connect(greenGreenChanSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
-
-	greenBlueChanSlide = new QSlider(Qt::Horizontal);
-	greenBlueChanSlide->setTickPosition(QSlider::TicksAbove);
-	greenBlueChanSlide->setTickInterval(25);
-	greenBlueChanSlide->setRange(-200, 200);
-	greenBlueChanSlide->setValue(GData::greenBlueChanVal);
-	connect(greenBlueChanSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
-
-	blueRedChanSlide = new QSlider(Qt::Horizontal);
-	blueRedChanSlide->setTickPosition(QSlider::TicksAbove);
-	blueRedChanSlide->setTickInterval(25);
-	blueRedChanSlide->setRange(-200, 200);
-	blueRedChanSlide->setValue(GData::blueRedChanVal);
-	connect(blueRedChanSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
-
-	blueGreenChanSlide = new QSlider(Qt::Horizontal);
-	blueGreenChanSlide->setTickPosition(QSlider::TicksAbove);
-	blueGreenChanSlide->setTickInterval(25);
-	blueGreenChanSlide->setRange(-200, 200);
-	blueGreenChanSlide->setValue(GData::blueGreenChanVal);
-	connect(blueGreenChanSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
-
-	blueBlueChanSlide = new QSlider(Qt::Horizontal);
-	blueBlueChanSlide->setTickPosition(QSlider::TicksAbove);
-	blueBlueChanSlide->setTickInterval(25);
-	blueBlueChanSlide->setRange(-200, 200);
-	blueBlueChanSlide->setValue(GData::blueBlueChanVal);
-	connect(blueBlueChanSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));	
+	QHBoxLayout *channelsHbox = new QHBoxLayout;
+    redB = new QToolButton();
+   	redB->setIcon(QIcon(":/images/red.png"));
+   	redB->setCheckable(true);
+	redB->setChecked(GData::hueRedChannel);
+	connect(redB, SIGNAL(clicked()), this, SLOT(setRedChannel()));
+	channelsHbox->addWidget(redB, 0, Qt::AlignLeft);
+    greenB = new QToolButton();
+   	greenB->setIcon(QIcon(":/images/green.png"));
+   	greenB->setCheckable(true);
+	greenB->setChecked(GData::hueGreenChannel);
+	connect(greenB, SIGNAL(clicked()), this, SLOT(setGreenChannel()));
+	channelsHbox->addWidget(greenB, 0, Qt::AlignLeft);
+    blueB = new QToolButton();
+   	blueB->setIcon(QIcon(":/images/blue.png"));
+   	blueB->setCheckable(true);
+	blueB->setChecked(GData::hueBlueChannel);
+	connect(blueB, SIGNAL(clicked()), this, SLOT(setBlueChannel()));
+	channelsHbox->addWidget(blueB, 0, Qt::AlignLeft);
+	channelsHbox->addStretch(1);
 
 	QGridLayout *colChannelbox = new QGridLayout;
-//	colChannelbox->setColumnStretch(3, 1);
+	colChannelbox->addWidget(hueSatEnabledCb,	0, 0, Qt::AlignLeft);
+	colChannelbox->addWidget(hueLab,				1, 0, 1, 1);
+	colChannelbox->addWidget(hueSlide,			1, 1, 1, 1);
+	colChannelbox->addWidget(colorizeCb,			2, 1, 1, 1);
+	colChannelbox->addWidget(satLab,				3, 0, 1, 1);
+	colChannelbox->addWidget(saturationSlide,	3, 1, 1, 1);
+	colChannelbox->addWidget(lightLab, 			4, 0, 1, 1);
+	colChannelbox->addWidget(lightnessSlide,		4, 1, 1, 1);
+	colChannelbox->addWidget(channelsLab,		5, 0, 1, 1);
+	colChannelbox->addLayout(channelsHbox,		5, 1, 1, 1);
+	// colChannelbox->setColumnStretch(3, 1);
 
-	colChannelbox->addWidget(redPixLab2,				0, 1, Qt::AlignHCenter);
-	colChannelbox->addWidget(greenPixLab2,			0, 2, Qt::AlignHCenter);
-	colChannelbox->addWidget(bluePixLab2,			0, 3, Qt::AlignHCenter);
-
-	colChannelbox->addWidget(redPixLab,				1, 0, 1, 1);
-	colChannelbox->addWidget(redRedChanSlide,		1, 1, 1, 1);
-	colChannelbox->addWidget(redGreenChanSlide,		1, 2, 1, 1);
-	colChannelbox->addWidget(redBlueChanSlide,		1, 3, 1, 1);
-
-	colChannelbox->addWidget(greenPixLab,			2, 0, 1, 1);
-	colChannelbox->addWidget(greenRedChanSlide,		2, 1, 1, 1);
-	colChannelbox->addWidget(greenGreenChanSlide,	2, 2, 1, 1);
-	colChannelbox->addWidget(greenBlueChanSlide, 	2, 3, 1, 1);
-	
-	colChannelbox->addWidget(bluePixLab, 			3, 0, 1, 1);
-	colChannelbox->addWidget(blueRedChanSlide,		3, 1, 1, 1);
-	colChannelbox->addWidget(blueGreenChanSlide,		3, 2, 1, 1);
-	colChannelbox->addWidget(blueBlueChanSlide,		3, 3, 1, 1);
-
-	QGroupBox *colChannelgrp = new QGroupBox("Channel Mixer");
+	QGroupBox *colChannelgrp = new QGroupBox("Hue and Saturation");
 	colChannelgrp->setLayout(colChannelbox);
 	QVBoxLayout *mainVbox = new QVBoxLayout;
 	mainVbox->addWidget(colChannelgrp);
@@ -750,15 +719,9 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 
 void ColorsDialog::applyColors(int)
 {
-	GData::redRedChanVal = redRedChanSlide->value();
-	GData::redGreenChanVal = redGreenChanSlide->value();
-	GData::redBlueChanVal = redBlueChanSlide->value();
-	GData::greenRedChanVal = greenRedChanSlide->value();
-	GData::greenGreenChanVal = greenGreenChanSlide->value();
-	GData::greenBlueChanVal = greenBlueChanSlide->value();
-	GData::blueRedChanVal = blueRedChanSlide->value();
-	GData::blueGreenChanVal = blueGreenChanSlide->value();
-	GData::blueBlueChanVal = blueBlueChanSlide->value();
+	GData::hueVal = hueSlide->value();
+	GData::saturationVal = saturationSlide->value();
+	GData::lightnessVal = lightnessSlide->value();
 
 	imageView->refresh();
 }
@@ -770,6 +733,46 @@ void ColorsDialog::ok()
 
 void ColorsDialog::reset()
 {
+	hueSlide->setValue(0);
+	colorizeCb->setChecked(false);
+	saturationSlide->setValue(100);
+	lightnessSlide->setValue(100);
+	redB->setChecked(true);
+	greenB->setChecked(true);
+	blueB->setChecked(true);
+	GData::hueRedChannel = true;
+	GData::hueGreenChannel = true;
+	GData::hueBlueChannel = true;
+	imageView->refresh();
+}
 
+void ColorsDialog::enableHueSat(int state)
+{
+	GData::hueSatEnabled = state;
+	imageView->refresh();
+}
+
+void ColorsDialog::enableColorize(int state)
+{
+	GData::colorizeEnabled = state;
+	imageView->refresh();
+}
+
+void ColorsDialog::setRedChannel()
+{
+	GData::hueRedChannel = redB->isChecked();
+	imageView->refresh();
+}
+
+void ColorsDialog::setGreenChannel()
+{
+	GData::hueGreenChannel = greenB->isChecked();
+	imageView->refresh();
+}
+
+void ColorsDialog::setBlueChannel()
+{
+	GData::hueBlueChannel = blueB->isChecked();
+	imageView->refresh();
 }
 

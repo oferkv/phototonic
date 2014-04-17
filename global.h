@@ -55,15 +55,14 @@ namespace GData
 	extern bool slideShowActive;
 	extern QMap<QString, QAction *> actionKeys;
 
-	extern int redRedChanVal;
-	extern int redGreenChanVal;
-	extern int redBlueChanVal;
-	extern int greenRedChanVal;
-	extern int greenGreenChanVal;
-	extern int greenBlueChanVal;
-	extern int blueRedChanVal;
-	extern int blueGreenChanVal;
-	extern int blueBlueChanVal;
+	extern bool hueSatEnabled;
+	extern int hueVal;
+	extern int saturationVal;
+	extern int lightnessVal;
+	extern bool colorizeEnabled;
+	extern bool hueRedChannel;
+	extern bool hueGreenChannel;
+	extern bool hueBlueChannel;
 
 	// app data
 	extern QModelIndexList copyCutIdxList;

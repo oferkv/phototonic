@@ -20,6 +20,10 @@
 #include "thumbview.h"
 #include "global.h"
 
+#define ROUND(x) ((int) ((x) + 0.5))
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+
 ImageView::ImageView(QWidget *parent) : QWidget(parent)
 {
 	mainWindow = parent;
@@ -61,15 +65,14 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	GData::cropTop = 0;
 	GData::cropWidth = 0;
 	GData::cropHeight = 0;
-	GData::redRedChanVal = 100;
-	GData::redGreenChanVal = 0;
-	GData::redBlueChanVal = 0;
-	GData::greenRedChanVal = 0;
-	GData::greenGreenChanVal = 100;
-	GData::greenBlueChanVal = 0;
-	GData::blueRedChanVal = 0;
-	GData::blueGreenChanVal = 0;
-	GData::blueBlueChanVal = 100;
+
+	GData::hueVal = 0;
+	GData::saturationVal = 100;
+	GData::lightnessVal = 100;
+	GData::hueSatEnabled = false;
+	GData::hueRedChannel = true;
+	GData::hueGreenChannel = true;
+	GData::hueBlueChannel = true;
 }
 
 void ImageView::resizeEvent(QResizeEvent *event)
@@ -278,44 +281,176 @@ void ImageView::transform()
 	}
 }
 
-void ImageView::colorizationTests()
+static inline int bound0_255(int val)
 {
-	int y, x;
-	float r, g, b;
-    QImage newImage = QImage(displayImage.width(), displayImage.height(), QImage::Format_ARGB32);
- 
-    for(y = 0; y < newImage.height(); ++y)
-    {
-        QRgb *line = (QRgb *)displayImage.scanLine(y);
- 
-		
-        for(x = 0; x < newImage.width(); ++x)
-        {
-			r = qBound(0.0, qRed(line[x]) / 100.0 * GData::redRedChanVal
-							+ qGreen(line[x]) / 100.0 * GData::redGreenChanVal
-							+ qBlue(line[x]) / 100.0 * GData::redBlueChanVal, 255.0);
-												
-			g = qBound(0.0, qRed(line[x]) / 100.0 * GData::greenRedChanVal
-							+ qGreen(line[x]) / 100.0 * GData::greenGreenChanVal
-							+ qBlue(line[x]) / 100.0 * GData::greenBlueChanVal, 255.0);
-												
-			b = qBound(0.0, qRed(line[x]) / 100.0 * GData::blueRedChanVal
-							+ qGreen(line[x]) / 100.0 * GData::blueGreenChanVal
-							+ qBlue(line[x]) / 100.0 * GData::blueBlueChanVal, 255.0);
+	return ((val > 255)? 255 : (val < 0)? 0 : val);
+}
 
-	        newImage.setPixel(x, y, qRgb((int)r, (int)g, (int)b));
-        }
-     }
- 
-    displayImage = newImage;
-    // QColor col = QColor(line[x]);
+static inline int hsl_value(double n1, double n2, double hue)
+{
+	double value;
+
+	if (hue > 255)
+		hue -= 255;
+	else if (hue < 0)
+		hue += 255;
+
+	if (hue < 42.5)
+		value = n1 + (n2 - n1) * (hue / 42.5);
+	else if (hue < 127.5)
+		value = n2;
+	else if (hue < 170)
+		value = n1 + (n2 - n1) * ((170 - hue) / 42.5);
+	else
+		value = n1;
+
+	return ROUND(value * 255.0);
+}
+
+void rgb_to_hsl(unsigned char red, unsigned char green, unsigned char blue,
+					unsigned char *hue, unsigned char *sat, unsigned char *light)
+{
+	int    r, g, b;
+	double h, s, l;
+	int    min, max;
+	int    delta;
+
+	r = red;
+	g = green;
+	b = blue;
+
+	if (r > g)	
+	{
+		max = MAX (r, b);
+		min = MIN (g, b);
+	}
+	else
+	{
+		max = MAX (g, b);
+		min = MIN (r, b);
+	}
+
+	l = (max + min) / 2.0;
+
+	if (max == min)
+	{
+		s = 0.0;
+		h = 0.0;
+	}
+	else
+	{
+		delta = (max - min);
+
+		if (l < 128)
+			s = 255 * (double) delta / (double) (max + min);
+		else
+			s = 255 * (double) delta / (double) (511 - max - min);
+
+		if (r == max)
+			h = (g - b) / (double) delta;
+		else if (g == max)
+			h = 2 + (b - r) / (double) delta;
+		else
+			h = 4 + (r - g) / (double) delta;
+
+		h = h * 42.5;
+
+		if (h < 0)
+			h += 255;
+		else if (h > 255)
+			h -= 255;
+	}
+
+	*hue = ROUND (h);
+	*sat = ROUND (s);
+	*light  = ROUND (l);
+}
+
+void hsl_to_rgb(unsigned char hue, unsigned char sat, unsigned char light, unsigned char *red, unsigned char *green, unsigned char *blue)
+{
+	double h, s, l;
+
+	h = hue;
+	s = sat;
+	l = light;
+
+	if (s == 0)
+	{
+		/* achromatic case */
+		*red = l;
+		*green = l;
+		*blue = l;
+	}
+	else
+	{
+		double m1, m2;
+
+		if (l < 128)
+			m2 = (l * (255 + s)) / 65025.0;
+		else
+			m2 = (l + s - (l * s) / 255.0) / 255.0;
+
+		m1 = (l / 127.5) - m2;
+
+		/* chromatic case  */
+		*red = hsl_value(m1, m2, h + 85);
+		*green = hsl_value(m1, m2, h);
+		*blue = hsl_value(m1, m2, h - 85);
+	}
+}
+
+void ImageView::colorize()
+{
+	if (GData::hueSatEnabled)
+	{
+
+		int y, x;
+		unsigned char hr, hg, hb;
+		unsigned char r, g, b;
+		QRgb *line;
+	    QImage colorizedImage = QImage(displayImage.width(), displayImage.height(), QImage::Format_ARGB32);
+
+	    unsigned char h, s, l;
+	 
+	    for(y = 0; y < colorizedImage.height(); ++y)
+	    {
+	        line = (QRgb *)displayImage.scanLine(y);
+	 
+	        for(x = 0; x < colorizedImage.width(); ++x)
+	        {
+				
+				rgb_to_hsl(	(unsigned char)qRed(line[x]),
+							(unsigned char)qGreen(line[x]),
+							(unsigned char)qBlue(line[x]), &h, &s, &l);
+									
+				if (GData::colorizeEnabled)
+					h = GData::hueVal;
+				else
+					h += GData::hueVal;
+
+				s = bound0_255(((s * GData::saturationVal) / 100));
+				l = bound0_255(((l * GData::lightnessVal) / 100));
+
+
+				hsl_to_rgb(h, s, l,  &hr, &hg, &hb );
+
+				r = GData::hueRedChannel? hr : qRed(line[x]);
+				g = GData::hueGreenChannel? hg : qGreen(line[x]);
+				b = GData::hueBlueChannel? hb : qBlue(line[x]);
+				
+		        colorizedImage.setPixel(x, y, qRgb(r, g, b));
+	        }
+	     }
+	 
+	    displayImage = colorizedImage; 
+    }
 }
 
 void ImageView::refresh()
 {
 	displayImage = origImage;
 	transform();
-//	colorizationTests();
+	colorize();
 	displayPixmap = QPixmap::fromImage(displayImage);
 	imageLabel->setPixmap(displayPixmap);
 	resizeImage();
@@ -341,7 +476,7 @@ void ImageView::reload()
 		origImage.load(currentImageFullPath);
 		displayImage = origImage;
 		transform();
-//		colorizationTests();
+		colorize();
 		displayPixmap = QPixmap::fromImage(displayImage);
 	}
 	else

@@ -126,19 +126,23 @@ public:
 public slots:
 	void ok();
 	void reset();
+	void enableHueSat(int state);
+	void enableColorize(int state);
+	void setRedChannel();
+	void setGreenChannel();
+	void setBlueChannel();
 	void applyColors(int value);
 
 private:
 	ImageView *imageView;
-	QSlider *redRedChanSlide;
-	QSlider *redGreenChanSlide;
-	QSlider *redBlueChanSlide;
-	QSlider *greenRedChanSlide;
-	QSlider *greenGreenChanSlide;
-	QSlider *greenBlueChanSlide;
-	QSlider *blueRedChanSlide;
-	QSlider *blueGreenChanSlide;
-	QSlider *blueBlueChanSlide;
+	QCheckBox *hueSatEnabledCb;
+	QSlider *hueSlide;
+	QCheckBox *colorizeCb;
+	QSlider *saturationSlide;
+	QSlider *lightnessSlide;
+	QToolButton *redB;
+	QToolButton *greenB;
+	QToolButton *blueB;
 };
 
 #endif // DIALOGS_H
