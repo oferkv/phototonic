@@ -32,6 +32,8 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	mirrorLayout = LayNone;
 	imageLabel = new QLabel;
 	imageLabel->setScaledContents(true);
+	isAnimation = false;
+	anim = 0;
 
 	setPalette(QPalette(GData::backgroundColor));
 
@@ -107,12 +109,12 @@ static inline int calcZoom(int size)
 void ImageView::resizeImage()
 {
 	static bool busy = false;
-	if (busy || !imageLabel->pixmap())
+	if (busy || (!imageLabel->pixmap() && (isAnimation && !anim)))
 		return;
 	busy = true;
 
 	imageLabel->setVisible(false);
-	QSize imgSize = imageLabel->pixmap()->size();
+	QSize imgSize = isAnimation? anim->currentPixmap().size() : imageLabel->pixmap()->size();
 
 	if (tempDisableResize)
 		imgSize.scale(calcZoom(imgSize.width()), calcZoom(imgSize.height()), Qt::KeepAspectRatio);
@@ -402,7 +404,6 @@ void ImageView::colorize()
 {
 	if (GData::hueSatEnabled)
 	{
-
 		int y, x;
 		unsigned char hr, hg, hb;
 		unsigned char r, g, b;
@@ -417,7 +418,6 @@ void ImageView::colorize()
 	 
 	        for(x = 0; x < colorizedImage.width(); ++x)
 	        {
-				
 				rgb_to_hsl(	(unsigned char)qRed(line[x]),
 							(unsigned char)qGreen(line[x]),
 							(unsigned char)qBlue(line[x]), &h, &s, &l);
@@ -429,7 +429,6 @@ void ImageView::colorize()
 
 				s = bound0_255(((s * GData::saturationVal) / 100));
 				l = bound0_255(((l * GData::lightnessVal) / 100));
-
 
 				hsl_to_rgb(h, s, l,  &hr, &hg, &hb );
 
@@ -447,12 +446,24 @@ void ImageView::colorize()
 
 void ImageView::refresh()
 {
+	if (isAnimation)
+		return;
+
 	displayImage = origImage;
 	transform();
 	colorize();
-	displayPixmap = QPixmap::fromImage(displayImage);
-	imageLabel->setPixmap(displayPixmap);
+	imageLabel->setPixmap(QPixmap::fromImage(displayImage));
 	resizeImage();
+}
+
+void ImageView::refreshColors()
+{
+	if (isAnimation)
+		return;
+
+	displayImage = origImage;
+	colorize();
+	imageLabel->setPixmap(QPixmap::fromImage(displayImage));
 }
 
 void ImageView::reload()
@@ -469,28 +480,31 @@ void ImageView::reload()
 	}
 
 	imageReader.setFileName(currentImageFullPath);
-	isAnimation = imageReader.supportsAnimation();
 
-	if (imageReader.size().isValid())
-	{
-		origImage.load(currentImageFullPath);
-		displayImage = origImage;
-		transform();
-		colorize();
-		displayPixmap = QPixmap::fromImage(displayImage);
-	}
-	else
-		displayPixmap = QIcon::fromTheme("image-missing", QIcon(":/images/error_image.png")).pixmap(128, 128);
-
-
+	isAnimation = GData::enableAnimations? imageReader.supportsAnimation() : false;
 	if (isAnimation)
 	{
-		QMovie *movie = new QMovie(currentImageFullPath);
-		imageLabel->setMovie(movie);
-		movie->start();
+		if (anim)
+			delete anim;
+		anim = new QMovie(currentImageFullPath);
+		imageLabel->setMovie(anim);
+		anim->start();
 	}
 	else
+	{
+		if (imageReader.size().isValid())
+		{
+			origImage.load(currentImageFullPath);
+			displayImage = origImage;
+			transform();
+			colorize();
+			displayPixmap = QPixmap::fromImage(displayImage);
+		}
+		else
+			displayPixmap = QIcon::fromTheme("image-missing", QIcon(":/images/error_image.png")).pixmap(128, 128);
+
 		imageLabel->setPixmap(displayPixmap);
+	}
 
 	resizeImage();
 }

@@ -31,6 +31,7 @@ namespace GData
 	unsigned int thumbSpacing;
 	bool exitInsteadOfClose;
 	bool wrapImageList;
+	bool enableAnimations;
 	float imageZoomFactor;
 	bool keepZoomFactor;
 	int rotation;

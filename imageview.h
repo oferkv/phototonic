@@ -77,6 +77,7 @@ public:
 	void setMouseMoveData(bool lockMove, int lMouseX, int lMouseY);
 	void setCursorHiding(bool hide);
 	void refresh();
+	void refreshColors();
 	void reload();
 	void setCursorOverrides(bool override);
 	QSize getImageSize();
@@ -104,6 +105,7 @@ private:
 	QImage displayImage;
 	QImage mirrorImage;
 	QTimer *mouseMovementTimer;
+	QMovie *anim;
 
 	bool cursorIsHidden;
 	bool moveImageLocked;

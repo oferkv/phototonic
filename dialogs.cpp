@@ -353,6 +353,10 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	saveQualityHbox->addWidget(saveQualitySpin);
 	saveQualityHbox->addStretch(1);
 
+	// Enable animations
+	enableAnimCb = new QCheckBox("Enable animations", this);
+	enableAnimCb->setChecked(GData::enableAnimations);
+
 	// Viewer options
 	QVBoxLayout *viewerOptsBox = new QVBoxLayout;
 	QHBoxLayout *zoomOptsBox = new QHBoxLayout;
@@ -363,6 +367,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	viewerOptsBox->addWidget(exitCliCb);
 	viewerOptsBox->addWidget(wrapListCb);
 	viewerOptsBox->addLayout(saveQualityHbox);
+	viewerOptsBox->addWidget(enableAnimCb);
 	QGroupBox *viewerOptsGrp = new QGroupBox("Viewer");
 	viewerOptsGrp->setLayout(viewerOptsBox);
 
@@ -461,6 +466,7 @@ void SettingsDialog::saveSettings()
 	GData::noEnlargeSmallThumb = noSmallThumbCb->isChecked();
 	GData::slideShowDelay = slideDelaySpin->value();
 	GData::slideShowRandom = slideRandomCb->isChecked();
+	GData::enableAnimations = enableAnimCb->isChecked();
 
 	accept();
 }
@@ -656,7 +662,7 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	hueSlide->setValue(GData::hueVal);
 	connect(hueSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
 
-	colorizeCb = new QCheckBox("Colorize", this);
+	colorizeCb = new QCheckBox("Color Splash", this);
 	colorizeCb->setCheckState(GData::colorizeEnabled? Qt::Checked : Qt::Unchecked);
 	connect(colorizeCb, SIGNAL(stateChanged(int)), this, SLOT(enableColorize(int)));	
 
@@ -723,7 +729,7 @@ void ColorsDialog::applyColors(int)
 	GData::saturationVal = saturationSlide->value();
 	GData::lightnessVal = lightnessSlide->value();
 
-	imageView->refresh();
+	imageView->refreshColors();
 }
 
 void ColorsDialog::ok()
@@ -743,36 +749,36 @@ void ColorsDialog::reset()
 	GData::hueRedChannel = true;
 	GData::hueGreenChannel = true;
 	GData::hueBlueChannel = true;
-	imageView->refresh();
+	imageView->refreshColors();
 }
 
 void ColorsDialog::enableHueSat(int state)
 {
 	GData::hueSatEnabled = state;
-	imageView->refresh();
+	imageView->refreshColors();
 }
 
 void ColorsDialog::enableColorize(int state)
 {
 	GData::colorizeEnabled = state;
-	imageView->refresh();
+	imageView->refreshColors();
 }
 
 void ColorsDialog::setRedChannel()
 {
 	GData::hueRedChannel = redB->isChecked();
-	imageView->refresh();
+	imageView->refreshColors();
 }
 
 void ColorsDialog::setGreenChannel()
 {
 	GData::hueGreenChannel = greenB->isChecked();
-	imageView->refresh();
+	imageView->refreshColors();
 }
 
 void ColorsDialog::setBlueChannel()
 {
 	GData::hueBlueChannel = blueB->isChecked();
-	imageView->refresh();
+	imageView->refreshColors();
 }
 
