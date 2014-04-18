@@ -109,7 +109,7 @@ static inline int calcZoom(int size)
 void ImageView::resizeImage()
 {
 	static bool busy = false;
-	if (busy || (!imageLabel->pixmap() && (isAnimation && !anim)))
+	if (busy || (!imageLabel->pixmap() && !anim))
 		return;
 	busy = true;
 
