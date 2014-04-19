@@ -1074,7 +1074,8 @@ void Phototonic::pasteImages()
 	GData::copyCutFileList.clear();
 	pasteAction->setEnabled(false);
 
-	refreshThumbs(false);
+	if (destDir == thumbView->currentViewDir || thumbViewBusy)
+		refreshThumbs(false);
 }
 
 void Phototonic::deleteSingleImage()

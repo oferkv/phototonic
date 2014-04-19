@@ -33,6 +33,7 @@
 #include <QPainter>
 #include <QClipboard>
 #include <QMovie>
+#include <QToolTip>
 
 class ImageView : public QWidget
 {
@@ -82,6 +83,7 @@ public:
 	void setCursorOverrides(bool override);
 	QSize getImageSize();
 	void keyMoveEvent(int direction);
+	void popMessage(const char *message);
 
 public slots:
 	void monitorCursorState();

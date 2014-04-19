@@ -675,6 +675,7 @@ void ImageView::keyMoveEvent(int direction)
 
 void ImageView::saveImage()
 {
+	popMessage("Saving...");
 	if (!displayPixmap.save(currentImageFullPath, 0, GData::defaultSaveQuality))
 	{
 		QMessageBox msgBox;
@@ -736,5 +737,10 @@ void ImageView::copyImage()
 {
 	QClipboard *clipboard = QApplication::clipboard();
 	clipboard->setImage(displayImage);
+}
+
+void ImageView::popMessage(const char *message)
+{
+	QToolTip::showText(QPoint((mainWindow->pos().x() + 10), (mainWindow->pos().y() + 10)), QString(message));
 }
 
