@@ -452,18 +452,9 @@ void ImageView::refresh()
 	displayImage = origImage;
 	transform();
 	colorize();
-	imageLabel->setPixmap(QPixmap::fromImage(displayImage));
+	displayPixmap = QPixmap::fromImage(displayImage);
+	imageLabel->setPixmap(displayPixmap);
 	resizeImage();
-}
-
-void ImageView::refreshColors()
-{
-	if (isAnimation)
-		return;
-
-	displayImage = origImage;
-	colorize();
-	imageLabel->setPixmap(QPixmap::fromImage(displayImage));
 }
 
 void ImageView::reload()

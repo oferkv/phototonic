@@ -729,7 +729,7 @@ void ColorsDialog::applyColors(int)
 	GData::saturationVal = saturationSlide->value();
 	GData::lightnessVal = lightnessSlide->value();
 
-	imageView->refreshColors();
+	imageView->refresh();
 }
 
 void ColorsDialog::ok()
@@ -749,36 +749,36 @@ void ColorsDialog::reset()
 	GData::hueRedChannel = true;
 	GData::hueGreenChannel = true;
 	GData::hueBlueChannel = true;
-	imageView->refreshColors();
+	imageView->refresh();
 }
 
 void ColorsDialog::enableHueSat(int state)
 {
 	GData::hueSatEnabled = state;
-	imageView->refreshColors();
+	imageView->refresh();
 }
 
 void ColorsDialog::enableColorize(int state)
 {
 	GData::colorizeEnabled = state;
-	imageView->refreshColors();
+	imageView->refresh();
 }
 
 void ColorsDialog::setRedChannel()
 {
 	GData::hueRedChannel = redB->isChecked();
-	imageView->refreshColors();
+	imageView->refresh();
 }
 
 void ColorsDialog::setGreenChannel()
 {
 	GData::hueGreenChannel = greenB->isChecked();
-	imageView->refreshColors();
+	imageView->refresh();
 }
 
 void ColorsDialog::setBlueChannel()
 {
 	GData::hueBlueChannel = blueB->isChecked();
-	imageView->refreshColors();
+	imageView->refresh();
 }
 
