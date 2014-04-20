@@ -244,7 +244,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	bgColBox->addWidget(backgroundColorButton);
 	bgColBox->addStretch(1);
 	connect(backgroundColorButton, SIGNAL(clicked()), this, SLOT(pickColor()));
-	backgroundColorButton->setPalette(QPalette(GData::backgroundColor));
+	setButtonBgColor(GData::backgroundColor, backgroundColorButton);
 	backgroundColorButton->setAutoFillBackground(true);
 	bgColor = GData::backgroundColor;
 
@@ -256,7 +256,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	bgThumbColBox->addWidget(colThumbButton);
 	bgThumbColBox->addStretch(1);
 	connect(colThumbButton, SIGNAL(clicked()), this, SLOT(pickThumbsColor()));
-	colThumbButton->setPalette(QPalette(GData::thumbsBackgroundColor));
+	setButtonBgColor(GData::thumbsBackgroundColor, colThumbButton);
 	colThumbButton->setAutoFillBackground(true);
 	thumbBgColor = GData::thumbsBackgroundColor;
 
@@ -268,7 +268,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	txtThumbColBox->addWidget(colThumbTextButton);
 	txtThumbColBox->addStretch(1);
 	connect(colThumbTextButton, SIGNAL(clicked()), this, SLOT(pickThumbsTextColor()));
-	colThumbTextButton->setPalette(QPalette(GData::thumbsTextColor));
+	setButtonBgColor(GData::thumbsTextColor, colThumbTextButton);
 	colThumbTextButton->setAutoFillBackground(true);
 	thumbTextColor = GData::thumbsTextColor;
 
@@ -481,9 +481,16 @@ void SettingsDialog::pickColor()
 	QColor userColor = QColorDialog::getColor(GData::backgroundColor, this);
     if (userColor.isValid())
     {	
-        backgroundColorButton->setPalette(QPalette(userColor));
+		setButtonBgColor(userColor, backgroundColorButton);
         bgColor = userColor;
     }
+}
+
+void SettingsDialog::setButtonBgColor(QColor &color, QToolButton *button)
+{
+	QString style = "background: rgb(%1, %2, %3);";
+	style = style.arg(color.red()).arg(color.green()).arg(color.blue());
+	button->setStyleSheet(style);
 }
 
 void SettingsDialog::pickThumbsColor()
@@ -491,7 +498,7 @@ void SettingsDialog::pickThumbsColor()
 	QColor userColor = QColorDialog::getColor(GData::thumbsBackgroundColor, this);
     if (userColor.isValid())
     {	
-        colThumbButton->setPalette(QPalette(userColor));
+		setButtonBgColor(userColor, colThumbButton);
         thumbBgColor = userColor;
     }
 }
@@ -501,7 +508,7 @@ void SettingsDialog::pickThumbsTextColor()
 	QColor userColor = QColorDialog::getColor(GData::thumbsTextColor, this);
     if (userColor.isValid())
     {	
-        colThumbTextButton->setPalette(QPalette(userColor));
+        setButtonBgColor(userColor, colThumbTextButton);
         thumbTextColor = userColor;
     }
 }

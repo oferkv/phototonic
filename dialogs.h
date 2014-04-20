@@ -96,6 +96,8 @@ private:
 	QSpinBox *slideDelaySpin;
 	QCheckBox *slideRandomCb;
 	KeyGrabLineEdit *keyLine;
+
+	void setButtonBgColor(QColor &color, QToolButton *button);
 };
 
 class CropDialog : public QDialog
