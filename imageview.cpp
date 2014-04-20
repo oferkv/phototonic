@@ -732,6 +732,7 @@ void ImageView::copyImage()
 
 void ImageView::popMessage(const char *message)
 {
-	QToolTip::showText(QPoint((mainWindow->pos().x() + 10), (mainWindow->pos().y() + 10)), QString(message));
+	QRect rect;
+	QToolTip::showText(QPoint((mainWindow->pos().x() + 10), (mainWindow->pos().y() + 10)), QString(message), 0, rect, 1000);
 }
 

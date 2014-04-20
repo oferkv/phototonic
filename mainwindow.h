@@ -228,6 +228,7 @@ private:
 	QList<QString> pathHistory;
 	QProcess externalProcess;
 	QString externalAppPath;
+	QTimer *SlideShowTimer;
 
 	enum CentralWidgets
 	{

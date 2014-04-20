@@ -795,6 +795,9 @@ void Phototonic::showSettings()
 {
 	if (stackedWidget->currentIndex() == imageViewIdx)
 		imageView->setCursorOverrides(false);
+
+	if (GData::slideShowActive)
+		slideShow();
 	
 	SettingsDialog *dialog = new SettingsDialog(this);
 	if (dialog->exec())
@@ -1621,6 +1624,10 @@ void Phototonic::slideShow()
 	{
 		GData::slideShowActive = false;
 		slideShowAction->setText("Slide Show");
+		imageView->popMessage("Slide show stopped");
+
+		SlideShowTimer->stop();
+		delete SlideShowTimer;
 	}
 	else
 	{
@@ -1634,8 +1641,14 @@ void Phototonic::slideShow()
 		}
 	
 		GData::slideShowActive = true;
-		QTimer::singleShot(0, this, SLOT(slideShowHandler()));
+
+		SlideShowTimer = new QTimer(this);
+		connect(SlideShowTimer, SIGNAL(timeout()), this, SLOT(slideShowHandler()));
+		SlideShowTimer->start(GData::slideShowDelay * 1000);
+		slideShowHandler();
+
 		slideShowAction->setText("End Slide Show");
+		imageView->popMessage("Slide show started");
 	}
 }
 
@@ -1650,12 +1663,15 @@ void Phototonic::slideShowHandler()
 		else
 		{
 			if (thumbView->getNextRow() == thumbView->getCurrentRow())
-				loadFirstImage();
+			{
+				if (GData::wrapImageList)
+					loadFirstImage();
+				else
+					slideShow();
+			}
 			else
 				loadNextImage();
 		}
-
-		QTimer::singleShot(GData::slideShowDelay * 1000, this, SLOT(slideShowHandler()));
 	}
 }
 
