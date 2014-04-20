@@ -209,12 +209,12 @@ void SettingsDialog::setActionKeyText(const QString &text)
 
 SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 {
-	setWindowTitle("Phototonic Settings");
+	setWindowTitle("Preferences");
 
-//	if (parent->isFullScreen())
-		resize(600, 480);
-//	else
-//		resize(600, parent->size().height() - 50);
+	int height = parent->size().height() - 50;
+	if (height > 800)
+		height = 800;
+	resize(600, height);
 
 	QWidget* optsWidgetArea = new QWidget(this);
 	QScrollArea *scrollArea = new QScrollArea;

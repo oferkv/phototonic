@@ -275,13 +275,13 @@ void Phototonic::createActions()
 	thumbsZoomInAct = new QAction("Enlarge Thumbnails", this);
 	connect(thumbsZoomInAct, SIGNAL(triggered()), this, SLOT(thumbsZoomIn()));
 	thumbsZoomInAct->setIcon(QIcon::fromTheme("zoom-in", QIcon(":/images/zoom_in.png")));
-	if (thumbView->thumbHeight == 300)
+	if (thumbView->thumbSize == 300)
 		thumbsZoomInAct->setEnabled(false);
 
 	thumbsZoomOutAct = new QAction("Shrink Thumbnails", this);
 	connect(thumbsZoomOutAct, SIGNAL(triggered()), this, SLOT(thumbsZoomOut()));
 	thumbsZoomOutAct->setIcon(QIcon::fromTheme("zoom-out", QIcon(":/images/zoom_out.png")));
-	if (thumbView->thumbHeight == 100)
+	if (thumbView->thumbSize == 100)
 		thumbsZoomOutAct->setEnabled(false);
 
 	cutAction = new QAction("Cut", this);

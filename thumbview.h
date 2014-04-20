@@ -33,6 +33,7 @@
 #include <QMimeData>
 #include <QDragEnterEvent>
 #include <QDateTime>
+#include <QItemDelegate>
 #include "global.h"
 
 class ThumbView : public QListView

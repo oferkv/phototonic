@@ -36,6 +36,7 @@ ThumbView::ThumbView(QWidget *parent) : QListView(parent)
 	setWordWrap(true);
 	setDragEnabled(true);
 	setEditTriggers(QAbstractItemView::NoEditTriggers);
+	setItemDelegate(new QItemDelegate);
 
 	thumbViewModel = new QStandardItemModel(this);
 	thumbViewModel->setSortRole(SortRole);
@@ -65,12 +66,12 @@ ThumbView::ThumbView(QWidget *parent) : QListView(parent)
 
 void ThumbView::setThumbColors()
 {
-	QPalette sbOrig = verticalScrollBar()->palette();
-	QPalette tvOrig = palette();
-	tvOrig.setColor(QPalette::Base, GData::thumbsBackgroundColor);
-	tvOrig.setColor(QPalette::Text, GData::thumbsTextColor);
-	setPalette(tvOrig);
-	verticalScrollBar()->setPalette(sbOrig);
+	QPalette scrollBarOrigPal = verticalScrollBar()->palette();
+	QPalette thumbViewOrigPal = palette();
+	thumbViewOrigPal.setColor(QPalette::Base, GData::thumbsBackgroundColor);
+	thumbViewOrigPal.setColor(QPalette::Text, GData::thumbsTextColor);
+	setPalette(thumbViewOrigPal);
+	verticalScrollBar()->setPalette(scrollBarOrigPal);
 }
 
 void ThumbView::selectCurrentIndex()
@@ -242,7 +243,7 @@ void ThumbView::load(QString &cliImageName)
 	else if (GData::thumbsLayout == Squares)
 		thumbAspect = 1.5;
 
-	thumbHeight = (GData::thumbsLayout == Squares)? thumbSize * 1.5 : thumbSize;
+	thumbHeight = (GData::thumbsLayout == Squares)? thumbSize * thumbAspect : thumbSize;
 	thumbWidth = (GData::thumbsLayout != Classic)? thumbHeight * thumbAspect : thumbHeight;
 	setIconSize(QSize(thumbWidth, thumbHeight));
 
