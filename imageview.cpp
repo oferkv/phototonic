@@ -730,9 +730,14 @@ void ImageView::copyImage()
 	clipboard->setImage(displayImage);
 }
 
+void ImageView::hideMessage()
+{
+	QToolTip::hideText();
+}
+
 void ImageView::popMessage(const char *message)
 {
-	QRect rect;
-	QToolTip::showText(QPoint((mainWindow->pos().x() + 10), (mainWindow->pos().y() + 10)), QString(message), 0, rect, 1000);
+	QToolTip::showText(QPoint((mainWindow->pos().x() + 10), (mainWindow->pos().y() + 10)), QString(message));
+	QTimer::singleShot(1000, this, SLOT(hideMessage()));
 }
 

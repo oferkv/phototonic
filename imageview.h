@@ -91,6 +91,9 @@ public slots:
 	void saveImageAs();
 	void copyImage();
 
+private slots:
+	void hideMessage();
+
 protected:
     void resizeEvent(QResizeEvent *event);
     void showEvent(QShowEvent *event);
