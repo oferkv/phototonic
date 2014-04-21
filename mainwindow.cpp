@@ -1281,8 +1281,8 @@ void Phototonic::writeSettings()
 		if (shouldMaximize)
 			showMaximized();
 	}
-
 	QApplication::processEvents();
+
 	GData::appSettings->setValue("geometry", saveGeometry());
 	GData::appSettings->setValue("mainWindowState", saveState());
 	GData::appSettings->setValue("splitterSizes", splitter->saveState());
@@ -1305,8 +1305,8 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("defaultSaveQuality", (int)GData::defaultSaveQuality);
 	GData::appSettings->setValue("noEnlargeSmallThumb", (bool)GData::noEnlargeSmallThumb);
 	GData::appSettings->setValue("slideShowDelay", (int)GData::slideShowDelay);
-	GData::appSettings->setValue("slideShowRandom", (bool)GData::slideShowRandom);	
-	GData::appSettings->setValue("externalApp", externalAppPath);	
+	GData::appSettings->setValue("slideShowRandom", (bool)GData::slideShowRandom);
+	GData::appSettings->setValue("externalApp", externalAppPath);
 
 	/* Action shortcuts */
 	GData::appSettings->beginGroup("Shortcuts");
@@ -1581,7 +1581,7 @@ void Phototonic::openOp()
 
 void Phototonic::loadImageFile(QString imageFileName)
 {
-	if (stackedWidget->currentIndex() != imageViewIdx)
+	if (stackedWidget->currentIndex() == thumbViewIdx)
 	{
 		setThumbViewWidgetsVisible(false);
 		QApplication::setOverrideCursor(Qt::OpenHandCursor);
@@ -1631,7 +1631,7 @@ void Phototonic::slideShow()
 	}
 	else
 	{
-		if (stackedWidget->currentIndex() != imageViewIdx)
+		if (stackedWidget->currentIndex() == thumbViewIdx)
 		{
 			QModelIndexList indexesList = thumbView->selectionModel()->selectedIndexes();
 			if (indexesList.size() != 1)
@@ -1720,7 +1720,7 @@ void Phototonic::closeImage()
 	if (cliImageLoaded && GData::exitInsteadOfClose)
 		close();
 
-	if(isFullScreen())
+	if (isFullScreen())
 	{
 		imageView->setCursorHiding(false);
 		showNormal();

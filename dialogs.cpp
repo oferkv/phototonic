@@ -669,7 +669,7 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	hueSlide->setValue(GData::hueVal);
 	connect(hueSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
 
-	colorizeCb = new QCheckBox("Color Splash", this);
+	colorizeCb = new QCheckBox("Colorize", this);
 	colorizeCb->setCheckState(GData::colorizeEnabled? Qt::Checked : Qt::Unchecked);
 	connect(colorizeCb, SIGNAL(stateChanged(int)), this, SLOT(enableColorize(int)));	
 
