@@ -73,6 +73,9 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	GData::hueRedChannel = true;
 	GData::hueGreenChannel = true;
 	GData::hueBlueChannel = true;
+
+	GData::dialogLastX = 0;
+	GData::dialogLastY = 0;
 }
 
 void ImageView::resizeEvent(QResizeEvent *event)
@@ -286,7 +289,7 @@ static inline int bound0_255(int val)
 	return ((val > 255)? 255 : (val < 0)? 0 : val);
 }
 
-static inline int hsl_value(double n1, double n2, double hue)
+static inline int hslValue(double n1, double n2, double hue)
 {
 	double value;
 
@@ -307,17 +310,11 @@ static inline int hsl_value(double n1, double n2, double hue)
 	return ROUND(value * 255.0);
 }
 
-void rgb_to_hsl(unsigned char red, unsigned char green, unsigned char blue,
-					unsigned char *hue, unsigned char *sat, unsigned char *light)
+void rgbToHsl(int r, int g, int b, unsigned char *hue, unsigned char *sat, unsigned char *light)
 {
-	int    r, g, b;
 	double h, s, l;
 	int    min, max;
 	int    delta;
-
-	r = red;
-	g = green;
-	b = blue;
 
 	if (r > g)	
 	{
@@ -366,15 +363,9 @@ void rgb_to_hsl(unsigned char red, unsigned char green, unsigned char blue,
 	*light  = ROUND(l);
 }
 
-void hsl_to_rgb(unsigned char hue, unsigned char sat, unsigned char light,
+void hslToRgb(double h, double s, double l,
 					unsigned char *red, unsigned char *green, unsigned char *blue)
 {
-	double h, s, l;
-
-	h = hue;
-	s = sat;
-	l = light;
-
 	if (s == 0)
 	{
 		/* achromatic case */
@@ -394,54 +385,45 @@ void hsl_to_rgb(unsigned char hue, unsigned char sat, unsigned char light,
 		m1 = (l / 127.5) - m2;
 
 		/* chromatic case  */
-		*red = hsl_value(m1, m2, h + 85);
-		*green = hsl_value(m1, m2, h);
-		*blue = hsl_value(m1, m2, h - 85);
+		*red = hslValue(m1, m2, h + 85);
+		*green = hslValue(m1, m2, h);
+		*blue = hslValue(m1, m2, h - 85);
 	}
 }
 
 void ImageView::colorize()
 {
-	if (GData::hueSatEnabled)
-	{
-		int y, x;
-		unsigned char hr, hg, hb;
-		unsigned char r, g, b;
-		QRgb *line;
-	    QImage colorizedImage = QImage(displayImage.width(), displayImage.height(), QImage::Format_ARGB32);
+	int y, x;
+	unsigned char hr, hg, hb;
+	int r, g, b;
+	QRgb *line;
+	unsigned char h, s, l;
+ 
+    for(y = 0; y < displayImage.height(); ++y)
+    {
+        line = (QRgb *)displayImage.scanLine(y);
+ 
+        for(x = 0; x < displayImage.width(); ++x)
+        {
+			rgbToHsl(qRed(line[x]), qGreen(line[x]), qBlue(line[x]), &h, &s, &l);
+								
+			if (GData::colorizeEnabled)
+				h = GData::hueVal;
+			else
+				h += GData::hueVal;
 
-	    unsigned char h, s, l;
-	 
-	    for(y = 0; y < colorizedImage.height(); ++y)
-	    {
-	        line = (QRgb *)displayImage.scanLine(y);
-	 
-	        for(x = 0; x < colorizedImage.width(); ++x)
-	        {
-				rgb_to_hsl(	(unsigned char)qRed(line[x]),
-							(unsigned char)qGreen(line[x]),
-							(unsigned char)qBlue(line[x]), &h, &s, &l);
-									
-				if (GData::colorizeEnabled)
-					h = GData::hueVal;
-				else
-					h += GData::hueVal;
+			s = bound0_255(((s * GData::saturationVal) / 100));
+			l = bound0_255(((l * GData::lightnessVal) / 100));
 
-				s = bound0_255(((s * GData::saturationVal) / 100));
-				l = bound0_255(((l * GData::lightnessVal) / 100));
+			hslToRgb(h, s, l, &hr, &hg, &hb);
 
-				hsl_to_rgb(h, s, l,  &hr, &hg, &hb );
-
-				r = GData::hueRedChannel? hr : qRed(line[x]);
-				g = GData::hueGreenChannel? hg : qGreen(line[x]);
-				b = GData::hueBlueChannel? hb : qBlue(line[x]);
-				
-		        colorizedImage.setPixel(x, y, qRgb(r, g, b));
-	        }
-	     }
-	 
-	    displayImage = colorizedImage; 
-    }
+			r = GData::hueRedChannel? hr : qRed(line[x]);
+			g = GData::hueGreenChannel? hg : qGreen(line[x]);
+			b = GData::hueBlueChannel? hb : qBlue(line[x]);
+			
+			displayImage.setPixel(x, y, qRgb(r, g, b));
+        }
+	}
 }
 
 void ImageView::refresh()
@@ -451,7 +433,8 @@ void ImageView::refresh()
 
 	displayImage = origImage;
 	transform();
-	colorize();
+	if (GData::hueSatEnabled)
+		colorize();
 	displayPixmap = QPixmap::fromImage(displayImage);
 	imageLabel->setPixmap(displayPixmap);
 	resizeImage();
@@ -488,7 +471,8 @@ void ImageView::reload()
 			origImage.load(currentImageFullPath);
 			displayImage = origImage;
 			transform();
-			colorize();
+			if (GData::hueSatEnabled)
+				colorize();
 			displayPixmap = QPixmap::fromImage(displayImage);
 		}
 		else

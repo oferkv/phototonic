@@ -7,7 +7,7 @@ url="http://oferkv.github.io/phototonic/"
 license=('GPL3')
 depends=('qt5-base')
 source=("https://github.com/oferkv/phototonic/archive/v${pkgver}.tar.gz")
-md5sums=('dad98f7a13e3e7c96ea36dfd7f7b9aec')
+md5sums=('72cef19cdcaf85b1777077b1714b611d')
 provides=('phototonic')
 
 build() {

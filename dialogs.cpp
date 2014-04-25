@@ -517,6 +517,8 @@ CropDialog::CropDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
 {
 	setWindowTitle("Cropping");
 	resize(340, 180);
+	if (GData::dialogLastX)
+		move(GData::dialogLastX, GData::dialogLastY);
 	imageView = imageView_;
 
 	QHBoxLayout *buttonsHbox = new QHBoxLayout;
@@ -634,6 +636,8 @@ void CropDialog::applyCrop(int)
 
 void CropDialog::ok()
 {
+	GData::dialogLastX = pos().x();
+	GData::dialogLastY = pos().y(); 
 	accept();
 }
 
@@ -641,6 +645,8 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 {
 	setWindowTitle("Colors");
 	resize(500, 200);
+	if (GData::dialogLastX)
+		move(GData::dialogLastX, GData::dialogLastY);
 	imageView = imageView_;
 
 	QHBoxLayout *buttonsHbox = new QHBoxLayout;
@@ -741,6 +747,8 @@ void ColorsDialog::applyColors(int)
 
 void ColorsDialog::ok()
 {
+	GData::dialogLastX = pos().x();
+	GData::dialogLastY = pos().y(); 
 	accept();
 }
 

@@ -63,5 +63,7 @@ namespace GData
 	bool copyOp;
 	QStringList copyCutFileList;
 	bool isFullScreen;
+	int dialogLastX;
+	int dialogLastY;
 }
 

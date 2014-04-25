@@ -70,6 +70,8 @@ namespace GData
 	extern bool copyOp;
 	extern QStringList copyCutFileList;
 	extern bool isFullScreen;
+	extern int dialogLastX;
+	extern int dialogLastY;
 }
 
 #endif // GLOBAL_H
