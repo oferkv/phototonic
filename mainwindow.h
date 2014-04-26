@@ -63,6 +63,7 @@ private slots:
 	void renameDir();
 	void rename();
 	void openOp();
+	void newImage();
 	void deleteDir();
 	void manageDir();
 	void createSubDirectory();
@@ -146,6 +147,8 @@ private:
 	QAction *renameAction;
 	QAction *selectAllAction;
 	QAction *copyImageAction;
+	QAction *pasteImageAction;
+	QAction *newImageAction;
 
 	QActionGroup *sortTypesGroup;
 	QActionGroup *thumbLayoutsGroup;
@@ -242,7 +245,7 @@ private:
 	int currentHistoryIdx;
 	bool needHistoryRecord;
 	bool initComplete;
-	bool newSettingsRefreshThumbs;
+	bool needThumbsRefresh;
 	bool cliImageLoaded;
 	bool thumbViewBusy;
 	bool shouldMaximize;

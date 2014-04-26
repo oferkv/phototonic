@@ -234,54 +234,54 @@ void ImageView::transform()
 	{
 		displayImage = displayImage.mirrored(GData::flipH, GData::flipV);
 	}
+}
 
-	if (mirrorLayout)
-	{	
-		switch(mirrorLayout)
+void ImageView::mirror()
+{
+	switch(mirrorLayout)
+	{
+		case LayDual:
 		{
-			case LayDual:
-			{
-				mirrorImage = QImage(displayImage.width() * 2, displayImage.height(), QImage::QImage::Format_ARGB32);
-			    QPainter painter(&mirrorImage);
-			    painter.drawImage(0, 0, displayImage);
-		   	    painter.drawImage(displayImage.width(), 0, displayImage.mirrored(true, false));
-		   	    break;
-	   	    }
+			mirrorImage = QImage(displayImage.width() * 2, displayImage.height(), QImage::QImage::Format_ARGB32);
+		    QPainter painter(&mirrorImage);
+		    painter.drawImage(0, 0, displayImage);
+	   	    painter.drawImage(displayImage.width(), 0, displayImage.mirrored(true, false));
+	   	    break;
+   	    }
 
-	   	    case LayTriple:
-	   	    {
-				mirrorImage = QImage(displayImage.width() * 3, displayImage.height(), QImage::QImage::Format_ARGB32);
-			    QPainter painter(&mirrorImage);
-			    painter.drawImage(0, 0, displayImage);
-		   	    painter.drawImage(displayImage.width(), 0, displayImage.mirrored(true, false));
-   		   	    painter.drawImage(displayImage.width() * 2, 0, displayImage.mirrored(false, false));
-		   	    break;
-	   	    }
+   	    case LayTriple:
+   	    {
+			mirrorImage = QImage(displayImage.width() * 3, displayImage.height(), QImage::QImage::Format_ARGB32);
+		    QPainter painter(&mirrorImage);
+		    painter.drawImage(0, 0, displayImage);
+	   	    painter.drawImage(displayImage.width(), 0, displayImage.mirrored(true, false));
+		   	    painter.drawImage(displayImage.width() * 2, 0, displayImage.mirrored(false, false));
+	   	    break;
+   	    }
 
-			case LayQuad:
-	   	    {
-				mirrorImage = QImage(displayImage.width() * 2, displayImage.height() * 2, QImage::QImage::Format_ARGB32);
-			    QPainter painter(&mirrorImage);
-			    painter.drawImage(0, 0, displayImage);
-		   	    painter.drawImage(displayImage.width(), 0, displayImage.mirrored(true, false));
-   		   	    painter.drawImage(0, displayImage.height(), displayImage.mirrored(false, true));
-   		   	    painter.drawImage(displayImage.width(), displayImage.height(), displayImage.mirrored(true, true));
-
-		   	    break;
-	   	    }
-
-			case LayVDual:
-			{
-				mirrorImage = QImage(displayImage.width(), displayImage.height() * 2, QImage::QImage::Format_ARGB32);
-			    QPainter painter(&mirrorImage);
-			    painter.drawImage(0, 0, displayImage);
+		case LayQuad:
+   	    {
+			mirrorImage = QImage(displayImage.width() * 2, displayImage.height() * 2, QImage::QImage::Format_ARGB32);
+		    QPainter painter(&mirrorImage);
+		    painter.drawImage(0, 0, displayImage);
+	   	    painter.drawImage(displayImage.width(), 0, displayImage.mirrored(true, false));
 		   	    painter.drawImage(0, displayImage.height(), displayImage.mirrored(false, true));
-		   	    break;
-	   	    }
-		}
+		   	    painter.drawImage(displayImage.width(), displayImage.height(), displayImage.mirrored(true, true));
 
-		displayImage = mirrorImage;
+	   	    break;
+   	    }
+
+		case LayVDual:
+		{
+			mirrorImage = QImage(displayImage.width(), displayImage.height() * 2, QImage::QImage::Format_ARGB32);
+		    QPainter painter(&mirrorImage);
+		    painter.drawImage(0, 0, displayImage);
+	   	    painter.drawImage(0, displayImage.height(), displayImage.mirrored(false, true));
+	   	    break;
+   	    }
 	}
+
+	displayImage = mirrorImage;
 }
 
 static inline int bound0_255(int val)
@@ -435,6 +435,8 @@ void ImageView::refresh()
 	transform();
 	if (GData::hueSatEnabled)
 		colorize();
+	if (mirrorLayout)
+		mirror();
 	displayPixmap = QPixmap::fromImage(displayImage);
 	imageLabel->setPixmap(displayPixmap);
 	resizeImage();
@@ -451,6 +453,18 @@ void ImageView::reload()
 		GData::rotation = 0;
 		GData::flipH = false;
 		GData::flipV = false;
+	}
+
+	if (currentImage.isEmpty())
+	{
+		currentImage = "new_image.png";
+		origImage.load(":/images/no_image.png");
+		displayImage = origImage;
+		displayPixmap = QPixmap::fromImage(displayImage);
+		imageLabel->setPixmap(displayPixmap);
+		mainWindow->setWindowTitle("New image - Phototonic");
+		isAnimation = false;
+		return;
 	}
 
 	imageReader.setFileName(currentImageFullPath);
@@ -473,6 +487,8 @@ void ImageView::reload()
 			transform();
 			if (GData::hueSatEnabled)
 				colorize();
+			if (mirrorLayout)
+				mirror();
 			displayPixmap = QPixmap::fromImage(displayImage);
 		}
 		else
@@ -691,6 +707,7 @@ void ImageView::saveImageAs()
 			QMessageBox msgBox;
 			msgBox.critical(this, "Error", "Failed to save image");
 		}
+		popMessage("Image saved");
 	}
 
 	setCursorOverrides(true);
@@ -710,8 +727,19 @@ QSize ImageView::getImageSize()
 
 void ImageView::copyImage()
 {
-	QClipboard *clipboard = QApplication::clipboard();
-	clipboard->setImage(displayImage);
+	QApplication::clipboard()->setImage(displayImage);
+}
+
+void ImageView::pasteImage()
+{
+	if (isAnimation)
+		return;
+
+	if (!QApplication::clipboard()->image().isNull())
+	{
+		origImage = QApplication::clipboard()->image();
+		refresh();
+	}
 }
 
 void ImageView::hideMessage()

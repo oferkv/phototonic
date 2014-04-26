@@ -90,6 +90,7 @@ public slots:
 	void saveImage();
 	void saveImageAs();
 	void copyImage();
+	void pasteImage();
 
 private slots:
 	void hideMessage();
@@ -122,6 +123,7 @@ private:
 
 	void centerImage(QSize &imgSize);
 	void transform();
+	void mirror();
 	void colorize();
 };
 

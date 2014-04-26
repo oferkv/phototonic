@@ -141,6 +141,7 @@ void Phototonic::createImageView()
 	connect(saveAction, SIGNAL(triggered()), imageView, SLOT(saveImage()));
 	connect(saveAsAction, SIGNAL(triggered()), imageView, SLOT(saveImageAs()));
 	connect(copyImageAction, SIGNAL(triggered()), imageView, SLOT(copyImage()));
+	connect(pasteImageAction, SIGNAL(triggered()), imageView, SLOT(pasteImage()));
 	imageView->ImagePopUpMenu = new QMenu();
 
 	// Widget actions
@@ -162,6 +163,7 @@ void Phototonic::createImageView()
 	imageView->addAction(saveAction);
 	imageView->addAction(saveAsAction);
 	imageView->addAction(copyImageAction);
+	imageView->addAction(pasteImageAction);
 	imageView->addAction(deleteAction);
 	imageView->addAction(closeImageAct);
 	imageView->addAction(fullScreenAct);
@@ -231,6 +233,7 @@ void Phototonic::createImageView()
 	
 	addMenuSeparator(imageView->ImagePopUpMenu);
 	imageView->ImagePopUpMenu->addAction(copyImageAction);
+	imageView->ImagePopUpMenu->addAction(pasteImageAction);
 	imageView->ImagePopUpMenu->addAction(saveAction);
 	imageView->ImagePopUpMenu->addAction(saveAsAction);
 	imageView->ImagePopUpMenu->addAction(deleteAction);
@@ -303,6 +306,7 @@ void Phototonic::createActions()
 
 	saveAsAction = new QAction("Save As", this);
 	copyImageAction = new QAction("Copy Image", this);
+	pasteImageAction = new QAction("Paste Image", this);
 
 	renameAction = new QAction("Rename", this);
 	connect(renameAction, SIGNAL(triggered()), this, SLOT(rename()));
@@ -411,6 +415,10 @@ void Phototonic::createActions()
 	openAction->setIcon(QIcon::fromTheme("document-open", QIcon(":/images/open.png")));
 	connect(openAction, SIGNAL(triggered()), this, SLOT(openOp()));
 
+	newImageAction = new QAction("New Image", this);
+	newImageAction->setIcon(QIcon::fromTheme("document-new", QIcon(":/images/new.png")));
+	connect(newImageAction, SIGNAL(triggered()), this, SLOT(newImage()));
+
 	openWithSubMenu = new QMenu("Open With");
 	openWithMenuAct = new QAction("Open With", this);
 	openWithExteralApp = new QAction("", this);
@@ -504,6 +512,7 @@ void Phototonic::createActions()
 void Phototonic::createMenus()
 {
 	fileMenu = menuBar()->addMenu("File");
+	fileMenu->addAction(newImageAction);
 	fileMenu->addAction(openAction);
 	fileMenu->addAction(createDirAction);
 	fileMenu->addSeparator();
@@ -594,6 +603,7 @@ void Phototonic::createToolBars()
 	goToolBar->addAction(goFrwdAction);
 	goToolBar->addAction(goUpAction);
 	goToolBar->addAction(goHomeAction);
+	goToolBar->addAction(refreshAction);
 	goToolBar->setObjectName("Navigation");
 
 	// path bar
@@ -724,7 +734,7 @@ void Phototonic::setSquarishThumbs()
 
 void Phototonic::about()
 {
-	QMessageBox::about(this, "About Phototonic", "<h2>Phototonic v0.98</h2>"
+	QMessageBox::about(this, "About Phototonic", "<h2>Phototonic v0.99</h2>"
 							"<p>Image viewer and organizer</p>"
 							"<p><a href=\"http://oferkv.github.io/phototonic/\">Home page</a></p>"
 							"<p><a href=\"https://github.com/oferkv/phototonic/issues\">Reports Bugs</a></p>"
@@ -809,7 +819,7 @@ void Phototonic::showSettings()
 		if (stackedWidget->currentIndex() == imageViewIdx)
 		{
 			imageView->reload();
-			newSettingsRefreshThumbs = true;
+			needThumbsRefresh = true;
 		}
 		else
 			refreshThumbs(false);
@@ -1322,7 +1332,7 @@ void Phototonic::writeSettings()
 void Phototonic::readSettings()
 {
 	initComplete = false;
-	newSettingsRefreshThumbs = false;
+	needThumbsRefresh = false;
 
 	if (!GData::appSettings->contains("thumbsZoomVal"))
 	{
@@ -1394,6 +1404,7 @@ void Phototonic::loadShortcuts()
 	GData::actionKeys[keepTransformAct->text()] = keepTransformAct;
 	GData::actionKeys[keepZoomAct->text()] = keepZoomAct;
 	GData::actionKeys[copyImageAction->text()] = copyImageAction;
+	GData::actionKeys[pasteImageAction->text()] = pasteImageAction;
 	GData::actionKeys[renameAction->text()] = renameAction;
 	GData::actionKeys[refreshAction->text()] = refreshAction;
 	GData::actionKeys[pasteAction->text()] = pasteAction;
@@ -1450,6 +1461,7 @@ void Phototonic::loadShortcuts()
 		deleteAction->setShortcut(QKeySequence::Delete);
 		saveAction->setShortcut(QKeySequence::Save);
 		copyImageAction->setShortcut(QKeySequence("Ctrl+Shift+C"));
+		pasteImageAction->setShortcut(QKeySequence("Ctrl+Shift+V"));
 		renameAction->setShortcut(QKeySequence("F2"));
 		refreshAction->setShortcut(QKeySequence("F5"));
 		pasteAction->setShortcut(QKeySequence::Paste);
@@ -1553,6 +1565,11 @@ void Phototonic::mouseReleaseEvent(QMouseEvent *event)
 	}
 }
 
+void Phototonic::newImage()
+{
+	loadImageFile("");
+}
+
 void Phototonic::setThumbViewWidgetsVisible(bool visible)
 {
 	menuBar()->setVisible(visible);
@@ -1593,7 +1610,7 @@ void Phototonic::loadImageFile(QString imageFileName)
 		}
 		stackedWidget->setCurrentIndex(imageViewIdx);
 	}
-	
+
 	imageView->loadImage(thumbView->currentViewDir, imageFileName);
 }
 
@@ -1631,6 +1648,9 @@ void Phototonic::slideShow()
 	}
 	else
 	{
+		if (thumbView->thumbViewModel->rowCount() <= 1)
+			return;
+	
 		if (stackedWidget->currentIndex() == thumbViewIdx)
 		{
 			QModelIndexList indexesList = thumbView->selectionModel()->selectedIndexes();
@@ -1677,6 +1697,9 @@ void Phototonic::slideShowHandler()
 
 void Phototonic::loadNextImage()
 {
+	if (thumbView->thumbViewModel->rowCount() <= 1)
+		return;
+
 	int nextRow = thumbView->getNextRow();
 	if (GData::wrapImageList && nextRow == thumbView->getCurrentRow())
 		nextRow = 0;
@@ -1687,6 +1710,9 @@ void Phototonic::loadNextImage()
 
 void Phototonic::loadPrevImage()
 {
+	if (thumbView->thumbViewModel->rowCount() <= 1)
+		return;
+
 	int prevRow = thumbView->getPrevRow();
 	if (GData::wrapImageList && prevRow == thumbView->getCurrentRow())
 		prevRow = thumbView->getLastRow();
@@ -1697,12 +1723,18 @@ void Phototonic::loadPrevImage()
 
 void Phototonic::loadFirstImage()
 {
+	if (thumbView->thumbViewModel->rowCount() <= 1)
+		return;
+
 	loadImageFile(thumbView->thumbViewModel->item(0)->data(thumbView->FileNameRole).toString());
 	thumbView->setCurrentRow(0);
 }
 
 void Phototonic::loadLastImage()
 {
+	if (thumbView->thumbViewModel->rowCount() <= 1)
+		return;
+
 	int lastRow = thumbView->getLastRow();
 	loadImageFile(thumbView->thumbViewModel->item(lastRow)->data(thumbView->FileNameRole).toString());
 	thumbView->setCurrentRow(lastRow);
@@ -1710,6 +1742,9 @@ void Phototonic::loadLastImage()
 
 void Phototonic::loadRandomImage()
 {
+	if (thumbView->thumbViewModel->rowCount() <= 1)
+		return;
+
 	int randomRow = thumbView->getRandomRow();
 	loadImageFile(thumbView->thumbViewModel->item(randomRow)->data(thumbView->FileNameRole).toString());
 	thumbView->setCurrentRow(randomRow);
@@ -1735,9 +1770,9 @@ void Phototonic::closeImage()
 	thumbView->setCurrentIndexByName(imageView->currentImage);
 	thumbView->selectCurrentIndex();
 
-	if (newSettingsRefreshThumbs)
+	if (needThumbsRefresh)
 	{
-		newSettingsRefreshThumbs = false;
+		needThumbsRefresh = false;
 		refreshThumbs(false);
 	}
 
