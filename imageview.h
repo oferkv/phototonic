@@ -112,6 +112,7 @@ private:
 	QImage mirrorImage;
 	QTimer *mouseMovementTimer;
 	QMovie *anim;
+	bool newImage;
 
 	bool cursorIsHidden;
 	bool moveImageLocked;

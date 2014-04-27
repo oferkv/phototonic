@@ -183,6 +183,7 @@ void Phototonic::createImageView()
 	imageView->addAction(moveLeftAct);
 	imageView->addAction(moveUpAct);
 	imageView->addAction(moveDownAct);
+	imageView->addAction(newImageAction);
 
 	// Actions
 	imageView->ImagePopUpMenu->addAction(nextImageAction);
@@ -232,6 +233,7 @@ void Phototonic::createImageView()
 	imageView->ImagePopUpMenu->addAction(colorsAct);
 	
 	addMenuSeparator(imageView->ImagePopUpMenu);
+	imageView->ImagePopUpMenu->addAction(newImageAction);
 	imageView->ImagePopUpMenu->addAction(copyImageAction);
 	imageView->ImagePopUpMenu->addAction(pasteImageAction);
 	imageView->ImagePopUpMenu->addAction(saveAction);
@@ -416,7 +418,7 @@ void Phototonic::createActions()
 	connect(openAction, SIGNAL(triggered()), this, SLOT(openOp()));
 
 	newImageAction = new QAction("New Image", this);
-	newImageAction->setIcon(QIcon::fromTheme("document-new", QIcon(":/images/new.png")));
+	newImageAction->setIcon(QIcon::fromTheme("list-add", QIcon(":/images/new.png")));
 	connect(newImageAction, SIGNAL(triggered()), this, SLOT(newImage()));
 
 	openWithSubMenu = new QMenu("Open With");
@@ -1403,6 +1405,7 @@ void Phototonic::loadShortcuts()
 	GData::actionKeys[saveAsAction->text()] = saveAsAction;
 	GData::actionKeys[keepTransformAct->text()] = keepTransformAct;
 	GData::actionKeys[keepZoomAct->text()] = keepZoomAct;
+	GData::actionKeys[newImageAction->text()] = newImageAction;
 	GData::actionKeys[copyImageAction->text()] = copyImageAction;
 	GData::actionKeys[pasteImageAction->text()] = pasteImageAction;
 	GData::actionKeys[renameAction->text()] = renameAction;

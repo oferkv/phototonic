@@ -76,6 +76,8 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 
 	GData::dialogLastX = 0;
 	GData::dialogLastY = 0;
+
+	newImage = false;
 }
 
 void ImageView::resizeEvent(QResizeEvent *event)
@@ -455,8 +457,9 @@ void ImageView::reload()
 		GData::flipV = false;
 	}
 
-	if (currentImage.isEmpty())
+	if (newImage || currentImage.isEmpty())
 	{
+		newImage = true;
 		currentImage = "new_image.png";
 		origImage.load(":/images/no_image.png");
 		displayImage = origImage;
@@ -502,6 +505,7 @@ void ImageView::reload()
 
 void ImageView::loadImage(QString &imagePath, QString imageFileName)
 {
+	newImage = false;
 	tempDisableResize = false;
 	currentImage = imageFileName;
 	currentImageFullPath = imagePath + QDir::separator() + currentImage;
@@ -666,6 +670,12 @@ void ImageView::keyMoveEvent(int direction)
 
 void ImageView::saveImage()
 {
+	if (newImage)
+	{
+		saveImageAs();
+		return;
+	}
+
 	popMessage("Saving...");
 	if (!displayPixmap.save(currentImageFullPath, 0, GData::defaultSaveQuality))
 	{
