@@ -64,6 +64,7 @@ namespace GData
 	extern bool hueRedChannel;
 	extern bool hueGreenChannel;
 	extern bool hueBlueChannel;
+	extern bool showTree;
 
 	// app data
 	extern QModelIndexList copyCutIdxList;

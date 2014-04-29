@@ -51,6 +51,7 @@ public slots:
 
 private slots:
 	void about();
+	void showTree();
 	void sortThumbnains();
 	void reload();
 	void refreshThumbs(bool noScroll);
@@ -149,6 +150,7 @@ private:
 	QAction *copyImageAction;
 	QAction *pasteImageAction;
 	QAction *newImageAction;
+	QAction *showTreeAction;
 
 	QActionGroup *sortTypesGroup;
 	QActionGroup *thumbLayoutsGroup;

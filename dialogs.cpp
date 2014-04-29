@@ -336,7 +336,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	fitSmallRadios[GData::zoomInFlags]->setChecked(true);
 
 	// Exit when opening image
-	exitCliCb = new QCheckBox("Exit instead of close, when image is loaded from command line", this);
+	exitCliCb = new QCheckBox("Exit instead of closing, when image is loaded from command line", this);
 	exitCliCb->setChecked(GData::exitInsteadOfClose);
 
 	// Exit when opening image

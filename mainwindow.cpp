@@ -320,6 +320,12 @@ void Phototonic::createActions()
 	aboutAction->setIcon(QIcon::fromTheme("help-about", QIcon(":/images/about.png")));
 	connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
 
+	showTreeAction = new QAction("Show Tree", this);
+	showTreeAction->setCheckable(true);
+	showTreeAction->setChecked(GData::showTree);
+	connect(showTreeAction, SIGNAL(triggered()), this, SLOT(showTree()));
+	showTreeAction->setIcon(QIcon(":/images/tree.png"));
+
 	// Sort actions
 	actName = new QAction("Name", this);
 	actTime = new QAction("Time", this);
@@ -564,7 +570,8 @@ void Phototonic::createMenus()
 	thumbLayoutsGroup->addAction(actCompact);
 	thumbLayoutsGroup->addAction(actSquarish);
 	viewMenu->addActions(thumbLayoutsGroup->actions());
-
+	viewMenu->addSeparator();
+	viewMenu->addAction(showTreeAction);	
 	viewMenu->addSeparator();
 	viewMenu->addAction(refreshAction);
 
@@ -594,6 +601,7 @@ void Phototonic::createMenus()
 void Phototonic::createToolBars()
 {
 	editToolBar = addToolBar("Edit");
+	editToolBar->addAction(newImageAction);
 	editToolBar->addAction(cutAction);
 	editToolBar->addAction(copyAction);
 	editToolBar->addAction(pasteAction);
@@ -621,6 +629,7 @@ void Phototonic::createToolBars()
 	goToolBar->addWidget(pathBar);
 
 	viewToolBar = addToolBar("View");
+	viewToolBar->addAction(showTreeAction);
 	viewToolBar->addAction(thumbsZoomInAct);
 	viewToolBar->addAction(thumbsZoomOutAct);
 	viewToolBar->setObjectName("View");
@@ -673,6 +682,7 @@ void Phototonic::createFSTree()
 				this, SLOT(dropOp(Qt::KeyboardModifiers, bool, QString)));
 
 	fsTree->setCurrentIndex(fsModel->index(QDir::currentPath()));
+	fsTree->setVisible(GData::showTree);
 }
 
 void Phototonic::setFlagsByQAction(QAction *act, QDir::SortFlags SortFlag)
@@ -742,6 +752,12 @@ void Phototonic::about()
 							"<p><a href=\"https://github.com/oferkv/phototonic/issues\">Reports Bugs</a></p>"
 							"<p>Copyright &copy; 2013-2014 Ofer Kashayov</p>"
 							"<p>Contact: oferkv@live.com</p>" "Built with Qt" QT_VERSION_STR);
+}
+
+void Phototonic::showTree()
+{
+	GData::showTree = showTreeAction->isChecked();
+	fsTree->setVisible(GData::showTree);
 }
 
 void Phototonic::runExternalApp()
@@ -1319,6 +1335,7 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("slideShowDelay", (int)GData::slideShowDelay);
 	GData::appSettings->setValue("slideShowRandom", (bool)GData::slideShowRandom);
 	GData::appSettings->setValue("externalApp", externalAppPath);
+	GData::appSettings->setValue("showTree", (bool)GData::showTree);
 
 	/* Action shortcuts */
 	GData::appSettings->beginGroup("Shortcuts");
@@ -1360,6 +1377,7 @@ void Phototonic::readSettings()
 		GData::appSettings->setValue("enableAnimations", (bool)true);
 		GData::appSettings->setValue("slideShowDelay", (int)5);
 		GData::appSettings->setValue("slideShowRandom", (bool)false);
+		GData::appSettings->setValue("showTree", (bool)true);
 	}
 
 	GData::exitInsteadOfClose = GData::appSettings->value("exitInsteadOfClose").toBool();
@@ -1379,6 +1397,7 @@ void Phototonic::readSettings()
 	GData::slideShowRandom = GData::appSettings->value("slideShowRandom").toBool();
 	GData::slideShowActive = false;
 	externalAppPath = GData::appSettings->value("externalApp").toString();
+	GData::showTree = GData::appSettings->value("showTree").toBool();
 
 	// New config settings that need null protection
 	if (!GData::slideShowDelay)
@@ -1451,41 +1470,39 @@ void Phototonic::loadShortcuts()
 	}
 	else
 	{
-		thumbsGoTopAct->setShortcut(QKeySequence::MoveToStartOfDocument);
-		thumbsGoBottomAct->setShortcut(QKeySequence::MoveToEndOfDocument);
+		thumbsGoTopAct->setShortcut(QKeySequence("Ctrl+Home"));
+		thumbsGoBottomAct->setShortcut(QKeySequence("Ctrl+End"));
 		closeImageAct->setShortcut(Qt::Key_Escape);
-		fullScreenAct->setShortcut(QKeySequence("f"));
-		settingsAction->setShortcut(QKeySequence("Ctrl+P"));
+		fullScreenAct->setShortcut(QKeySequence("F"));
+		settingsAction->setShortcut(QKeySequence("P"));
 		exitAction->setShortcut(QKeySequence("Ctrl+Q"));
-		thumbsZoomInAct->setShortcut(QKeySequence::ZoomIn);
-		thumbsZoomOutAct->setShortcut(QKeySequence::ZoomOut);
-		cutAction->setShortcut(QKeySequence::Cut);
-		copyAction->setShortcut(QKeySequence::Copy);
-		deleteAction->setShortcut(QKeySequence::Delete);
-		saveAction->setShortcut(QKeySequence::Save);
+		cutAction->setShortcut(QKeySequence("Ctrl+X"));
+		copyAction->setShortcut(QKeySequence("Ctrl+C"));
+		deleteAction->setShortcut(QKeySequence("Del"));
+		saveAction->setShortcut(QKeySequence("Ctrl+S"));
 		copyImageAction->setShortcut(QKeySequence("Ctrl+Shift+C"));
 		pasteImageAction->setShortcut(QKeySequence("Ctrl+Shift+V"));
 		renameAction->setShortcut(QKeySequence("F2"));
 		refreshAction->setShortcut(QKeySequence("F5"));
-		pasteAction->setShortcut(QKeySequence::Paste);
-		goBackAction->setShortcut(QKeySequence::Back);
-		goFrwdAction->setShortcut(QKeySequence::Forward);
-		slideShowAction->setShortcut(QKeySequence("ctrl+w"));
-		nextImageAction->setShortcut(QKeySequence::MoveToNextPage);
-		prevImageAction->setShortcut(QKeySequence::MoveToPreviousPage);
-		firstImageAction->setShortcut(QKeySequence::MoveToStartOfLine);
+		pasteAction->setShortcut(QKeySequence("Ctrl+V"));
+		goBackAction->setShortcut(QKeySequence("Alt+Left"));
+		goFrwdAction->setShortcut(QKeySequence("Alt+Right"));
+		slideShowAction->setShortcut(QKeySequence("W"));
+		nextImageAction->setShortcut(QKeySequence("PgDown"));
+		prevImageAction->setShortcut(QKeySequence("PgUp"));
+		firstImageAction->setShortcut(QKeySequence("Home"));
 		lastImageAction->setShortcut(QKeySequence("End"));
-		randomImageAction->setShortcut(QKeySequence("r"));
-		openAction->setShortcut(QKeySequence::InsertParagraphSeparator);
-		zoomOutAct->setShortcut(QKeySequence("-"));
-		zoomInAct->setShortcut(QKeySequence("+"));
-		resetZoomAct->setShortcut(QKeySequence("*"));
-		origZoomAct->setShortcut(QKeySequence("/"));
-		rotateLeftAct->setShortcut(QKeySequence::MoveToPreviousWord);
-		rotateRightAct->setShortcut(QKeySequence::MoveToNextWord);
+		randomImageAction->setShortcut(QKeySequence("R"));
+		openAction->setShortcut(QKeySequence("Return"));
+		zoomOutAct->setShortcut(QKeySequence("Shift+Z"));
+		zoomInAct->setShortcut(QKeySequence("Z"));
+		resetZoomAct->setShortcut(QKeySequence("Ctrl+Z"));
+		origZoomAct->setShortcut(QKeySequence("Alt+Z"));
+		rotateLeftAct->setShortcut(QKeySequence("Ctrl+Left"));
+		rotateRightAct->setShortcut(QKeySequence("Ctrl+Right"));
 		flipHAct->setShortcut(QKeySequence("Ctrl+Down"));
 		flipVAct->setShortcut(QKeySequence("Ctrl+Up"));
-		cropAct->setShortcut(QKeySequence("R"));
+		cropAct->setShortcut(QKeySequence("Ctrl+R"));
 		colorsAct->setShortcut(QKeySequence("C"));
 		mirrorDisabledAct->setShortcut(QKeySequence("Ctrl+1"));
 		mirrorDualAct->setShortcut(QKeySequence("Ctrl+2"));
