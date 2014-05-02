@@ -113,6 +113,7 @@ private:
 	void loadThumbs();
 	int getFirstVisibleItem();
 	bool isItemVisible(QModelIndex idx);
+	void updateExifInfo(QString imageFullPath);
 };
 
 class FSTree : public QTreeView

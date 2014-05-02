@@ -127,6 +127,35 @@ void Phototonic::createThumbView()
 				this, SLOT(changeActionsBySelection(QItemSelection, QItemSelection)));
 }
 
+void Phototonic::createExifView()
+{
+	QTableView *tblv;
+	tblv = new QTableView();
+
+	tblv->setSelectionBehavior(QAbstractItemView::SelectItems );
+	tblv->setSelectionMode( QAbstractItemView::ExtendedSelection );
+	tblv->verticalHeader()->setVisible(false);
+	tblv->verticalHeader()->setDefaultSectionSize(20);
+	tblv->horizontalHeader()->setStretchLastSection(true);
+
+	QStandardItemModel *model = new QStandardItemModel( 60, 2, this );
+
+	int nrow = 20;
+	int ncol = 2;
+
+	for( int r=0; r<nrow; r++ )
+	{
+		for( int c=0; c<ncol; c++)
+		{
+
+		    QStandardItem *item = new QStandardItem("testtesttesttesttesttest testtesttesttesttesttest");
+		    model->setItem(r, c, item);
+		}
+	}
+
+	tblv->setModel(model);
+}
+
 void Phototonic::addMenuSeparator(QWidget *widget)
 {
 	QAction *separator = new QAction(this);
@@ -324,8 +353,8 @@ void Phototonic::createActions()
 	showTreeAction->setCheckable(true);
 	showTreeAction->setChecked(GData::showTree);
 	connect(showTreeAction, SIGNAL(triggered()), this, SLOT(showTree()));
-	showTreeAction->setIcon(QIcon(":/images/tree.png"));
-
+	showTreeAction->setIcon(QIcon::fromTheme("folder-open", QIcon(":/images/tree.png")));
+	
 	// Sort actions
 	actName = new QAction("Name", this);
 	actTime = new QAction("Time", this);
@@ -1327,6 +1356,7 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("goToolBarWasVisible", (bool)goToolBar->isVisible());
 	GData::appSettings->setValue("exitInsteadOfClose", (int)GData::exitInsteadOfClose);
 	GData::appSettings->setValue("enableAnimations", (bool)GData::enableAnimations);
+	GData::appSettings->setValue("exifEnabled", (bool)GData::exifEnabled);
 	GData::appSettings->setValue("wrapImageList", (bool)GData::wrapImageList);
 	GData::appSettings->setValue("imageZoomFactor", (float)GData::imageZoomFactor);
 	GData::appSettings->setValue("shouldMaximize", (bool)isMaximized());
@@ -1375,6 +1405,7 @@ void Phototonic::readSettings()
 		GData::appSettings->setValue("defaultSaveQuality", (int)85);
 		GData::appSettings->setValue("noEnlargeSmallThumb", (bool)true);
 		GData::appSettings->setValue("enableAnimations", (bool)true);
+		GData::appSettings->setValue("exifEnabled", (bool)true);
 		GData::appSettings->setValue("slideShowDelay", (int)5);
 		GData::appSettings->setValue("slideShowRandom", (bool)false);
 		GData::appSettings->setValue("showTree", (bool)true);
@@ -1382,6 +1413,7 @@ void Phototonic::readSettings()
 
 	GData::exitInsteadOfClose = GData::appSettings->value("exitInsteadOfClose").toBool();
 	GData::enableAnimations = GData::appSettings->value("enableAnimations").toBool();
+	GData::exifEnabled = GData::appSettings->value("exifEnabled").toBool();
 	GData::wrapImageList = GData::appSettings->value("wrapImageList").toBool();
 	GData::imageZoomFactor = GData::appSettings->value("imageZoomFactor").toFloat();
 	GData::zoomOutFlags = GData::appSettings->value("zoomOutFlags").toInt();

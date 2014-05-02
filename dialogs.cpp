@@ -237,7 +237,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	setLayout(mainVbox);
 
 	// imageView background color
-	QLabel *backgroundColorLab = new QLabel("Viewer background color: ");
+	QLabel *backgroundColorLab = new QLabel("Background color: ");
 	backgroundColorButton = new QToolButton();
 	QHBoxLayout *bgColBox = new QHBoxLayout;
 	bgColBox->addWidget(backgroundColorLab);
@@ -261,7 +261,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	thumbBgColor = GData::thumbsBackgroundColor;
 
 	// thumbView text color
-	QLabel *txtThumbTxtLab = new QLabel("Thumbnail text color: ");
+	QLabel *txtThumbTxtLab = new QLabel("Thumbnail Label color: ");
 	colThumbTextButton = new QToolButton();
 	QHBoxLayout *txtThumbColBox = new QHBoxLayout;
 	txtThumbColBox->addWidget(txtThumbTxtLab);
@@ -271,14 +271,6 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	setButtonBgColor(GData::thumbsTextColor, colThumbTextButton);
 	colThumbTextButton->setAutoFillBackground(true);
 	thumbTextColor = GData::thumbsTextColor;
-
-	// Colors
-	QVBoxLayout *colorsVbox = new QVBoxLayout;
-	colorsVbox->addLayout(bgColBox);
-	colorsVbox->addLayout(bgThumbColBox);
-	colorsVbox->addLayout(txtThumbColBox);
-	QGroupBox *colorsGbox = new QGroupBox("Colors");
-	colorsGbox->setLayout(colorsVbox);
 
 	// Thumbnail spacing
 	QLabel *thumbSpacingLab = new QLabel("Add space between thumbnails: ");
@@ -299,6 +291,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	QVBoxLayout *thumbsOptsBox = new QVBoxLayout;
 	thumbsOptsBox->addLayout(thumbSpacingHbox);
 	thumbsOptsBox->addWidget(noSmallThumbCb);
+	thumbsOptsBox->addLayout(bgThumbColBox);
+	thumbsOptsBox->addLayout(txtThumbColBox);
 	thumbOptsGroupBox->setLayout(thumbsOptsBox);
 
 	// Zoom large images
@@ -357,6 +351,10 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	enableAnimCb = new QCheckBox("Enable animations", this);
 	enableAnimCb->setChecked(GData::enableAnimations);
 
+	// Enable Exif
+	enableExifCb = new QCheckBox("Enable Exif", this);
+	enableExifCb->setChecked(GData::exifEnabled);
+
 	// Viewer options
 	QVBoxLayout *viewerOptsBox = new QVBoxLayout;
 	QHBoxLayout *zoomOptsBox = new QHBoxLayout;
@@ -364,10 +362,12 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	zoomOptsBox->addWidget(fitLargeGroupBox);
 	zoomOptsBox->addWidget(fitSmallGroupBox);
 	viewerOptsBox->addLayout(zoomOptsBox);
+	viewerOptsBox->addLayout(bgColBox);
 	viewerOptsBox->addWidget(exitCliCb);
 	viewerOptsBox->addWidget(wrapListCb);
 	viewerOptsBox->addLayout(saveQualityHbox);
 	viewerOptsBox->addWidget(enableAnimCb);
+	viewerOptsBox->addWidget(enableExifCb);
 	QGroupBox *viewerOptsGrp = new QGroupBox("Viewer");
 	viewerOptsGrp->setLayout(viewerOptsBox);
 
@@ -426,7 +426,6 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	optsLayout->addWidget(viewerOptsGrp);
 	optsLayout->addSpacerItem(new QSpacerItem(0, 5, QSizePolicy::Fixed, QSizePolicy::Expanding));
 	optsLayout->addWidget(thumbOptsGroupBox);
-	optsLayout->addWidget(colorsGbox);
 	optsLayout->addWidget(slideShowGbox);
 	optsLayout->addWidget(keyboardGbox);
 	optsLayout->addStretch(1);
@@ -467,6 +466,7 @@ void SettingsDialog::saveSettings()
 	GData::slideShowDelay = slideDelaySpin->value();
 	GData::slideShowRandom = slideRandomCb->isChecked();
 	GData::enableAnimations = enableAnimCb->isChecked();
+	GData::exifEnabled = enableExifCb->isChecked();
 
 	accept();
 }

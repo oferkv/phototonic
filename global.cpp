@@ -58,6 +58,7 @@ namespace GData
 	bool hueGreenChannel;
 	bool hueBlueChannel;
 	bool showTree;
+	bool exifEnabled;
 	
 	// app data
 	QModelIndexList copyCutIdxList;

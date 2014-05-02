@@ -1,6 +1,8 @@
 TEMPLATE = app
 TARGET = phototonic
 INCLUDEPATH += .
+INCLUDEPATH += /usr/local/include
+LIBS += -L/usr/local/lib -lexiv2
 QT += widgets
 
 # Input

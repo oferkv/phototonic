@@ -17,6 +17,7 @@
  */
 
 #include "thumbview.h"
+#include <exiv2/exiv2.hpp>
 
 ThumbView::ThumbView(QWidget *parent) : QListView(parent)
 {
@@ -144,12 +145,49 @@ void ThumbView::setCurrentIndexByName(QString &FileName)
  	}
 }
 
+void ThumbView::updateExifInfo(QString imageFullPath)
+{
+    Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(imageFullPath.toStdString());
+    image->readMetadata();
+    Exiv2::ExifData &exifData = image->exifData();
+
+    if (exifData.empty())
+    {
+        qDebug() << "No Exif data found in the file";
+    }
+    else
+    {
+	    Exiv2::ExifData::const_iterator end = exifData.end();
+
+	    for (Exiv2::ExifData::const_iterator i = exifData.begin(); i != end; ++i)
+	    {
+	        qDebug() <<  i->key().c_str() << "\t\t\t\t" << Exiv2::toString(i->value()).c_str();
+	    }
+	}
+
+    Exiv2::IptcData &iptcData = image->iptcData();
+    if (iptcData.empty())
+    {
+        qDebug() << "No IPTC data found in the file";
+    }
+    else
+    {
+
+		Exiv2::IptcData::iterator end = iptcData.end();
+		for (Exiv2::IptcData::iterator md = iptcData.begin(); md != end; ++md)
+		{
+			qDebug() << md->key().c_str() << "\t\t\t\t"  << Exiv2::toString(md->value()).c_str();
+		}
+    }
+}
+
 void ThumbView::handleSelectionChanged(const QItemSelection&)
 {
 	QString info;
 	QString state;
 	QModelIndexList indexesList = selectionModel()->selectedIndexes();
 	int nSelected = indexesList.size();
+	QString imageFullPath;
 	
 	if (!nSelected)
 		state = QString::number(thumbFileInfoList.size()) + " images";
@@ -159,9 +197,10 @@ void ThumbView::handleSelectionChanged(const QItemSelection&)
 	else if (nSelected == 1)
 	{
 		QString imageName = thumbViewModel->item(indexesList.first().row())->data(FileNameRole).toString();
-		state = QString(imageName);
+		state = imageName;
+		imageFullPath = currentViewDir + QDir::separator() + imageName;
 
-		imageInfoReader.setFileName(currentViewDir + QDir::separator() + imageName);
+		imageInfoReader.setFileName(imageFullPath);
 		if (imageInfoReader.size().isValid())
 		{
 
@@ -182,6 +221,10 @@ void ThumbView::handleSelectionChanged(const QItemSelection&)
 	}
 
 	emit updateState(state, info);
+	if (GData::exifEnabled)
+	{
+		updateExifInfo(imageFullPath);
+	}
 }
 
 void ThumbView::startDrag(Qt::DropActions)
