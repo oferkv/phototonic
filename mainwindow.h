@@ -259,7 +259,6 @@ private:
 	void addMenuSeparator(QWidget *widget);
 	void createImageView();
 	void createThumbView();
-	void createExifView();
 	void createActions();
 	void createMenus();
 	void createToolBars();

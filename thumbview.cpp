@@ -63,6 +63,7 @@ ThumbView::ThumbView(QWidget *parent) : QListView(parent)
 	QTime time = QTime::currentTime();
 	qsrand((uint)time.msec());
 	mainWindow = parent;
+	infoView = new InfoView(this);
 }
 
 void ThumbView::setThumbColors()
@@ -147,36 +148,37 @@ void ThumbView::setCurrentIndexByName(QString &FileName)
 
 void ThumbView::updateExifInfo(QString imageFullPath)
 {
+	infoView->clear();
     Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(imageFullPath.toStdString());
     image->readMetadata();
     Exiv2::ExifData &exifData = image->exifData();
 
     if (exifData.empty())
     {
-        qDebug() << "No Exif data found in the file";
+        infoView->addEntry(QString("No Exif data found in the file"), QString(""));
     }
     else
     {
 	    Exiv2::ExifData::const_iterator end = exifData.end();
-
 	    for (Exiv2::ExifData::const_iterator i = exifData.begin(); i != end; ++i)
 	    {
-	        qDebug() <<  i->key().c_str() << "\t\t\t\t" << Exiv2::toString(i->value()).c_str();
+        	infoView->addEntry(QString::fromUtf8(i->key().c_str()), 
+        		QString::fromUtf8(Exiv2::toString(i->value()).c_str()));
 	    }
 	}
 
     Exiv2::IptcData &iptcData = image->iptcData();
     if (iptcData.empty())
     {
-        qDebug() << "No IPTC data found in the file";
+        infoView->addEntry(QString("No IPTC data found in the file"), QString(""));
     }
     else
     {
-
 		Exiv2::IptcData::iterator end = iptcData.end();
 		for (Exiv2::IptcData::iterator md = iptcData.begin(); md != end; ++md)
 		{
-			qDebug() << md->key().c_str() << "\t\t\t\t"  << Exiv2::toString(md->value()).c_str();
+			infoView->addEntry(QString::fromUtf8(md->key().c_str()), 
+        		QString::fromUtf8(Exiv2::toString(md->value()).c_str()));
 		}
     }
 }
@@ -212,6 +214,8 @@ void ThumbView::handleSelectionChanged(const QItemSelection&)
 					+ "      " + QString::number(imageInfo.size() / 1024) + "K      "
 					+  imageInfo.lastModified().toString(Qt::SystemLocaleShortDate);
 
+			if (GData::exifEnabled)
+				updateExifInfo(imageFullPath);
 		}
 		else
 		{
@@ -221,10 +225,6 @@ void ThumbView::handleSelectionChanged(const QItemSelection&)
 	}
 
 	emit updateState(state, info);
-	if (GData::exifEnabled)
-	{
-		updateExifInfo(imageFullPath);
-	}
 }
 
 void ThumbView::startDrag(Qt::DropActions)
@@ -499,5 +499,36 @@ void FSTree::dropEvent(QDropEvent *event)
 		emit dropOp(event->keyboardModifiers(), dirOp, event->mimeData()->urls().at(0).toLocalFile());
 		setCurrentIndex(dndOrigSelection);
 	}
+}
+
+InfoView::InfoView(QWidget *parent) : QTableView(parent)
+{
+	setSelectionBehavior(QAbstractItemView::SelectItems);
+	setSelectionMode( QAbstractItemView::ExtendedSelection);
+	verticalHeader()->setVisible(false);
+	verticalHeader()->setDefaultSectionSize(verticalHeader()->minimumSectionSize());
+	horizontalHeader()->setVisible(false);
+	horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	
+	setEditTriggers(QAbstractItemView::NoEditTriggers);
+	setSelectionBehavior(QAbstractItemView::SelectRows);
+	setGridStyle(Qt::DotLine);
+
+	infoModel = new QStandardItemModel(this);
+	setModel(infoModel);
+}
+
+void InfoView::clear()
+{
+	infoModel->clear();
+}
+
+void InfoView::addEntry(QString key, QString value)
+{
+	int atRow = infoModel->rowCount();
+    QStandardItem *itemKey = new QStandardItem(key);
+    QStandardItem *itemVal = new QStandardItem(value);
+    infoModel->insertRow(atRow, itemKey);
+    infoModel->setItem(atRow, 1, itemVal);
 }
 

@@ -45,6 +45,7 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	splitter = new QSplitter(Qt::Horizontal);
 	splitter->addWidget(fsTree);
 	splitter->addWidget(thumbView);
+	splitter->addWidget(thumbView->infoView);
 	splitter->restoreState(GData::appSettings->value("splitterSizes").toByteArray());
 
 	stackedWidget = new QStackedWidget;
@@ -125,35 +126,6 @@ void Phototonic::createThumbView()
 	connect(thumbView, SIGNAL(updateState(QString, QString)), this, SLOT(updateState(QString, QString)));
 	connect(thumbView->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), 
 				this, SLOT(changeActionsBySelection(QItemSelection, QItemSelection)));
-}
-
-void Phototonic::createExifView()
-{
-	QTableView *tblv;
-	tblv = new QTableView();
-
-	tblv->setSelectionBehavior(QAbstractItemView::SelectItems );
-	tblv->setSelectionMode( QAbstractItemView::ExtendedSelection );
-	tblv->verticalHeader()->setVisible(false);
-	tblv->verticalHeader()->setDefaultSectionSize(20);
-	tblv->horizontalHeader()->setStretchLastSection(true);
-
-	QStandardItemModel *model = new QStandardItemModel( 60, 2, this );
-
-	int nrow = 20;
-	int ncol = 2;
-
-	for( int r=0; r<nrow; r++ )
-	{
-		for( int c=0; c<ncol; c++)
-		{
-
-		    QStandardItem *item = new QStandardItem("testtesttesttesttesttest testtesttesttesttesttest");
-		    model->setItem(r, c, item);
-		}
-	}
-
-	tblv->setModel(model);
 }
 
 void Phototonic::addMenuSeparator(QWidget *widget)

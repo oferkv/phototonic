@@ -20,6 +20,8 @@
 #define THUMBVIEW_H
 
 #include <QListView>
+#include <QTableView>
+#include <QHeaderView>
 #include <QDir>
 #include <QDebug>
 #include <QStandardItem>
@@ -35,6 +37,20 @@
 #include <QDateTime>
 #include <QItemDelegate>
 #include "global.h"
+
+class InfoView : public QTableView
+{
+	Q_OBJECT
+
+public:
+	InfoView(QWidget *parent);
+	void clear();
+	void addEntry(QString key, QString value);
+
+private:
+	QStandardItemModel *infoModel;
+
+};
 
 class ThumbView : public QListView
 {
@@ -68,6 +84,7 @@ public:
 	void setCurrentRow(int row);
 	QString getSingleSelectionFilename();
 
+	InfoView *infoView;
 	QDir *thumbsDir;
 	QList<QStandardItem*> *thumbList;
 	QList<bool> *thumbIsLoaded;
