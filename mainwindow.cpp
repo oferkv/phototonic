@@ -42,14 +42,18 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	restoreState(GData::appSettings->value("MainWindowState").toByteArray());
 	setWindowIcon(QIcon(":/images/phototonic.png"));
 
-	splitter = new QSplitter(Qt::Horizontal);
-	splitter->addWidget(fsTree);
-	splitter->addWidget(thumbView);
-	splitter->addWidget(thumbView->infoView);
-	splitter->restoreState(GData::appSettings->value("splitterSizes").toByteArray());
+	treeSplit = new QSplitter(Qt::Vertical);
+	treeSplit->addWidget(fsTree);
+	treeSplit->addWidget(thumbView->infoView);
+	treeSplit->restoreState(GData::appSettings->value("treeSplitSize").toByteArray());
+
+	mainSplit = new QSplitter(Qt::Horizontal);
+	mainSplit->addWidget(treeSplit);
+	mainSplit->addWidget(thumbView);
+	mainSplit->restoreState(GData::appSettings->value("mainSplitSize").toByteArray());
 
 	stackedWidget = new QStackedWidget;
-	stackedWidget->addWidget(splitter);
+	stackedWidget->addWidget(mainSplit);
 	stackedWidget->addWidget(imageView);
 	setCentralWidget(stackedWidget);
 
@@ -321,11 +325,11 @@ void Phototonic::createActions()
 	aboutAction->setIcon(QIcon::fromTheme("help-about", QIcon(":/images/about.png")));
 	connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
 
-	showTreeAction = new QAction("Show Tree", this);
+	showTreeAction = new QAction("Show Side Pane", this);
 	showTreeAction->setCheckable(true);
 	showTreeAction->setChecked(GData::showTree);
 	connect(showTreeAction, SIGNAL(triggered()), this, SLOT(showTree()));
-	showTreeAction->setIcon(QIcon::fromTheme("folder-open", QIcon(":/images/tree.png")));
+	showTreeAction->setIcon(QIcon(":/images/tree.png"));
 	
 	// Sort actions
 	actName = new QAction("Name", this);
@@ -630,9 +634,9 @@ void Phototonic::createToolBars()
 	goToolBar->addWidget(pathBar);
 
 	viewToolBar = addToolBar("View");
-	viewToolBar->addAction(showTreeAction);
 	viewToolBar->addAction(thumbsZoomInAct);
 	viewToolBar->addAction(thumbsZoomOutAct);
+	viewToolBar->addAction(showTreeAction);
 	viewToolBar->setObjectName("View");
 
 	viewToolBarWasVisible = GData::appSettings->value("viewToolBarWasVisible").toBool();
@@ -759,6 +763,7 @@ void Phototonic::showTree()
 {
 	GData::showTree = showTreeAction->isChecked();
 	fsTree->setVisible(GData::showTree);
+	thumbView->infoView->setVisible(GData::showTree);
 }
 
 void Phototonic::runExternalApp()
@@ -1314,7 +1319,8 @@ void Phototonic::writeSettings()
 
 	GData::appSettings->setValue("geometry", saveGeometry());
 	GData::appSettings->setValue("mainWindowState", saveState());
-	GData::appSettings->setValue("splitterSizes", splitter->saveState());
+	GData::appSettings->setValue("mainSplitSize", mainSplit->saveState());
+	GData::appSettings->setValue("treeSplitSize", treeSplit->saveState());
 	GData::appSettings->setValue("thumbsSortFlags", (int)thumbView->thumbsSortFlags);
 	GData::appSettings->setValue("thumbsZoomVal", (int)thumbView->thumbSize);
 	GData::appSettings->setValue("isFullScreen", (bool)GData::isFullScreen);

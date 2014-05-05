@@ -226,7 +226,8 @@ private:
 	QLabel *infoLabel;
 	QFileSystemModel *fsModel;
 	FSTree *fsTree;
-	QSplitter *splitter;
+	QSplitter *mainSplit;
+	QSplitter *treeSplit;
 	QStackedWidget *stackedWidget;
 	ThumbView *thumbView;
 	ImageView *imageView;

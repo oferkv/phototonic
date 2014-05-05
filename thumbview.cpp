@@ -155,32 +155,47 @@ void ThumbView::updateExifInfo(QString imageFullPath)
 
     if (exifData.empty())
     {
-        infoView->addEntry(QString("No Exif data found in the file"), QString(""));
+        infoView->addEntry(QString("No Exif data"), QString(""));
     }
     else
     {
 	    Exiv2::ExifData::const_iterator end = exifData.end();
-	    for (Exiv2::ExifData::const_iterator i = exifData.begin(); i != end; ++i)
+	    for (Exiv2::ExifData::const_iterator md = exifData.begin(); md != end; ++md)
 	    {
-        	infoView->addEntry(QString::fromUtf8(i->key().c_str()), 
-        		QString::fromUtf8(Exiv2::toString(i->value()).c_str()));
+        	infoView->addEntry(QString::fromUtf8(md->tagName().c_str()), 
+        		QString::fromUtf8(md->print().c_str()));
 	    }
 	}
 
     Exiv2::IptcData &iptcData = image->iptcData();
     if (iptcData.empty())
     {
-        infoView->addEntry(QString("No IPTC data found in the file"), QString(""));
+        infoView->addEntry(QString("No IPTC data"), QString(""));
     }
     else
     {
 		Exiv2::IptcData::iterator end = iptcData.end();
 		for (Exiv2::IptcData::iterator md = iptcData.begin(); md != end; ++md)
 		{
-			infoView->addEntry(QString::fromUtf8(md->key().c_str()), 
-        		QString::fromUtf8(Exiv2::toString(md->value()).c_str()));
+			infoView->addEntry(QString::fromUtf8(md->tagName().c_str()), 
+        		QString::fromUtf8(Exiv2::toString(md->print()).c_str()));
 		}
     }
+
+	Exiv2::XmpData &xmpData = image->xmpData();
+	if (xmpData.empty())
+	{
+		infoView->addEntry(QString("No XMP data"), QString(""));
+	}
+	else
+	{
+		Exiv2::XmpData::iterator end = xmpData.end();
+		for (Exiv2::XmpData::iterator md = xmpData.begin(); md != end; ++md)
+		{
+			infoView->addEntry(QString::fromUtf8(md->tagName().c_str()), 
+        		QString::fromUtf8(Exiv2::toString(md->print()).c_str()));
+		}
+	}
 }
 
 void ThumbView::handleSelectionChanged(const QItemSelection&)
@@ -509,6 +524,7 @@ InfoView::InfoView(QWidget *parent) : QTableView(parent)
 	verticalHeader()->setDefaultSectionSize(verticalHeader()->minimumSectionSize());
 	horizontalHeader()->setVisible(false);
 	horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	setShowGrid(false);
 	
 	setEditTriggers(QAbstractItemView::NoEditTriggers);
 	setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -516,6 +532,7 @@ InfoView::InfoView(QWidget *parent) : QTableView(parent)
 
 	infoModel = new QStandardItemModel(this);
 	setModel(infoModel);
+	setVisible(GData::showTree);
 }
 
 void InfoView::clear()
