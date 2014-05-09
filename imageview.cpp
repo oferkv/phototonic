@@ -82,13 +82,13 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 
 void ImageView::resizeEvent(QResizeEvent *event)
 {
-    QWidget::resizeEvent(event);
+	QWidget::resizeEvent(event);
 	resizeImage();
 }
 
 void ImageView::showEvent(QShowEvent *event)
 {
-    QWidget::showEvent(event);
+	QWidget::showEvent(event);
 	resizeImage();
 }
 
@@ -129,25 +129,25 @@ void ImageView::resizeImage()
 		{
 			case Disable:
 				if (imgSize.width() < size().width() && imgSize.height() < size().height())
-				    imgSize.scale(calcZoom(imgSize.width()), calcZoom(imgSize.height()), Qt::KeepAspectRatio);
-			    break;
+					imgSize.scale(calcZoom(imgSize.width()), calcZoom(imgSize.height()), Qt::KeepAspectRatio);
+				break;
 				
 			case WidthNHeight:
 				if (imgSize.width() < size().width() && imgSize.height() < size().height())
-				    imgSize.scale(calcZoom(size().width()), calcZoom(size().height()), Qt::KeepAspectRatio);
+					imgSize.scale(calcZoom(size().width()), calcZoom(size().height()), Qt::KeepAspectRatio);
 				break;
 
 			case Width:
 				if (imgSize.width() < size().width())
-				    imgSize.scale(calcZoom(size().width()), 
-				    	calcZoom(getHeightByWidth(imgSize.width(), imgSize.height(), size().width())),
-			    		Qt::KeepAspectRatio);
+					imgSize.scale(calcZoom(size().width()), 
+						calcZoom(getHeightByWidth(imgSize.width(), imgSize.height(), size().width())),
+						Qt::KeepAspectRatio);
 				break;
 				
 			case Height:
 				if (imgSize.height() < size().height())
-				    imgSize.scale(calcZoom(getWidthByHeight(imgSize.height(), imgSize.width(), size().height())),
-				    	calcZoom(size().height()), Qt::KeepAspectRatio);
+					imgSize.scale(calcZoom(getWidthByHeight(imgSize.height(), imgSize.width(), size().height())),
+						calcZoom(size().height()), Qt::KeepAspectRatio);
 				break;
 
 			case Disprop:
@@ -245,11 +245,11 @@ void ImageView::mirror()
 		case LayDual:
 		{
 			mirrorImage = QImage(displayImage.width() * 2, displayImage.height(), QImage::QImage::Format_ARGB32);
-		    QPainter painter(&mirrorImage);
+			QPainter painter(&mirrorImage);
 		    painter.drawImage(0, 0, displayImage);
 	   	    painter.drawImage(displayImage.width(), 0, displayImage.mirrored(true, false));
 	   	    break;
-   	    }
+		}
 
    	    case LayTriple:
    	    {
@@ -401,12 +401,12 @@ void ImageView::colorize()
 	QRgb *line;
 	unsigned char h, s, l;
  
-    for(y = 0; y < displayImage.height(); ++y)
-    {
-        line = (QRgb *)displayImage.scanLine(y);
+	for(y = 0; y < displayImage.height(); ++y)
+	{
+		line = (QRgb *)displayImage.scanLine(y);
  
-        for(x = 0; x < displayImage.width(); ++x)
-        {
+		for(x = 0; x < displayImage.width(); ++x)
+		{
 			rgbToHsl(qRed(line[x]), qGreen(line[x]), qBlue(line[x]), &h, &s, &l);
 								
 			if (GData::colorizeEnabled)
@@ -424,7 +424,7 @@ void ImageView::colorize()
 			b = GData::hueBlueChannel? hb : qBlue(line[x]);
 			
 			displayImage.setPixel(x, y, qRgb(r, g, b));
-        }
+		}
 	}
 }
 

@@ -51,7 +51,6 @@ public slots:
 
 private slots:
 	void about();
-	void showTree();
 	void sortThumbnains();
 	void reload();
 	void refreshThumbs(bool noScroll);
@@ -150,7 +149,6 @@ private:
 	QAction *copyImageAction;
 	QAction *pasteImageAction;
 	QAction *newImageAction;
-	QAction *showTreeAction;
 
 	QActionGroup *sortTypesGroup;
 	QActionGroup *thumbLayoutsGroup;
@@ -224,11 +222,11 @@ private:
 	QCompleter *pathComplete;
 	QLabel *stateLabel;
 	QLabel *infoLabel;
+	QDockWidget *fsDock;
 	QFileSystemModel *fsModel;
 	FSTree *fsTree;
-	QSplitter *mainSplit;
-	QSplitter *treeSplit;
 	QStackedWidget *stackedWidget;
+	QDockWidget *iiDock;
 	ThumbView *thumbView;
 	ImageView *imageView;
 	QList<QString> pathHistory;
@@ -242,9 +240,6 @@ private:
 		imageViewIdx
 	};
 
-	bool viewToolBarWasVisible;
-	bool editToolBarWasVisible;
-	bool goToolBarWasVisible;
 	int currentHistoryIdx;
 	bool needHistoryRecord;
 	bool initComplete;

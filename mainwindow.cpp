@@ -34,26 +34,17 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	createImageView();
 	updateExternalApps();
 	loadShortcuts();
+	addDockWidget(Qt::LeftDockWidgetArea, iiDock);
 
 	connect(qApp, SIGNAL(focusChanged(QWidget*, QWidget*)), 
 				this, SLOT(updateActions(QWidget*, QWidget*)));
 
-	restoreGeometry(GData::appSettings->value("geometry").toByteArray());
-	restoreState(GData::appSettings->value("MainWindowState").toByteArray());
+	restoreGeometry(GData::appSettings->value("Geometry").toByteArray());
+	restoreState(GData::appSettings->value("WindowState").toByteArray());
 	setWindowIcon(QIcon(":/images/phototonic.png"));
 
-	treeSplit = new QSplitter(Qt::Vertical);
-	treeSplit->addWidget(fsTree);
-	treeSplit->addWidget(thumbView->infoView);
-	treeSplit->restoreState(GData::appSettings->value("treeSplitSize").toByteArray());
-
-	mainSplit = new QSplitter(Qt::Horizontal);
-	mainSplit->addWidget(treeSplit);
-	mainSplit->addWidget(thumbView);
-	mainSplit->restoreState(GData::appSettings->value("mainSplitSize").toByteArray());
-
 	stackedWidget = new QStackedWidget;
-	stackedWidget->addWidget(mainSplit);
+	stackedWidget->addWidget(thumbView);
 	stackedWidget->addWidget(imageView);
 	setCentralWidget(stackedWidget);
 
@@ -130,6 +121,11 @@ void Phototonic::createThumbView()
 	connect(thumbView, SIGNAL(updateState(QString, QString)), this, SLOT(updateState(QString, QString)));
 	connect(thumbView->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), 
 				this, SLOT(changeActionsBySelection(QItemSelection, QItemSelection)));
+
+	iiDock = new QDockWidget("Image Info", this);
+	iiDock = new QDockWidget("Image Info", this);
+	iiDock->setObjectName("Image Info");
+	iiDock->setWidget(thumbView->infoView);
 }
 
 void Phototonic::addMenuSeparator(QWidget *widget)
@@ -325,12 +321,6 @@ void Phototonic::createActions()
 	aboutAction->setIcon(QIcon::fromTheme("help-about", QIcon(":/images/about.png")));
 	connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
 
-	showTreeAction = new QAction("Show Side Pane", this);
-	showTreeAction->setCheckable(true);
-	showTreeAction->setChecked(GData::showTree);
-	connect(showTreeAction, SIGNAL(triggered()), this, SLOT(showTree()));
-	showTreeAction->setIcon(QIcon(":/images/tree.png"));
-	
 	// Sort actions
 	actName = new QAction("Name", this);
 	actTime = new QAction("Time", this);
@@ -576,7 +566,6 @@ void Phototonic::createMenus()
 	thumbLayoutsGroup->addAction(actSquarish);
 	viewMenu->addActions(thumbLayoutsGroup->actions());
 	viewMenu->addSeparator();
-	viewMenu->addAction(showTreeAction);	
 	viewMenu->addSeparator();
 	viewMenu->addAction(refreshAction);
 
@@ -636,12 +625,7 @@ void Phototonic::createToolBars()
 	viewToolBar = addToolBar("View");
 	viewToolBar->addAction(thumbsZoomInAct);
 	viewToolBar->addAction(thumbsZoomOutAct);
-	viewToolBar->addAction(showTreeAction);
 	viewToolBar->setObjectName("View");
-
-	viewToolBarWasVisible = GData::appSettings->value("viewToolBarWasVisible").toBool();
-	editToolBarWasVisible = GData::appSettings->value("editToolBarWasVisible").toBool();
-	goToolBarWasVisible = GData::appSettings->value("goToolBarWasVisible").toBool();
 }
 
 void Phototonic::createStatusBar()
@@ -656,11 +640,16 @@ void Phototonic::createStatusBar()
 
 void Phototonic::createFSTree()
 {
+	fsDock = new QDockWidget("File System", this);
+	fsDock->setObjectName("File System");
+
 	fsModel = new QFileSystemModel;
 	fsModel->setRootPath("");
 	fsModel->setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
 
-	fsTree = new FSTree(this);
+	fsTree = new FSTree(fsDock);
+	fsDock->setWidget(fsTree);
+	addDockWidget(Qt::LeftDockWidgetArea, fsDock);
 
 	// Context menu
 	fsTree->addAction(openAction);
@@ -687,7 +676,6 @@ void Phototonic::createFSTree()
 				this, SLOT(dropOp(Qt::KeyboardModifiers, bool, QString)));
 
 	fsTree->setCurrentIndex(fsModel->index(QDir::currentPath()));
-	fsTree->setVisible(GData::showTree);
 }
 
 void Phototonic::setFlagsByQAction(QAction *act, QDir::SortFlags SortFlag)
@@ -757,13 +745,6 @@ void Phototonic::about()
 							"<p><a href=\"https://github.com/oferkv/phototonic/issues\">Reports Bugs</a></p>"
 							"<p>Copyright &copy; 2013-2014 Ofer Kashayov</p>"
 							"<p>Contact: oferkv@live.com</p>" "Built with Qt" QT_VERSION_STR);
-}
-
-void Phototonic::showTree()
-{
-	GData::showTree = showTreeAction->isChecked();
-	fsTree->setVisible(GData::showTree);
-	thumbView->infoView->setVisible(GData::showTree);
 }
 
 void Phototonic::runExternalApp()
@@ -1317,10 +1298,6 @@ void Phototonic::writeSettings()
 	}
 	QApplication::processEvents();
 
-	GData::appSettings->setValue("geometry", saveGeometry());
-	GData::appSettings->setValue("mainWindowState", saveState());
-	GData::appSettings->setValue("mainSplitSize", mainSplit->saveState());
-	GData::appSettings->setValue("treeSplitSize", treeSplit->saveState());
 	GData::appSettings->setValue("thumbsSortFlags", (int)thumbView->thumbsSortFlags);
 	GData::appSettings->setValue("thumbsZoomVal", (int)thumbView->thumbSize);
 	GData::appSettings->setValue("isFullScreen", (bool)GData::isFullScreen);
@@ -1343,7 +1320,6 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("slideShowDelay", (int)GData::slideShowDelay);
 	GData::appSettings->setValue("slideShowRandom", (bool)GData::slideShowRandom);
 	GData::appSettings->setValue("externalApp", externalAppPath);
-	GData::appSettings->setValue("showTree", (bool)GData::showTree);
 
 	/* Action shortcuts */
 	GData::appSettings->beginGroup("Shortcuts");
@@ -1354,6 +1330,9 @@ void Phototonic::writeSettings()
 		GData::appSettings->setValue(it.key(), it.value()->shortcut().toString());
 	}
 	GData::appSettings->endGroup();
+
+	GData::appSettings->setValue("Geometry", saveGeometry());
+	GData::appSettings->setValue("WindowState", saveState());
 }
 
 void Phototonic::readSettings()
@@ -1386,7 +1365,6 @@ void Phototonic::readSettings()
 		GData::appSettings->setValue("exifEnabled", (bool)true);
 		GData::appSettings->setValue("slideShowDelay", (int)5);
 		GData::appSettings->setValue("slideShowRandom", (bool)false);
-		GData::appSettings->setValue("showTree", (bool)true);
 	}
 
 	GData::exitInsteadOfClose = GData::appSettings->value("exitInsteadOfClose").toBool();
@@ -1407,7 +1385,6 @@ void Phototonic::readSettings()
 	GData::slideShowRandom = GData::appSettings->value("slideShowRandom").toBool();
 	GData::slideShowActive = false;
 	externalAppPath = GData::appSettings->value("externalApp").toString();
-	GData::showTree = GData::appSettings->value("showTree").toBool();
 
 	// New config settings that need null protection
 	if (!GData::slideShowDelay)
@@ -1602,11 +1579,28 @@ void Phototonic::newImage()
 
 void Phototonic::setThumbViewWidgetsVisible(bool visible)
 {
+	static bool editToolBarVisible;
+	static bool goToolBarVisible;
+	static bool viewToolBarVisible;
+	static bool fsDockVisible;
+	static bool iiDockVisible;
+
+	if (!visible)
+	{
+		editToolBarVisible = editToolBar->isVisible();
+		goToolBarVisible = goToolBar->isVisible();
+		viewToolBarVisible = viewToolBar->isVisible();
+		fsDockVisible = fsDock->isVisible();
+		iiDockVisible = iiDock->isVisible();
+	}
+
 	menuBar()->setVisible(visible);
-	editToolBar->setVisible(visible? editToolBarWasVisible : false);
-	goToolBar->setVisible(visible? goToolBarWasVisible : false);
-	viewToolBar->setVisible(visible? viewToolBarWasVisible : false);
+	editToolBar->setVisible(visible? editToolBarVisible : false);
+	goToolBar->setVisible(visible? goToolBarVisible : false);
+	viewToolBar->setVisible(visible? viewToolBarVisible : false);
 	statusBar()->setVisible(visible);
+	fsDock->setVisible(visible? fsDockVisible : false);
+	iiDock->setVisible(visible? iiDockVisible : false);
 }
 
 void Phototonic::openOp()

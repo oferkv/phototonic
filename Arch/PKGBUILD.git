@@ -1,11 +1,11 @@
 pkgname=phototonic-git
 pkgver=1
-pkgrel=2
+pkgrel=3
 pkgdesc="Image Viewer and Organizer"
 arch=('i686' 'x86_64')
 url="http://oferkv.github.io/phototonic/"
 license=('GPL3')
-depends=('qt5-base')
+depends=('qt5-base' 'exiv2')
 source=("git://gitorious.org/phototonic/phototonic.git")
 md5sums=('SKIP')
 makedepends=('git')

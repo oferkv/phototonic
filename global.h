@@ -64,7 +64,6 @@ namespace GData
 	extern bool hueRedChannel;
 	extern bool hueGreenChannel;
 	extern bool hueBlueChannel;
-	extern bool showTree;
 	extern bool exifEnabled;
 
 	// app data

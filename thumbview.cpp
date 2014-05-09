@@ -532,7 +532,6 @@ InfoView::InfoView(QWidget *parent) : QTableView(parent)
 
 	infoModel = new QStandardItemModel(this);
 	setModel(infoModel);
-	setVisible(GData::showTree);
 }
 
 void InfoView::clear()
