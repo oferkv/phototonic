@@ -750,7 +750,7 @@ void Phototonic::about()
 void Phototonic::runExternalApp()
 {
 	QString imageFileFullPath;
-	QString CurrentSelectionFilename("");
+	QString selectedFileNames("");
 
 	if (stackedWidget->currentIndex() == imageViewIdx)
 	{
@@ -758,15 +758,25 @@ void Phototonic::runExternalApp()
 	}
 	else
 	{
-		CurrentSelectionFilename = thumbView->getSingleSelectionFilename();
-		if (CurrentSelectionFilename.isEmpty())
+
+
+		QModelIndexList selectedIdxList = thumbView->selectionModel()->selectedIndexes();
+		if (selectedIdxList.size() < 1)
 		{
 			updateState("Invalid selection");
 			return;
 		}
-
-		imageFileFullPath = externalAppPath + " \"" + thumbView->currentViewDir
-							+ QDir::separator() + CurrentSelectionFilename + "\"";
+		for (int tn = selectedIdxList.size() - 1; tn >= 0 ; tn--)
+		{
+			selectedFileNames +=
+			" \"" +
+			thumbView->currentViewDir + 
+			QDir::separator() +
+			thumbView->thumbViewModel->item(selectedIdxList[tn].row())->data(thumbView->FileNameRole).toString() +
+			"\"";
+		}
+		
+		imageFileFullPath = externalAppPath + selectedFileNames;
 	}
 
 	externalProcess.start(imageFileFullPath);
@@ -1948,6 +1958,7 @@ void Phototonic::reloadThumbsSlot()
 		return;
 	}
 
+	thumbView->infoView->clear();
 	pathBar->setText(thumbView->currentViewDir);
 	recordHistory(thumbView->currentViewDir);
 	if (currentHistoryIdx > 0)

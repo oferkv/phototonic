@@ -148,7 +148,6 @@ void ThumbView::setCurrentIndexByName(QString &FileName)
 
 void ThumbView::updateExifInfo(QString imageFullPath)
 {
-	infoView->clear();
     Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(imageFullPath.toStdString());
     image->readMetadata();
     Exiv2::ExifData &exifData = image->exifData();
@@ -205,7 +204,8 @@ void ThumbView::handleSelectionChanged(const QItemSelection&)
 	QModelIndexList indexesList = selectionModel()->selectedIndexes();
 	int nSelected = indexesList.size();
 	QString imageFullPath;
-	
+
+	infoView->clear();
 	if (!nSelected)
 		state = QString::number(thumbFileInfoList.size()) + " images";
 	else if (nSelected > 1)
