@@ -352,8 +352,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	enableAnimCb->setChecked(GData::enableAnimations);
 
 	// Enable Exif
-	enableExifCb = new QCheckBox("Enable Exif", this);
-	enableExifCb->setChecked(GData::exifEnabled);
+	enableExifCb = new QCheckBox("Rotate according to Exif orientation", this);
+	enableExifCb->setChecked(GData::exifRotationEnabled);
 
 	// Viewer options
 	QVBoxLayout *viewerOptsBox = new QVBoxLayout;
@@ -466,7 +466,7 @@ void SettingsDialog::saveSettings()
 	GData::slideShowDelay = slideDelaySpin->value();
 	GData::slideShowRandom = slideRandomCb->isChecked();
 	GData::enableAnimations = enableAnimCb->isChecked();
-	GData::exifEnabled = enableExifCb->isChecked();
+	GData::exifRotationEnabled = enableExifCb->isChecked();
 
 	accept();
 }

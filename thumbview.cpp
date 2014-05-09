@@ -17,7 +17,6 @@
  */
 
 #include "thumbview.h"
-#include <exiv2/exiv2.hpp>
 
 ThumbView::ThumbView(QWidget *parent) : QListView(parent)
 {
@@ -54,7 +53,7 @@ ThumbView::ThumbView(QWidget *parent) : QListView(parent)
 	QStringList *fileFilters = new QStringList;
 	*fileFilters << "*.BMP" << "*.GIF" << "*.JPG" << "*.JPEG" << "*.JPE" << "*.PNG"
 				 << "*.PBM" << "*.PGM" << "*.PPM" << "*.XBM" << "*.XPM" << "*.SVG"
-				 << "*.TIFF" << "*.TIF" << "*.TGA";
+				 << "*.TIFF" << "*.TIF" << "*.TGA" << "*.ICO";
 	thumbsDir->setFilter(QDir::Files);
 	thumbsDir->setNameFilters(*fileFilters);
 
@@ -148,13 +147,25 @@ void ThumbView::setCurrentIndexByName(QString &FileName)
 
 void ThumbView::updateExifInfo(QString imageFullPath)
 {
-    Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(imageFullPath.toStdString());
-    image->readMetadata();
-    Exiv2::ExifData &exifData = image->exifData();
+	Exiv2::Image::AutoPtr exifImage;
+
+	try
+	{
+		exifImage = Exiv2::ImageFactory::open(imageFullPath.toStdString());
+	}
+	catch (Exiv2::Error &error)
+	{
+		infoView->addEntry(QString("No metadata"), QString(""));
+		return;
+	}
+
+    exifImage->readMetadata();
+    Exiv2::ExifData &exifData = exifImage->exifData();
+    int exifElements = 3;
 
     if (exifData.empty())
     {
-        infoView->addEntry(QString("No Exif data"), QString(""));
+        --exifElements;
     }
     else
     {
@@ -166,10 +177,10 @@ void ThumbView::updateExifInfo(QString imageFullPath)
 	    }
 	}
 
-    Exiv2::IptcData &iptcData = image->iptcData();
+    Exiv2::IptcData &iptcData = exifImage->iptcData();
     if (iptcData.empty())
     {
-        infoView->addEntry(QString("No IPTC data"), QString(""));
+		--exifElements;
     }
     else
     {
@@ -181,10 +192,10 @@ void ThumbView::updateExifInfo(QString imageFullPath)
 		}
     }
 
-	Exiv2::XmpData &xmpData = image->xmpData();
+	Exiv2::XmpData &xmpData = exifImage->xmpData();
 	if (xmpData.empty())
 	{
-		infoView->addEntry(QString("No XMP data"), QString(""));
+		--exifElements;
 	}
 	else
 	{
@@ -195,6 +206,9 @@ void ThumbView::updateExifInfo(QString imageFullPath)
         		QString::fromUtf8(Exiv2::toString(md->print()).c_str()));
 		}
 	}
+	
+	if (!exifElements)
+		infoView->addEntry(QString("No metadata"), QString(""));
 }
 
 void ThumbView::handleSelectionChanged(const QItemSelection&)
@@ -229,8 +243,7 @@ void ThumbView::handleSelectionChanged(const QItemSelection&)
 					+ "      " + QString::number(imageInfo.size() / 1024) + "K      "
 					+  imageInfo.lastModified().toString(Qt::SystemLocaleShortDate);
 
-			if (GData::exifEnabled)
-				updateExifInfo(imageFullPath);
+			updateExifInfo(imageFullPath);
 		}
 		else
 		{

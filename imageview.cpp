@@ -670,6 +670,9 @@ void ImageView::keyMoveEvent(int direction)
 
 void ImageView::saveImage()
 {
+	Exiv2::Image::AutoPtr image;
+	bool exifError = false;
+
 	if (newImage)
 	{
 		saveImageAs();
@@ -677,13 +680,38 @@ void ImageView::saveImage()
 	}
 
 	popMessage("Saving...");
+
+	try
+	{
+		image = Exiv2::ImageFactory::open(currentImageFullPath.toStdString());
+		image->readMetadata();
+	}
+	catch (Exiv2::Error &error)
+	{
+		exifError = true;
+	}
+
 	if (!displayPixmap.save(currentImageFullPath, 0, GData::defaultSaveQuality))
 	{
 		QMessageBox msgBox;
 		msgBox.critical(this, "Error", "Failed to save image");
+		return;
 	}
-	else
-		reload();
+
+	if (!exifError)
+	{
+		try
+		{
+			image->writeMetadata();
+		}
+		catch (Exiv2::Error &error)
+		{
+			exifError = true;
+		}
+	}
+
+	reload();
+	popMessage("Image saved");
 }
 
 void ImageView::setCursorOverrides(bool override)
@@ -706,18 +734,51 @@ void ImageView::saveImageAs()
 {
 	setCursorOverrides(false);
 
+	Exiv2::Image::AutoPtr exifImage;
+	Exiv2::Image::AutoPtr newExifImage;
+	bool exifError = false;
+
 	QString fileName = QFileDialog::getSaveFileName(this,
 		"Save image as",
 		currentImageFullPath,
 		"Image Files (*.jpg *.jpeg *.jpe *.png *.bmp *.tiff *.tif *.ppm *.xbm *.xpm)");
+		
 	if (!fileName.isEmpty())
 	{
+		try
+		{
+			exifImage = Exiv2::ImageFactory::open(currentImageFullPath.toStdString());
+			exifImage->readMetadata();
+		}
+		catch (Exiv2::Error &error)
+		{
+			exifError = true;
+		}
+
+	
 		if (!displayPixmap.save(fileName, 0, GData::defaultSaveQuality))
 		{
 			QMessageBox msgBox;
 			msgBox.critical(this, "Error", "Failed to save image");
 		}
-		popMessage("Image saved");
+		else
+		{
+			if (!exifError)
+			{
+				try
+				{
+					newExifImage = Exiv2::ImageFactory::open(fileName.toStdString());
+					newExifImage->setMetadata(*exifImage);
+					newExifImage->writeMetadata();
+				}
+				catch (Exiv2::Error &error)
+				{
+					exifError = true;
+				}
+			}
+		
+			popMessage("Image saved");
+		}
 	}
 
 	setCursorOverrides(true);

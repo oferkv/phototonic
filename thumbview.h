@@ -36,6 +36,7 @@
 #include <QDragEnterEvent>
 #include <QDateTime>
 #include <QItemDelegate>
+#include <exiv2/exiv2.hpp>
 #include "global.h"
 
 class InfoView : public QTableView
