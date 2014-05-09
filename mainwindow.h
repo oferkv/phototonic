@@ -248,6 +248,12 @@ private:
 	bool thumbViewBusy;
 	bool shouldMaximize;
 
+	bool editToolBarVisible;
+	bool goToolBarVisible;
+	bool viewToolBarVisible;
+	bool fsDockVisible;
+	bool iiDockVisible;
+
 	void loadShortcuts();
 	void deleteSingleImage();
 	void selectCurrentViewDir();

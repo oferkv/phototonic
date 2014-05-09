@@ -1316,9 +1316,6 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("textThumbColor", GData::thumbsTextColor);
 	GData::appSettings->setValue("thumbSpacing", (int)GData::thumbSpacing);
 	GData::appSettings->setValue("thumbLayout", (int)GData::thumbsLayout);
-	GData::appSettings->setValue("viewToolBarWasVisible", (bool)viewToolBar->isVisible());
-	GData::appSettings->setValue("editToolBarWasVisible", (bool)editToolBar->isVisible());
-	GData::appSettings->setValue("goToolBarWasVisible", (bool)goToolBar->isVisible());
 	GData::appSettings->setValue("exitInsteadOfClose", (int)GData::exitInsteadOfClose);
 	GData::appSettings->setValue("enableAnimations", (bool)GData::enableAnimations);
 	GData::appSettings->setValue("exifRotationEnabled", (bool)GData::exifRotationEnabled);
@@ -1330,6 +1327,11 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("slideShowDelay", (int)GData::slideShowDelay);
 	GData::appSettings->setValue("slideShowRandom", (bool)GData::slideShowRandom);
 	GData::appSettings->setValue("externalApp", externalAppPath);
+	GData::appSettings->setValue("editToolBarVisible", (bool)editToolBar->isVisible());
+	GData::appSettings->setValue("goToolBarVisible", (bool)goToolBar->isVisible());
+	GData::appSettings->setValue("viewToolBarVisible", (bool)viewToolBar->isVisible());
+	GData::appSettings->setValue("fsDockVisible", (bool)fsDock->isVisible());
+	GData::appSettings->setValue("iiDockVisible", (bool)iiDock->isVisible());
 
 	/* Action shortcuts */
 	GData::appSettings->beginGroup("Shortcuts");
@@ -1361,9 +1363,6 @@ void Phototonic::readSettings()
 		GData::appSettings->setValue("textThumbColor", QColor(25, 25, 25));
 		GData::appSettings->setValue("thumbSpacing", (int)5);
 		GData::appSettings->setValue("thumbLayout", (int)GData::thumbsLayout);
-		GData::appSettings->setValue("viewToolBarWasVisible", (bool)true);
-		GData::appSettings->setValue("editToolBarWasVisible", (bool)true);
-		GData::appSettings->setValue("goToolBarWasVisible", (bool)true);
 		GData::appSettings->setValue("zoomOutFlags", (int)1);
 		GData::appSettings->setValue("zoomInFlags", (int)0);
 		GData::appSettings->setValue("wrapImageList", (bool)false);
@@ -1375,6 +1374,11 @@ void Phototonic::readSettings()
 		GData::appSettings->setValue("exifRotationEnabled", (bool)true);
 		GData::appSettings->setValue("slideShowDelay", (int)5);
 		GData::appSettings->setValue("slideShowRandom", (bool)false);
+		GData::appSettings->setValue("editToolBarVisible", (bool)true);
+		GData::appSettings->setValue("goToolBarVisible", (bool)true);
+		GData::appSettings->setValue("viewToolBarVisible", (bool)true);
+		GData::appSettings->setValue("fsDockVisible", (bool)true);
+		GData::appSettings->setValue("iiDockVisible", (bool)true);
 	}
 
 	GData::exitInsteadOfClose = GData::appSettings->value("exitInsteadOfClose").toBool();
@@ -1395,6 +1399,11 @@ void Phototonic::readSettings()
 	GData::slideShowRandom = GData::appSettings->value("slideShowRandom").toBool();
 	GData::slideShowActive = false;
 	externalAppPath = GData::appSettings->value("externalApp").toString();
+	editToolBarVisible = GData::appSettings->value("editToolBarVisible").toBool();
+	goToolBarVisible = GData::appSettings->value("goToolBarVisible").toBool();
+	viewToolBarVisible = GData::appSettings->value("viewToolBarVisible").toBool();
+	fsDockVisible = GData::appSettings->value("fsDockVisible").toBool();
+	iiDockVisible = GData::appSettings->value("iiDockVisible").toBool();
 
 	// New config settings that need null protection
 	if (!GData::slideShowDelay)
@@ -1589,21 +1598,6 @@ void Phototonic::newImage()
 
 void Phototonic::setThumbViewWidgetsVisible(bool visible)
 {
-	static bool editToolBarVisible;
-	static bool goToolBarVisible;
-	static bool viewToolBarVisible;
-	static bool fsDockVisible;
-	static bool iiDockVisible;
-
-	if (!visible)
-	{
-		editToolBarVisible = editToolBar->isVisible();
-		goToolBarVisible = goToolBar->isVisible();
-		viewToolBarVisible = viewToolBar->isVisible();
-		fsDockVisible = fsDock->isVisible();
-		iiDockVisible = iiDock->isVisible();
-	}
-
 	menuBar()->setVisible(visible);
 	editToolBar->setVisible(visible? editToolBarVisible : false);
 	goToolBar->setVisible(visible? goToolBarVisible : false);
