@@ -87,6 +87,7 @@ public:
 
 	InfoView *infoView;
 	QDir *thumbsDir;
+	QStringList *fileFilters;
 	QList<QStandardItem*> *thumbList;
 	QList<bool> *thumbIsLoaded;
 	QStandardItemModel *thumbViewModel;

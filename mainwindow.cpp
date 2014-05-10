@@ -595,37 +595,44 @@ void Phototonic::createMenus()
 void Phototonic::createToolBars()
 {
 	editToolBar = addToolBar("Edit");
+	editToolBar->setObjectName("Edit");
 	editToolBar->addAction(newImageAction);
 	editToolBar->addAction(cutAction);
 	editToolBar->addAction(copyAction);
 	editToolBar->addAction(pasteAction);
 	editToolBar->addAction(deleteAction);
-	editToolBar->setObjectName("Edit");
 
 	goToolBar = addToolBar("Navigation");
+	goToolBar->setObjectName("Navigation");
 	goToolBar->addAction(goBackAction);
 	goToolBar->addAction(goFrwdAction);
 	goToolBar->addAction(goUpAction);
 	goToolBar->addAction(goHomeAction);
 	goToolBar->addAction(refreshAction);
-	goToolBar->setObjectName("Navigation");
 
-	// path bar
+	/* path bar */
 	pathBar = new QLineEdit;
 	pathComplete = new QCompleter(this);
 	QDirModel *pathCompleteDirMod = new QDirModel;
 	pathCompleteDirMod->setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
 	pathComplete->setModel(pathCompleteDirMod);
 	pathBar->setCompleter(pathComplete);
-	pathBar->setMinimumWidth(400);
-	pathBar->setMaximumWidth(600);
+	pathBar->setMinimumWidth(300);
+	pathBar->setMaximumWidth(400);
 	connect(pathBar, SIGNAL(returnPressed()), this, SLOT(goPathBarDir()));
 	goToolBar->addWidget(pathBar);
 
 	viewToolBar = addToolBar("View");
+	viewToolBar->setObjectName("View");
 	viewToolBar->addAction(thumbsZoomInAct);
 	viewToolBar->addAction(thumbsZoomOutAct);
-	viewToolBar->setObjectName("View");
+
+	/* filter bar */
+	filterBar = new QLineEdit;
+	filterBar->setMinimumWidth(100);
+	filterBar->setMaximumWidth(200);
+	connect(filterBar, SIGNAL(returnPressed()), this, SLOT(goPathBarDir()));
+	viewToolBar->addWidget(filterBar);
 }
 
 void Phototonic::createStatusBar()

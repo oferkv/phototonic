@@ -219,6 +219,7 @@ private:
 	QAction *invertSelectionAct;
 	
 	QLineEdit *pathBar;
+	QLineEdit *filterBar;
 	QCompleter *pathComplete;
 	QLabel *stateLabel;
 	QLabel *infoLabel;

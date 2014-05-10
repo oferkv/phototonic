@@ -50,12 +50,8 @@ ThumbView::ThumbView(QWidget *parent) : QListView(parent)
 				parent, SLOT(loadImagefromThumb(const QModelIndex &)));
 
 	thumbsDir = new QDir();
-	QStringList *fileFilters = new QStringList;
-	*fileFilters << "*.BMP" << "*.GIF" << "*.JPG" << "*.JPEG" << "*.JPE" << "*.PNG"
-				 << "*.PBM" << "*.PGM" << "*.PPM" << "*.XBM" << "*.XPM" << "*.SVG"
-				 << "*.TIFF" << "*.TIF" << "*.TGA" << "*.ICO";
+	fileFilters = new QStringList;
 	thumbsDir->setFilter(QDir::Files);
-	thumbsDir->setNameFilters(*fileFilters);
 
 	emptyImg.load(":/images/no_image.png");
 
@@ -320,6 +316,27 @@ void ThumbView::load(QString &cliImageName)
 
 	thumbsDir->setPath(currentViewDir);
 	thumbsDir->setSorting(thumbsSortFlags);
+
+	fileFilters->clear();
+	QString textFilter("*");
+	textFilter+= ""; // filterBar->text()
+	*fileFilters	<< textFilter + "*.BMP"
+					<< textFilter + "*.GIF"
+					<< textFilter + "*.JPG"
+					<< textFilter + "*.JPEG"
+					<< textFilter + "*.JPE"
+					<< textFilter + "*.PNG"
+					<< textFilter + "*.PBM"
+					<< textFilter + "*.PGM"
+					<< textFilter + "*.PPM"
+					<< textFilter + "*.XBM"
+					<< textFilter + "*.XPM"
+					<< textFilter + "*.SVG"
+					<< textFilter + "*.TIFF"
+					<< textFilter + "*.TIF"
+					<< textFilter + "*.TGA"
+					<< textFilter + "*.ICO";
+	thumbsDir->setNameFilters(*fileFilters);
 	
 	abortOp = false;
 	newIndex = 0;
