@@ -31,8 +31,6 @@ ThumbView::ThumbView(QWidget *parent) : QListView(parent)
 	setViewMode(QListView::IconMode);
 	setSelectionMode(QAbstractItemView::ExtendedSelection);
 	setResizeMode(QListView::Adjust);
-	setFrameShape(QFrame::NoFrame);
-	setMovement(QListView::Movement(QListView::Static));
 	setWordWrap(true);
 	setDragEnabled(true);
 	setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -319,7 +317,7 @@ void ThumbView::load(QString &cliImageName)
 
 	fileFilters->clear();
 	QString textFilter("*");
-	textFilter+= ""; // filterBar->text()
+	textFilter+= filterStr; // filterBar->text()
 	*fileFilters	<< textFilter + "*.BMP"
 					<< textFilter + "*.GIF"
 					<< textFilter + "*.JPG"
@@ -367,7 +365,7 @@ void ThumbView::initThumbs()
 	setSpacing(GData::thumbSpacing);
 	thumbViewModel->clear();
 	thumbIsLoaded->clear();
-
+	
 	if (isNeedScroll)
 		scrollToTop();
 

@@ -96,6 +96,7 @@ public:
 	int thumbSize;
 	int thumbWidth;
 	int thumbHeight;
+	QString filterStr;
 
 	enum UserRoles
 	{

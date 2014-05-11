@@ -631,7 +631,7 @@ void Phototonic::createToolBars()
 	filterBar = new QLineEdit;
 	filterBar->setMinimumWidth(100);
 	filterBar->setMaximumWidth(200);
-	connect(filterBar, SIGNAL(returnPressed()), this, SLOT(goPathBarDir()));
+	connect(filterBar, SIGNAL(returnPressed()), this, SLOT(setThumbsFilter()));
 	viewToolBar->addWidget(filterBar);
 }
 
@@ -1244,6 +1244,12 @@ void Phototonic::goPathBarDir()
 	refreshThumbs(true);
 }
 
+void Phototonic::setThumbsFilter()
+{
+	thumbView->filterStr = filterBar->text();
+	refreshThumbs(true);
+}
+
 void Phototonic::goBack()
 {
 	if (currentHistoryIdx > 0)
@@ -1618,7 +1624,7 @@ void Phototonic::openOp()
 {
 	if (QApplication::focusWidget() == fsTree)
 		goSelectedDir(fsTree->getCurrentIndex());
-	else
+	else if (QApplication::focusWidget() == thumbView)
 	{
 		QModelIndexList indexesList = thumbView->selectionModel()->selectedIndexes();
 		if (indexesList.size() != 1)
@@ -1628,6 +1634,10 @@ void Phototonic::openOp()
 		}
 
 		loadImagefromThumb(indexesList.first());
+	}
+	else if (QApplication::focusWidget() == filterBar)
+	{
+		setThumbsFilter();
 	}
 }
 
