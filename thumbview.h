@@ -46,7 +46,7 @@ class InfoView : public QTableView
 public:
 	InfoView(QWidget *parent);
 	void clear();
-	void addEntry(QString key, QString value);
+	void addEntry(QString &key, QString &value);
 
 private:
 	QStandardItemModel *infoModel;
@@ -59,7 +59,7 @@ class ThumbView : public QListView
 
 signals:
 	void unsetBusy();
-	void updateState(QString state, QString info);
+	void updateState(QString state);
 
 public slots:
 	void abort();

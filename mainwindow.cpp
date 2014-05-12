@@ -118,14 +118,15 @@ void Phototonic::createThumbView()
 
 	connect(this, SIGNAL(abortThumbLoading()), thumbView, SLOT(abort()));
 	connect(thumbView, SIGNAL(unsetBusy()), this, SLOT(unsetBusy()));
-	connect(thumbView, SIGNAL(updateState(QString, QString)), this, SLOT(updateState(QString, QString)));
+	connect(thumbView, SIGNAL(updateState(QString)), this, SLOT(updateState(QString)));
 	connect(thumbView->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), 
 				this, SLOT(changeActionsBySelection(QItemSelection, QItemSelection)));
 
 	iiDock = new QDockWidget("Image Info", this);
-	iiDock = new QDockWidget("Image Info", this);
 	iiDock->setObjectName("Image Info");
 	iiDock->setWidget(thumbView->infoView);
+	QLabel* iiLabel = new QLabel(this);
+	iiDock->setTitleBarWidget(iiLabel);
 }
 
 void Phototonic::addMenuSeparator(QWidget *widget)
@@ -639,10 +640,7 @@ void Phototonic::createStatusBar()
 {
 	stateLabel = new QLabel("Initializing...");
 	stateLabel->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-	infoLabel = new QLabel("");
-	infoLabel->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 	statusBar()->addWidget(stateLabel);
-	statusBar()->addWidget(infoLabel);
 }
 
 void Phototonic::createFSTree()
@@ -657,6 +655,8 @@ void Phototonic::createFSTree()
 	fsTree = new FSTree(fsDock);
 	fsDock->setWidget(fsTree);
 	addDockWidget(Qt::LeftDockWidgetArea, fsDock);
+	QLabel* fsLabel = new QLabel(this);
+	fsDock->setTitleBarWidget(fsLabel);
 
 	// Context menu
 	fsTree->addAction(openAction);
@@ -1544,20 +1544,9 @@ void Phototonic::closeEvent(QCloseEvent *event)
 	event->accept();
 }
 
-void Phototonic::updateState(QString state, QString info)
+void Phototonic::updateState(QString state)
 {
-	QString space("   ");
-	state = space + state + space;
-	stateLabel->setText(state);
-
-	if (info.isEmpty())
-		infoLabel->setVisible(false);
-	else
-	{
-		infoLabel->setVisible(true);
-		info = space + info + space;
-		infoLabel->setText(info);
-	}
+	stateLabel->setText("   " + state);
 }
 
 void Phototonic::mouseDoubleClickEvent(QMouseEvent *event)

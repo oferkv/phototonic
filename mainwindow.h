@@ -42,7 +42,7 @@ signals:
 
 public slots:
 	void unsetBusy();
-	void updateState(QString state, QString info = "");
+	void updateState(QString state);
 	void dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvDirPath);
 	void loadImageFile(QString imageFileName);
 	void loadImagefromThumb(const QModelIndex &idx);
@@ -223,7 +223,6 @@ private:
 	QLineEdit *filterBar;
 	QCompleter *pathComplete;
 	QLabel *stateLabel;
-	QLabel *infoLabel;
 	QDockWidget *fsDock;
 	QFileSystemModel *fsModel;
 	FSTree *fsTree;

@@ -142,6 +142,8 @@ void ThumbView::setCurrentIndexByName(QString &FileName)
 void ThumbView::updateExifInfo(QString imageFullPath)
 {
 	Exiv2::Image::AutoPtr exifImage;
+	QString key;
+	QString val;
 
 	try
 	{
@@ -149,7 +151,9 @@ void ThumbView::updateExifInfo(QString imageFullPath)
 	}
 	catch (Exiv2::Error &error)
 	{
-		infoView->addEntry(QString("No metadata"), QString(""));
+		key = "No metadata";
+		val = "";
+		infoView->addEntry(key, val);
 		return;
 	}
 
@@ -166,8 +170,9 @@ void ThumbView::updateExifInfo(QString imageFullPath)
 	    Exiv2::ExifData::const_iterator end = exifData.end();
 	    for (Exiv2::ExifData::const_iterator md = exifData.begin(); md != end; ++md)
 	    {
-        	infoView->addEntry(QString::fromUtf8(md->tagName().c_str()), 
-        		QString::fromUtf8(md->print().c_str()));
+			key = QString::fromUtf8(md->tagName().c_str());
+			val = QString::fromUtf8(md->print().c_str());
+			infoView->addEntry(key, val);
 	    }
 	}
 
@@ -181,8 +186,9 @@ void ThumbView::updateExifInfo(QString imageFullPath)
 		Exiv2::IptcData::iterator end = iptcData.end();
 		for (Exiv2::IptcData::iterator md = iptcData.begin(); md != end; ++md)
 		{
-			infoView->addEntry(QString::fromUtf8(md->tagName().c_str()), 
-        		QString::fromUtf8(Exiv2::toString(md->print()).c_str()));
+			key = QString::fromUtf8(md->tagName().c_str());
+        	val = QString::fromUtf8(Exiv2::toString(md->print()).c_str());
+       		infoView->addEntry(key, val);
 		}
     }
 
@@ -196,13 +202,18 @@ void ThumbView::updateExifInfo(QString imageFullPath)
 		Exiv2::XmpData::iterator end = xmpData.end();
 		for (Exiv2::XmpData::iterator md = xmpData.begin(); md != end; ++md)
 		{
-			infoView->addEntry(QString::fromUtf8(md->tagName().c_str()), 
-        		QString::fromUtf8(Exiv2::toString(md->print()).c_str()));
+			key = QString::fromUtf8(md->tagName().c_str());
+        	val = QString::fromUtf8(Exiv2::toString(md->print()).c_str());
+       		infoView->addEntry(key, val);
 		}
 	}
 	
 	if (!exifElements)
-		infoView->addEntry(QString("No metadata"), QString(""));
+	{
+		QString key = "No metadata";
+		QString val = "";
+		infoView->addEntry(key, val);
+	}
 }
 
 void ThumbView::handleSelectionChanged(const QItemSelection&)
@@ -214,39 +225,57 @@ void ThumbView::handleSelectionChanged(const QItemSelection&)
 	QString imageFullPath;
 
 	infoView->clear();
+
 	if (!nSelected)
 		state = QString::number(thumbFileInfoList.size()) + " images";
-	else if (nSelected > 1)
+	else if (nSelected >= 1)
 		state = QString("Selected " + QString::number(nSelected) + " of "
 							+ QString::number(thumbFileInfoList.size()) + " images");
-	else if (nSelected == 1)
+
+	if (nSelected == 1)
 	{
 		QString imageName = thumbViewModel->item(indexesList.first().row())->data(FileNameRole).toString();
-		state = imageName;
 		imageFullPath = currentViewDir + QDir::separator() + imageName;
-
 		imageInfoReader.setFileName(imageFullPath);
+		QString key;
+		QString val;
+		
 		if (imageInfoReader.size().isValid())
 		{
-
 			QFileInfo imageInfo = QFileInfo(currentViewDir + QDir::separator() + imageName);
-			info =	"Image " + QString::number(indexesList.first().row() + 1) + " of " + QString::number(thumbFileInfoList.size())
-					+ "      " + imageInfoReader.format().toUpper() + " File      "
-					+ QString::number(imageInfoReader.size().height()) + "x"
-					+ QString::number(imageInfoReader.size().width())
-					+ "      " + QString::number(imageInfo.size() / 1024) + "K      "
-					+  imageInfo.lastModified().toString(Qt::SystemLocaleShortDate);
 
+			key = "File name";
+			infoView->addEntry(key, imageName);
+
+			key = "Format";
+			val = imageInfoReader.format().toUpper();
+			infoView->addEntry(key, val);
+
+			key = "Resolution";
+			val = QString::number(imageInfoReader.size().width()) + "x"
+										+ QString::number(imageInfoReader.size().height());
+			infoView->addEntry(key, val);
+
+			key = "Size";
+			val = QString::number(imageInfo.size() / 1024.0, 'f', 2) + "K";
+			infoView->addEntry(key, val);
+
+			key = "Modified";
+			val = imageInfo.lastModified().toString(Qt::SystemLocaleShortDate);
+			infoView->addEntry(key, val);
+			
 			updateExifInfo(imageFullPath);
 		}
 		else
 		{
 			imageInfoReader.read();
-			info = imageInfoReader.errorString();
+			key = imageInfoReader.errorString();
+			val = "";
+			infoView->addEntry(key, val);
 		}
 	}
 
-	emit updateState(state, info);
+	emit updateState(state);
 }
 
 void ThumbView::startDrag(Qt::DropActions)
@@ -346,11 +375,11 @@ void ThumbView::load(QString &cliImageName)
 	}
 
 	if ((thumbViewModel->rowCount()) == 1)
-		emit updateState("No images", "");
+		emit updateState("No images");
 	else 
 	{
 		QString state = (QString::number(thumbViewModel->rowCount() - 1) + " images");
-		emit updateState(state, "");
+		emit updateState(state);
 	}
 
 	loadThumbs();
@@ -567,12 +596,15 @@ void InfoView::clear()
 	infoModel->clear();
 }
 
-void InfoView::addEntry(QString key, QString value)
+void InfoView::addEntry(QString &key, QString &value)
 {
 	int atRow = infoModel->rowCount();
     QStandardItem *itemKey = new QStandardItem(key);
-    QStandardItem *itemVal = new QStandardItem(value);
     infoModel->insertRow(atRow, itemKey);
-    infoModel->setItem(atRow, 1, itemVal);
+    if (!value.isEmpty())
+    {
+        QStandardItem *itemVal = new QStandardItem(value);
+	    infoModel->setItem(atRow, 1, itemVal);
+    }
 }
 
