@@ -214,6 +214,37 @@ void ImageView::centerImage(QSize &imgSize)
 		imageLabel->move(newX, newY);
 }
 
+long ImageView::getExifOrientation()
+{
+	Exiv2::Image::AutoPtr exifImage;
+
+	try
+	{
+		exifImage = Exiv2::ImageFactory::open(currentImageFullPath.toStdString());
+	}
+	catch (Exiv2::Error &error)
+	{
+		return 0;
+	}
+
+    exifImage->readMetadata();
+    Exiv2::ExifData &exifData = exifImage->exifData();
+    long orientation;
+
+    if (!exifData.empty())
+    {
+		try
+		{
+			orientation = exifData["Exif.Image.Orientation"].value().toLong();
+		}
+		catch (Exiv2::Error &error)
+		{
+			return 0;
+		}
+	}
+	return orientation;
+}
+
 void ImageView::transform()
 {
 	if (GData::cropLeft || GData::cropTop || GData::cropWidth || GData::cropHeight)
@@ -223,6 +254,42 @@ void ImageView::transform()
 								GData::cropTop,
 								origImage.width() - GData::cropWidth - GData::cropLeft,
 								origImage.height() - GData::cropHeight - GData::cropTop);
+	}
+
+	if (GData::exifRotationEnabled)
+	{
+		QTransform trans;
+		switch(getExifOrientation())
+		{
+			case 2:
+				displayImage = displayImage.mirrored(true, false);
+				break;
+ 			case 3:
+				trans.rotate(180);
+				displayImage = displayImage.transformed(trans);
+				break;
+ 			case 4:
+				displayImage = displayImage.mirrored(false, true);
+				break;
+ 			case 5:
+				trans.rotate(90);
+				displayImage = displayImage.transformed(trans);
+				displayImage = displayImage.mirrored(true, false);
+				break;
+ 			case 6:
+				trans.rotate(90);
+				displayImage = displayImage.transformed(trans);
+				break;
+ 			case 7:
+				trans.rotate(90);
+				displayImage = displayImage.transformed(trans);
+				displayImage = displayImage.mirrored(false, true);
+				break;
+ 			case 8:
+				trans.rotate(270);
+				displayImage = displayImage.transformed(trans);
+				break;
+		}
 	}
 
 	if (GData::rotation)

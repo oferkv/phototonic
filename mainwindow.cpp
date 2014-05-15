@@ -23,7 +23,7 @@
 
 Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 {
-	GData::appSettings = new QSettings("Phototonic", "Phototonic");
+	GData::appSettings = new QSettings("phototonic", "phototonic_098_g1");
 	readSettings();
 	createThumbView();
 	createActions();
@@ -628,12 +628,29 @@ void Phototonic::createToolBars()
 	viewToolBar->addAction(thumbsZoomInAct);
 	viewToolBar->addAction(thumbsZoomOutAct);
 
-	/* filter bar */
+	/* filter bar (experimental) */ 
 	filterBar = new QLineEdit;
 	filterBar->setMinimumWidth(100);
 	filterBar->setMaximumWidth(200);
+	filterBar->setFrame(false);
 	connect(filterBar, SIGNAL(returnPressed()), this, SLOT(setThumbsFilter()));
-	viewToolBar->addWidget(filterBar);
+	filterBar->setStyleSheet("QWidget {border-width: 0px;}");
+
+	QLabel *iconLab = new QLabel;
+	iconLab->setPixmap(QIcon(":/images/zoom.png").pixmap(16, 16));
+	iconLab->setStyleSheet("QWidget {border-width: 0px;}");
+	
+	QHBoxLayout *filterBarLayout = new QHBoxLayout();
+	filterBarLayout->setContentsMargins(3, 3, 3, 3);
+	filterBarLayout->setSizeConstraint(QLayout::SetFixedSize);
+	filterBarLayout->setSpacing(0);
+	filterBarLayout->addWidget(iconLab);
+	filterBarLayout->addWidget(filterBar);
+
+	QWidget *test = new QWidget(this);
+	test->setLayout(filterBarLayout);
+	test->setStyleSheet("QWidget {border-width: 1px; border-style: inset; border-color: #535353; border-radius: 4px; background-color: #ffffff;}");
+	viewToolBar->addWidget(test);
 }
 
 void Phototonic::createStatusBar()

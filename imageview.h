@@ -123,6 +123,7 @@ private:
 	bool isAnimation;
 
 	void centerImage(QSize &imgSize);
+	long getExifOrientation();
 	void transform();
 	void mirror();
 	void colorize();

@@ -151,25 +151,18 @@ void ThumbView::updateExifInfo(QString imageFullPath)
 	}
 	catch (Exiv2::Error &error)
 	{
-		key = "No metadata";
-		val = "";
-		infoView->addEntry(key, val);
 		return;
 	}
 
     exifImage->readMetadata();
     Exiv2::ExifData &exifData = exifImage->exifData();
-    int exifElements = 3;
 
-    if (exifData.empty())
-    {
-        --exifElements;
-    }
-    else
+    if (!exifData.empty())
     {
 	    Exiv2::ExifData::const_iterator end = exifData.end();
 	    for (Exiv2::ExifData::const_iterator md = exifData.begin(); md != end; ++md)
 	    {
+	    	//qDebug() << Exiv2::toString(md->key()).c_str() << "    " << Exiv2::toString(md->value()).c_str();
 			key = QString::fromUtf8(md->tagName().c_str());
 			val = QString::fromUtf8(md->print().c_str());
 			infoView->addEntry(key, val);
@@ -177,42 +170,27 @@ void ThumbView::updateExifInfo(QString imageFullPath)
 	}
 
     Exiv2::IptcData &iptcData = exifImage->iptcData();
-    if (iptcData.empty())
-    {
-		--exifElements;
-    }
-    else
+    if (!iptcData.empty())
     {
 		Exiv2::IptcData::iterator end = iptcData.end();
 		for (Exiv2::IptcData::iterator md = iptcData.begin(); md != end; ++md)
 		{
 			key = QString::fromUtf8(md->tagName().c_str());
-        	val = QString::fromUtf8(Exiv2::toString(md->print()).c_str());
+        	val = QString::fromUtf8(md->print().c_str());
        		infoView->addEntry(key, val);
 		}
     }
 
 	Exiv2::XmpData &xmpData = exifImage->xmpData();
-	if (xmpData.empty())
-	{
-		--exifElements;
-	}
-	else
+	if (!xmpData.empty())
 	{
 		Exiv2::XmpData::iterator end = xmpData.end();
 		for (Exiv2::XmpData::iterator md = xmpData.begin(); md != end; ++md)
 		{
 			key = QString::fromUtf8(md->tagName().c_str());
-        	val = QString::fromUtf8(Exiv2::toString(md->print()).c_str());
+        	val = QString::fromUtf8(md->print().c_str());
        		infoView->addEntry(key, val);
 		}
-	}
-	
-	if (!exifElements)
-	{
-		QString key = "No metadata";
-		QString val = "";
-		infoView->addEntry(key, val);
 	}
 }
 
