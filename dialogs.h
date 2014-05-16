@@ -57,7 +57,7 @@ protected:
 
 private:
 	QComboBox *keysCombo;
- };
+};
 
 class SettingsDialog : public QDialog
 {

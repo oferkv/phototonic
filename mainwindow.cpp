@@ -609,7 +609,6 @@ void Phototonic::createToolBars()
 	goToolBar->addAction(goFrwdAction);
 	goToolBar->addAction(goUpAction);
 	goToolBar->addAction(goHomeAction);
-	goToolBar->addAction(refreshAction);
 
 	/* path bar */
 	pathBar = new QLineEdit;
@@ -618,17 +617,18 @@ void Phototonic::createToolBars()
 	pathCompleteDirMod->setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
 	pathComplete->setModel(pathCompleteDirMod);
 	pathBar->setCompleter(pathComplete);
-	pathBar->setMinimumWidth(300);
-	pathBar->setMaximumWidth(400);
+	pathBar->setMinimumWidth(200);
+	pathBar->setMaximumWidth(300);
 	connect(pathBar, SIGNAL(returnPressed()), this, SLOT(goPathBarDir()));
 	goToolBar->addWidget(pathBar);
+	goToolBar->addAction(refreshAction);
 
 	viewToolBar = addToolBar("View");
 	viewToolBar->setObjectName("View");
 	viewToolBar->addAction(thumbsZoomInAct);
 	viewToolBar->addAction(thumbsZoomOutAct);
 
-	/* filter bar (experimental) */ 
+	/* filter bar */ 
 	filterBar = new QLineEdit;
 	filterBar->setMinimumWidth(100);
 	filterBar->setMaximumWidth(200);
@@ -636,21 +636,23 @@ void Phototonic::createToolBars()
 	connect(filterBar, SIGNAL(returnPressed()), this, SLOT(setThumbsFilter()));
 	filterBar->setStyleSheet("QWidget {border-width: 0px;}");
 
-	QLabel *iconLab = new QLabel;
-	iconLab->setPixmap(QIcon(":/images/zoom.png").pixmap(16, 16));
-	iconLab->setStyleSheet("QWidget {border-width: 0px;}");
+	QLabel *filterBarIconLab = new QLabel;
+	filterBarIconLab->setPixmap(QIcon::fromTheme("edit-find", QIcon(":/images/zoom.png")).pixmap(16, 16));
+	filterBarIconLab->setStyleSheet("QWidget {border-width: 0px;}");
 	
 	QHBoxLayout *filterBarLayout = new QHBoxLayout();
 	filterBarLayout->setContentsMargins(3, 3, 3, 3);
 	filterBarLayout->setSizeConstraint(QLayout::SetFixedSize);
 	filterBarLayout->setSpacing(0);
-	filterBarLayout->addWidget(iconLab);
+	filterBarLayout->addWidget(filterBarIconLab);
 	filterBarLayout->addWidget(filterBar);
 
-	QWidget *test = new QWidget(this);
-	test->setLayout(filterBarLayout);
-	test->setStyleSheet("QWidget {border-width: 1px; border-style: inset; border-color: #535353; border-radius: 4px; background-color: #ffffff;}");
-	viewToolBar->addWidget(test);
+	QWidget *filterbarFrame = new QWidget(this);
+	filterbarFrame->setLayout(filterBarLayout);
+	filterbarFrame->setStyleSheet("QWidget {border-width: 1px; border-style: inset; border-color: #666666; border-radius: 3px; background-color: #ffffff;}");
+
+	viewToolBar->addSeparator();
+	viewToolBar->addWidget(filterbarFrame);
 }
 
 void Phototonic::createStatusBar()
@@ -1585,7 +1587,6 @@ void Phototonic::mousePressEvent(QMouseEvent *event)
 		if (event->button() == Qt::MiddleButton)
 		{
 			fullScreenAct->setChecked(!(fullScreenAct->isChecked()));
-				
 			toggleFullScreen();
 			event->accept();
 		}
@@ -1618,6 +1619,7 @@ void Phototonic::newImage()
 void Phototonic::setThumbViewWidgetsVisible(bool visible)
 {
 	menuBar()->setVisible(visible);
+	menuBar()->setDisabled(!visible);
 	editToolBar->setVisible(visible? editToolBarVisible : false);
 	goToolBar->setVisible(visible? goToolBarVisible : false);
 	viewToolBar->setVisible(visible? viewToolBarVisible : false);

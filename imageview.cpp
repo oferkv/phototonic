@@ -598,7 +598,7 @@ void ImageView::monitorCursorState()
 	}
 	else
 	{
-		if (!cursorIsHidden && !moveImageLocked)
+		if (!cursorIsHidden)
 		{
 			QApplication::setOverrideCursor(Qt::BlankCursor);
 			cursorIsHidden = true;
@@ -609,7 +609,9 @@ void ImageView::monitorCursorState()
 void ImageView::setCursorHiding(bool hide)
 {
 	if (hide)
+	{
 		mouseMovementTimer->start(500);
+	}
 	else
 	{
 		mouseMovementTimer->stop();
