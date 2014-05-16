@@ -408,7 +408,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 
 	QToolButton *clearShortCutButton = new QToolButton();
 	clearShortCutButton->setStyleSheet("QToolButton {padding: 0px;}");
-	clearShortCutButton->setIcon(QIcon::fromTheme("edit-delete", QIcon(":/images/delete.png")));
+	clearShortCutButton->setIcon(QIcon::fromTheme("edit-clear", QIcon(":/images/clear.png")));
 	connect(clearShortCutButton, SIGNAL(clicked()), keyLine, SLOT(clearShortcut()));
 
 	// Keyboard shortcuts
@@ -516,7 +516,7 @@ void SettingsDialog::pickThumbsTextColor()
 CropDialog::CropDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
 {
 	setWindowTitle("Cropping");
-	resize(340, 180);
+	resize(300, 300);
 	if (GData::dialogLastX)
 		move(GData::dialogLastX, GData::dialogLastY);
 	imageView = imageView_;
@@ -527,37 +527,21 @@ CropDialog::CropDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
 	connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
 	buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);
 
-	QSlider *topSlide = new QSlider(Qt::Horizontal);
-	QSlider *bottomSlide = new QSlider(Qt::Horizontal);
+	QSlider *topSlide = new QSlider(Qt::Vertical);
+	QSlider *bottomSlide = new QSlider(Qt::Vertical);
 	QSlider *leftSlide = new QSlider(Qt::Horizontal);
 	QSlider *rightSlide = new QSlider(Qt::Horizontal);
 
 	topSlide->setTickPosition(QSlider::TicksAbove);
+	topSlide->setInvertedAppearance(true);
 	topSlide->setTickInterval(100);
-	bottomSlide->setTickPosition(QSlider::TicksAbove);
+	bottomSlide->setTickPosition(QSlider::TicksBelow);
 	bottomSlide->setTickInterval(100);
 	leftSlide->setTickPosition(QSlider::TicksAbove);
 	leftSlide->setTickInterval(100);
-	rightSlide->setTickPosition(QSlider::TicksAbove);
+	rightSlide->setTickPosition(QSlider::TicksBelow);
+	rightSlide->setInvertedAppearance(true);
 	rightSlide->setTickInterval(100);
-
-	QLabel *topLab = new QLabel("Top");
-	QLabel *leftLab = new QLabel("Left");
-	QLabel *rightLab = new QLabel("Right");
-	QLabel *bottomLab = new QLabel("Bottom");
-	QLabel *topPixLab = new QLabel;
-	QLabel *leftPixLab = new QLabel;
-	QLabel *rightPixLab = new QLabel;
-	QLabel *bottomPixLab = new QLabel;
-
-	QPixmap topPix(":/images/top.png");
-	topPixLab->setPixmap(topPix);
-	QPixmap leftPix(":/images/first.png");
-	leftPixLab->setPixmap(leftPix);
-	QPixmap rightPix(":/images/last.png");
-	rightPixLab->setPixmap(rightPix);
-	QPixmap bottomPix(":/images/bottom.png");
-	bottomPixLab->setPixmap(bottomPix);
 
 	topSpin = new QSpinBox;
 	bottomSpin = new QSpinBox;
@@ -565,31 +549,18 @@ CropDialog::CropDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
 	rightSpin = new QSpinBox;
 
 	QGridLayout *mainGbox = new QGridLayout;
-	mainGbox->setColumnStretch(2, 1);
 
-	mainGbox->addWidget(topPixLab, 0, 0, 1, 1);
-	mainGbox->addWidget(topLab, 0, 1, 1, 1);
-	mainGbox->addWidget(topSlide, 0, 2, 1, 3);
-	mainGbox->addWidget(topSpin, 0, 5, 1, 1);
-
-	mainGbox->addWidget(bottomPixLab, 1, 0, 1, 1);
-	mainGbox->addWidget(bottomLab, 1, 1, 1, 1);
-	mainGbox->addWidget(bottomSlide, 1, 2, 1, 3);
-	mainGbox->addWidget(bottomSpin, 1, 5, 1, 1);
-
-	mainGbox->addWidget(leftPixLab, 2, 0, 1, 1);
-	mainGbox->addWidget(leftLab, 2, 1, 1, 1);
-	mainGbox->addWidget(leftSlide, 2, 2, 1, 3);
-	mainGbox->addWidget(leftSpin, 2, 5, 1, 1);
-	
-	mainGbox->addWidget(rightPixLab, 3, 0, 1, 1);
-	mainGbox->addWidget(rightLab, 3, 1, 1, 1);
-	mainGbox->addWidget(rightSlide, 3, 2, 1, 3);
-	mainGbox->addWidget(rightSpin, 3, 5, 1, 1);
+	mainGbox->addWidget(topSlide, 2, 1, 5, 1);
+	mainGbox->addWidget(topSpin, 4, 2, 1, 1);
+	mainGbox->addWidget(bottomSlide, 2, 7, 5, 1);
+	mainGbox->addWidget(bottomSpin, 4, 6, 1, 1);
+	mainGbox->addWidget(leftSlide, 1, 2, 1, 5);
+	mainGbox->addWidget(leftSpin, 2, 4, 1, 1);
+	mainGbox->addWidget(rightSlide, 7, 2, 1, 5);
+	mainGbox->addWidget(rightSpin, 6, 4, 1, 1);
 
 	QVBoxLayout *mainVbox = new QVBoxLayout;
 	mainVbox->addLayout(mainGbox);
-	mainVbox->addStretch(1);	
 	mainVbox->addLayout(buttonsHbox);
 	setLayout(mainVbox);
 

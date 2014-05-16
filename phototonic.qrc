@@ -35,5 +35,6 @@
 		<file>images/green.png</file>
 		<file>images/blue.png</file>
 		<file>images/tree.png</file>
+		<file>images/clear.png</file>
 	</qresource>
 </RCC>
