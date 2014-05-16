@@ -23,7 +23,7 @@
 
 Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 {
-	GData::appSettings = new QSettings("phototonic", "phototonic_098_g1");
+	GData::appSettings = new QSettings("phototonic", "phototonic_098_g2");
 	readSettings();
 	createThumbView();
 	createActions();
@@ -159,6 +159,8 @@ void Phototonic::createImageView()
 	imageView->addAction(resetZoomAct);
 	imageView->addAction(rotateRightAct);
 	imageView->addAction(rotateLeftAct);
+	imageView->addAction(freeRotateRightAct);
+	imageView->addAction(freeRotateLeftAct);
 	imageView->addAction(flipHAct);
 	imageView->addAction(flipVAct);
 	imageView->addAction(cropAct);
@@ -214,6 +216,8 @@ void Phototonic::createImageView()
 	imageView->ImagePopUpMenu->addAction(transformSubMenuAct);
 	transformSubMenu->addAction(rotateRightAct);
 	transformSubMenu->addAction(rotateLeftAct);
+	transformSubMenu->addAction(freeRotateRightAct);
+	transformSubMenu->addAction(freeRotateLeftAct);
 	transformSubMenu->addAction(flipHAct);
 	transformSubMenu->addAction(flipVAct);
 	transformSubMenu->addAction(cropAct);
@@ -455,11 +459,11 @@ void Phototonic::createActions()
 	keepZoomAct->setCheckable(true);
 	connect(keepZoomAct, SIGNAL(triggered()), this, SLOT(keepZoom()));
 
-	rotateLeftAct = new QAction("Rotate Left", this);
+	rotateLeftAct = new QAction(QString::fromUtf8("Rotate 90\u00b0 CCW"), this);
 	rotateLeftAct->setIcon(QIcon::fromTheme("object-rotate-left", QIcon(":/images/rotate_left.png")));
 	connect(rotateLeftAct, SIGNAL(triggered()), this, SLOT(rotateLeft()));
 
-	rotateRightAct = new QAction("Rotate Right", this);
+	rotateRightAct = new QAction(QString::fromUtf8("Rotate 90\u00b0 CW"), this);
 	rotateRightAct->setIcon(QIcon::fromTheme("object-rotate-right", QIcon(":/images/rotate_right.png")));
 	connect(rotateRightAct, SIGNAL(triggered()), this, SLOT(rotateRight()));
 
@@ -473,6 +477,12 @@ void Phototonic::createActions()
 
 	cropAct = new QAction("Cropping", this);
 	connect(cropAct, SIGNAL(triggered()), this, SLOT(cropImage()));
+
+	freeRotateLeftAct = new QAction(QString::fromUtf8("Rotate 1\u00b0 CCW"), this);
+	connect(freeRotateLeftAct, SIGNAL(triggered()), this, SLOT(freeRotateLeft()));
+
+	freeRotateRightAct = new QAction(QString::fromUtf8("Rotate 1\u00b0 CW"), this);
+	connect(freeRotateRightAct, SIGNAL(triggered()), this, SLOT(freeRotateRight()));
 
 	colorsAct = new QAction("Colors", this);
 	connect(colorsAct, SIGNAL(triggered()), this, SLOT(showColorsDialog()));
@@ -1018,6 +1028,22 @@ void Phototonic::cropImage()
 	imageView->setCursorOverrides(true);
 }
 
+void Phototonic::freeRotateLeft()
+{
+	GData::rotation--;
+	if (GData::rotation < 0)
+		GData::rotation = 359;
+	imageView->refresh();
+}
+
+void Phototonic::freeRotateRight()
+{
+	GData::rotation++;
+	if (GData::rotation > 360)
+		GData::rotation = 1;
+	imageView->refresh();
+}
+
 void Phototonic::showColorsDialog()
 {
 	ColorsDialog *dialog = new ColorsDialog(this, imageView);
@@ -1481,6 +1507,8 @@ void Phototonic::loadShortcuts()
 	GData::actionKeys[origZoomAct->text()] = origZoomAct;
 	GData::actionKeys[rotateLeftAct->text()] = rotateLeftAct;
 	GData::actionKeys[rotateRightAct->text()] = rotateRightAct;
+	GData::actionKeys[freeRotateLeftAct->text()] = freeRotateLeftAct;
+	GData::actionKeys[freeRotateRightAct->text()] = freeRotateRightAct;
 	GData::actionKeys[flipHAct->text()] = flipHAct;
 	GData::actionKeys[flipVAct->text()] = flipVAct;
 	GData::actionKeys[cropAct->text()] = cropAct;
@@ -1538,6 +1566,8 @@ void Phototonic::loadShortcuts()
 		origZoomAct->setShortcut(QKeySequence("Alt+Z"));
 		rotateLeftAct->setShortcut(QKeySequence("Ctrl+Left"));
 		rotateRightAct->setShortcut(QKeySequence("Ctrl+Right"));
+		freeRotateLeftAct->setShortcut(QKeySequence("Ctrl+Shift+Left"));
+		freeRotateRightAct->setShortcut(QKeySequence("Ctrl+Shift+Right"));
 		flipHAct->setShortcut(QKeySequence("Ctrl+Down"));
 		flipVAct->setShortcut(QKeySequence("Ctrl+Up"));
 		cropAct->setShortcut(QKeySequence("Ctrl+R"));
