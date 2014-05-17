@@ -247,15 +247,6 @@ long ImageView::getExifOrientation()
 
 void ImageView::transform()
 {
-	if (GData::cropLeft || GData::cropTop || GData::cropWidth || GData::cropHeight)
-	{
-		displayImage = displayImage.copy(	
-								GData::cropLeft,
-								GData::cropTop,
-								origImage.width() - GData::cropWidth - GData::cropLeft,
-								origImage.height() - GData::cropHeight - GData::cropTop);
-	}
-
 	if (GData::exifRotationEnabled)
 	{
 		QTransform trans;
@@ -266,28 +257,28 @@ void ImageView::transform()
 				break;
  			case 3:
 				trans.rotate(180);
-				displayImage = displayImage.transformed(trans);
+				displayImage = displayImage.transformed(trans, Qt::SmoothTransformation);
 				break;
  			case 4:
 				displayImage = displayImage.mirrored(false, true);
 				break;
  			case 5:
 				trans.rotate(90);
-				displayImage = displayImage.transformed(trans);
+				displayImage = displayImage.transformed(trans, Qt::SmoothTransformation);
 				displayImage = displayImage.mirrored(true, false);
 				break;
  			case 6:
 				trans.rotate(90);
-				displayImage = displayImage.transformed(trans);
+				displayImage = displayImage.transformed(trans, Qt::SmoothTransformation);
 				break;
  			case 7:
 				trans.rotate(90);
-				displayImage = displayImage.transformed(trans);
+				displayImage = displayImage.transformed(trans, Qt::SmoothTransformation);
 				displayImage = displayImage.mirrored(false, true);
 				break;
  			case 8:
 				trans.rotate(270);
-				displayImage = displayImage.transformed(trans);
+				displayImage = displayImage.transformed(trans, Qt::SmoothTransformation);
 				break;
 		}
 	}
@@ -296,12 +287,21 @@ void ImageView::transform()
 	{
 		QTransform trans;
 		trans.rotate(GData::rotation);
-		displayImage = displayImage.transformed(trans);
+		displayImage = displayImage.transformed(trans, Qt::SmoothTransformation);
 	}
 
 	if (GData::flipH || GData::flipV)
 	{
 		displayImage = displayImage.mirrored(GData::flipH, GData::flipV);
+	}
+
+	if (GData::cropLeft || GData::cropTop || GData::cropWidth || GData::cropHeight)
+	{
+		displayImage = displayImage.copy(	
+								GData::cropLeft,
+								GData::cropTop,
+								displayImage.width() - GData::cropWidth - GData::cropLeft,
+								displayImage.height() - GData::cropHeight - GData::cropTop);
 	}
 }
 
@@ -862,7 +862,7 @@ void ImageView::contextMenuEvent(QContextMenuEvent *)
 
 QSize ImageView::getImageSize()
 {
-	return QSize(origImage.width(), origImage.height());
+	return QSize(displayImage.width(), displayImage.height());
 }
 
 void ImageView::copyImage()
