@@ -348,7 +348,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	saveQualityHbox->addStretch(1);
 
 	// Enable animations
-	enableAnimCb = new QCheckBox("Enable animations", this);
+	enableAnimCb = new QCheckBox("Enable GIF animation", this);
 	enableAnimCb->setChecked(GData::enableAnimations);
 
 	// Enable Exif

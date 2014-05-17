@@ -230,8 +230,13 @@ void ThumbView::handleSelectionChanged(const QItemSelection&)
 			infoView->addEntry(key, val);
 
 			key = "Resolution";
-			val = QString::number(imageInfoReader.size().width()) + "x"
-										+ QString::number(imageInfoReader.size().height());
+			val = QString::number(imageInfoReader.size().width())
+					+ " x "
+					+ QString::number(imageInfoReader.size().height());
+			infoView->addEntry(key, val);
+
+			key = "Megapixel";
+			val = QString::number((imageInfoReader.size().width() * imageInfoReader.size().height()) / 1000000.0, 'f', 2);
 			infoView->addEntry(key, val);
 
 			key = "Size";
@@ -324,23 +329,26 @@ void ThumbView::load(QString &cliImageName)
 
 	fileFilters->clear();
 	QString textFilter("*");
-	textFilter+= filterStr; // filterBar->text()
+	textFilter+= filterStr;
 	*fileFilters	<< textFilter + "*.BMP"
 					<< textFilter + "*.GIF"
-					<< textFilter + "*.JPG"
+					<< textFilter + "*.ICO"
 					<< textFilter + "*.JPEG"
-					<< textFilter + "*.JPE"
-					<< textFilter + "*.PNG"
+					<< textFilter + "*.JPG"
+					<< textFilter + "*.MNG"
 					<< textFilter + "*.PBM"
 					<< textFilter + "*.PGM"
+					<< textFilter + "*.PNG"
 					<< textFilter + "*.PPM"
+					<< textFilter + "*.SVG"
+					<< textFilter + "*.SVGZ"
+					<< textFilter + "*.TGA"					
+					<< textFilter + "*.TIF"
+					<< textFilter + "*.TIFF"
+					<< textFilter + "*.WBMP"
 					<< textFilter + "*.XBM"
 					<< textFilter + "*.XPM"
-					<< textFilter + "*.SVG"
-					<< textFilter + "*.TIFF"
-					<< textFilter + "*.TIF"
-					<< textFilter + "*.TGA"
-					<< textFilter + "*.ICO";
+					<< textFilter + "*.JPE";
 	thumbsDir->setNameFilters(*fileFilters);
 	
 	abortOp = false;

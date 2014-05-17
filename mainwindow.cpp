@@ -23,7 +23,7 @@
 
 Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 {
-	GData::appSettings = new QSettings("phototonic", "phototonic_098_g2");
+	GData::appSettings = new QSettings("phototonic", "phototonic_099");
 	readSettings();
 	createThumbView();
 	createActions();
@@ -1930,8 +1930,8 @@ void Phototonic::selectCurrentViewDir()
 	QModelIndex idx = fsModel->index(thumbView->currentViewDir); 
 	if (idx.isValid())
 	{
-		fsTree->setCurrentIndex(idx);
 		fsTree->expand(idx);
+		fsTree->setCurrentIndex(idx);
 	}
 }
 
