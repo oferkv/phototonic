@@ -71,7 +71,8 @@ void ThumbView::setThumbColors()
 
 void ThumbView::selectCurrentIndex()
 {
-	setCurrentIndex(currentIndex);
+	if (thumbViewModel->rowCount() > 1) 
+		setCurrentIndex(currentIndex);
 }
 
 QString ThumbView::getSingleSelectionFilename()
