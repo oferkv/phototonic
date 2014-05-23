@@ -524,10 +524,10 @@ void ImageView::reload()
 		GData::flipV = false;
 	}
 
-	if (newImage || currentImage.isEmpty())
+	if (newImage || currentImageFullPath.isEmpty())
 	{
 		newImage = true;
-		currentImage = "new_image.png";
+		currentImageFullPath = "new_image.png";
 		origImage.load(":/images/no_image.png");
 		displayImage = origImage;
 		displayPixmap = QPixmap::fromImage(displayImage);
@@ -570,12 +570,11 @@ void ImageView::reload()
 	resizeImage();
 }
 
-void ImageView::loadImage(QString &imagePath, QString imageFileName)
+void ImageView::loadImage(QString &imageFileName)
 {
 	newImage = false;
 	tempDisableResize = false;
-	currentImage = imageFileName;
-	currentImageFullPath = imagePath + QDir::separator() + currentImage;
+	currentImageFullPath = imageFileName;
 
 	if (!GData::keepZoomFactor)
 		GData::imageZoomFactor = 1.0;

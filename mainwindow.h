@@ -42,7 +42,7 @@ signals:
 
 public slots:
 	void unsetBusy();
-	void updateState(QString state);
+	void setStatus(QString state);
 	void dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvDirPath);
 	void loadImageFile(QString imageFileName);
 	void loadImagefromThumb(const QModelIndex &idx);
@@ -61,6 +61,7 @@ private slots:
 	void changeActionsBySelection(const QItemSelection&, const QItemSelection&);
 	void reloadThumbsSlot();
 	void renameDir();
+	void setThumbviewWindowTitle();
 	void rename();
 	void openOp();
 	void newImage();

@@ -1,13 +1,13 @@
 pkgname=phototonic
-pkgver=0.98
+pkgver=0.99
 pkgrel=1
 pkgdesc="Image Viewer and Organizer"
 arch=('i686' 'x86_64')
 url="http://oferkv.github.io/phototonic/"
 license=('GPL3')
-depends=('qt5-base')
+depends=('qt5-base' 'exiv2')
 source=("https://github.com/oferkv/phototonic/archive/v${pkgver}.tar.gz")
-md5sums=('72cef19cdcaf85b1777077b1714b611d')
+md5sums=('3f818b3797e3fd00d86cdc8357c22af2')
 provides=('phototonic')
 
 build() {

@@ -59,7 +59,7 @@ class ThumbView : public QListView
 
 signals:
 	void unsetBusy();
-	void updateState(QString state);
+	void setStatus(QString state);
 
 public slots:
 	void abort();

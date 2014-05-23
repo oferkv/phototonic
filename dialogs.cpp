@@ -89,7 +89,10 @@ static int cpMvFile(bool isCopy, QString &srcFile, QString &srcPath, QString &ds
 void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDir)
 {
 	int res = 0;
-	nfiles = 0;
+	QString sourceFile;
+	QFileInfo fileInfo;
+	QString currFile;
+	QString destFile;
 
 	show();
 
@@ -98,10 +101,10 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 		int tn = 0;
 		for (tn = 0; tn < GData::copyCutFileList.size(); ++tn)
 		{
-			QString sourceFile = GData::copyCutFileList[tn];
-			QFileInfo fInfo = QFileInfo(sourceFile);
-			QString currFile = fInfo.fileName();
-			QString destFile = destDir + QDir::separator() + currFile;
+			sourceFile = GData::copyCutFileList[tn];
+			fileInfo = QFileInfo(sourceFile);
+			currFile = fileInfo.fileName();
+			destFile = destDir + QDir::separator() + currFile;
 
 			opLabel->setText((GData::copyOp? "Copying ":"Moving ") + sourceFile + " to " + destFile);
 			QApplication::processEvents();
@@ -110,21 +113,18 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 
 			if (!res || abortOp)
 			{
-				++nfiles;
 				break;
 			}
-			++nfiles;
 		}
 	}
 	else
 	{
 		QList<int> rowList;
 		int tn = 0;
-		for (tn = GData::copyCutIdxList.size() - 1; tn >= 0 ; tn--)
+		for (tn = GData::copyCutIdxList.size() - 1; tn >= 0 ; --tn)
 		{
-			QString currFile = thumbView->thumbViewModel->item(GData::copyCutIdxList[tn].row())->data(thumbView->FileNameRole).toString();
-			QString sourceFile = thumbView->currentViewDir + QDir::separator() + currFile;
-			QString destFile = destDir + QDir::separator() + currFile;
+			sourceFile = thumbView->thumbViewModel->item(GData::copyCutIdxList[tn].row())->data(thumbView->FileNameRole).toString();
+			destFile = destDir + QDir::separator() + currFile;
 
 			opLabel->setText((GData::copyOp? "Copying ":"Moving ") + sourceFile + " to " + destFile);
 			QApplication::processEvents();
@@ -133,18 +133,16 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 
 			if (!res || abortOp)
 			{
-				++nfiles;
 				break;
 			}
 
-			++nfiles;
 			rowList.append(GData::copyCutIdxList[tn].row());
 		}
 
 		if (!GData::copyOp)
 		{
 			qSort(rowList);
-			for (int t = rowList.size() - 1; t >= 0; t--)
+			for (int t = rowList.size() - 1; t >= 0; --t)
 				thumbView->thumbViewModel->removeRow(rowList.at(t));
 		}
 	}

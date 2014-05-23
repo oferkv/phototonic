@@ -163,7 +163,7 @@ void ThumbView::updateExifInfo(QString imageFullPath)
 	    Exiv2::ExifData::const_iterator end = exifData.end();
 	    for (Exiv2::ExifData::const_iterator md = exifData.begin(); md != end; ++md)
 	    {
-	    	//qDebug() << Exiv2::toString(md->key()).c_str() << "    " << Exiv2::toString(md->value()).c_str();
+	    	// qDebug() << Exiv2::toString(md->key()).c_str() << " " << Exiv2::toString(md->value()).c_str();
 			key = QString::fromUtf8(md->tagName().c_str());
 			val = QString::fromUtf8(md->print().c_str());
 			infoView->addEntry(key, val);
@@ -213,18 +213,22 @@ void ThumbView::handleSelectionChanged(const QItemSelection&)
 
 	if (nSelected == 1)
 	{
-		QString imageName = thumbViewModel->item(indexesList.first().row())->data(FileNameRole).toString();
-		imageFullPath = currentViewDir + QDir::separator() + imageName;
+		QString imageFullPath = thumbViewModel->item(indexesList.first().row())->data(FileNameRole).toString();
 		imageInfoReader.setFileName(imageFullPath);
 		QString key;
 		QString val;
 		
 		if (imageInfoReader.size().isValid())
 		{
-			QFileInfo imageInfo = QFileInfo(currentViewDir + QDir::separator() + imageName);
+			QFileInfo imageInfo = QFileInfo(imageFullPath);
 
 			key = "File name";
-			infoView->addEntry(key, imageName);
+			val = imageInfo.fileName();
+			infoView->addEntry(key, val);
+
+			key = "Location";
+			val = imageInfo.path();
+			infoView->addEntry(key, val);
 
 			key = "Format";
 			val = imageInfoReader.format().toUpper();
@@ -259,7 +263,7 @@ void ThumbView::handleSelectionChanged(const QItemSelection&)
 		}
 	}
 
-	emit updateState(state);
+	emit setStatus(state);
 }
 
 void ThumbView::startDrag(Qt::DropActions)
@@ -358,15 +362,16 @@ void ThumbView::load(QString &cliImageName)
 	initThumbs();
 	if (!cliImageName.isEmpty())
 	{
-		setCurrentIndexByName(cliImageName);
+		QString cliImageFullPath = currentViewDir + QDir::separator() + cliImageName;
+		setCurrentIndexByName(cliImageFullPath);
 	}
 
 	if ((thumbViewModel->rowCount()) == 1)
-		emit updateState("No images");
+		emit setStatus("No images");
 	else 
 	{
 		QString state = (QString::number(thumbViewModel->rowCount() - 1) + " images");
-		emit updateState(state);
+		emit setStatus(state);
 	}
 
 	loadThumbs();
@@ -397,7 +402,7 @@ void ThumbView::initThumbs()
 		thumbFileInfo = thumbFileInfoList.at(currThumb);
 		thumbIitem = new QStandardItem();
 		thumbIitem->setData(currThumb, SortRole);
-		thumbIitem->setData(thumbFileInfo.fileName(), FileNameRole);
+		thumbIitem->setData(thumbFileInfo.filePath(), FileNameRole);
 		if (GData::thumbsLayout == Classic)
 			thumbIitem->setData(thumbFileInfo.fileName(), Qt::DisplayRole);
 		thumbIitem->setIcon(emptyPixMap);

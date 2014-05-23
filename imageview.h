@@ -40,7 +40,6 @@ class ImageView : public QWidget
     Q_OBJECT
 
 public:
-	QString currentImage;
 	bool tempDisableResize;
 	int mirrorLayout;
 	QString currentImageFullPath;
@@ -73,7 +72,7 @@ public:
 	};
 
     ImageView(QWidget *parent = 0);
-	void loadImage(QString &imagePath, QString imageFileName);
+	void loadImage(QString &imageFileName);
 	void resizeImage();
 	void setMouseMoveData(bool lockMove, int lMouseX, int lMouseY);
 	void setCursorHiding(bool hide);
