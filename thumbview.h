@@ -36,6 +36,7 @@
 #include <QDragEnterEvent>
 #include <QDateTime>
 #include <QItemDelegate>
+#include <QDirIterator>
 #include <exiv2/exiv2.hpp>
 #include "global.h"
 
@@ -89,7 +90,6 @@ public:
 	QDir *thumbsDir;
 	QStringList *fileFilters;
 	QList<QStandardItem*> *thumbList;
-	QList<bool> *thumbIsLoaded;
 	QStandardItemModel *thumbViewModel;
 	QString currentViewDir;
 	QDir::SortFlags thumbsSortFlags;
@@ -101,7 +101,8 @@ public:
 	enum UserRoles
 	{
 		FileNameRole = Qt::UserRole + 1,
-		SortRole
+		SortRole,
+		LoadedRole
 	};
 
 	enum ThumbnailLayouts
@@ -133,6 +134,7 @@ private:
 	void loadThumbs();
 	int getFirstVisibleItem();
 	bool isItemVisible(QModelIndex idx);
+	void updateThumbsCount();
 	void updateExifInfo(QString imageFullPath);
 };
 

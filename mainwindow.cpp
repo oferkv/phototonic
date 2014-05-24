@@ -23,7 +23,7 @@
 
 Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 {
-	GData::appSettings = new QSettings("phototonic", "phototonic_099");
+	GData::appSettings = new QSettings("phototonic", "phototonic_099_git_01");
 	readSettings();
 	createThumbView();
 	createActions();
@@ -678,7 +678,7 @@ void Phototonic::createFSTree()
 
 	fsModel = new QFileSystemModel;
 	fsModel->setRootPath("");
-	fsModel->setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
+	fsModel->setFilter(QDir::AllDirs | QDir::NoDotAndDotDot /*| QDir::Hidden*/);
 
 	fsTree = new FSTree(fsDock);
 	fsDock->setWidget(fsTree);
@@ -772,7 +772,7 @@ void Phototonic::setSquarishThumbs()
 
 void Phototonic::about()
 {
-	QMessageBox::about(this, "About Phototonic", "<h2>Phototonic v0.99</h2>"
+	QMessageBox::about(this, "About Phototonic", "<h2>Phototonic v0.99Git01</h2>"
 							"<p>Image viewer and organizer</p>"
 							"<p><a href=\"http://oferkv.github.io/phototonic/\">Home page</a></p>"
 							"<p><a href=\"https://github.com/oferkv/phototonic/issues\">Reports Bugs</a></p>"
@@ -1729,7 +1729,7 @@ void Phototonic::slideShow()
 	}
 	else
 	{
-		if (thumbView->thumbViewModel->rowCount() <= 1)
+		if (thumbView->thumbViewModel->rowCount() <= 0)
 			return;
 	
 		if (stackedWidget->currentIndex() == thumbViewIdx)
@@ -1778,7 +1778,7 @@ void Phototonic::slideShowHandler()
 
 void Phototonic::loadNextImage()
 {
-	if (thumbView->thumbViewModel->rowCount() <= 1)
+	if (thumbView->thumbViewModel->rowCount() <= 0)
 		return;
 
 	int nextRow = thumbView->getNextRow();
@@ -1791,7 +1791,7 @@ void Phototonic::loadNextImage()
 
 void Phototonic::loadPrevImage()
 {
-	if (thumbView->thumbViewModel->rowCount() <= 1)
+	if (thumbView->thumbViewModel->rowCount() <= 0)
 		return;
 
 	int prevRow = thumbView->getPrevRow();
@@ -1804,7 +1804,7 @@ void Phototonic::loadPrevImage()
 
 void Phototonic::loadFirstImage()
 {
-	if (thumbView->thumbViewModel->rowCount() <= 1)
+	if (thumbView->thumbViewModel->rowCount() <= 0)
 		return;
 
 	loadImageFile(thumbView->thumbViewModel->item(0)->data(thumbView->FileNameRole).toString());
@@ -1813,7 +1813,7 @@ void Phototonic::loadFirstImage()
 
 void Phototonic::loadLastImage()
 {
-	if (thumbView->thumbViewModel->rowCount() <= 1)
+	if (thumbView->thumbViewModel->rowCount() <= 0)
 		return;
 
 	int lastRow = thumbView->getLastRow();
@@ -1823,7 +1823,7 @@ void Phototonic::loadLastImage()
 
 void Phototonic::loadRandomImage()
 {
-	if (thumbView->thumbViewModel->rowCount() <= 1)
+	if (thumbView->thumbViewModel->rowCount() <= 0)
 		return;
 
 	int randomRow = thumbView->getRandomRow();
@@ -2195,7 +2195,7 @@ void Phototonic::createSubDirectory()
 
 void Phototonic::manageDir()
 {
-	setStatus("Opening file manager...");
+	setStatus("Executing file manager...");
 	QDesktopServices::openUrl(QUrl("file:///" + getSelectedPath()));
 }
 
