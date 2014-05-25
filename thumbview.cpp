@@ -387,8 +387,7 @@ void ThumbView::load(QString &cliImageName)
 
 	loadThumbs();
 
-	bool recurse = true;
-	if (recurse)
+	if (GData::includeSubFolders)
 	{
 		QDirIterator iterator(currentViewDir, QDirIterator::Subdirectories);
 		while (iterator.hasNext())

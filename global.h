@@ -65,6 +65,7 @@ namespace GData
 	extern bool hueGreenChannel;
 	extern bool hueBlueChannel;
 	extern bool exifRotationEnabled;
+	extern bool includeSubFolders;
 
 	// app data
 	extern QModelIndexList copyCutIdxList;

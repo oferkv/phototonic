@@ -77,7 +77,7 @@ bool Phototonic::handleArgs()
 		{
 			thumbView->currentViewDir = cliArg.absolutePath();
 			selectCurrentViewDir();
-			cliFileName = cliArg.fileName();
+			cliFileName = thumbView->currentViewDir + QDir::separator() + cliArg.fileName();
 			return true;
 		}
 	}
@@ -367,6 +367,11 @@ void Phototonic::createActions()
 	refreshAction->setIcon(QIcon::fromTheme("view-refresh", QIcon(":/images/refresh.png")));
 	connect(refreshAction, SIGNAL(triggered()), this, SLOT(reload()));
 
+	subFoldersAction = new QAction("Include Sub-folders", this);
+	subFoldersAction->setIcon(QIcon(":/images/tree.png"));
+	subFoldersAction->setCheckable(true);
+	connect(subFoldersAction, SIGNAL(triggered()), this, SLOT(setIncludeSubFolders()));
+
 	pasteAction = new QAction("Paste Here", this);
 	pasteAction->setIcon(QIcon::fromTheme("edit-paste", QIcon(":/images/paste.png")));
 	connect(pasteAction, SIGNAL(triggered()), this, SLOT(pasteImages()));
@@ -528,6 +533,7 @@ void Phototonic::createMenus()
 	fileMenu = menuBar()->addMenu("File");
 	fileMenu->addAction(newImageAction);
 	fileMenu->addAction(openAction);
+	fileMenu->addAction(subFoldersAction);
 	fileMenu->addAction(createDirAction);
 	fileMenu->addSeparator();
 	fileMenu->addAction(exitAction);
@@ -605,14 +611,7 @@ void Phototonic::createMenus()
 
 void Phototonic::createToolBars()
 {
-	editToolBar = addToolBar("Edit");
-	editToolBar->setObjectName("Edit");
-	editToolBar->addAction(newImageAction);
-	editToolBar->addAction(cutAction);
-	editToolBar->addAction(copyAction);
-	editToolBar->addAction(pasteAction);
-	editToolBar->addAction(deleteAction);
-
+	/* Navigation */
 	goToolBar = addToolBar("Navigation");
 	goToolBar->setObjectName("Navigation");
 	goToolBar->addAction(goBackAction);
@@ -632,7 +631,18 @@ void Phototonic::createToolBars()
 	connect(pathBar, SIGNAL(returnPressed()), this, SLOT(goPathBarDir()));
 	goToolBar->addWidget(pathBar);
 	goToolBar->addAction(refreshAction);
+	goToolBar->addAction(subFoldersAction);
 
+	/* Edit */
+	editToolBar = addToolBar("Edit");
+	editToolBar->setObjectName("Edit");
+	editToolBar->addAction(newImageAction);
+	editToolBar->addAction(cutAction);
+	editToolBar->addAction(copyAction);
+	editToolBar->addAction(pasteAction);
+	editToolBar->addAction(deleteAction);
+
+	/* View */
 	viewToolBar = addToolBar("View");
 	viewToolBar->setObjectName("View");
 	viewToolBar->addAction(thumbsZoomInAct);
@@ -736,6 +746,12 @@ void Phototonic::reload()
 	}
 	else
 		refreshThumbs(false);
+}
+
+void Phototonic::setIncludeSubFolders()
+{
+	GData::includeSubFolders = subFoldersAction->isChecked();
+	refreshThumbs(false);
 }
 
 void Phototonic::refreshThumbs(bool scrollToTop)

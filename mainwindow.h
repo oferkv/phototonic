@@ -53,6 +53,7 @@ private slots:
 	void about();
 	void sortThumbnains();
 	void reload();
+	void setIncludeSubFolders();
 	void refreshThumbs(bool noScroll);
 	void setFlagsByQAction(QAction *act, QDir::SortFlags SortFlag);
 	void showSettings();
@@ -162,6 +163,7 @@ private:
 	QAction *actType;
 	QAction *actReverse;
 	QAction *refreshAction;
+	QAction *subFoldersAction;
 	QAction *fullScreenAct;
 	QAction *thumbsGoTopAct;
 	QAction *thumbsGoBottomAct;
