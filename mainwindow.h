@@ -121,6 +121,7 @@ private slots:
 	void setClassicThumbs();
 	void setCompactThumbs();
 	void setSquarishThumbs();
+	void showHiddenFiles();
 	void chooseExternalApp();
 	void updateExternalApps();
 	void runExternalApp();
@@ -203,6 +204,7 @@ private:
 	QAction *actCompact;
 	QAction *actSquarish;
 	QAction *aboutAction;
+	QAction *actShowHidden;
 
 	QAction *pasteAction;
 	QAction *createDirAction;
@@ -273,6 +275,7 @@ private:
 	void createMenus();
 	void createToolBars();
 	void createStatusBar();
+	void setfsModelFlags();
 	void createFSTree();
 	void writeSettings();
 	void readSettings();

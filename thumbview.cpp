@@ -49,7 +49,6 @@ ThumbView::ThumbView(QWidget *parent) : QListView(parent)
 
 	thumbsDir = new QDir();
 	fileFilters = new QStringList;
-	thumbsDir->setFilter(QDir::Files /*| QDir::Hidden*/);
 
 	emptyImg.load(":/images/no_image.png");
 
@@ -363,6 +362,10 @@ void ThumbView::load(QString &cliImageName)
 					<< textFilter + "*.XPM"
 					<< textFilter + "*.JPE";
 	thumbsDir->setNameFilters(*fileFilters);
+	thumbsDir->setFilter(QDir::Files);
+	if (GData::showHiddenFiles)
+		thumbsDir->setFilter(thumbsDir->filter() | QDir::Hidden);
+	
 	thumbsDir->setPath(currentViewDir);
 	thumbsDir->setSorting(thumbsSortFlags);
 	thumbViewModel->clear();

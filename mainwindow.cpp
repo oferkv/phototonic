@@ -350,6 +350,11 @@ void Phototonic::createActions()
 	actType->setChecked(thumbView->thumbsSortFlags & QDir::Type); 
 	actReverse->setChecked(thumbView->thumbsSortFlags & QDir::Reversed); 
 
+	actShowHidden = new QAction("Show Hidden Files", this);;
+	actShowHidden->setCheckable(true);
+	actShowHidden->setChecked(GData::showHiddenFiles);
+	connect(actShowHidden, SIGNAL(triggered()), this, SLOT(showHiddenFiles()));
+
 	actClassic = new QAction("Classic Thumbs", this);
 	actCompact = new QAction("Compact", this);
 	actSquarish = new QAction("Squarish", this);
@@ -583,6 +588,7 @@ void Phototonic::createMenus()
 	thumbLayoutsGroup->addAction(actSquarish);
 	viewMenu->addActions(thumbLayoutsGroup->actions());
 	viewMenu->addSeparator();
+	viewMenu->addAction(actShowHidden);
 	viewMenu->addSeparator();
 	viewMenu->addAction(refreshAction);
 
@@ -681,6 +687,13 @@ void Phototonic::createStatusBar()
 	statusBar()->addWidget(stateLabel);
 }
 
+void Phototonic::setfsModelFlags()
+{
+	fsModel->setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
+	if (GData::showHiddenFiles)
+		fsModel->setFilter(fsModel->filter() | QDir::Hidden);
+}
+
 void Phototonic::createFSTree()
 {
 	fsDock = new QDockWidget("File System", this);
@@ -688,7 +701,7 @@ void Phototonic::createFSTree()
 
 	fsModel = new QFileSystemModel;
 	fsModel->setRootPath("");
-	fsModel->setFilter(QDir::AllDirs | QDir::NoDotAndDotDot /*| QDir::Hidden*/);
+	setfsModelFlags();
 
 	fsTree = new FSTree(fsDock);
 	fsDock->setWidget(fsTree);
@@ -783,6 +796,13 @@ void Phototonic::setCompactThumbs()
 void Phototonic::setSquarishThumbs()
 {
 	GData::thumbsLayout = ThumbView::Squares;
+	refreshThumbs(false);
+}
+
+void Phototonic::showHiddenFiles()
+{
+	GData::showHiddenFiles = actShowHidden->isChecked();
+	setfsModelFlags();
 	refreshThumbs(false);
 }
 
@@ -1386,6 +1406,7 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("exitInsteadOfClose", (int)GData::exitInsteadOfClose);
 	GData::appSettings->setValue("enableAnimations", (bool)GData::enableAnimations);
 	GData::appSettings->setValue("exifRotationEnabled", (bool)GData::exifRotationEnabled);
+	GData::appSettings->setValue("showHiddenFiles", (bool)GData::showHiddenFiles);
 	GData::appSettings->setValue("wrapImageList", (bool)GData::wrapImageList);
 	GData::appSettings->setValue("imageZoomFactor", (float)GData::imageZoomFactor);
 	GData::appSettings->setValue("shouldMaximize", (bool)isMaximized());
@@ -1439,6 +1460,7 @@ void Phototonic::readSettings()
 		GData::appSettings->setValue("noEnlargeSmallThumb", (bool)true);
 		GData::appSettings->setValue("enableAnimations", (bool)true);
 		GData::appSettings->setValue("exifRotationEnabled", (bool)true);
+		GData::appSettings->setValue("showHiddenFiles", (bool)false);
 		GData::appSettings->setValue("slideShowDelay", (int)5);
 		GData::appSettings->setValue("slideShowRandom", (bool)false);
 		GData::appSettings->setValue("editToolBarVisible", (bool)true);
@@ -1451,6 +1473,7 @@ void Phototonic::readSettings()
 	GData::exitInsteadOfClose = GData::appSettings->value("exitInsteadOfClose").toBool();
 	GData::enableAnimations = GData::appSettings->value("enableAnimations").toBool();
 	GData::exifRotationEnabled = GData::appSettings->value("exifRotationEnabled").toBool();
+	GData::showHiddenFiles = GData::appSettings->value("showHiddenFiles").toBool();
 	GData::wrapImageList = GData::appSettings->value("wrapImageList").toBool();
 	GData::imageZoomFactor = GData::appSettings->value("imageZoomFactor").toFloat();
 	GData::zoomOutFlags = GData::appSettings->value("zoomOutFlags").toInt();
