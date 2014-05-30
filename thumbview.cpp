@@ -85,15 +85,15 @@ QString ThumbView::getSingleSelectionFilename()
 int ThumbView::getNextRow()
 {
 	if (currentRow == thumbViewModel->rowCount() - 1)
-		return currentRow;
+		return -1;
 
 	return currentRow + 1;
 }
 
 int ThumbView::getPrevRow()
 {
-	if (!currentRow)
-		return 0;
+	if (currentRow == 0)
+		return -1;
 
 	return currentRow - 1;
 }

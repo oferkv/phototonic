@@ -1218,11 +1218,27 @@ void Phototonic::deleteSingleImage()
 
 		bool wrapImageListTmp = GData::wrapImageList;
 		GData::wrapImageList = false;
-		thumbView->setCurrentRow(currentRow - 1);
-		if (thumbView->getNextRow() > currentRow)
-			loadPrevImage();
+
+		if (currentRow > 0)
+		{
+			thumbView->setCurrentRow(currentRow - 1);
+		}
+
+		if (thumbView->getNextRow() < 0 && currentRow > 0)
+		{
+			loadImageFile(thumbView->thumbViewModel->item(currentRow - 1)->data(thumbView->FileNameRole).toString());
+		}
 		else
-			loadNextImage();
+		{
+			if (thumbView->thumbViewModel->rowCount() == 0)
+			{
+				closeImage();
+				refreshThumbs(true);
+				return;
+			}
+			loadImageFile(thumbView->thumbViewModel->item(currentRow)->data(thumbView->FileNameRole).toString());
+		}
+			
 		GData::wrapImageList = wrapImageListTmp;
 	}
 }
@@ -1802,15 +1818,18 @@ void Phototonic::slideShowHandler()
 		}
 		else
 		{
-			if (thumbView->getNextRow() == thumbView->getCurrentRow())
+			int currentRow = thumbView->getCurrentRow();
+			loadImageFile(thumbView->thumbViewModel->item(currentRow)->data(thumbView->FileNameRole).toString());
+
+			if (thumbView->getNextRow() > 0)
+				thumbView->setCurrentRow(thumbView->getNextRow());
+			else 
 			{
 				if (GData::wrapImageList)
-					loadFirstImage();
+					thumbView->setCurrentRow(0);
 				else
 					slideShow();
 			}
-			else
-				loadNextImage();
 		}
 	}
 }
@@ -1821,8 +1840,13 @@ void Phototonic::loadNextImage()
 		return;
 
 	int nextRow = thumbView->getNextRow();
-	if (GData::wrapImageList && nextRow == thumbView->getCurrentRow())
-		nextRow = 0;
+	if (nextRow < 0) 
+	{
+		if (GData::wrapImageList)
+			nextRow = 0;
+		else
+			return;
+	}
 
 	loadImageFile(thumbView->thumbViewModel->item(nextRow)->data(thumbView->FileNameRole).toString());
 	thumbView->setCurrentRow(nextRow);
@@ -1834,8 +1858,13 @@ void Phototonic::loadPrevImage()
 		return;
 
 	int prevRow = thumbView->getPrevRow();
-	if (GData::wrapImageList && prevRow == thumbView->getCurrentRow())
-		prevRow = thumbView->getLastRow();
+	if (prevRow < 0) 
+	{
+		if (GData::wrapImageList)
+			prevRow = thumbView->getLastRow();
+		else
+			return;
+	}
 	
 	loadImageFile(thumbView->thumbViewModel->item(prevRow)->data(thumbView->FileNameRole).toString());
 	thumbView->setCurrentRow(prevRow);
