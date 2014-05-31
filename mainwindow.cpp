@@ -1166,15 +1166,30 @@ void Phototonic::pasteThumbs()
 		return;
 	}
 
+	bool pasteInCurrDir = (thumbView->currentViewDir == destDir);
+
+	QFileInfo fileInfo;
+	if (!GData::copyOp && pasteInCurrDir)
+	{
+		for (int tn = 0; tn < GData::copyCutFileList.size(); ++tn)
+		{
+			fileInfo = QFileInfo(GData::copyCutFileList[tn]);
+			if (fileInfo.absolutePath() == destDir)
+			{
+				QMessageBox msgBox;
+				msgBox.critical(this, "Error", "Can not cut and paste in the same folder");
+				return;
+			}
+		}
+	}
+
 	if (thumbViewBusy)
 	{
 		abortThumbsLoad();
 	}
 	
 	CpMvDialog *dialog = new CpMvDialog(this);
-	bool pasteInCurrDir = (thumbView->currentViewDir == destDir);
 	dialog->exec(thumbView, destDir, pasteInCurrDir);
-
 	if (pasteInCurrDir)
 	{
 		for (int tn = 0; tn < GData::copyCutFileList.size(); ++tn)

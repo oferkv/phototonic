@@ -77,10 +77,13 @@ static int cpMvFile(bool isCopy, QString &srcFile, QString &srcPath, QString &ds
 	if (!res && QFile::exists(dstPath))
 	{
 		QString newName = autoRename(dstDir, srcFile);
+		QString newDestPath = dstDir + QDir::separator() + newName;
+		
 		if (isCopy)
-			res = QFile::copy(srcPath, dstDir + QDir::separator() + newName);
+			res = QFile::copy(srcPath, newDestPath);
 		else
-			res = QFile::rename(srcPath, dstDir + QDir::separator() + newName);
+			res = QFile::rename(srcPath, newDestPath);
+		dstPath = newDestPath;
 	}
 
 	return res;
