@@ -115,6 +115,10 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 			{
 				break;
 			}
+			else 
+			{
+				GData::copyCutFileList[tn] = destFile;
+			}
 		}
 	}
 	else
@@ -124,6 +128,8 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 		for (tn = GData::copyCutIdxList.size() - 1; tn >= 0 ; --tn)
 		{
 			sourceFile = thumbView->thumbViewModel->item(GData::copyCutIdxList[tn].row())->data(thumbView->FileNameRole).toString();
+			fileInfo = QFileInfo(sourceFile);
+			currFile = fileInfo.fileName();
 			destFile = destDir + QDir::separator() + currFile;
 
 			opLabel->setText((GData::copyOp? "Copying ":"Moving ") + sourceFile + " to " + destFile);
@@ -247,24 +253,22 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	bgColor = GData::backgroundColor;
 
 	// thumbView background color
-	QLabel *bgThumbTxtLab = new QLabel("Thumbnails background color: ");
+	QLabel *bgThumbTxtLab = new QLabel("Background color: ");
 	colThumbButton = new QToolButton();
 	QHBoxLayout *bgThumbColBox = new QHBoxLayout;
 	bgThumbColBox->addWidget(bgThumbTxtLab);
 	bgThumbColBox->addWidget(colThumbButton);
-	bgThumbColBox->addStretch(1);
 	connect(colThumbButton, SIGNAL(clicked()), this, SLOT(pickThumbsColor()));
 	setButtonBgColor(GData::thumbsBackgroundColor, colThumbButton);
 	colThumbButton->setAutoFillBackground(true);
 	thumbBgColor = GData::thumbsBackgroundColor;
 
 	// thumbView text color
-	QLabel *txtThumbTxtLab = new QLabel("Thumbnail Label color: ");
+	QLabel *txtThumbTxtLab = new QLabel("\tLabel color: ");
 	colThumbTextButton = new QToolButton();
-	QHBoxLayout *txtThumbColBox = new QHBoxLayout;
-	txtThumbColBox->addWidget(txtThumbTxtLab);
-	txtThumbColBox->addWidget(colThumbTextButton);
-	txtThumbColBox->addStretch(1);
+	bgThumbColBox->addWidget(txtThumbTxtLab);
+	bgThumbColBox->addWidget(colThumbTextButton);
+	bgThumbColBox->addStretch(1);
 	connect(colThumbTextButton, SIGNAL(clicked()), this, SLOT(pickThumbsTextColor()));
 	setButtonBgColor(GData::thumbsTextColor, colThumbTextButton);
 	colThumbTextButton->setAutoFillBackground(true);
@@ -290,7 +294,6 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	thumbsOptsBox->addLayout(thumbSpacingHbox);
 	thumbsOptsBox->addWidget(noSmallThumbCb);
 	thumbsOptsBox->addLayout(bgThumbColBox);
-	thumbsOptsBox->addLayout(txtThumbColBox);
 	thumbOptsGroupBox->setLayout(thumbsOptsBox);
 
 	// Zoom large images
@@ -494,21 +497,21 @@ void SettingsDialog::setButtonBgColor(QColor &color, QToolButton *button)
 void SettingsDialog::pickThumbsColor()
 {
 	QColor userColor = QColorDialog::getColor(GData::thumbsBackgroundColor, this);
-    if (userColor.isValid())
-    {	
+	if (userColor.isValid())
+	{	
 		setButtonBgColor(userColor, colThumbButton);
-        thumbBgColor = userColor;
-    }
+		thumbBgColor = userColor;
+	}
 }
 
 void SettingsDialog::pickThumbsTextColor()
 {
 	QColor userColor = QColorDialog::getColor(GData::thumbsTextColor, this);
-    if (userColor.isValid())
-    {	
-        setButtonBgColor(userColor, colThumbTextButton);
-        thumbTextColor = userColor;
-    }
+	if (userColor.isValid())
+	{	
+		setButtonBgColor(userColor, colThumbTextButton);
+		thumbTextColor = userColor;
+	}
 }
 
 CropDialog::CropDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
@@ -520,8 +523,8 @@ CropDialog::CropDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
 	imageView = imageView_;
 
 	QHBoxLayout *buttonsHbox = new QHBoxLayout;
-    QPushButton *okButton = new QPushButton("OK");
-    okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+	QPushButton *okButton = new QPushButton("OK");
+	okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
 	buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);
 
@@ -619,12 +622,12 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	imageView = imageView_;
 
 	QHBoxLayout *buttonsHbox = new QHBoxLayout;
-    QPushButton *resetButton = new QPushButton("Reset");
-    resetButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+	QPushButton *resetButton = new QPushButton("Reset");
+	resetButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	connect(resetButton, SIGNAL(clicked()), this, SLOT(reset()));
 	buttonsHbox->addWidget(resetButton, 0, Qt::AlignLeft);
-    QPushButton *okButton = new QPushButton("OK");
-    okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+	QPushButton *okButton = new QPushButton("OK");
+	okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
 	buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);
 
@@ -663,21 +666,21 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	connect(lightnessSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
 
 	QHBoxLayout *channelsHbox = new QHBoxLayout;
-    redB = new QToolButton();
-   	redB->setIcon(QIcon(":/images/red.png"));
-   	redB->setCheckable(true);
+	redB = new QToolButton();
+	redB->setIcon(QIcon(":/images/red.png"));
+	redB->setCheckable(true);
 	redB->setChecked(GData::hueRedChannel);
 	connect(redB, SIGNAL(clicked()), this, SLOT(setRedChannel()));
 	channelsHbox->addWidget(redB, 0, Qt::AlignLeft);
-    greenB = new QToolButton();
-   	greenB->setIcon(QIcon(":/images/green.png"));
-   	greenB->setCheckable(true);
+	greenB = new QToolButton();
+	greenB->setIcon(QIcon(":/images/green.png"));
+	greenB->setCheckable(true);
 	greenB->setChecked(GData::hueGreenChannel);
 	connect(greenB, SIGNAL(clicked()), this, SLOT(setGreenChannel()));
 	channelsHbox->addWidget(greenB, 0, Qt::AlignLeft);
-    blueB = new QToolButton();
-   	blueB->setIcon(QIcon(":/images/blue.png"));
-   	blueB->setCheckable(true);
+	blueB = new QToolButton();
+	blueB->setIcon(QIcon(":/images/blue.png"));
+	blueB->setCheckable(true);
 	blueB->setChecked(GData::hueBlueChannel);
 	connect(blueB, SIGNAL(clicked()), this, SLOT(setBlueChannel()));
 	channelsHbox->addWidget(blueB, 0, Qt::AlignLeft);

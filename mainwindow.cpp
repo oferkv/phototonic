@@ -379,7 +379,7 @@ void Phototonic::createActions()
 
 	pasteAction = new QAction("Paste Here", this);
 	pasteAction->setIcon(QIcon::fromTheme("edit-paste", QIcon(":/images/paste.png")));
-	connect(pasteAction, SIGNAL(triggered()), this, SLOT(pasteImages()));
+	connect(pasteAction, SIGNAL(triggered()), this, SLOT(pasteThumbs()));
 	pasteAction->setEnabled(false);
 	
 	createDirAction = new QAction("New Folder", this);
@@ -617,6 +617,15 @@ void Phototonic::createMenus()
 
 void Phototonic::createToolBars()
 {
+	/* Edit */
+	editToolBar = addToolBar("Edit");
+	editToolBar->setObjectName("Edit");
+	editToolBar->addAction(newImageAction);
+	editToolBar->addAction(cutAction);
+	editToolBar->addAction(copyAction);
+	editToolBar->addAction(pasteAction);
+	editToolBar->addAction(deleteAction);
+
 	/* Navigation */
 	goToolBar = addToolBar("Navigation");
 	goToolBar->setObjectName("Navigation");
@@ -638,15 +647,6 @@ void Phototonic::createToolBars()
 	goToolBar->addWidget(pathBar);
 	goToolBar->addAction(refreshAction);
 	goToolBar->addAction(subFoldersAction);
-
-	/* Edit */
-	editToolBar = addToolBar("Edit");
-	editToolBar->setObjectName("Edit");
-	editToolBar->addAction(newImageAction);
-	editToolBar->addAction(cutAction);
-	editToolBar->addAction(copyAction);
-	editToolBar->addAction(pasteAction);
-	editToolBar->addAction(deleteAction);
 
 	/* View */
 	viewToolBar = addToolBar("View");
@@ -1152,7 +1152,7 @@ bool Phototonic::isValidPath(QString &path)
 	return true;
 }
 
-void Phototonic::pasteImages()
+void Phototonic::pasteThumbs()
 {
 	if (!copyCutCount)
 		return;
@@ -1173,14 +1173,20 @@ void Phototonic::pasteImages()
 	
 	CpMvDialog *dialog = new CpMvDialog(this);
 	bool pasteInCurrDir = (thumbView->currentViewDir == destDir);
-		
 	dialog->exec(thumbView, destDir, pasteInCurrDir);
+
+	if (pasteInCurrDir)
+	{
+		for (int tn = 0; tn < GData::copyCutFileList.size(); ++tn)
+		{
+			thumbView->addThumb(GData::copyCutFileList[tn]);
+		}
+	}
+	
 	QString state = QString((GData::copyOp? "Copied " : "Moved ") + 
 								QString::number(dialog->nfiles) + " images");
 	setStatus(state);
-
 	delete(dialog);
-
 	selectCurrentViewDir();
 
 	copyCutCount = 0;
@@ -1188,7 +1194,7 @@ void Phototonic::pasteImages()
 	GData::copyCutFileList.clear();
 	pasteAction->setEnabled(false);
 
-	if (destDir == thumbView->currentViewDir || thumbViewBusy)
+	if (thumbViewBusy)
 		refreshThumbs(false);
 }
 
@@ -1259,7 +1265,7 @@ void Phototonic::deleteOp()
 
 	if (thumbView->selectionModel()->selectedIndexes().size() < 1)
 	{
-		setStatus("Invalid selection");
+		setStatus("No selection");
 		return;
 	}
 
@@ -1278,7 +1284,7 @@ void Phototonic::deleteOp()
 		{
 			ok = QFile::remove(thumbView->thumbViewModel->item(
 								indexesList.first().row())->data(thumbView->FileNameRole).toString());
-				
+
 			++nfiles;
 			if (ok)
 			{
@@ -2152,8 +2158,8 @@ void Phototonic::rename()
 	bool ok;
 	QString fileName = QFileInfo(selectedImageFileName).fileName();
 	QString title = "Rename " + fileName;
-	QString newImageName = QInputDialog::getText
-										(this, title, "New name:", QLineEdit::Normal, fileName, &ok);
+	QString newImageName = QInputDialog::getText(this, title, "New name:",
+															QLineEdit::Normal, fileName, &ok);
 
 	if (!ok)													
 		return;
@@ -2161,25 +2167,27 @@ void Phototonic::rename()
 	if(newImageName.isEmpty())
 	{
 		QMessageBox msgBox;
-		msgBox.critical(this, "Error", "Invalid name entered");
+		msgBox.critical(this, "Error", "No name entered");
 		return;
 	}
 
 	QString currnetFilePath = selectedImageFileName;
 	QFile currentFile(currnetFilePath);
-	ok = currentFile.rename(thumbView->currentViewDir + QDir::separator() + newImageName);
+	QString newImageFullPath = thumbView->currentViewDir + QDir::separator() + newImageName;
+	ok = currentFile.rename(newImageFullPath);
 
 	if (ok)
 	{
 		QModelIndexList indexesList = thumbView->selectionModel()->selectedIndexes();
-		thumbView->thumbViewModel->item(indexesList.first().row())->setData(newImageName, thumbView->FileNameRole);
-		if (GData::thumbsLayout == ThumbView::Classic)
-			thumbView->thumbViewModel->item(indexesList.first().row())->setData(newImageName, Qt::DisplayRole);
+		thumbView->thumbViewModel->item(indexesList.first().row())->setData(newImageFullPath, 
+																			thumbView->FileNameRole);
+		thumbView->thumbViewModel->item(indexesList.first().row())->setData(newImageName,
+																			Qt::DisplayRole);
 	}
 	else
 	{
 		QMessageBox msgBox;
-		msgBox.critical(this, "Error", "Failed to rename file");
+		msgBox.critical(this, "Error", "Failed to rename image");
 	}
 }
 

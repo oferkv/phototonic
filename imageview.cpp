@@ -155,8 +155,8 @@ void ImageView::resizeImage()
 				if (newWidth < size().width())
 					newWidth = size().width();
 				if (newHeight < size().height())
-				    newHeight = size().height();
-			    imgSize.scale(calcZoom(newWidth), calcZoom(newHeight), Qt::IgnoreAspectRatio);
+					newHeight = size().height();
+				imgSize.scale(calcZoom(newWidth), calcZoom(newHeight), Qt::IgnoreAspectRatio);
 				break;
 		}
 
@@ -174,14 +174,14 @@ void ImageView::resizeImage()
 
 			case Width:
 				if (imgSize.width() > size().width())
-				    imgSize.scale(calcZoom(size().width()), 
+					imgSize.scale(calcZoom(size().width()), 
 						calcZoom(getHeightByWidth(imgSize.width(), imgSize.height(), size().width())), Qt::KeepAspectRatio);
 				break;
 				
 			case Height:
 				if (imgSize.height() > size().height())
-				    imgSize.scale(calcZoom(getWidthByHeight(imgSize.height(), imgSize.width(), size().height())),
-				    	calcZoom(size().height()), Qt::KeepAspectRatio);
+					imgSize.scale(calcZoom(getWidthByHeight(imgSize.height(), imgSize.width(), size().height())),
+						calcZoom(size().height()), Qt::KeepAspectRatio);
 			
 				break;
 
@@ -190,8 +190,8 @@ void ImageView::resizeImage()
 				if (newWidth > size().width())
 					newWidth = size().width();
 				if (newHeight > size().height())
-				    newHeight = size().height();
-			    imgSize.scale(calcZoom(newWidth), calcZoom(newHeight), Qt::IgnoreAspectRatio);
+					newHeight = size().height();
+				imgSize.scale(calcZoom(newWidth), calcZoom(newHeight), Qt::IgnoreAspectRatio);
 				break;
 		}
 	}
@@ -227,12 +227,12 @@ long ImageView::getExifOrientation()
 		return 0;
 	}
 
-    exifImage->readMetadata();
-    Exiv2::ExifData &exifData = exifImage->exifData();
-    long orientation;
+	exifImage->readMetadata();
+	Exiv2::ExifData &exifData = exifImage->exifData();
+	long orientation;
 
-    if (!exifData.empty())
-    {
+	if (!exifData.empty())
+	{
 		try
 		{
 			orientation = exifData["Exif.Image.Orientation"].value().toLong();
@@ -313,41 +313,40 @@ void ImageView::mirror()
 		{
 			mirrorImage = QImage(displayImage.width() * 2, displayImage.height(), QImage::QImage::Format_ARGB32);
 			QPainter painter(&mirrorImage);
-		    painter.drawImage(0, 0, displayImage);
-	   	    painter.drawImage(displayImage.width(), 0, displayImage.mirrored(true, false));
-	   	    break;
+			painter.drawImage(0, 0, displayImage);
+			painter.drawImage(displayImage.width(), 0, displayImage.mirrored(true, false));
+			break;
 		}
 
-   	    case LayTriple:
-   	    {
+		case LayTriple:
+		{
 			mirrorImage = QImage(displayImage.width() * 3, displayImage.height(), QImage::QImage::Format_ARGB32);
-		    QPainter painter(&mirrorImage);
-		    painter.drawImage(0, 0, displayImage);
-	   	    painter.drawImage(displayImage.width(), 0, displayImage.mirrored(true, false));
-		   	    painter.drawImage(displayImage.width() * 2, 0, displayImage.mirrored(false, false));
-	   	    break;
-   	    }
+			QPainter painter(&mirrorImage);
+			painter.drawImage(0, 0, displayImage);
+			painter.drawImage(displayImage.width(), 0, displayImage.mirrored(true, false));
+			painter.drawImage(displayImage.width() * 2, 0, displayImage.mirrored(false, false));
+			break;
+		}
 
 		case LayQuad:
-   	    {
+		{
 			mirrorImage = QImage(displayImage.width() * 2, displayImage.height() * 2, QImage::QImage::Format_ARGB32);
-		    QPainter painter(&mirrorImage);
-		    painter.drawImage(0, 0, displayImage);
-	   	    painter.drawImage(displayImage.width(), 0, displayImage.mirrored(true, false));
-		   	    painter.drawImage(0, displayImage.height(), displayImage.mirrored(false, true));
-		   	    painter.drawImage(displayImage.width(), displayImage.height(), displayImage.mirrored(true, true));
-
-	   	    break;
-   	    }
+			QPainter painter(&mirrorImage);
+			painter.drawImage(0, 0, displayImage);
+			painter.drawImage(displayImage.width(), 0, displayImage.mirrored(true, false));
+			painter.drawImage(0, displayImage.height(), displayImage.mirrored(false, true));
+			painter.drawImage(displayImage.width(), displayImage.height(), displayImage.mirrored(true, true));
+			break;
+		}
 
 		case LayVDual:
 		{
 			mirrorImage = QImage(displayImage.width(), displayImage.height() * 2, QImage::QImage::Format_ARGB32);
-		    QPainter painter(&mirrorImage);
-		    painter.drawImage(0, 0, displayImage);
-	   	    painter.drawImage(0, displayImage.height(), displayImage.mirrored(false, true));
-	   	    break;
-   	    }
+			QPainter painter(&mirrorImage);
+			painter.drawImage(0, 0, displayImage);
+			painter.drawImage(0, displayImage.height(), displayImage.mirrored(false, true));
+			break;
+		}
 	}
 
 	displayImage = mirrorImage;
@@ -382,8 +381,8 @@ static inline int hslValue(double n1, double n2, double hue)
 void rgbToHsl(int r, int g, int b, unsigned char *hue, unsigned char *sat, unsigned char *light)
 {
 	double h, s, l;
-	int    min, max;
-	int    delta;
+	int		min, max;
+	int		delta;
 
 	if (r > g)	
 	{
@@ -429,7 +428,7 @@ void rgbToHsl(int r, int g, int b, unsigned char *hue, unsigned char *sat, unsig
 
 	*hue = ROUND(h);
 	*sat = ROUND(s);
-	*light  = ROUND(l);
+	*light = ROUND(l);
 }
 
 void hslToRgb(double h, double s, double l,
@@ -453,7 +452,7 @@ void hslToRgb(double h, double s, double l,
 
 		m1 = (l / 127.5) - m2;
 
-		/* chromatic case  */
+		/* chromatic case */
 		*red = hslValue(m1, m2, h + 85);
 		*green = hslValue(m1, m2, h);
 		*blue = hslValue(m1, m2, h - 85);

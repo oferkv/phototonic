@@ -89,7 +89,7 @@ private slots:
 	void deleteOp();
 	void cutImages();
 	void copyImages();
-	void pasteImages();
+	void pasteThumbs();
 	void thumbsZoomIn();
 	void thumbsZoomOut();
 	void zoomIn();

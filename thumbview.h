@@ -58,34 +58,7 @@ class ThumbView : public QListView
 {
 	Q_OBJECT
 
-signals:
-	void unsetBusy();
-	void setStatus(QString state);
-
-public slots:
-	void abort();
-	void updateIndex();
-	void handleSelectionChanged(const QItemSelection& selection);
-	void invertSelection();
-
 public:
-	ThumbView(QWidget *parent);
-	void load(QString &cliImageName);
-	void setNeedScroll(bool needScroll)
-	{
-		isNeedScroll = needScroll;
-	}
-	void setThumbColors();
-	void setCurrentIndexByName(QString &FileName);
-	void selectCurrentIndex();
-	int getNextRow();
-	int getPrevRow();
-	int getLastRow();
-	int getRandomRow();
-	int getCurrentRow();
-	void setCurrentRow(int row);
-	QString getSingleSelectionFilename();
-
 	InfoView *infoView;
 	QDir *thumbsDir;
 	QStringList *fileFilters;
@@ -112,6 +85,24 @@ public:
 		Squares
 	};
 
+	ThumbView(QWidget *parent);
+	void load(QString &cliImageName);
+	void setNeedScroll(bool needScroll)
+	{
+		isNeedScroll = needScroll;
+	}
+	void setThumbColors();
+	void setCurrentIndexByName(QString &FileName);
+	void selectCurrentIndex();
+	int getNextRow();
+	int getPrevRow();
+	int getLastRow();
+	int getRandomRow();
+	int getCurrentRow();
+	void setCurrentRow(int row);
+	QString getSingleSelectionFilename();
+	void addThumb(QString &imageFullPath);
+
 protected:
 	void startDrag(Qt::DropActions);
 	void wheelEvent(QWheelEvent *event);
@@ -136,6 +127,16 @@ private:
 	bool isItemVisible(QModelIndex idx);
 	void updateThumbsCount();
 	void updateExifInfo(QString imageFullPath);
+
+signals:
+	void unsetBusy();
+	void setStatus(QString state);
+
+public slots:
+	void abort();
+	void updateIndex();
+	void handleSelectionChanged(const QItemSelection& selection);
+	void invertSelection();
 };
 
 class FSTree : public QTreeView

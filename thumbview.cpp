@@ -154,32 +154,32 @@ void ThumbView::updateExifInfo(QString imageFullPath)
 		return;
 	}
 
-    exifImage->readMetadata();
-    Exiv2::ExifData &exifData = exifImage->exifData();
+	exifImage->readMetadata();
+	Exiv2::ExifData &exifData = exifImage->exifData();
 
-    if (!exifData.empty())
-    {
-	    Exiv2::ExifData::const_iterator end = exifData.end();
-	    for (Exiv2::ExifData::const_iterator md = exifData.begin(); md != end; ++md)
-	    {
-	    	// qDebug() << Exiv2::toString(md->key()).c_str() << " " << Exiv2::toString(md->value()).c_str();
+	if (!exifData.empty())
+	{
+		Exiv2::ExifData::const_iterator end = exifData.end();
+		for (Exiv2::ExifData::const_iterator md = exifData.begin(); md != end; ++md)
+		{
+			// qDebug() << Exiv2::toString(md->key()).c_str() << " " << Exiv2::toString(md->value()).c_str();
 			key = QString::fromUtf8(md->tagName().c_str());
 			val = QString::fromUtf8(md->print().c_str());
 			infoView->addEntry(key, val);
-	    }
+		}
 	}
 
-    Exiv2::IptcData &iptcData = exifImage->iptcData();
-    if (!iptcData.empty())
-    {
+	Exiv2::IptcData &iptcData = exifImage->iptcData();
+	if (!iptcData.empty())
+	{
 		Exiv2::IptcData::iterator end = iptcData.end();
 		for (Exiv2::IptcData::iterator md = iptcData.begin(); md != end; ++md)
 		{
 			key = QString::fromUtf8(md->tagName().c_str());
-        	val = QString::fromUtf8(md->print().c_str());
-       		infoView->addEntry(key, val);
+			val = QString::fromUtf8(md->print().c_str());
+	   		infoView->addEntry(key, val);
 		}
-    }
+	}
 
 	Exiv2::XmpData &xmpData = exifImage->xmpData();
 	if (!xmpData.empty())
@@ -188,8 +188,8 @@ void ThumbView::updateExifInfo(QString imageFullPath)
 		for (Exiv2::XmpData::iterator md = xmpData.begin(); md != end; ++md)
 		{
 			key = QString::fromUtf8(md->tagName().c_str());
-        	val = QString::fromUtf8(md->print().c_str());
-       		infoView->addEntry(key, val);
+			val = QString::fromUtf8(md->print().c_str());
+			infoView->addEntry(key, val);
 		}
 	}
 }
@@ -512,10 +512,55 @@ refreshThumbs:
 		goto refreshThumbs;
 	}
 
-	if (GData::thumbsLayout == Compact && thumbViewModel->rowCount() > 1)
+	if (GData::thumbsLayout == Compact && thumbViewModel->rowCount() > 0)
 	{
 		setRowHidden(0 , false);
 	}
+}
+
+void ThumbView::addThumb(QString &imageFullPath)
+{
+	QStandardItem *thumbIitem = new QStandardItem();
+	QImageReader thumbReader;
+	QSize hintSize;
+	QSize currThumbSize;
+
+	if (GData::thumbsLayout == Squares)
+		hintSize = QSize(thumbWidth / 2, thumbWidth / 2);
+	else if (GData::thumbsLayout == Classic)
+		hintSize = QSize(thumbWidth, thumbHeight + QFontMetrics(font()).height() + 5);
+	
+	thumbFileInfo = QFileInfo(imageFullPath);
+	thumbIitem->setData(true, LoadedRole);
+	thumbIitem->setData(0, SortRole);
+	thumbIitem->setData(thumbFileInfo.filePath(), FileNameRole);
+	if (GData::thumbsLayout == Classic)
+		thumbIitem->setData(thumbFileInfo.fileName(), Qt::DisplayRole);
+
+	thumbReader.setFileName(imageFullPath);
+	currThumbSize = thumbReader.size();
+	if (currThumbSize.isValid())
+	{
+		if (!GData::noEnlargeSmallThumb || (currThumbSize.width() > thumbWidth || 
+													currThumbSize.height() > thumbHeight))
+		{
+			currThumbSize.scale(QSize(thumbWidth, thumbHeight), Qt::KeepAspectRatio);
+		}
+			
+		thumbReader.setScaledSize(currThumbSize);
+		thumbIitem->setIcon(QPixmap::fromImage(thumbReader.read()));
+	}
+	else
+	{
+		thumbIitem->setIcon(QIcon::fromTheme("image-missing",
+												QIcon(":/images/error_image.png")).pixmap(64, 64));
+	}
+
+	thumbIitem->setTextAlignment(Qt::AlignTop | Qt::AlignHCenter);
+	if (GData::thumbsLayout != Compact)
+		thumbIitem->setSizeHint(hintSize);
+
+	thumbViewModel->appendRow(thumbIitem);
 }
 
 void ThumbView::wheelEvent(QWheelEvent *event)
@@ -608,12 +653,12 @@ void InfoView::clear()
 void InfoView::addEntry(QString &key, QString &value)
 {
 	int atRow = infoModel->rowCount();
-    QStandardItem *itemKey = new QStandardItem(key);
-    infoModel->insertRow(atRow, itemKey);
-    if (!value.isEmpty())
-    {
-        QStandardItem *itemVal = new QStandardItem(value);
-	    infoModel->setItem(atRow, 1, itemVal);
-    }
+	QStandardItem *itemKey = new QStandardItem(key);
+	infoModel->insertRow(atRow, itemKey);
+	if (!value.isEmpty())
+	{
+		QStandardItem *itemVal = new QStandardItem(value);
+		infoModel->setItem(atRow, 1, itemVal);
+	}
 }
 
