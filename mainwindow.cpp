@@ -125,6 +125,7 @@ void Phototonic::createThumbView()
 	iiDock = new QDockWidget("Image Info", this);
 	iiDock->setObjectName("Image Info");
 	iiDock->setWidget(thumbView->infoView);
+	connect(iiDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setToolBarsVisibility()));	
 }
 
 void Phototonic::addMenuSeparator(QWidget *widget)
@@ -625,6 +626,7 @@ void Phototonic::createToolBars()
 	editToolBar->addAction(copyAction);
 	editToolBar->addAction(pasteAction);
 	editToolBar->addAction(deleteAction);
+	connect(editToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setToolBarsVisibility()));
 
 	/* Navigation */
 	goToolBar = addToolBar("Navigation");
@@ -647,6 +649,7 @@ void Phototonic::createToolBars()
 	goToolBar->addWidget(pathBar);
 	goToolBar->addAction(refreshAction);
 	goToolBar->addAction(subFoldersAction);
+	connect(goToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setToolBarsVisibility()));
 
 	/* View */
 	viewToolBar = addToolBar("View");
@@ -679,6 +682,7 @@ void Phototonic::createToolBars()
 
 	viewToolBar->addSeparator();
 	viewToolBar->addWidget(filterbarFrame);
+	connect(viewToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setToolBarsVisibility()));	
 }
 
 void Phototonic::createStatusBar()
@@ -705,6 +709,7 @@ void Phototonic::createFSTree()
 
 	fsTree = new FSTree(fsDock);
 	fsDock->setWidget(fsTree);
+	connect(fsDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setToolBarsVisibility()));	
 	addDockWidget(Qt::LeftDockWidgetArea, fsDock);
 
 	// Context menu
@@ -1722,18 +1727,10 @@ void Phototonic::setThumbViewWidgetsVisible(bool visible)
 	menuBar()->setDisabled(!visible);
 	statusBar()->setVisible(visible);
 
-	if (!visible)
-	{
-		editToolBarVisible = editToolBar->isVisible();
-		goToolBarVisible = goToolBar->isVisible();
-		viewToolBarVisible = viewToolBar->isVisible();
-		fsDockVisible = fsDock->isVisible();
-		iiDockVisible = iiDock->isVisible();
-	}
-
 	editToolBar->setVisible(visible? editToolBarVisible : false);
 	goToolBar->setVisible(visible? goToolBarVisible : false);
 	viewToolBar->setVisible(visible? viewToolBarVisible : false);
+
 	fsDock->setVisible(visible? fsDockVisible : false);
 	iiDock->setVisible(visible? iiDockVisible : false);
 }
@@ -1761,6 +1758,15 @@ void Phototonic::openOp()
 	{
 		goPathBarDir();
 	}
+}
+
+void Phototonic::setToolBarsVisibility()
+{
+	editToolBarVisible = editToolBar->isVisible();
+	goToolBarVisible = goToolBar->isVisible();
+	viewToolBarVisible = viewToolBar->isVisible();
+	fsDockVisible = fsDock->isVisible();
+	iiDockVisible = iiDock->isVisible();
 }
 
 void Phototonic::loadImageFile(QString imageFileName)

@@ -125,6 +125,7 @@ private slots:
 	void chooseExternalApp();
 	void updateExternalApps();
 	void runExternalApp();
+	void setToolBarsVisibility();
 
 private:
 	QString cliFileName;
