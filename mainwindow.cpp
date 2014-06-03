@@ -1720,10 +1720,20 @@ void Phototonic::setThumbViewWidgetsVisible(bool visible)
 {
 	menuBar()->setVisible(visible);
 	menuBar()->setDisabled(!visible);
+	statusBar()->setVisible(visible);
+
+	if (!visible)
+	{
+		editToolBarVisible = editToolBar->isVisible();
+		goToolBarVisible = goToolBar->isVisible();
+		viewToolBarVisible = viewToolBar->isVisible();
+		fsDockVisible = fsDock->isVisible();
+		iiDockVisible = iiDock->isVisible();
+	}
+
 	editToolBar->setVisible(visible? editToolBarVisible : false);
 	goToolBar->setVisible(visible? goToolBarVisible : false);
 	viewToolBar->setVisible(visible? viewToolBarVisible : false);
-	statusBar()->setVisible(visible);
 	fsDock->setVisible(visible? fsDockVisible : false);
 	iiDock->setVisible(visible? iiDockVisible : false);
 }
