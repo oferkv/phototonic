@@ -647,6 +647,7 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	hueSlide->setTickPosition(QSlider::TicksAbove);
 	hueSlide->setTickInterval(25);
 	hueSlide->setRange(0, 255);
+	hueSlide->setTracking(false);
 	hueSlide->setValue(GData::hueVal);
 	connect(hueSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
 
@@ -658,6 +659,7 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	saturationSlide->setTickPosition(QSlider::TicksAbove);
 	saturationSlide->setTickInterval(25);
 	saturationSlide->setRange(0, 500);
+	saturationSlide->setTracking(false);
 	saturationSlide->setValue(GData::saturationVal);
 	connect(saturationSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
 
@@ -665,6 +667,7 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	lightnessSlide->setTickPosition(QSlider::TicksAbove);
 	lightnessSlide->setTickInterval(25);
 	lightnessSlide->setRange(0, 500);
+	lightnessSlide->setTracking(false);
 	lightnessSlide->setValue(GData::lightnessVal);
 	connect(lightnessSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
 

@@ -116,7 +116,6 @@ void Phototonic::createThumbView()
 	thumbView = new ThumbView(this);
 	thumbView->thumbsSortFlags = (QDir::SortFlags)GData::appSettings->value("thumbsSortFlags").toInt();
 
-	connect(this, SIGNAL(abortThumbLoading()), thumbView, SLOT(abort()));
 	connect(thumbView, SIGNAL(unsetBusy()), this, SLOT(unsetBusy()));
 	connect(thumbView, SIGNAL(setStatus(QString)), this, SLOT(setStatus(QString)));
 	connect(thumbView->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), 
@@ -1188,11 +1187,6 @@ void Phototonic::pasteThumbs()
 		}
 	}
 
-	if (thumbViewBusy)
-	{
-		abortThumbsLoad();
-	}
-	
 	CpMvDialog *dialog = new CpMvDialog(this);
 	dialog->exec(thumbView, destDir, pasteInCurrDir);
 	if (pasteInCurrDir)
@@ -1214,8 +1208,7 @@ void Phototonic::pasteThumbs()
 	GData::copyCutFileList.clear();
 	pasteAction->setEnabled(false);
 
-	if (thumbViewBusy)
-		refreshThumbs(false);
+	thumbView->loadVisibleThumbs();
 }
 
 void Phototonic::deleteSingleImage()
@@ -1296,10 +1289,6 @@ void Phototonic::deleteOp()
 	int nfiles = 0;
 	if (ret == QMessageBox::Yes)
 	{
-
-		if (thumbViewBusy)
-			abortThumbsLoad();
-
 		while((indexesList = thumbView->selectionModel()->selectedIndexes()).size())
 		{
 			ok = QFile::remove(thumbView->thumbViewModel->item(
@@ -1321,8 +1310,7 @@ void Phototonic::deleteOp()
 		QString state = QString("Deleted " + QString::number(nfiles) + " images");
 		setStatus(state);
 
-		if (thumbViewBusy)
-			refreshThumbs(false);
+		thumbView->loadVisibleThumbs();
 	}
 }
 
@@ -1663,7 +1651,7 @@ void Phototonic::loadShortcuts()
 
 void Phototonic::closeEvent(QCloseEvent *event)
 {
-	abortThumbsLoad();
+	thumbView->abort();
 	writeSettings();
 	event->accept();
 }
@@ -1961,6 +1949,8 @@ void Phototonic::closeImage()
 		needThumbsRefresh = false;
 		refreshThumbs(false);
 	}
+	else
+		thumbView->loadVisibleThumbs();
 
 	if (GData::slideShowActive)
 		slideShow();
@@ -1999,9 +1989,6 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvD
 		return;
 	}
 
-	if (thumbViewBusy)
-		abortThumbsLoad();
-
 	if (dirOp)
 	{
 		QString dirOnly = cpMvDirPath.right(cpMvDirPath.size() - cpMvDirPath.lastIndexOf(QDir::separator()) - 1);
@@ -2024,8 +2011,7 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvD
 		delete(cpMvdialog);
 	}
 
-	if (thumbViewBusy)
-		refreshThumbs(false);
+	thumbView->loadVisibleThumbs();
 }
 
 void Phototonic::selectCurrentViewDir()
@@ -2047,7 +2033,7 @@ void Phototonic::checkDirState(const QModelIndex &, int, int)
 
 	if (thumbViewBusy)
 	{
-		abortThumbsLoad();
+		thumbView->abort();
 	}
 
 	if (!QDir().exists(thumbView->currentViewDir))
@@ -2055,11 +2041,6 @@ void Phototonic::checkDirState(const QModelIndex &, int, int)
 		thumbView->currentViewDir = "";
 		QTimer::singleShot(0, this, SLOT(reloadThumbsSlot()));
 	}
-}
-
-void Phototonic::abortThumbsLoad()
-{
-	emit abortThumbLoading();
 }
 
 void Phototonic::recordHistory(QString dir)
@@ -2090,7 +2071,7 @@ void Phototonic::reloadThumbsSlot()
 {
 	if (thumbViewBusy || !initComplete)
 	{	
-		abortThumbsLoad();
+		thumbView->abort();
 		QTimer::singleShot(250, this, SLOT(reloadThumbsSlot()));
 		return;
 	}

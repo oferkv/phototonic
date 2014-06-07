@@ -37,9 +37,6 @@ protected:
 	void mousePressEvent(QMouseEvent *event);
 	void mouseReleaseEvent(QMouseEvent *event);
 
-signals:
-	void abortThumbLoading();
-
 public slots:
 	void unsetBusy();
 	void setStatus(QString state);
@@ -286,7 +283,6 @@ private:
 	{
 		return thumbViewBusy;
 	}
-	void abortThumbsLoad();
 	QString getSelectedPath();
 	void createCopyCutFileList();
 	void setCopyCutActions(bool setEnabled);

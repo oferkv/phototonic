@@ -41,7 +41,7 @@ ThumbView::ThumbView(QWidget *parent) : QListView(parent)
 	thumbViewModel->setSortRole(SortRole);
 	setModel(thumbViewModel);
 
-	connect(verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(updateIndex()));
+	connect(verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(loadVisibleThumbs()));
 	connect(this->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), 
 				this, SLOT(handleSelectionChanged(QItemSelection)));
    	connect(this, SIGNAL(doubleClicked(const QModelIndex &)), 
@@ -105,7 +105,7 @@ int ThumbView::getLastRow()
 
 int ThumbView::getRandomRow()
 {
-	return qrand() % (thumbViewModel->rowCount() - 1);
+	return qrand() % (thumbViewModel->rowCount());
 }
 
 int ThumbView::getCurrentRow()
@@ -284,17 +284,38 @@ void ThumbView::abort()
 	abortOp = true;
 }
 
-void ThumbView::updateIndex()
+void ThumbView::loadVisibleThumbs()
 {
-	if (thumbLoaderActive)
-		newIndex = getFirstVisibleItem();
+	QApplication::processEvents();
+
+	abortOp = false;
+	int first = getFirstVisibleThumb();
+	int last = getLastVisibleThumb();
+
+	if (first < 0 || last < 0) 
+		return;
+
+	last += (last - first) * 4;
+	if (last > thumbViewModel->rowCount())
+		last = thumbViewModel->rowCount();
+
+	if (thumbsRangeFirst == first && thumbsRangeLast == last)
+	{
+		return;
+	}
+
+	thumbsRangeFirst = first;
+	thumbsRangeLast = last;
+
+	loadThumbsRange();
+	loadVisibleThumbs();
 }
 
-int ThumbView::getFirstVisibleItem()
+int ThumbView::getFirstVisibleThumb()
 {
 	QModelIndex idx;
 
-	for (int currThumb = 0; currThumb < thumbViewModel->rowCount() - 1; ++currThumb)
+	for (int currThumb = 0; currThumb < thumbViewModel->rowCount(); ++currThumb)
 	{
 		idx = thumbViewModel->indexFromItem(thumbViewModel->item(currThumb));
 		if (viewport()->rect().contains(QPoint(0, visualRect(idx).y() + visualRect(idx).height() + 1)))
@@ -306,7 +327,23 @@ int ThumbView::getFirstVisibleItem()
 	return -1;
 }
 
-bool ThumbView::isItemVisible(QModelIndex idx)
+int ThumbView::getLastVisibleThumb()
+{
+	QModelIndex idx;
+
+	for (int currThumb = thumbViewModel->rowCount() -1; currThumb >= 0 ; --currThumb)
+	{
+		idx = thumbViewModel->indexFromItem(thumbViewModel->item(currThumb));
+		if (viewport()->rect().contains(QPoint(0, visualRect(idx).y() + visualRect(idx).height() + 1)))
+		{
+			return idx.row();
+		}
+	}
+
+	return -1;
+}
+
+bool ThumbView::isThumbVisible(QModelIndex idx)
 {
 	if (viewport()->rect().contains(QPoint(0, visualRect(idx).y() + visualRect(idx).height() + 1)))
 	{
@@ -378,6 +415,9 @@ void ThumbView::load(QString &cliImageName)
 	abortOp = false;
 	newIndex = 0;
 
+	thumbsRangeFirst = -1;
+	thumbsRangeLast = -1;
+
 	initThumbs();
 
 	if (!cliImageName.isEmpty())
@@ -387,8 +427,7 @@ void ThumbView::load(QString &cliImageName)
 	}
 
 	updateThumbsCount();
-
-	loadThumbs();
+	loadVisibleThumbs();
 
 	if (GData::includeSubFolders)
 	{
@@ -401,13 +440,14 @@ void ThumbView::load(QString &cliImageName)
 				thumbsDir->setPath(iterator.filePath());
 				initThumbs();
 				updateThumbsCount();
-				loadThumbs();
+				loadVisibleThumbs();
 
 				if (abortOp)
 				{
 					goto finish;
 				}
 			}
+			QApplication::processEvents();
 		}
 	}
 
@@ -448,19 +488,26 @@ void ThumbView::initThumbs()
 	}
 }
 
-void ThumbView::loadThumbs()
+void ThumbView::loadThumbsRange()
 {
+	static bool inProgress = false;
+	if (inProgress)
+	{	
+		abortOp = true;
+		QTimer::singleShot(0, this, SLOT(loadThumbsRange()));
+		return;
+	}
+
+	inProgress = true;
 	QImageReader thumbReader;
 	QSize currThumbSize;
-	bool needRefresh = false;
-	thumbLoaderActive = true;
-	int firstThumb = (thumbViewModel->rowCount() - thumbFileInfoList.size());
+	int currRowCount = thumbViewModel->rowCount();
 
-	updateIndex();
-
-refreshThumbs:
-	for (int currThumb = firstThumb; currThumb < thumbViewModel->rowCount(); ++currThumb)
+	for (int currThumb = thumbsRangeFirst; currThumb < thumbsRangeLast || !currThumb; ++currThumb)
 	{
+		if (thumbViewModel->rowCount() != currRowCount || abortOp)
+			break;
+
 		if (thumbViewModel->item(currThumb)->data(LoadedRole).toBool())
 			continue;
 
@@ -483,39 +530,22 @@ refreshThumbs:
 
 		if (GData::thumbsLayout == Compact)
 		{
-			if (isItemVisible(thumbViewModel->item(currThumb)->index()))
+			if (isThumbVisible(thumbViewModel->item(currThumb)->index()))
 				setRowHidden(currThumb, false);
 		}
 
 		thumbViewModel->item(currThumb)->setData(true, LoadedRole);
 
 		QApplication::processEvents();
-
-		if (newIndex)
-		{
-			currThumb = newIndex - 1;
-			if (currThumb < 0)
-				currThumb = 0;
-			newIndex = 0;
-			needRefresh = true;
-			if (GData::thumbsLayout == Compact)
-				setRowHidden(currThumb, false);
-		}
-
-		if (abortOp)
-			break;
-	}
-
-	if (needRefresh && !abortOp)
-	{
-		needRefresh = false;
-		goto refreshThumbs;
 	}
 
 	if (GData::thumbsLayout == Compact && thumbViewModel->rowCount() > 0)
 	{
 		setRowHidden(0 , false);
 	}
+
+	inProgress = false;
+	abortOp = false;
 }
 
 void ThumbView::addThumb(QString &imageFullPath)
@@ -575,7 +605,7 @@ void ThumbView::invertSelection()
 {
 	QModelIndex idx;
 
-	for (int currThumb = 0; currThumb < thumbViewModel->rowCount() - 1; ++currThumb)
+	for (int currThumb = 0; currThumb < thumbViewModel->rowCount(); ++currThumb)
 	{
 		idx = thumbViewModel->indexFromItem(thumbViewModel->item(currThumb));
 		selectionModel()->select(idx, QItemSelectionModel::Toggle);

@@ -38,6 +38,7 @@
 #include <QItemDelegate>
 #include <QDirIterator>
 #include <exiv2/exiv2.hpp>
+#include <QTimer>
 #include "global.h"
 
 class InfoView : public QTableView
@@ -102,6 +103,7 @@ public:
 	void setCurrentRow(int row);
 	QString getSingleSelectionFilename();
 	void addThumb(QString &imageFullPath);
+	void abort();
 
 protected:
 	void startDrag(Qt::DropActions);
@@ -120,11 +122,13 @@ private:
 	bool thumbLoaderActive;
 	bool isNeedScroll;
 	int currentRow;
+	int thumbsRangeFirst;
+	int thumbsRangeLast;
 
 	void initThumbs();
-	void loadThumbs();
-	int getFirstVisibleItem();
-	bool isItemVisible(QModelIndex idx);
+	int getFirstVisibleThumb();
+	int getLastVisibleThumb();
+	bool isThumbVisible(QModelIndex idx);
 	void updateThumbsCount();
 	void updateExifInfo(QString imageFullPath);
 
@@ -133,10 +137,12 @@ signals:
 	void setStatus(QString state);
 
 public slots:
-	void abort();
-	void updateIndex();
+	void loadVisibleThumbs();
 	void handleSelectionChanged(const QItemSelection& selection);
 	void invertSelection();
+
+private slots:
+	void loadThumbsRange();
 };
 
 class FSTree : public QTreeView
