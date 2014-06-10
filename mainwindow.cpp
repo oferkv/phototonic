@@ -2072,7 +2072,7 @@ void Phototonic::reloadThumbsSlot()
 	if (thumbViewBusy || !initComplete)
 	{	
 		thumbView->abort();
-		QTimer::singleShot(250, this, SLOT(reloadThumbsSlot()));
+		QTimer::singleShot(0, this, SLOT(reloadThumbsSlot()));
 		return;
 	}
 

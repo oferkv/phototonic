@@ -1,6 +1,6 @@
 pkgname=phototonic-git
 pkgver=1
-pkgrel=3
+pkgrel=6
 pkgdesc="Image Viewer and Organizer"
 arch=('i686' 'x86_64')
 url="http://oferkv.github.io/phototonic/"
@@ -13,7 +13,7 @@ provides=('phototonic')
 
 build() {
   cd "$srcdir/phototonic"
-  qmake PREFIX="/usr" QMAKE_CFLAGS_RELEASE="$CPPFLAGS $CFLAGS" QMAKE_CXXFLAGS_RELEASE="$CPPFLAGS $CXXFLAGS" QMAKE_LFLAGS_RELEASE="$LDFLAGS"
+  qmake-qt5 PREFIX="/usr" QMAKE_CFLAGS_RELEASE="$CPPFLAGS $CFLAGS" QMAKE_CXXFLAGS_RELEASE="$CPPFLAGS $CXXFLAGS" QMAKE_LFLAGS_RELEASE="$LDFLAGS"
   make
 }
 

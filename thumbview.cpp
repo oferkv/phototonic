@@ -295,7 +295,7 @@ void ThumbView::loadVisibleThumbs()
 	if (first < 0 || last < 0) 
 		return;
 
-	last += (last - first) * 4;
+	last += (last - first) * 2;
 	if (last > thumbViewModel->rowCount())
 		last = thumbViewModel->rowCount();
 
@@ -479,7 +479,8 @@ void ThumbView::initThumbs()
 		thumbIitem->setData(thumbFileInfo.filePath(), FileNameRole);
 		if (GData::thumbsLayout == Classic)
 			thumbIitem->setData(thumbFileInfo.fileName(), Qt::DisplayRole);
-		thumbIitem->setIcon(emptyPixMap);
+		if (GData::thumbsLayout == Compact)
+			thumbIitem->setIcon(emptyPixMap);
 		thumbIitem->setTextAlignment(Qt::AlignTop | Qt::AlignHCenter);
 		if (GData::thumbsLayout != Compact)
 			thumbIitem->setSizeHint(hintSize);
