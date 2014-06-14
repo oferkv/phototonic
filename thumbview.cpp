@@ -422,8 +422,7 @@ void ThumbView::load(QString &cliImageName)
 
 	if (!cliImageName.isEmpty())
 	{
-		QString cliImageFullPath = currentViewDir + QDir::separator() + cliImageName;
-		setCurrentIndexByName(cliImageFullPath);
+		setCurrentIndexByName(cliImageName);
 	}
 
 	updateThumbsCount();
@@ -460,10 +459,12 @@ finish:
 void ThumbView::initThumbs()
 {
 	thumbFileInfoList = thumbsDir->entryInfoList();
-	QStandardItem *thumbIitem;
-	int currThumb;
-	QPixmap emptyPixMap = QPixmap::fromImage(emptyImg).scaled(thumbWidth, thumbHeight);
-	QSize hintSize;
+	static QStandardItem *thumbIitem;
+	static int currThumb;
+	static QPixmap emptyPixMap;
+	static QSize hintSize;
+
+	emptyPixMap = QPixmap::fromImage(emptyImg).scaled(thumbWidth, thumbHeight);
 
 	if (GData::thumbsLayout == Squares)
 		hintSize = QSize(thumbWidth / 2, thumbWidth / 2);
@@ -492,6 +493,10 @@ void ThumbView::initThumbs()
 void ThumbView::loadThumbsRange()
 {
 	static bool inProgress = false;
+	static QImageReader thumbReader;
+	QSize currThumbSize;
+	static int currRowCount;
+
 	if (inProgress)
 	{	
 		abortOp = true;
@@ -500,9 +505,7 @@ void ThumbView::loadThumbsRange()
 	}
 
 	inProgress = true;
-	QImageReader thumbReader;
-	QSize currThumbSize;
-	int currRowCount = thumbViewModel->rowCount();
+	currRowCount = thumbViewModel->rowCount();
 
 	for (int currThumb = thumbsRangeFirst; currThumb < thumbsRangeLast || !currThumb; ++currThumb)
 	{

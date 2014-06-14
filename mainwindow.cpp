@@ -1759,20 +1759,19 @@ void Phototonic::setToolBarsVisibility()
 
 void Phototonic::loadImageFile(QString imageFileName)
 {
+	imageView->loadImage(imageFileName);
 	if (stackedWidget->currentIndex() == thumbViewIdx)
 	{
-		setThumbViewWidgetsVisible(false);
 		QApplication::setOverrideCursor(Qt::OpenHandCursor);
+		stackedWidget->setCurrentIndex(imageViewIdx);
+		setThumbViewWidgetsVisible(false);
 		if (GData::isFullScreen == true)
 		{
 			shouldMaximize = isMaximized();
 			showFullScreen();
 			imageView->setCursorHiding(true);
 		}
-		stackedWidget->setCurrentIndex(imageViewIdx);
 	}
-
-	imageView->loadImage(imageFileName);
 }
 
 void Phototonic::loadImagefromThumb(const QModelIndex &idx)
@@ -1929,20 +1928,21 @@ void Phototonic::closeImage()
 	if (cliImageLoaded && GData::exitInsteadOfClose)
 		close();
 
+	setThumbViewWidgetsVisible(true);
+	stackedWidget->setCurrentIndex(thumbViewIdx);
+
 	if (isFullScreen())
 	{
-		imageView->setCursorHiding(false);
 		showNormal();
 		if (shouldMaximize)
 			showMaximized();
+		imageView->setCursorHiding(false);
 	}
 	while (QApplication::overrideCursor())
 		QApplication::restoreOverrideCursor();
 
-	setThumbViewWidgetsVisible(true);
-	stackedWidget->setCurrentIndex(thumbViewIdx);
-	thumbView->setCurrentIndexByName(imageView->currentImageFullPath);
-	thumbView->selectCurrentIndex();
+	if (GData::slideShowActive)
+		slideShow();
 
 	if (needThumbsRefresh)
 	{
@@ -1950,10 +1950,10 @@ void Phototonic::closeImage()
 		refreshThumbs(false);
 	}
 	else
-		thumbView->loadVisibleThumbs();
-
-	if (GData::slideShowActive)
-		slideShow();
+	{
+		thumbView->setCurrentIndexByName(imageView->currentImageFullPath);
+		thumbView->selectCurrentIndex();
+	}
 
 	thumbView->setFocus(Qt::OtherFocusReason);
 	setThumbviewWindowTitle();
