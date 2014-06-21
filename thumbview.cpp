@@ -24,6 +24,7 @@ ThumbView::ThumbView(QWidget *parent) : QListView(parent)
 	GData::thumbsTextColor = GData::appSettings->value("textThumbColor").value<QColor>();
 	setThumbColors();
 	GData::thumbSpacing = GData::appSettings->value("thumbSpacing").toInt();
+	GData::thumbPagesReadahead = GData::appSettings->value("thumbPagesReadahead").toInt();
 	GData::thumbsLayout = GData::appSettings->value("thumbLayout").toInt();
 	thumbSize = GData::appSettings->value("thumbsZoomVal").toInt();
 	currentRow = 0;
@@ -295,7 +296,7 @@ void ThumbView::loadVisibleThumbs()
 	if (first < 0 || last < 0) 
 		return;
 
-	last += (last - first) * 2;
+	last += (last - first) * (GData::thumbPagesReadahead + 1);
 	if (last > thumbViewModel->rowCount())
 		last = thumbViewModel->rowCount();
 

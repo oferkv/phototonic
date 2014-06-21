@@ -85,6 +85,7 @@ private:
     QToolButton *colThumbButton;
     QToolButton *colThumbTextButton;
 	QSpinBox *thumbSpacingSpin;
+	QSpinBox *thumbPagesSpin;
 	QSpinBox *saveQualitySpin;
 	QColor bgColor;
 	QColor thumbBgColor;

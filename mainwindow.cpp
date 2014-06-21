@@ -23,7 +23,7 @@
 
 Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 {
-	GData::appSettings = new QSettings("phototonic", "phototonic_099_git_01");
+	GData::appSettings = new QSettings("phototonic", "phototonic_099_git_02");
 	readSettings();
 	createThumbView();
 	createActions();
@@ -773,16 +773,8 @@ void Phototonic::setIncludeSubFolders()
 
 void Phototonic::refreshThumbs(bool scrollToTop)
 {
-	if (scrollToTop)
-	{
-		thumbView->setNeedScroll(true);
-		QTimer::singleShot(0, this, SLOT(reloadThumbsSlot()));
-	}
-	else
-	{
-		thumbView->setNeedScroll(false);
-		QTimer::singleShot(0, this, SLOT(reloadThumbsSlot()));
-	}
+	thumbView->setNeedScroll(scrollToTop);
+	QTimer::singleShot(0, this, SLOT(reloadThumbsSlot()));
 }
 
 void Phototonic::setClassicThumbs()
@@ -812,7 +804,7 @@ void Phototonic::showHiddenFiles()
 
 void Phototonic::about()
 {
-	QMessageBox::about(this, "About Phototonic", "<h2>Phototonic v0.99Git01</h2>"
+	QMessageBox::about(this, "About Phototonic", "<h2>Phototonic v0.99Git02</h2>"
 							"<p>Image viewer and organizer</p>"
 							"<p><a href=\"http://oferkv.github.io/phototonic/\">Home page</a></p>"
 							"<p><a href=\"https://github.com/oferkv/phototonic/issues\">Reports Bugs</a></p>"
@@ -1432,6 +1424,7 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("backgroundThumbColor", GData::thumbsBackgroundColor);
 	GData::appSettings->setValue("textThumbColor", GData::thumbsTextColor);
 	GData::appSettings->setValue("thumbSpacing", (int)GData::thumbSpacing);
+	GData::appSettings->setValue("thumbPagesReadahead", (int)GData::thumbPagesReadahead);
 	GData::appSettings->setValue("thumbLayout", (int)GData::thumbsLayout);
 	GData::appSettings->setValue("exitInsteadOfClose", (int)GData::exitInsteadOfClose);
 	GData::appSettings->setValue("enableAnimations", (bool)GData::enableAnimations);
@@ -1480,6 +1473,7 @@ void Phototonic::readSettings()
 		GData::appSettings->setValue("backgroundThumbColor", QColor(200, 200, 200));
 		GData::appSettings->setValue("textThumbColor", QColor(25, 25, 25));
 		GData::appSettings->setValue("thumbSpacing", (int)5);
+		GData::appSettings->setValue("thumbPagesReadahead", (int)2);
 		GData::appSettings->setValue("thumbLayout", (int)GData::thumbsLayout);
 		GData::appSettings->setValue("zoomOutFlags", (int)1);
 		GData::appSettings->setValue("zoomInFlags", (int)0);
@@ -1923,6 +1917,16 @@ void Phototonic::loadRandomImage()
 	thumbView->setCurrentRow(randomRow);
 }
 
+void Phototonic::scrollToLastImage()
+{
+	if (thumbView->thumbViewModel->rowCount() > 0) 
+	{
+		thumbView->setCurrentIndex(thumbView->thumbViewModel->index(0, 0));
+		thumbView->setCurrentIndexByName(imageView->currentImageFullPath);
+		thumbView->selectCurrentIndex();
+	}
+}
+
 void Phototonic::closeImage()
 {
 	if (cliImageLoaded && GData::exitInsteadOfClose)
@@ -1947,16 +1951,14 @@ void Phototonic::closeImage()
 	if (needThumbsRefresh)
 	{
 		needThumbsRefresh = false;
-		refreshThumbs(false);
-	}
-	else
-	{
-		thumbView->setCurrentIndexByName(imageView->currentImageFullPath);
-		thumbView->selectCurrentIndex();
+		refreshThumbs(true);
 	}
 
 	thumbView->setFocus(Qt::OtherFocusReason);
 	setThumbviewWindowTitle();
+
+	if (!needThumbsRefresh)
+		QTimer::singleShot(100, this, SLOT(scrollToLastImage()));
 }
 
 void Phototonic::goBottom()

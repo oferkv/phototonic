@@ -291,12 +291,23 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	noSmallThumbCb = new QCheckBox("Do not enlarge thumbnails for images smaller than thumbnail size", this);
 	noSmallThumbCb->setChecked(GData::noEnlargeSmallThumb);
 
+	// Thumbnail pages to read ahead
+	QLabel *thumbPagesLab = new QLabel("Number of thumbnail pages to read ahead: ");
+	thumbPagesSpin = new QSpinBox;
+	thumbPagesSpin->setRange(1, 10);
+	thumbPagesSpin->setValue(GData::thumbPagesReadahead);
+	QHBoxLayout *thumbPagesHbox = new QHBoxLayout;
+	thumbPagesHbox->addWidget(thumbPagesLab);
+	thumbPagesHbox->addWidget(thumbPagesSpin);
+	thumbPagesHbox->addStretch(1);
+
 	// Thumbnail options
 	QGroupBox *thumbOptsGroupBox = new QGroupBox("Thumbnails");
 	QVBoxLayout *thumbsOptsBox = new QVBoxLayout;
 	thumbsOptsBox->addLayout(thumbSpacingHbox);
 	thumbsOptsBox->addWidget(noSmallThumbCb);
 	thumbsOptsBox->addLayout(bgThumbColBox);
+	thumbsOptsBox->addLayout(thumbPagesHbox);
 	thumbOptsGroupBox->setLayout(thumbsOptsBox);
 
 	// Zoom large images
@@ -463,6 +474,7 @@ void SettingsDialog::saveSettings()
 	GData::thumbsBackgroundColor = thumbBgColor;
 	GData::thumbsTextColor = thumbTextColor;
 	GData::thumbSpacing = thumbSpacingSpin->value();
+	GData::thumbPagesReadahead = thumbPagesSpin->value();
 	GData::exitInsteadOfClose = exitCliCb->isChecked();
 	GData::wrapImageList = wrapListCb->isChecked();
 	GData::defaultSaveQuality = saveQualitySpin->value();

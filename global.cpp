@@ -29,6 +29,7 @@ namespace GData
 	QColor thumbsTextColor;
 	unsigned int thumbsLayout;
 	unsigned int thumbSpacing;
+	unsigned int thumbPagesReadahead;
 	bool exitInsteadOfClose;
 	bool wrapImageList;
 	bool enableAnimations;

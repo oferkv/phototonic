@@ -36,6 +36,7 @@ namespace GData
 	extern QColor thumbsTextColor;
 	extern unsigned int thumbsLayout;
 	extern unsigned int thumbSpacing;
+	extern unsigned int thumbPagesReadahead;
 	extern bool exitInsteadOfClose;
 	extern bool wrapImageList;
 	extern bool enableAnimations;

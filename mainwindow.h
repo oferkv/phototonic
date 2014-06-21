@@ -82,6 +82,7 @@ private slots:
 	void loadFirstImage();
 	void loadLastImage();
 	void loadRandomImage();
+	void scrollToLastImage();
 	void selectAllThumbs();
 	void deleteOp();
 	void cutImages();
