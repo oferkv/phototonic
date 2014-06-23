@@ -70,6 +70,7 @@ private slots:
 	void goSelectedDir(const QModelIndex &currDir);
 	void goPathBarDir();
 	void setThumbsFilter();
+	void clearThumbsFilter();
 	void goBack();
 	void goTo(QString path);
 	void goForward();

@@ -662,38 +662,3 @@ void FSTree::dropEvent(QDropEvent *event)
 	}
 }
 
-InfoView::InfoView(QWidget *parent) : QTableView(parent)
-{
-	setSelectionBehavior(QAbstractItemView::SelectItems);
-	setSelectionMode( QAbstractItemView::ExtendedSelection);
-	verticalHeader()->setVisible(false);
-	verticalHeader()->setDefaultSectionSize(verticalHeader()->minimumSectionSize());
-	horizontalHeader()->setVisible(false);
-	horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-	setShowGrid(false);
-	
-	setEditTriggers(QAbstractItemView::NoEditTriggers);
-	setSelectionBehavior(QAbstractItemView::SelectRows);
-	setGridStyle(Qt::DotLine);
-
-	infoModel = new QStandardItemModel(this);
-	setModel(infoModel);
-}
-
-void InfoView::clear()
-{
-	infoModel->clear();
-}
-
-void InfoView::addEntry(QString &key, QString &value)
-{
-	int atRow = infoModel->rowCount();
-	QStandardItem *itemKey = new QStandardItem(key);
-	infoModel->insertRow(atRow, itemKey);
-	if (!value.isEmpty())
-	{
-		QStandardItem *itemVal = new QStandardItem(value);
-		infoModel->setItem(atRow, 1, itemVal);
-	}
-}
-

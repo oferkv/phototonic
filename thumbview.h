@@ -20,8 +20,6 @@
 #define THUMBVIEW_H
 
 #include <QListView>
-#include <QTableView>
-#include <QHeaderView>
 #include <QDir>
 #include <QDebug>
 #include <QStandardItem>
@@ -40,20 +38,7 @@
 #include <exiv2/exiv2.hpp>
 #include <QTimer>
 #include "global.h"
-
-class InfoView : public QTableView
-{
-	Q_OBJECT
-
-public:
-	InfoView(QWidget *parent);
-	void clear();
-	void addEntry(QString &key, QString &value);
-
-private:
-	QStandardItemModel *infoModel;
-
-};
+#include "infoview.h"
 
 class ThumbView : public QListView
 {

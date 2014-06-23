@@ -657,30 +657,19 @@ void Phototonic::createToolBars()
 	viewToolBar->addAction(thumbsZoomOutAct);
 
 	/* filter bar */ 
+	QAction *filterAct = new QAction("Filter", this);
+	filterAct->setIcon(QIcon::fromTheme("edit-find", QIcon(":/images/zoom.png")));
+	connect(filterAct, SIGNAL(triggered()), this, SLOT(setThumbsFilter()));
 	filterBar = new QLineEdit;
 	filterBar->setMinimumWidth(100);
 	filterBar->setMaximumWidth(200);
-	filterBar->setFrame(false);
 	connect(filterBar, SIGNAL(returnPressed()), this, SLOT(setThumbsFilter()));
-	filterBar->setStyleSheet("QWidget {border-width: 0px;}");
-
-	QLabel *filterBarIconLab = new QLabel;
-	filterBarIconLab->setPixmap(QIcon::fromTheme("edit-find", QIcon(":/images/zoom.png")).pixmap(16, 16));
-	filterBarIconLab->setStyleSheet("QWidget {border-width: 0px;}");
-	
-	QHBoxLayout *filterBarLayout = new QHBoxLayout();
-	filterBarLayout->setContentsMargins(3, 3, 3, 3);
-	filterBarLayout->setSizeConstraint(QLayout::SetFixedSize);
-	filterBarLayout->setSpacing(0);
-	filterBarLayout->addWidget(filterBarIconLab);
-	filterBarLayout->addWidget(filterBar);
-
-	QWidget *filterbarFrame = new QWidget(this);
-	filterbarFrame->setLayout(filterBarLayout);
-	filterbarFrame->setStyleSheet("QWidget {border-width: 1px; border-style: inset; border-color: #666666; border-radius: 3px; background-color: #ffffff;}");
+	connect(filterBar, SIGNAL(textChanged(const QString&)), this, SLOT(clearThumbsFilter()));
+	filterBar->setClearButtonEnabled(true);
+	filterBar->addAction(filterAct, QLineEdit::LeadingPosition);
 
 	viewToolBar->addSeparator();
-	viewToolBar->addWidget(filterbarFrame);
+	viewToolBar->addWidget(filterBar);
 	connect(viewToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setToolBarsVisibility()));	
 }
 
@@ -1346,6 +1335,15 @@ void Phototonic::setThumbsFilter()
 	refreshThumbs(true);
 }
 
+void Phototonic::clearThumbsFilter()
+{
+	if (filterBar->text() == "")
+	{
+		thumbView->filterStr = filterBar->text();
+		refreshThumbs(true);
+	}
+}
+
 void Phototonic::goBack()
 {
 	if (currentHistoryIdx > 0)
@@ -1955,6 +1953,7 @@ void Phototonic::closeImage()
 	}
 
 	thumbView->setFocus(Qt::OtherFocusReason);
+	thumbView->loadVisibleThumbs();
 	setThumbviewWindowTitle();
 
 	if (!needThumbsRefresh)

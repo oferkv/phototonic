@@ -6,8 +6,8 @@ LIBS += -L/usr/local/lib -lexiv2
 QT += widgets
 
 # Input
-HEADERS += dialogs.h mainwindow.h thumbview.h imageview.h global.h
-SOURCES += dialogs.cpp main.cpp mainwindow.cpp thumbview.cpp imageview.cpp global.cpp
+HEADERS += dialogs.h mainwindow.h thumbview.h imageview.h global.h infoview.h
+SOURCES += dialogs.cpp main.cpp mainwindow.cpp thumbview.cpp imageview.cpp global.cpp infoview.cpp
 RESOURCES += phototonic.qrc
 
 target.path = /usr/bin/
