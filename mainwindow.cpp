@@ -21,6 +21,9 @@
 #include "dialogs.h"
 #include "global.h"
 
+#define THUMB_SIZE_MIN	50
+#define THUMB_SIZE_MAX	300
+
 Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 {
 	GData::appSettings = new QSettings("phototonic", "phototonic_099_git_02");
@@ -286,13 +289,13 @@ void Phototonic::createActions()
 	thumbsZoomInAct = new QAction("Enlarge Thumbnails", this);
 	connect(thumbsZoomInAct, SIGNAL(triggered()), this, SLOT(thumbsZoomIn()));
 	thumbsZoomInAct->setIcon(QIcon::fromTheme("zoom-in", QIcon(":/images/zoom_in.png")));
-	if (thumbView->thumbSize == 300)
+	if (thumbView->thumbSize == THUMB_SIZE_MAX)
 		thumbsZoomInAct->setEnabled(false);
 
 	thumbsZoomOutAct = new QAction("Shrink Thumbnails", this);
 	connect(thumbsZoomOutAct, SIGNAL(triggered()), this, SLOT(thumbsZoomOut()));
 	thumbsZoomOutAct->setIcon(QIcon::fromTheme("zoom-out", QIcon(":/images/zoom_out.png")));
-	if (thumbView->thumbSize == 100)
+	if (thumbView->thumbSize == THUMB_SIZE_MIN)
 		thumbsZoomOutAct->setEnabled(false);
 
 	cutAction = new QAction("Cut", this);
@@ -956,11 +959,11 @@ void Phototonic::copyImages()
 
 void Phototonic::thumbsZoomIn()
 {
-	if (thumbView->thumbSize < 300)
+	if (thumbView->thumbSize < THUMB_SIZE_MAX)
 	{
 		thumbView->thumbSize += 50;
 		thumbsZoomOutAct->setEnabled(true);
-		if (thumbView->thumbSize == 300)
+		if (thumbView->thumbSize == THUMB_SIZE_MAX)
 			thumbsZoomInAct->setEnabled(false);
 		refreshThumbs(false);
 	}
@@ -968,11 +971,11 @@ void Phototonic::thumbsZoomIn()
 
 void Phototonic::thumbsZoomOut()
 {
-	if (thumbView->thumbSize > 100)
+	if (thumbView->thumbSize > THUMB_SIZE_MIN)
 	{
 		thumbView->thumbSize -= 50;
 		thumbsZoomInAct->setEnabled(true);
-		if (thumbView->thumbSize == 100)
+		if (thumbView->thumbSize == THUMB_SIZE_MIN)
 			thumbsZoomOutAct->setEnabled(false);
 		refreshThumbs(false);
 	}

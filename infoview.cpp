@@ -27,7 +27,7 @@ InfoView::InfoView(QWidget *parent) : QTableView(parent)
 	horizontalHeader()->setVisible(false);
 	horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	setShowGrid(false);
-	
+
 	setEditTriggers(QAbstractItemView::NoEditTriggers);
 	setSelectionBehavior(QAbstractItemView::SelectRows);
 	setGridStyle(Qt::DotLine);
@@ -41,7 +41,7 @@ InfoView::InfoView(QWidget *parent) : QTableView(parent)
 	connect(copyAction, SIGNAL(triggered()), this, SLOT(copyEntry()));
 	infoMenu->addAction(copyAction);
 	setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(this, SIGNAL(customContextMenuRequested(QPoint)), SLOT(showInfoViewMenu(QPoint)));
+	connect(this, SIGNAL(customContextMenuRequested(QPoint)), SLOT(showInfoViewMenu(QPoint)));
 }
 
 void InfoView::showInfoViewMenu(QPoint pt)
