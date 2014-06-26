@@ -80,7 +80,8 @@ public:
 	void refreshColors();
 	void reload();
 	void setCursorOverrides(bool override);
-	QSize getImageSize();
+	int getImageWidthPreCropped();
+	int getImageHeightPreCropped();
 	void keyMoveEvent(int direction);
 	void popMessage(const char *message);
 
@@ -112,7 +113,6 @@ private:
 	QTimer *mouseMovementTimer;
 	QMovie *anim;
 	bool newImage;
-
 	bool cursorIsHidden;
 	bool moveImageLocked;
 	int mouseX;
@@ -120,6 +120,8 @@ private:
 	int layoutX;
 	int layoutY;
 	bool isAnimation;
+	int preCroppedWidth;
+	int preCroppedHeight;
 
 	void centerImage(QSize &imgSize);
 	long getExifOrientation();

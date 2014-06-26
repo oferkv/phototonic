@@ -295,6 +295,8 @@ void ImageView::transform()
 		displayImage = displayImage.mirrored(GData::flipH, GData::flipV);
 	}
 
+	preCroppedWidth = displayImage.width();
+	preCroppedHeight = displayImage.height();
 	if (GData::cropLeft || GData::cropTop || GData::cropWidth || GData::cropHeight)
 	{
 		displayImage = displayImage.copy(	
@@ -858,9 +860,14 @@ void ImageView::contextMenuEvent(QContextMenuEvent *)
 	setCursorOverrides(true);
 }
 
-QSize ImageView::getImageSize()
+int ImageView::getImageWidthPreCropped()
 {
-	return QSize(displayImage.width(), displayImage.height());
+	return preCroppedWidth;
+}
+
+int ImageView::getImageHeightPreCropped()
+{
+	return preCroppedHeight;
 }
 
 void ImageView::copyImage()

@@ -566,23 +566,48 @@ CropDialog::CropDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
 
 	QGridLayout *mainGbox = new QGridLayout;
 
+	QLabel *topLab = new QLabel("Top");
+	QLabel *leftLab = new QLabel("Left");
+	QLabel *rightLab = new QLabel("Right");
+	QLabel *bottomLab = new QLabel("Bottom");
+
+	QHBoxLayout *topBox = new QHBoxLayout;
+	topBox->addWidget(topLab);
+	topBox->addWidget(topSpin);
+	topBox->addStretch(1);	
+
+	QHBoxLayout *bottomBox = new QHBoxLayout;
+	bottomBox->addWidget(bottomLab);
+	bottomBox->addWidget(bottomSpin);
+	bottomBox->addStretch(1);	
+
+	QHBoxLayout *leftBox = new QHBoxLayout;
+	leftBox->addWidget(leftLab);
+	leftBox->addWidget(leftSpin);
+	leftBox->addStretch(1);	
+
+	QHBoxLayout *rightBox = new QHBoxLayout;
+	rightBox->addWidget(rightLab);
+	rightBox->addWidget(rightSpin);
+	rightBox->addStretch(1);	
+
 	mainGbox->addWidget(topSlide, 2, 1, 5, 1);
-	mainGbox->addWidget(topSpin, 4, 2, 1, 1);
+	mainGbox->addLayout(topBox, 4, 2, 1, 1);
 	mainGbox->addWidget(bottomSlide, 2, 7, 5, 1);
-	mainGbox->addWidget(bottomSpin, 4, 6, 1, 1);
+	mainGbox->addLayout(bottomBox, 4, 6, 1, 1);
 	mainGbox->addWidget(leftSlide, 1, 2, 1, 5);
-	mainGbox->addWidget(leftSpin, 2, 4, 1, 1);
+	mainGbox->addLayout(leftBox, 2, 4, 1, 1);
 	mainGbox->addWidget(rightSlide, 7, 2, 1, 5);
-	mainGbox->addWidget(rightSpin, 6, 4, 1, 1);
+	mainGbox->addLayout(rightBox, 6, 4, 1, 1);
 
 	QVBoxLayout *mainVbox = new QVBoxLayout;
 	mainVbox->addLayout(mainGbox);
 	mainVbox->addLayout(buttonsHbox);
 	setLayout(mainVbox);
 
-	int width = imageView->getImageSize().width();
-	int height = imageView->getImageSize().height();
-	
+	int width = imageView->getImageWidthPreCropped();
+	int height = imageView->getImageHeightPreCropped();
+
 	topSpin->setRange(0, height);
 	bottomSpin->setRange(0, height);
 	leftSpin->setRange(0, width);
