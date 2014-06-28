@@ -223,7 +223,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 		height = 800;
 	resize(600, height);
 
-	QWidget* optsWidgetArea = new QWidget(this);
+	QWidget *optsWidgetArea = new QWidget(this);
 	QScrollArea *scrollArea = new QScrollArea;
 	scrollArea->setWidget(optsWidgetArea);
 	scrollArea->setWidgetResizable(true);
@@ -810,5 +810,105 @@ void ColorsDialog::setBlueChannel()
 {
 	GData::hueBlueChannel = blueB->isChecked();
 	imageView->refresh();
+}
+
+static void addTableModelItem(QStandardItemModel *model, QString &key, QString &val)
+{
+	int atRow = model->rowCount();
+	QStandardItem *itemKey = new QStandardItem(key);
+	QStandardItem *itemKey2 = new QStandardItem(val);
+	model->insertRow(atRow, itemKey);
+	model->setItem(atRow, 1, itemKey2);
+}
+
+AppMgmtDialog::AppMgmtDialog(QWidget *parent) : QDialog(parent)
+{
+	setWindowTitle("Manage External Applications");
+	resize(300, 300);
+
+	appsTable = new QTableView(this);
+	appsTable->setSelectionBehavior(QAbstractItemView::SelectItems);
+	appsTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
+	appsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	appsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+	appsTable->setGridStyle(Qt::DotLine);
+	appsTableModel = new QStandardItemModel(this);
+	appsTable->setModel(appsTableModel);
+	appsTable->verticalHeader()->setVisible(false);
+	appsTable->verticalHeader()->setDefaultSectionSize(appsTable->verticalHeader()->minimumSectionSize());
+	appsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	appsTableModel->setHorizontalHeaderItem(0, new QStandardItem(QString("Name")));
+	appsTableModel->setHorizontalHeaderItem(1, new QStandardItem(QString("Path")));
+
+	QHBoxLayout *addRemoveHbox = new QHBoxLayout;
+    QPushButton *addButton = new QPushButton("Add");
+	connect(addButton, SIGNAL(clicked()), this, SLOT(add()));
+	addRemoveHbox->addWidget(addButton, 0, Qt::AlignRight);
+    QPushButton *removeButton = new QPushButton("Remove");
+	connect(removeButton, SIGNAL(clicked()), this, SLOT(remove()));
+	addRemoveHbox->addWidget(removeButton, 0, Qt::AlignRight);
+	addRemoveHbox->addStretch(1);	
+
+	QHBoxLayout *buttonsHbox = new QHBoxLayout;
+    QPushButton *okButton = new QPushButton("OK");
+    okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+	connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
+	buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);
+	QVBoxLayout *mainVbox = new QVBoxLayout;
+	mainVbox->addWidget(appsTable);
+	mainVbox->addLayout(addRemoveHbox);
+	mainVbox->addLayout(buttonsHbox);
+	setLayout(mainVbox);
+
+	// Load external apps list
+	QString key, val;
+	QMapIterator<QString, QString> it(GData::externalApps);
+	while (it.hasNext())
+	{
+		it.next();
+		key = it.key();
+		val = it.value();
+		addTableModelItem(appsTableModel, key, val);
+	}
+}
+
+void AppMgmtDialog::ok()
+{
+	int row = appsTableModel->rowCount();
+	GData::externalApps.clear();
+    for (int i = 0; i < row ; ++i)
+    {
+		GData::externalApps[appsTableModel->itemFromIndex(appsTableModel->index(i, 0))->text()] =
+						appsTableModel->itemFromIndex(appsTableModel->index(i, 1))->text();
+   	}
+
+	accept();
+}
+
+void AppMgmtDialog::add()
+{
+	QString fileName = QFileDialog::getOpenFileName(this, "Choose Application", "", "");
+	if (fileName.isEmpty())
+		return;
+		
+	QFileInfo fileInfo = QFileInfo(fileName);
+	if (!fileInfo.isExecutable())
+	{
+		QMessageBox msgBox;
+		msgBox.critical(this, "Error", "Not an executable");
+		return;
+	}
+	
+	QString appName = fileInfo.fileName();
+	addTableModelItem(appsTableModel, appName, fileName);
+}
+
+void AppMgmtDialog::remove()
+{
+	QModelIndexList indexesList;
+	while((indexesList = appsTable->selectionModel()->selectedIndexes()).size())
+	{
+		appsTableModel->removeRow(indexesList.first().row());
+	}
 }
 

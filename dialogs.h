@@ -150,5 +150,25 @@ private:
 	QToolButton *blueB;
 };
 
+class AppMgmtDialog : public QDialog
+{
+    Q_OBJECT
+
+public:
+    AppMgmtDialog(QWidget *parent);
+
+public slots:
+	void ok();
+
+private slots:
+	void add();
+	void remove();
+
+private:
+	QTableView *appsTable;
+	QStandardItemModel *appsTableModel;
+
+};
+
 #endif // DIALOGS_H
 

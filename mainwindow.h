@@ -225,7 +225,6 @@ private:
 
 	QAction *openWithMenuAct;
 	QAction *chooseAppAct;
-	QAction *openWithExteralApp;
 	QAction *invertSelectionAct;
 	
 	QLineEdit *pathBar;
@@ -241,7 +240,6 @@ private:
 	ImageView *imageView;
 	QList<QString> pathHistory;
 	QProcess externalProcess;
-	QString externalAppPath;
 	QTimer *SlideShowTimer;
 
 	enum CentralWidgets

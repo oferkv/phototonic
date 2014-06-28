@@ -26,7 +26,7 @@
 
 Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 {
-	GData::appSettings = new QSettings("phototonic", "phototonic_099_git_02");
+	GData::appSettings = new QSettings("phototonic", "phototonic_099_git_03");
 	readSettings();
 	createThumbView();
 	createActions();
@@ -181,7 +181,6 @@ void Phototonic::createImageView()
 	imageView->addAction(mirrorQuadAct);
 	imageView->addAction(keepTransformAct);
 	imageView->addAction(keepZoomAct);
-	imageView->addAction(openWithExteralApp);
 	imageView->addAction(refreshAction);
 	imageView->addAction(colorsAct);
 	imageView->addAction(moveRightAct);
@@ -442,15 +441,9 @@ void Phototonic::createActions()
 
 	openWithSubMenu = new QMenu("Open With");
 	openWithMenuAct = new QAction("Open With", this);
-	openWithExteralApp = new QAction("", this);
 	openWithMenuAct->setMenu(openWithSubMenu);
-	chooseAppAct = new QAction("Choose...", this);
-	openWithSubMenu->addAction(openWithExteralApp);
-	openWithExteralApp->setVisible(false);
-	openWithSubMenu->addSeparator();
-	openWithSubMenu->addAction(chooseAppAct);
+	chooseAppAct = new QAction("Manage External Applications", this);
 	connect(chooseAppAct, SIGNAL(triggered()), this, SLOT(chooseExternalApp()));
-	connect(openWithExteralApp, SIGNAL(triggered()), this, SLOT(runExternalApp()));
 
 	zoomOutAct = new QAction("Zoom Out", this);
 	connect(zoomOutAct, SIGNAL(triggered()), this, SLOT(zoomOut()));
@@ -796,7 +789,7 @@ void Phototonic::showHiddenFiles()
 
 void Phototonic::about()
 {
-	QMessageBox::about(this, "About Phototonic", "<h2>Phototonic v0.99Git02</h2>"
+	QMessageBox::about(this, "About Phototonic", "<h2>Phototonic v0.99Git03</h2>"
 							"<p>Image viewer and organizer</p>"
 							"<p><a href=\"http://oferkv.github.io/phototonic/\">Home page</a></p>"
 							"<p><a href=\"https://github.com/oferkv/phototonic/issues\">Reports Bugs</a></p>"
@@ -808,15 +801,14 @@ void Phototonic::runExternalApp()
 {
 	QString execCommand;
 	QString selectedFileNames("");
+	execCommand = GData::externalApps[((QAction*) sender())->text()];
 
 	if (stackedWidget->currentIndex() == imageViewIdx)
 	{
-		execCommand = externalAppPath + " \"" + imageView->currentImageFullPath + "\"";
+		execCommand += " \"" + imageView->currentImageFullPath + "\"";
 	}
 	else
 	{
-
-
 		QModelIndexList selectedIdxList = thumbView->selectionModel()->selectedIndexes();
 		if (selectedIdxList.size() < 1)
 		{
@@ -829,13 +821,11 @@ void Phototonic::runExternalApp()
 		{
 			selectedFileNames += "" +
 				thumbView->thumbViewModel->item(selectedIdxList[tn].row())->data(thumbView->FileNameRole).toString();
-			if (tn > 0) 
-			{
+			if (tn) 
 				selectedFileNames += " ";
-			}
 		}
 		
-		execCommand = externalAppPath + selectedFileNames;
+		execCommand += selectedFileNames;
 	}
 
 	externalProcess.start(execCommand);
@@ -843,36 +833,26 @@ void Phototonic::runExternalApp()
 
 void Phototonic::updateExternalApps()
 {
-	if(!externalAppPath.isEmpty())
+	QMapIterator<QString, QString> eaIter(GData::externalApps);
+	openWithSubMenu->clear(); 	// Small leak here, fix one day.
+	while (eaIter.hasNext())
 	{
-		GData::actionKeys.remove(openWithExteralApp->text());
-		QFileInfo fileInfo = QFileInfo(externalAppPath);
-		openWithExteralApp->setVisible(true);
-		openWithExteralApp->setText(fileInfo.fileName());
-		openWithExteralApp->setIcon(QIcon::fromTheme(fileInfo.fileName()));
-		GData::actionKeys[openWithExteralApp->text()] = openWithExteralApp;
+		eaIter.next();
+		QAction *extAppAct = new QAction(eaIter.key(), this);
+		extAppAct->setIcon(QIcon::fromTheme(eaIter.key()));
+		connect(extAppAct, SIGNAL(triggered()), this, SLOT(runExternalApp()));
+		openWithSubMenu->addAction(extAppAct);
 	}
+
+	openWithSubMenu->addSeparator();
+	openWithSubMenu->addAction(chooseAppAct);
 }
 
 void Phototonic::chooseExternalApp()
 {
-	QString fileName = QFileDialog::getOpenFileName(this, "Choose Application",
-							thumbView->currentViewDir, "");
-	if (fileName.isEmpty())
-		return;
-		
-	QFileInfo fileInfo = QFileInfo(fileName);
-	if (!fileInfo.isExecutable())
-	{
-		QMessageBox msgBox;
-		msgBox.critical(this, "Error", "Not an executable");
-		return;
-	}
-
-	externalAppPath = fileName;
-	openWithExteralApp->setShortcut(QKeySequence(""));
+	AppMgmtDialog *dialog = new AppMgmtDialog(this);
+	dialog->exec();
 	updateExternalApps();
-	runExternalApp();
 }
 
 void Phototonic::showSettings()
@@ -1438,7 +1418,6 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("noEnlargeSmallThumb", (bool)GData::noEnlargeSmallThumb);
 	GData::appSettings->setValue("slideShowDelay", (int)GData::slideShowDelay);
 	GData::appSettings->setValue("slideShowRandom", (bool)GData::slideShowRandom);
-	GData::appSettings->setValue("externalApp", externalAppPath);
 	GData::appSettings->setValue("editToolBarVisible", (bool)editToolBar->isVisible());
 	GData::appSettings->setValue("goToolBarVisible", (bool)goToolBar->isVisible());
 	GData::appSettings->setValue("viewToolBarVisible", (bool)viewToolBar->isVisible());
@@ -1447,11 +1426,22 @@ void Phototonic::writeSettings()
 
 	/* Action shortcuts */
 	GData::appSettings->beginGroup("Shortcuts");
-	QMapIterator<QString, QAction *> it(GData::actionKeys);
-	while (it.hasNext())
+	QMapIterator<QString, QAction *> scIter(GData::actionKeys);
+	while (scIter.hasNext())
 	{
-		it.next();
-		GData::appSettings->setValue(it.key(), it.value()->shortcut().toString());
+		scIter.next();
+		GData::appSettings->setValue(scIter.key(), scIter.value()->shortcut().toString());
+	}
+	GData::appSettings->endGroup();
+
+	/* External apps */
+	GData::appSettings->beginGroup("ExternalApps");
+	GData::appSettings->remove("");
+	QMapIterator<QString, QString> eaIter(GData::externalApps);
+	while (eaIter.hasNext())
+	{
+		eaIter.next();
+		GData::appSettings->setValue(eaIter.key(), eaIter.value());
 	}
 	GData::appSettings->endGroup();
 
@@ -1513,16 +1503,19 @@ void Phototonic::readSettings()
 	GData::slideShowDelay = GData::appSettings->value("slideShowDelay").toInt();
 	GData::slideShowRandom = GData::appSettings->value("slideShowRandom").toBool();
 	GData::slideShowActive = false;
-	externalAppPath = GData::appSettings->value("externalApp").toString();
 	editToolBarVisible = GData::appSettings->value("editToolBarVisible").toBool();
 	goToolBarVisible = GData::appSettings->value("goToolBarVisible").toBool();
 	viewToolBarVisible = GData::appSettings->value("viewToolBarVisible").toBool();
 	fsDockVisible = GData::appSettings->value("fsDockVisible").toBool();
 	iiDockVisible = GData::appSettings->value("iiDockVisible").toBool();
 
-	// New config settings that need null protection
-	if (!GData::slideShowDelay)
-		GData::slideShowDelay = 5;
+	GData::appSettings->beginGroup("ExternalApps");
+	QStringList extApps = GData::appSettings->childKeys();
+	for (int i = 0; i < extApps.size(); ++i)
+	{
+		GData::externalApps[extApps.at(i)] = 	GData::appSettings->value(extApps.at(i)).toString();
+	}
+	GData::appSettings->endGroup();
 }
 
 void Phototonic::loadShortcuts()

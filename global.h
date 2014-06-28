@@ -56,7 +56,6 @@ namespace GData
 	extern bool slideShowRandom;
 	extern bool slideShowActive;
 	extern QMap<QString, QAction *> actionKeys;
-
 	extern bool hueSatEnabled;
 	extern int hueVal;
 	extern int saturationVal;
@@ -68,6 +67,7 @@ namespace GData
 	extern bool exifRotationEnabled;
 	extern bool includeSubFolders;
 	extern bool showHiddenFiles;
+	extern QMap<QString, QString> externalApps;
 
 	// app data
 	extern QModelIndexList copyCutIdxList;

@@ -21,7 +21,7 @@
 InfoView::InfoView(QWidget *parent) : QTableView(parent)
 {
 	setSelectionBehavior(QAbstractItemView::SelectItems);
-	setSelectionMode( QAbstractItemView::ExtendedSelection);
+	setSelectionMode(QAbstractItemView::ExtendedSelection);
 	verticalHeader()->setVisible(false);
 	verticalHeader()->setDefaultSectionSize(verticalHeader()->minimumSectionSize());
 	horizontalHeader()->setVisible(false);
@@ -30,7 +30,6 @@ InfoView::InfoView(QWidget *parent) : QTableView(parent)
 
 	setEditTriggers(QAbstractItemView::NoEditTriggers);
 	setSelectionBehavior(QAbstractItemView::SelectRows);
-	setGridStyle(Qt::DotLine);
 
 	infoModel = new QStandardItemModel(this);
 	setModel(infoModel);
