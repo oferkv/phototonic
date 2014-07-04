@@ -23,6 +23,8 @@
 #include "thumbview.h"
 #include "imageview.h"
 
+int cpMvFile(bool isCopy, QString &srcFile, QString &srcPath, QString &dstPath, QString &dstDir);
+
 class CpMvDialog : public QDialog
 {
     Q_OBJECT
@@ -168,6 +170,32 @@ private:
 	QTableView *appsTable;
 	QStandardItemModel *appsTableModel;
 
+	void addTableModelItem(QStandardItemModel *model, QString &key, QString &val);
+};
+
+class CopyMoveToDialog : public QDialog
+{
+    Q_OBJECT
+
+public:
+    CopyMoveToDialog(QWidget *parent, QString thumbsPath);
+	QString selectedPath;
+	bool copyOp;
+
+private slots:
+	void copy();
+	void move();
+	void copyOrMove(bool copy);
+	void justClose();
+	void add();
+	void remove();
+
+private:
+	QTableView *pathsTable;
+	QStandardItemModel *pathsTableModel;
+	QString currentPath;
+
+	void savePaths();
 };
 
 #endif // DIALOGS_H

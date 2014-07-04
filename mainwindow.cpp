@@ -18,7 +18,6 @@
 
 #include "mainwindow.h"
 #include "thumbview.h"
-#include "dialogs.h"
 #include "global.h"
 
 #define THUMB_SIZE_MIN	50
@@ -38,6 +37,7 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	updateExternalApps();
 	loadShortcuts();
 	addDockWidget(Qt::LeftDockWidgetArea, iiDock);
+	copyMoveToDialog = 0;
 
 	connect(qApp, SIGNAL(focusChanged(QWidget*, QWidget*)), 
 				this, SLOT(updateActions(QWidget*, QWidget*)));
@@ -198,6 +198,16 @@ void Phototonic::createImageView()
 	imageView->ImagePopUpMenu->addAction(slideShowAction);
 
 	addMenuSeparator(imageView->ImagePopUpMenu);
+	imageView->ImagePopUpMenu->addAction(newImageAction);
+	imageView->ImagePopUpMenu->addAction(copyImageAction);
+	imageView->ImagePopUpMenu->addAction(copyMoveAction);
+	imageView->ImagePopUpMenu->addAction(pasteImageAction);
+	imageView->ImagePopUpMenu->addAction(saveAction);
+	imageView->ImagePopUpMenu->addAction(saveAsAction);
+	imageView->ImagePopUpMenu->addAction(deleteAction);
+	imageView->ImagePopUpMenu->addAction(openWithMenuAct);
+
+	addMenuSeparator(imageView->ImagePopUpMenu);
 	zoomSubMenu = new QMenu("Zoom");
 	zoomSubMenuAct = new QAction("Zoom", this);
 	zoomSubMenuAct->setIcon(QIcon::fromTheme("zoom-fit-best", QIcon(":/images/zoom.png")));
@@ -238,15 +248,6 @@ void Phototonic::createImageView()
 
 	imageView->ImagePopUpMenu->addAction(colorsAct);
 	
-	addMenuSeparator(imageView->ImagePopUpMenu);
-	imageView->ImagePopUpMenu->addAction(newImageAction);
-	imageView->ImagePopUpMenu->addAction(copyImageAction);
-	imageView->ImagePopUpMenu->addAction(pasteImageAction);
-	imageView->ImagePopUpMenu->addAction(saveAction);
-	imageView->ImagePopUpMenu->addAction(saveAsAction);
-	imageView->ImagePopUpMenu->addAction(deleteAction);
-	imageView->ImagePopUpMenu->addAction(openWithMenuAct);
-
 	addMenuSeparator(imageView->ImagePopUpMenu);
 	imageView->ImagePopUpMenu->addAction(fullScreenAct);
 	imageView->ImagePopUpMenu->addAction(refreshAction);
@@ -299,13 +300,16 @@ void Phototonic::createActions()
 
 	cutAction = new QAction("Cut", this);
 	cutAction->setIcon(QIcon::fromTheme("edit-cut", QIcon(":/images/cut.png")));
-	connect(cutAction, SIGNAL(triggered()), this, SLOT(cutImages()));
+	connect(cutAction, SIGNAL(triggered()), this, SLOT(cutThumbs()));
 	cutAction->setEnabled(false);
 
 	copyAction = new QAction("Copy", this);
 	copyAction->setIcon(QIcon::fromTheme("edit-copy", QIcon(":/images/copy.png")));
-	connect(copyAction, SIGNAL(triggered()), this, SLOT(copyImages()));
+	connect(copyAction, SIGNAL(triggered()), this, SLOT(copyThumbs()));
 	copyAction->setEnabled(false);
+
+	copyMoveAction = new QAction("Copy/Move to...", this);
+	connect(copyMoveAction, SIGNAL(triggered()), this, SLOT(copyMoveImages()));
 	
 	deleteAction = new QAction("Delete", this);
 	deleteAction->setIcon(QIcon::fromTheme("edit-delete", QIcon(":/images/delete.png")));
@@ -542,10 +546,10 @@ void Phototonic::createMenus()
 	editMenu = menuBar()->addMenu("Edit");
 	editMenu->addAction(cutAction);
 	editMenu->addAction(copyAction);
+	editMenu->addAction(copyMoveAction);
+	editMenu->addAction(pasteAction);
 	editMenu->addAction(renameAction);
 	editMenu->addAction(deleteAction);
-	editMenu->addSeparator();
-	editMenu->addAction(pasteAction);
 	editMenu->addSeparator();
 	editMenu->addAction(selectAllAction);
 	editMenu->addAction(invertSelectionAct);
@@ -597,15 +601,11 @@ void Phototonic::createMenus()
 	thumbView->addAction(openWithMenuAct);
 	thumbView->addAction(cutAction);
 	thumbView->addAction(copyAction);
+	thumbView->addAction(pasteAction);
+	thumbView->addAction(copyMoveAction);
 	thumbView->addAction(renameAction);
 	thumbView->addAction(deleteAction);
-	QAction *sep = new QAction(this);
-	sep->setSeparator(true);
-	thumbView->addAction(sep);
-	thumbView->addAction(pasteAction);
-	sep = new QAction(this);
-	sep->setSeparator(true);
-	thumbView->addAction(sep);
+	addMenuSeparator(thumbView);
 	thumbView->addAction(selectAllAction);
 	thumbView->addAction(invertSelectionAct);
 	thumbView->setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -853,6 +853,7 @@ void Phototonic::chooseExternalApp()
 	AppMgmtDialog *dialog = new AppMgmtDialog(this);
 	dialog->exec();
 	updateExternalApps();
+	delete(dialog);
 }
 
 void Phototonic::showSettings()
@@ -909,32 +910,74 @@ void Phototonic::selectAllThumbs()
 	thumbView->selectAll();
 }
 
-void Phototonic::createCopyCutFileList()
+void Phototonic::copyOrCutThumbs(bool copy)
 {
+	GData::copyCutIdxList = thumbView->selectionModel()->selectedIndexes();
+	copyCutCount = GData::copyCutIdxList.size();
+
 	GData::copyCutFileList.clear();
 	for (int tn = 0; tn < copyCutCount; ++tn)
 	{
 		GData::copyCutFileList.append(thumbView->thumbViewModel->item(GData::copyCutIdxList[tn].
 										row())->data(thumbView->FileNameRole).toString());
 	}
-}
 
-void Phototonic::cutImages()
-{
-	GData::copyCutIdxList = thumbView->selectionModel()->selectedIndexes();
-	copyCutCount = GData::copyCutIdxList.size();
-	createCopyCutFileList();
-	GData::copyOp = false;
+	GData::copyOp = copy;
 	pasteAction->setEnabled(true);
 }
 
-void Phototonic::copyImages()
+void Phototonic::cutThumbs()
 {
-	GData::copyCutIdxList = thumbView->selectionModel()->selectedIndexes();
-	copyCutCount = GData::copyCutIdxList.size();
-	createCopyCutFileList();
-	GData::copyOp = true;
-	pasteAction->setEnabled(true);
+	copyOrCutThumbs(false);
+}
+
+void Phototonic::copyThumbs()
+{
+	copyOrCutThumbs(true);
+}
+
+void Phototonic::copyMoveImages()
+{
+	copyMoveToDialog = new CopyMoveToDialog(this, getSelectedPath());
+	if (copyMoveToDialog->exec())
+	{
+		if (stackedWidget->currentIndex() == thumbViewIdx)
+		{
+			if (copyMoveToDialog->copyOp)
+				copyThumbs();
+			else
+				cutThumbs();
+
+			pasteThumbs();
+		}
+		else
+		{
+			QFileInfo fileInfo = QFileInfo(imageView->currentImageFullPath);
+			QString fileName = fileInfo.fileName();
+			QString destFile = copyMoveToDialog->selectedPath + QDir::separator() + fileInfo.fileName();
+			
+			int res = cpMvFile(copyMoveToDialog->copyOp, fileName, imageView->currentImageFullPath,
+				 									destFile, copyMoveToDialog->selectedPath);
+
+			if (!res)
+			{
+				QMessageBox msgBox;
+				msgBox.critical(this, "Error", "Failed to copy or move image");
+			}
+			else
+			{
+				if (!copyMoveToDialog->copyOp)
+				{
+					int currentRow = thumbView->getCurrentRow();
+					thumbView->thumbViewModel->removeRow(currentRow);
+					updateCurrentImage(currentRow);
+				}
+			}
+		}
+	}
+	
+	delete(copyMoveToDialog);
+	copyMoveToDialog = 0;
 }
 
 void Phototonic::thumbsZoomIn()
@@ -1028,6 +1071,7 @@ void Phototonic::cropImage()
 	imageView->setCursorOverrides(false);
 	dialog->exec();
 	imageView->setCursorOverrides(true);
+	delete(dialog);
 }
 
 void Phototonic::freeRotateLeft()
@@ -1052,6 +1096,7 @@ void Phototonic::showColorsDialog()
 	imageView->setCursorOverrides(false);
 	dialog->exec();
 	imageView->setCursorOverrides(true);
+	delete(dialog);
 }
 
 void Phototonic::flipHoriz()
@@ -1125,11 +1170,16 @@ void Phototonic::pasteThumbs()
 	if (!copyCutCount)
 		return;
 
-	QString destDir = getSelectedPath();
+	QString destDir;
+	if (copyMoveToDialog)
+		destDir = copyMoveToDialog->selectedPath;
+	else
+		destDir = getSelectedPath();
+
 	if (!isValidPath(destDir))
 	{
 		QMessageBox msgBox;
-		msgBox.critical(this, "Error", "Can not paste in " + destDir);
+		msgBox.critical(this, "Error", "Can not copy or move to " + destDir);
 		selectCurrentViewDir();
 		return;
 	}
@@ -1175,6 +1225,34 @@ void Phototonic::pasteThumbs()
 	thumbView->loadVisibleThumbs();
 }
 
+void Phototonic::updateCurrentImage(int currentRow)
+{
+	bool wrapImageListTmp = GData::wrapImageList;
+	GData::wrapImageList = false;
+
+	if (currentRow > 0)
+	{
+		thumbView->setCurrentRow(currentRow - 1);
+	}
+
+	if (thumbView->getNextRow() < 0 && currentRow > 0)
+	{
+		loadImageFile(thumbView->thumbViewModel->item(currentRow - 1)->data(thumbView->FileNameRole).toString());
+	}
+	else
+	{
+		if (thumbView->thumbViewModel->rowCount() == 0)
+		{
+			closeImage();
+			refreshThumbs(true);
+			return;
+		}
+		loadImageFile(thumbView->thumbViewModel->item(currentRow)->data(thumbView->FileNameRole).toString());
+	}
+		
+	GData::wrapImageList = wrapImageListTmp;
+}
+
 void Phototonic::deleteSingleImage()
 {
 	bool ok;
@@ -1199,30 +1277,7 @@ void Phototonic::deleteSingleImage()
 			return;
 		}
 
-		bool wrapImageListTmp = GData::wrapImageList;
-		GData::wrapImageList = false;
-
-		if (currentRow > 0)
-		{
-			thumbView->setCurrentRow(currentRow - 1);
-		}
-
-		if (thumbView->getNextRow() < 0 && currentRow > 0)
-		{
-			loadImageFile(thumbView->thumbViewModel->item(currentRow - 1)->data(thumbView->FileNameRole).toString());
-		}
-		else
-		{
-			if (thumbView->thumbViewModel->rowCount() == 0)
-			{
-				closeImage();
-				refreshThumbs(true);
-				return;
-			}
-			loadImageFile(thumbView->thumbViewModel->item(currentRow)->data(thumbView->FileNameRole).toString());
-		}
-			
-		GData::wrapImageList = wrapImageListTmp;
+		updateCurrentImage(currentRow);
 	}
 }
 
@@ -1445,6 +1500,17 @@ void Phototonic::writeSettings()
 	}
 	GData::appSettings->endGroup();
 
+	/* copyMoveTo paths */
+	int idx = 0;
+	GData::appSettings->beginGroup("CopyMoveToPaths");
+	GData::appSettings->remove("");
+	QSetIterator<QString> pathsIter(GData::copyMoveToPaths);
+	while (pathsIter.hasNext())
+	{
+		GData::appSettings->setValue("path" + ++idx, pathsIter.next());
+	}
+	GData::appSettings->endGroup();
+
 	GData::appSettings->setValue("Geometry", saveGeometry());
 	GData::appSettings->setValue("WindowState", saveState());
 }
@@ -1513,7 +1579,15 @@ void Phototonic::readSettings()
 	QStringList extApps = GData::appSettings->childKeys();
 	for (int i = 0; i < extApps.size(); ++i)
 	{
-		GData::externalApps[extApps.at(i)] = 	GData::appSettings->value(extApps.at(i)).toString();
+		GData::externalApps[extApps.at(i)] = GData::appSettings->value(extApps.at(i)).toString();
+	}
+	GData::appSettings->endGroup();
+
+	GData::appSettings->beginGroup("CopyMoveToPaths");
+	QStringList paths = GData::appSettings->childKeys();
+	for (int i = 0; i < paths.size(); ++i)
+	{
+		GData::copyMoveToPaths.insert(GData::appSettings->value(paths.at(i)).toString());
 	}
 	GData::appSettings->endGroup();
 }
@@ -2293,7 +2367,7 @@ QString Phototonic::getSelectedPath()
 		return dirInfo.absoluteFilePath();
 	}
 	else
-		return 0;
+		return "";
 }
 
 void Phototonic::wheelEvent(QWheelEvent *event)

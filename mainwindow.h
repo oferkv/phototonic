@@ -22,6 +22,7 @@
 #include <QtWidgets>
 #include "thumbview.h"
 #include "imageview.h"
+#include "dialogs.h"
 
 class Phototonic : public QMainWindow
 {
@@ -86,8 +87,9 @@ private slots:
 	void scrollToLastImage();
 	void selectAllThumbs();
 	void deleteOp();
-	void cutImages();
-	void copyImages();
+	void cutThumbs();
+	void copyThumbs();
+	void copyMoveImages();
 	void pasteThumbs();
 	void thumbsZoomIn();
 	void thumbsZoomOut();
@@ -147,6 +149,7 @@ private:
 	QAction *exitAction;
 	QAction *cutAction;
 	QAction *copyAction;
+	QAction *copyMoveAction;
 	QAction *deleteAction;
 	QAction *saveAction;
 	QAction *saveAsAction;
@@ -241,6 +244,7 @@ private:
 	QList<QString> pathHistory;
 	QProcess externalProcess;
 	QTimer *SlideShowTimer;
+	CopyMoveToDialog *copyMoveToDialog;
 
 	enum CentralWidgets
 	{
@@ -264,6 +268,7 @@ private:
 
 	void loadShortcuts();
 	void deleteSingleImage();
+	void updateCurrentImage(int currentRow);
 	void selectCurrentViewDir();
 	bool handleArgs();
 	void addMenuSeparator(QWidget *widget);
@@ -284,9 +289,9 @@ private:
 		return thumbViewBusy;
 	}
 	QString getSelectedPath();
-	void createCopyCutFileList();
 	void setCopyCutActions(bool setEnabled);
 	void wheelEvent(QWheelEvent *event);	
+	void copyOrCutThumbs(bool copy);
 };
 
 #endif // MAINWINDOW_H

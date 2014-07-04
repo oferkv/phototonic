@@ -24,6 +24,7 @@
 #include <QStringList>
 #include <QColor>
 #include <QAction>
+#include <QSet>
 
 namespace GData
 {
@@ -68,6 +69,7 @@ namespace GData
 	extern bool includeSubFolders;
 	extern bool showHiddenFiles;
 	extern QMap<QString, QString> externalApps;
+	extern QSet<QString> copyMoveToPaths;
 
 	// app data
 	extern QModelIndexList copyCutIdxList;

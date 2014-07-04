@@ -61,6 +61,7 @@ namespace GData
 	bool includeSubFolders;
 	bool showHiddenFiles;
 	QMap<QString, QString> externalApps;
+	QSet<QString> copyMoveToPaths;
 	
 	// app data
 	QModelIndexList copyCutIdxList;

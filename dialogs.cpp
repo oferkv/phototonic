@@ -65,7 +65,7 @@ static QString autoRename(QString &destDir, QString &currFile)
 	return newFile;
 }
 
-static int cpMvFile(bool isCopy, QString &srcFile, QString &srcPath, QString &dstPath, QString &dstDir)
+int cpMvFile(bool isCopy, QString &srcFile, QString &srcPath, QString &dstPath, QString &dstDir)
 {
 	int res;
 	
@@ -812,7 +812,7 @@ void ColorsDialog::setBlueChannel()
 	imageView->refresh();
 }
 
-static void addTableModelItem(QStandardItemModel *model, QString &key, QString &val)
+void AppMgmtDialog::addTableModelItem(QStandardItemModel *model, QString &key, QString &val)
 {
 	int atRow = model->rowCount();
 	QStandardItem *itemKey = new QStandardItem(key);
@@ -824,14 +824,13 @@ static void addTableModelItem(QStandardItemModel *model, QString &key, QString &
 AppMgmtDialog::AppMgmtDialog(QWidget *parent) : QDialog(parent)
 {
 	setWindowTitle("Manage External Applications");
-	resize(300, 300);
+	resize(350, 250);
 
 	appsTable = new QTableView(this);
 	appsTable->setSelectionBehavior(QAbstractItemView::SelectItems);
 	appsTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	appsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	appsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-	appsTable->setGridStyle(Qt::DotLine);
 	appsTableModel = new QStandardItemModel(this);
 	appsTable->setModel(appsTableModel);
 	appsTable->verticalHeader()->setVisible(false);
@@ -839,6 +838,7 @@ AppMgmtDialog::AppMgmtDialog(QWidget *parent) : QDialog(parent)
 	appsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	appsTableModel->setHorizontalHeaderItem(0, new QStandardItem(QString("Name")));
 	appsTableModel->setHorizontalHeaderItem(1, new QStandardItem(QString("Path")));
+	appsTable->	setShowGrid(false);
 
 	QHBoxLayout *addRemoveHbox = new QHBoxLayout;
     QPushButton *addButton = new QPushButton("Add");
@@ -909,6 +909,129 @@ void AppMgmtDialog::remove()
 	while((indexesList = appsTable->selectionModel()->selectedIndexes()).size())
 	{
 		appsTableModel->removeRow(indexesList.first().row());
+	}
+}
+
+CopyMoveToDialog::CopyMoveToDialog(QWidget *parent, QString thumbsPath) : QDialog(parent)
+{
+	setWindowTitle("Copy or Move Images to...");
+	resize(350, 250);
+	currentPath = thumbsPath;
+
+	pathsTable = new QTableView(this);
+	pathsTable->setSelectionBehavior(QAbstractItemView::SelectItems);
+	pathsTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
+	pathsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	pathsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+	pathsTable->setSelectionMode(QAbstractItemView::SingleSelection);
+	pathsTableModel = new QStandardItemModel(this);
+	pathsTable->setModel(pathsTableModel);
+	pathsTable->verticalHeader()->setVisible(false);
+	pathsTable->horizontalHeader()->setVisible(false);
+	pathsTable->verticalHeader()->setDefaultSectionSize(pathsTable->verticalHeader()->minimumSectionSize());
+	pathsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	pathsTable->	setShowGrid(false);
+
+	QHBoxLayout *addRemoveHbox = new QHBoxLayout;
+    QPushButton *addButton = new QPushButton("Add");
+	connect(addButton, SIGNAL(clicked()), this, SLOT(add()));
+	addRemoveHbox->addWidget(addButton, 0, Qt::AlignRight);
+    QPushButton *removeButton = new QPushButton("Remove");
+	connect(removeButton, SIGNAL(clicked()), this, SLOT(remove()));
+	addRemoveHbox->addWidget(removeButton, 0, Qt::AlignRight);
+	addRemoveHbox->addStretch(1);	
+
+	QHBoxLayout *buttonsHbox = new QHBoxLayout;
+    QPushButton *closeButton = new QPushButton("Close");
+    closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+	connect(closeButton, SIGNAL(clicked()), this, SLOT(justClose()));
+    QPushButton *copyButton = new QPushButton("Copy");
+    copyButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+	connect(copyButton, SIGNAL(clicked()), this, SLOT(copy()));
+    QPushButton *moveButton = new QPushButton("Move");
+    moveButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+	connect(moveButton, SIGNAL(clicked()), this, SLOT(move()));
+	buttonsHbox->addStretch(1);	
+	buttonsHbox->addWidget(closeButton, 0, Qt::AlignRight);
+	buttonsHbox->addWidget(copyButton, 0, Qt::AlignRight);
+	buttonsHbox->addWidget(moveButton, 0, Qt::AlignRight);
+	
+	QVBoxLayout *mainVbox = new QVBoxLayout;
+	mainVbox->addWidget(pathsTable);
+	mainVbox->addLayout(addRemoveHbox);
+	mainVbox->addLayout(buttonsHbox);
+	setLayout(mainVbox);
+
+	// Load paths list
+	QString key, val;
+	QSetIterator<QString> it(GData::copyMoveToPaths);
+	while (it.hasNext())
+	{
+		QStandardItem *item = new QStandardItem(it.next());
+		pathsTableModel->insertRow(pathsTableModel->rowCount(), item);
+	}
+}
+
+void CopyMoveToDialog::savePaths()
+{
+	GData::copyMoveToPaths.clear();
+    for (int i = 0; i < pathsTableModel->rowCount(); ++i)
+    {
+    	GData::copyMoveToPaths.insert(pathsTableModel->itemFromIndex(pathsTableModel->index(i, 0))->text());
+   	}
+}
+
+void CopyMoveToDialog::copyOrMove(bool copy)
+{
+	savePaths();
+	copyOp = copy;
+
+	QModelIndexList indexesList;
+	if((indexesList = pathsTable->selectionModel()->selectedIndexes()).size())
+	{
+		selectedPath = pathsTableModel->itemFromIndex(indexesList.first())->text();
+		accept();
+	}
+	else
+		reject();
+}
+
+void CopyMoveToDialog::copy()
+{
+	copyOrMove(true);
+}
+
+void CopyMoveToDialog::move()
+{
+	copyOrMove(false);
+}
+
+void CopyMoveToDialog::justClose()
+{
+	savePaths();
+	reject();
+}
+
+void CopyMoveToDialog::add()
+{
+	QString dirName = QFileDialog::getExistingDirectory(this, "Choose Directory", currentPath,
+									QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+	if (dirName.isEmpty())
+		return;
+		
+	QStandardItem *item = new QStandardItem(dirName);
+	pathsTableModel->insertRow(pathsTableModel->rowCount(), item);
+
+	pathsTable->selectionModel()->clearSelection();
+	pathsTable->selectionModel()->select(pathsTableModel->index(pathsTableModel->rowCount() - 1, 0), QItemSelectionModel::Select);
+}
+
+void CopyMoveToDialog::remove()
+{
+	QModelIndexList indexesList;
+	if((indexesList = pathsTable->selectionModel()->selectedIndexes()).size())
+	{
+		pathsTableModel->removeRow(indexesList.first().row());
 	}
 }
 
