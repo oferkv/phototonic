@@ -376,6 +376,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	zoomOptsBox->setAlignment(Qt::AlignTop);
 	zoomOptsBox->addWidget(fitLargeGroupBox);
 	zoomOptsBox->addWidget(fitSmallGroupBox);
+	zoomOptsBox->addStretch(1);
 	viewerOptsBox->addLayout(zoomOptsBox);
 	viewerOptsBox->addLayout(bgColBox);
 	viewerOptsBox->addWidget(exitCliCb);

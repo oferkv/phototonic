@@ -1251,6 +1251,7 @@ void Phototonic::updateCurrentImage(int currentRow)
 	}
 		
 	GData::wrapImageList = wrapImageListTmp;
+	thumbView->setImageviewWindowTitle();
 }
 
 void Phototonic::deleteSingleImage()
@@ -1442,16 +1443,11 @@ void Phototonic::updateActions(QWidget*, QWidget *selectedWidget)
 
 void Phototonic::writeSettings()
 {
-	if (stackedWidget->currentIndex() == imageViewIdx)
-		setThumbViewWidgetsVisible(true);
-
-	if(isFullScreen())
+	if (stackedWidget->currentIndex() == thumbViewIdx)
 	{
-		showNormal();
-		if (shouldMaximize)
-			showMaximized();
+		GData::appSettings->setValue("Geometry", saveGeometry());
+		GData::appSettings->setValue("WindowState", saveState());
 	}
-	QApplication::processEvents();
 
 	GData::appSettings->setValue("thumbsSortFlags", (int)thumbView->thumbsSortFlags);
 	GData::appSettings->setValue("thumbsZoomVal", (int)thumbView->thumbSize);
@@ -1473,11 +1469,11 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("noEnlargeSmallThumb", (bool)GData::noEnlargeSmallThumb);
 	GData::appSettings->setValue("slideShowDelay", (int)GData::slideShowDelay);
 	GData::appSettings->setValue("slideShowRandom", (bool)GData::slideShowRandom);
-	GData::appSettings->setValue("editToolBarVisible", (bool)editToolBar->isVisible());
-	GData::appSettings->setValue("goToolBarVisible", (bool)goToolBar->isVisible());
-	GData::appSettings->setValue("viewToolBarVisible", (bool)viewToolBar->isVisible());
-	GData::appSettings->setValue("fsDockVisible", (bool)fsDock->isVisible());
-	GData::appSettings->setValue("iiDockVisible", (bool)iiDock->isVisible());
+	GData::appSettings->setValue("editToolBarVisible", (bool)editToolBarVisible);
+	GData::appSettings->setValue("goToolBarVisible", (bool)goToolBarVisible);
+	GData::appSettings->setValue("viewToolBarVisible", (bool)viewToolBarVisible);
+	GData::appSettings->setValue("fsDockVisible", (bool)fsDockVisible);
+	GData::appSettings->setValue("iiDockVisible", (bool)iiDockVisible);
 
 	/* Action shortcuts */
 	GData::appSettings->beginGroup("Shortcuts");
@@ -1510,9 +1506,6 @@ void Phototonic::writeSettings()
 		GData::appSettings->setValue("path" + ++idx, pathsIter.next());
 	}
 	GData::appSettings->endGroup();
-
-	GData::appSettings->setValue("Geometry", saveGeometry());
-	GData::appSettings->setValue("WindowState", saveState());
 }
 
 void Phototonic::readSettings()
@@ -1824,6 +1817,9 @@ void Phototonic::loadImageFile(QString imageFileName)
 	imageView->loadImage(imageFileName);
 	if (stackedWidget->currentIndex() == thumbViewIdx)
 	{
+		GData::appSettings->setValue("Geometry", saveGeometry());
+		GData::appSettings->setValue("WindowState", saveState());
+	
 		QApplication::setOverrideCursor(Qt::OpenHandCursor);
 		stackedWidget->setCurrentIndex(imageViewIdx);
 		setThumbViewWidgetsVisible(false);
@@ -1840,6 +1836,7 @@ void Phototonic::loadImagefromThumb(const QModelIndex &idx)
 {
 	thumbView->setCurrentRow(idx.row());
 	loadImageFile(thumbView->thumbViewModel->item(idx.row())->data(thumbView->FileNameRole).toString());
+	thumbView->setImageviewWindowTitle();
 }
 
 void Phototonic::loadImagefromCli()
@@ -1906,6 +1903,7 @@ void Phototonic::slideShowHandler()
 		{
 			int currentRow = thumbView->getCurrentRow();
 			loadImageFile(thumbView->thumbViewModel->item(currentRow)->data(thumbView->FileNameRole).toString());
+			thumbView->setImageviewWindowTitle();
 
 			if (thumbView->getNextRow() > 0)
 				thumbView->setCurrentRow(thumbView->getNextRow());
@@ -1936,6 +1934,7 @@ void Phototonic::loadNextImage()
 
 	loadImageFile(thumbView->thumbViewModel->item(nextRow)->data(thumbView->FileNameRole).toString());
 	thumbView->setCurrentRow(nextRow);
+	thumbView->setImageviewWindowTitle();
 }
 
 void Phototonic::loadPrevImage()
@@ -1954,6 +1953,7 @@ void Phototonic::loadPrevImage()
 	
 	loadImageFile(thumbView->thumbViewModel->item(prevRow)->data(thumbView->FileNameRole).toString());
 	thumbView->setCurrentRow(prevRow);
+	thumbView->setImageviewWindowTitle();
 }
 
 void Phototonic::loadFirstImage()
@@ -1963,6 +1963,7 @@ void Phototonic::loadFirstImage()
 
 	loadImageFile(thumbView->thumbViewModel->item(0)->data(thumbView->FileNameRole).toString());
 	thumbView->setCurrentRow(0);
+	thumbView->setImageviewWindowTitle();
 }
 
 void Phototonic::loadLastImage()
@@ -1973,6 +1974,7 @@ void Phototonic::loadLastImage()
 	int lastRow = thumbView->getLastRow();
 	loadImageFile(thumbView->thumbViewModel->item(lastRow)->data(thumbView->FileNameRole).toString());
 	thumbView->setCurrentRow(lastRow);
+	thumbView->setImageviewWindowTitle();
 }
 
 void Phototonic::loadRandomImage()
@@ -1983,6 +1985,7 @@ void Phototonic::loadRandomImage()
 	int randomRow = thumbView->getRandomRow();
 	loadImageFile(thumbView->thumbViewModel->item(randomRow)->data(thumbView->FileNameRole).toString());
 	thumbView->setCurrentRow(randomRow);
+	thumbView->setImageviewWindowTitle();
 }
 
 void Phototonic::scrollToLastImage()

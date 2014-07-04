@@ -120,13 +120,18 @@ void ThumbView::setCurrentRow(int row)
 		currentRow = row;
 	else
 		currentRow = 0;
+}
 
+void ThumbView::setImageviewWindowTitle()
+{
 	QString title = thumbViewModel->item(currentRow)->data(FileNameRole).toString()
 			+ " - ["
 			+ QString::number(currentRow + 1)
 			+ "/"
 			+ QString::number(thumbViewModel->rowCount())
 			+ "] - Phototonic";
+
+
 	mainWindow->setWindowTitle(title);
 }
 
