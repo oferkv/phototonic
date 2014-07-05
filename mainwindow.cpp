@@ -1461,6 +1461,7 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("exitInsteadOfClose", (int)GData::exitInsteadOfClose);
 	GData::appSettings->setValue("enableAnimations", (bool)GData::enableAnimations);
 	GData::appSettings->setValue("exifRotationEnabled", (bool)GData::exifRotationEnabled);
+	GData::appSettings->setValue("reverseMouseBehavior", (bool)GData::reverseMouseBehavior);
 	GData::appSettings->setValue("showHiddenFiles", (bool)GData::showHiddenFiles);
 	GData::appSettings->setValue("wrapImageList", (bool)GData::wrapImageList);
 	GData::appSettings->setValue("imageZoomFactor", (float)GData::imageZoomFactor);
@@ -1530,10 +1531,11 @@ void Phototonic::readSettings()
 		GData::appSettings->setValue("wrapImageList", (bool)false);
 		GData::appSettings->setValue("exitInsteadOfClose", (int)0);
 		GData::appSettings->setValue("imageZoomFactor", (float)1.0);
-		GData::appSettings->setValue("defaultSaveQuality", (int)85);
+		GData::appSettings->setValue("defaultSaveQuality", (int)90);
 		GData::appSettings->setValue("noEnlargeSmallThumb", (bool)true);
 		GData::appSettings->setValue("enableAnimations", (bool)true);
 		GData::appSettings->setValue("exifRotationEnabled", (bool)true);
+		GData::appSettings->setValue("reverseMouseBehavior", (bool)false);
 		GData::appSettings->setValue("showHiddenFiles", (bool)false);
 		GData::appSettings->setValue("slideShowDelay", (int)5);
 		GData::appSettings->setValue("slideShowRandom", (bool)false);
@@ -1547,6 +1549,7 @@ void Phototonic::readSettings()
 	GData::exitInsteadOfClose = GData::appSettings->value("exitInsteadOfClose").toBool();
 	GData::enableAnimations = GData::appSettings->value("enableAnimations").toBool();
 	GData::exifRotationEnabled = GData::appSettings->value("exifRotationEnabled").toBool();
+	GData::reverseMouseBehavior = GData::appSettings->value("reverseMouseBehavior").toBool();
 	GData::showHiddenFiles = GData::appSettings->value("showHiddenFiles").toBool();
 	GData::wrapImageList = GData::appSettings->value("wrapImageList").toBool();
 	GData::imageZoomFactor = GData::appSettings->value("imageZoomFactor").toFloat();
@@ -1722,8 +1725,17 @@ void Phototonic::mouseDoubleClickEvent(QMouseEvent *event)
 	{
 		if (stackedWidget->currentIndex() == imageViewIdx)
 		{
-			closeImage();
-			event->accept();
+			if (GData::reverseMouseBehavior)
+			{
+				fullScreenAct->setChecked(!(fullScreenAct->isChecked()));
+				toggleFullScreen();
+				event->accept();
+			}
+			else
+			{
+				closeImage();
+				event->accept();
+			}
 		}
 	}
 }
@@ -1734,9 +1746,17 @@ void Phototonic::mousePressEvent(QMouseEvent *event)
 	{
 		if (event->button() == Qt::MiddleButton)
 		{
-			fullScreenAct->setChecked(!(fullScreenAct->isChecked()));
-			toggleFullScreen();
-			event->accept();
+			if (GData::reverseMouseBehavior)
+			{
+				closeImage();
+				event->accept();
+			}
+			else
+			{
+				fullScreenAct->setChecked(!(fullScreenAct->isChecked()));
+				toggleFullScreen();
+				event->accept();
+			}
 		}
 		else if (event->button() == Qt::LeftButton)
 		{

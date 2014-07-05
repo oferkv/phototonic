@@ -611,6 +611,17 @@ void ThumbView::wheelEvent(QWheelEvent *event)
 		verticalScrollBar()->setValue(verticalScrollBar()->value() - thumbHeight);
 }
 
+void ThumbView::mousePressEvent(QMouseEvent *event)
+{
+	QListView::mousePressEvent(event);
+
+	if (GData::reverseMouseBehavior && event->button() == Qt::MiddleButton)
+	{
+		if (selectionModel()->selectedIndexes().size() == 1)
+			emit(doubleClicked(selectionModel()->selectedIndexes().first()));
+	}
+}
+
 void ThumbView::invertSelection()
 {
 	QModelIndex idx;

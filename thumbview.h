@@ -94,6 +94,7 @@ public:
 protected:
 	void startDrag(Qt::DropActions);
 	void wheelEvent(QWheelEvent *event);
+	void mousePressEvent(QMouseEvent *event);
 	
 private:
 	QFileInfo thumbFileInfo;

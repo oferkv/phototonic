@@ -70,6 +70,7 @@ namespace GData
 	extern bool showHiddenFiles;
 	extern QMap<QString, QString> externalApps;
 	extern QSet<QString> copyMoveToPaths;
+	extern bool reverseMouseBehavior;
 
 	// app data
 	extern QModelIndexList copyCutIdxList;

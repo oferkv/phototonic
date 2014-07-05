@@ -97,6 +97,7 @@ private:
 	QCheckBox *enableAnimCb;
 	QCheckBox *enableExifCb;
 	QCheckBox *noSmallThumbCb;
+	QCheckBox *reverseMouseCb;
 	QSpinBox *slideDelaySpin;
 	QCheckBox *slideRandomCb;
 	KeyGrabLineEdit *keyLine;

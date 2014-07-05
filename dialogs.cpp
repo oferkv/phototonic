@@ -427,14 +427,23 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	clearShortCutButton->setIcon(QIcon::fromTheme("edit-clear", QIcon(":/images/clear.png")));
 	connect(clearShortCutButton, SIGNAL(clicked()), keyLine, SLOT(clearShortcut()));
 
-	// Keyboard shortcuts
-	QHBoxLayout *keyboardVbox = new QHBoxLayout;
-	keyboardVbox->addWidget(keysCombo);
-	keyboardVbox->addWidget(keyLine);
-	keyboardVbox->addWidget(clearShortCutButton);
-	keyboardVbox->addStretch(1);
-	QGroupBox *keyboardGbox = new QGroupBox("Set Keyboard Shortcuts");
-	keyboardGbox->setLayout(keyboardVbox);
+	// Mouse settings
+	reverseMouseCb = new QCheckBox("Swap mouse left-click and middle-click actions", this);
+	reverseMouseCb->setChecked(GData::reverseMouseBehavior);
+
+	// Keyboard and mouse group
+	QHBoxLayout *keyboardHbox = new QHBoxLayout;
+	keyboardHbox->addWidget(keysCombo);
+	keyboardHbox->addWidget(keyLine);
+	keyboardHbox->addWidget(clearShortCutButton);
+	keyboardHbox->addStretch(1);
+
+	QVBoxLayout *mouseVbox = new QVBoxLayout;
+	mouseVbox->addLayout(keyboardHbox);
+	mouseVbox->addWidget(reverseMouseCb);
+
+	QGroupBox *keyboardGbox = new QGroupBox("Keyboard and Mouse");
+	keyboardGbox->setLayout(mouseVbox);
 
 	// General
 	QVBoxLayout *optsLayout = new QVBoxLayout;
@@ -484,6 +493,7 @@ void SettingsDialog::saveSettings()
 	GData::slideShowRandom = slideRandomCb->isChecked();
 	GData::enableAnimations = enableAnimCb->isChecked();
 	GData::exifRotationEnabled = enableExifCb->isChecked();
+	GData::reverseMouseBehavior = reverseMouseCb->isChecked();
 
 	accept();
 }
