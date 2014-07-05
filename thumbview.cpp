@@ -297,11 +297,9 @@ void ThumbView::loadVisibleThumbs()
 {
 	QApplication::processEvents();
 
-	abortOp = false;
 	int first = getFirstVisibleThumb();
 	int last = getLastVisibleThumb();
-
-	if (first < 0 || last < 0) 
+	if (abortOp || first < 0 || last < 0) 
 		return;
 
 	last += (last - first) * (GData::thumbPagesReadahead + 1);

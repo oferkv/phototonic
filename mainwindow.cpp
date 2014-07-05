@@ -2424,11 +2424,21 @@ QString Phototonic::getSelectedPath()
 void Phototonic::wheelEvent(QWheelEvent *event)
 {
 	if (stackedWidget->currentIndex() == imageViewIdx)
-	{
-		if (event->delta() < 0)
-			loadNextImage();
+	{	
+		if (event->modifiers() == Qt::ControlModifier)
+		{
+			if (event->delta() < 0)
+				zoomIn();
+			else
+				zoomOut();
+		}
 		else
-			loadPrevImage();
+		{
+			if (event->delta() < 0)
+				loadNextImage();
+			else
+				loadPrevImage();
+		}
 	}
 }
 
