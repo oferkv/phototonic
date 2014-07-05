@@ -267,7 +267,7 @@ private:
 	bool iiDockVisible;
 
 	void loadShortcuts();
-	void deleteSingleImage();
+	void deleteViewerImage();
 	void updateCurrentImage(int currentRow);
 	void selectCurrentViewDir();
 	bool handleArgs();

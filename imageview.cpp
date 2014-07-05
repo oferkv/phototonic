@@ -20,6 +20,7 @@
 #include "thumbview.h"
 #include "global.h"
 
+#define NEW_IMAGE_NAME	"newImage.png"
 #define ROUND(x) ((int) ((x) + 0.5))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
@@ -528,7 +529,7 @@ void ImageView::reload()
 	if (newImage || currentImageFullPath.isEmpty())
 	{
 		newImage = true;
-		currentImageFullPath = "new_image.png";
+		currentImageFullPath = NEW_IMAGE_NAME;
 		origImage.load(":/images/no_image.png");
 		displayImage = origImage;
 		displayPixmap = QPixmap::fromImage(displayImage);
@@ -868,6 +869,11 @@ int ImageView::getImageWidthPreCropped()
 int ImageView::getImageHeightPreCropped()
 {
 	return preCroppedHeight;
+}
+
+bool ImageView::isNewImage()
+{
+	return newImage;
 }
 
 void ImageView::copyImage()

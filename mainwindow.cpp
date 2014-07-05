@@ -200,8 +200,8 @@ void Phototonic::createImageView()
 	addMenuSeparator(imageView->ImagePopUpMenu);
 	imageView->ImagePopUpMenu->addAction(newImageAction);
 	imageView->ImagePopUpMenu->addAction(copyImageAction);
-	imageView->ImagePopUpMenu->addAction(copyMoveAction);
 	imageView->ImagePopUpMenu->addAction(pasteImageAction);
+	imageView->ImagePopUpMenu->addAction(copyMoveAction);
 	imageView->ImagePopUpMenu->addAction(saveAction);
 	imageView->ImagePopUpMenu->addAction(saveAsAction);
 	imageView->ImagePopUpMenu->addAction(deleteAction);
@@ -797,6 +797,12 @@ void Phototonic::about()
 							"<p>Contact: oferkv@live.com</p>" "Built with Qt" QT_VERSION_STR);
 }
 
+static void showNewImageWarning(QWidget *parent)
+{
+	QMessageBox msgBox;
+	msgBox.warning(parent, "Warning", "Cannot perform action with temporary image");
+}
+
 void Phototonic::runExternalApp()
 {
 	QString execCommand;
@@ -805,6 +811,12 @@ void Phototonic::runExternalApp()
 
 	if (stackedWidget->currentIndex() == imageViewIdx)
 	{
+		if (imageView->isNewImage())
+		{
+			showNewImageWarning(this);
+			return;
+		}
+
 		execCommand += " \"" + imageView->currentImageFullPath + "\"";
 	}
 	else
@@ -952,6 +964,12 @@ void Phototonic::copyMoveImages()
 		}
 		else
 		{
+			if (imageView->isNewImage())
+			{
+				showNewImageWarning(this);
+				return;
+			}
+		
 			QFileInfo fileInfo = QFileInfo(imageView->currentImageFullPath);
 			QString fileName = fileInfo.fileName();
 			QString destFile = copyMoveToDialog->selectedPath + QDir::separator() + fileInfo.fileName();
@@ -1254,19 +1272,30 @@ void Phototonic::updateCurrentImage(int currentRow)
 	thumbView->setImageviewWindowTitle();
 }
 
-void Phototonic::deleteSingleImage()
+void Phototonic::deleteViewerImage()
 {
+	if (imageView->isNewImage())
+	{
+		showNewImageWarning(this);
+		return;
+	}
+
 	bool ok;
 	int ret;
 
-	ret = QMessageBox::warning(this, "Delete image", "Permanently delete this image?",
-									QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
+	QFileInfo fileInfo = QFileInfo(imageView->currentImageFullPath);
+	QString fileName = fileInfo.fileName();
 
-	int currentRow = thumbView->getCurrentRow();
+	imageView->setCursorOverrides(false);
+	ret = QMessageBox::warning(this, "Delete image", "Permanently delete " + fileName,
+									QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
+	imageView->setCursorOverrides(true);
+
 	if (ret == QMessageBox::Yes)
 	{
-		ok = QFile::remove(thumbView->thumbViewModel->item(currentRow)->data(thumbView->FileNameRole).toString());
+		int currentRow = thumbView->getCurrentRow();
 
+		ok = QFile::remove(imageView->currentImageFullPath);
 		if (ok)
 		{
 			 thumbView->thumbViewModel->removeRow(currentRow);
@@ -1292,7 +1321,7 @@ void Phototonic::deleteOp()
 
 	if (stackedWidget->currentIndex() == imageViewIdx)
 	{
-		deleteSingleImage();
+		deleteViewerImage();
 		return;
 	}
 

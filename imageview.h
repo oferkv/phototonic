@@ -82,6 +82,7 @@ public:
 	void setCursorOverrides(bool override);
 	int getImageWidthPreCropped();
 	int getImageHeightPreCropped();
+	bool isNewImage();
 	void keyMoveEvent(int direction);
 	void popMessage(const char *message);
 
