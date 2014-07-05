@@ -2012,7 +2012,6 @@ void Phototonic::scrollToLastImage()
 {
 	if (thumbView->thumbViewModel->rowCount() > 0) 
 	{
-		thumbView->setCurrentIndex(thumbView->thumbViewModel->index(0, 0));
 		thumbView->setCurrentIndexByName(imageView->currentImageFullPath);
 		thumbView->selectCurrentIndex();
 	}
