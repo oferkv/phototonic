@@ -670,8 +670,8 @@ void ImageView::mouseMoveEvent(QMouseEvent *event)
 
 void ImageView::keyMoveEvent(int direction)
 {
-	int newX = imageLabel->pos().x();
-	int newY = imageLabel->pos().y();
+	int newX = layoutX = imageLabel->pos().x();
+	int newY = layoutY = imageLabel->pos().y();
 	bool needToMove = false;
 
 	switch (direction)
