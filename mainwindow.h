@@ -39,6 +39,7 @@ protected:
 	void mouseReleaseEvent(QMouseEvent *event);
 
 public slots:
+	bool event(QEvent *event);
 	void unsetBusy();
 	void setStatus(QString state);
 	void dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvDirPath);
@@ -292,6 +293,8 @@ private:
 	void setCopyCutActions(bool setEnabled);
 	void wheelEvent(QWheelEvent *event);	
 	void copyOrCutThumbs(bool copy);
+	void showNewImageWarning(QWidget *parent);
+	bool removeDirOp(QString dirToDelete);
 };
 
 #endif // MAINWINDOW_H

@@ -295,8 +295,6 @@ void ThumbView::abort()
 
 void ThumbView::loadVisibleThumbs()
 {
-	QApplication::processEvents();
-
 	int first = getFirstVisibleThumb();
 	int last = getLastVisibleThumb();
 	if (abortOp || first < 0 || last < 0) 
@@ -539,6 +537,8 @@ void ThumbView::loadThumbsRange()
 													QIcon(":/images/error_image.png")).pixmap(64, 64));
 		}
 
+		QApplication::processEvents();
+
 		if (GData::thumbsLayout == Compact)
 		{
 			if (isThumbVisible(thumbViewModel->item(currThumb)->index()))
@@ -547,7 +547,6 @@ void ThumbView::loadThumbsRange()
 
 		thumbViewModel->item(currThumb)->setData(true, LoadedRole);
 
-		QApplication::processEvents();
 	}
 
 	if (GData::thumbsLayout == Compact && thumbViewModel->rowCount() > 0)

@@ -88,30 +88,19 @@ bool Phototonic::handleArgs()
 	return false;
 }
 
-static bool removeDirOp(QString dirToDelete)
-{
-	bool ok = true;
-	QDir dir(dirToDelete);
-
-	Q_FOREACH(QFileInfo info, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden |
-					QDir::AllDirs | QDir::Files, QDir::DirsFirst))
-	{
-		if (info.isDir())
-			ok = removeDirOp(info.absoluteFilePath());
-		else 
-			ok = QFile::remove(info.absoluteFilePath());
-
-		if (!ok)
-			return ok;
-	}
-	ok = dir.rmdir(dirToDelete);
-
-	return ok;
-}
-
 void Phototonic::unsetBusy()
 {	
 	thumbViewBusy = false;
+}
+
+bool Phototonic::event(QEvent *event)
+{
+	if (event->type() == QEvent::ActivationChange && stackedWidget->currentIndex() == thumbViewIdx)
+	{ 
+		thumbView->loadVisibleThumbs();
+	}
+	
+	return QMainWindow::event(event);;
 }
 
 void Phototonic::createThumbView()
@@ -795,12 +784,6 @@ void Phototonic::about()
 							"<p><a href=\"https://github.com/oferkv/phototonic/issues\">Reports Bugs</a></p>"
 							"<p>Copyright &copy; 2013-2014 Ofer Kashayov</p>"
 							"<p>Contact: oferkv@live.com</p>" "Built with Qt" QT_VERSION_STR);
-}
-
-static void showNewImageWarning(QWidget *parent)
-{
-	QMessageBox msgBox;
-	msgBox.warning(parent, "Warning", "Cannot perform action with temporary image");
 }
 
 void Phototonic::runExternalApp()
@@ -2440,5 +2423,32 @@ void Phototonic::wheelEvent(QWheelEvent *event)
 				loadPrevImage();
 		}
 	}
+}
+
+void Phototonic::showNewImageWarning(QWidget *parent)
+{
+	QMessageBox msgBox;
+	msgBox.warning(parent, "Warning", "Cannot perform action with temporary image");
+}
+
+bool Phototonic::removeDirOp(QString dirToDelete)
+{
+	bool ok = true;
+	QDir dir(dirToDelete);
+
+	Q_FOREACH(QFileInfo info, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden |
+					QDir::AllDirs | QDir::Files, QDir::DirsFirst))
+	{
+		if (info.isDir())
+			ok = removeDirOp(info.absoluteFilePath());
+		else 
+			ok = QFile::remove(info.absoluteFilePath());
+
+		if (!ok)
+			return ok;
+	}
+	ok = dir.rmdir(dirToDelete);
+
+	return ok;
 }
 
