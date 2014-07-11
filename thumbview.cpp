@@ -42,7 +42,7 @@ ThumbView::ThumbView(QWidget *parent) : QListView(parent)
 	thumbViewModel->setSortRole(SortRole);
 	setModel(thumbViewModel);
 
-	connect(verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(loadVisibleThumbs()));
+	connect(verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(loadVisibleThumbs(int)));
 	connect(this->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), 
 				this, SLOT(handleSelectionChanged(QItemSelection)));
    	connect(this, SIGNAL(doubleClicked(const QModelIndex &)), 
@@ -293,27 +293,45 @@ void ThumbView::abort()
 	abortOp = true;
 }
 
-void ThumbView::loadVisibleThumbs()
+void ThumbView::loadVisibleThumbs(int scrollBarValue)
 {
+	static int lastScrollBarValue = 0;
+	scrolledForward = (scrollBarValue >= lastScrollBarValue);
+	lastScrollBarValue = scrollBarValue;
+
+Start:
+
 	int first = getFirstVisibleThumb();
 	int last = getLastVisibleThumb();
 	if (abortOp || first < 0 || last < 0) 
 		return;
 
-	last += (last - first) * (GData::thumbPagesReadahead + 1);
-	if (last > thumbViewModel->rowCount())
-		last = thumbViewModel->rowCount();
+	if (scrolledForward)
+	{
+		last += ((last - first) * (GData::thumbPagesReadahead + 1));
+		if (last >= thumbViewModel->rowCount())
+			last = thumbViewModel->rowCount() - 1;
+	}
+	else
+	{
+		first -= (last - first) * (GData::thumbPagesReadahead + 1);
+		if (first < 0)
+			first = 0;
+
+		last += 10;
+		if (last >= thumbViewModel->rowCount())
+			last = thumbViewModel->rowCount() - 1;
+	}
 
 	if (thumbsRangeFirst == first && thumbsRangeLast == last)
-	{
 		return;
-	}
 
 	thumbsRangeFirst = first;
 	thumbsRangeLast = last;
 
 	loadThumbsRange();
-	loadVisibleThumbs();
+	if (!abortOp)
+		goto Start;
 }
 
 int ThumbView::getFirstVisibleThumb()
@@ -499,8 +517,9 @@ void ThumbView::loadThumbsRange()
 {
 	static bool inProgress = false;
 	static QImageReader thumbReader;
-	QSize currThumbSize;
+	static QSize currThumbSize;
 	static int currRowCount;
+	int currThumb;
 
 	if (inProgress)
 	{	
@@ -512,9 +531,11 @@ void ThumbView::loadThumbsRange()
 	inProgress = true;
 	currRowCount = thumbViewModel->rowCount();
 
-	for (int currThumb = thumbsRangeFirst; currThumb < thumbsRangeLast || !currThumb; ++currThumb)
+	for (	scrolledForward? currThumb = thumbsRangeFirst : currThumb = thumbsRangeLast;
+			(scrolledForward? currThumb <= thumbsRangeLast : currThumb >= thumbsRangeFirst);
+			scrolledForward? ++currThumb : --currThumb)
 	{
-		if (thumbViewModel->rowCount() != currRowCount || abortOp)
+		if (abortOp || thumbViewModel->rowCount() != currRowCount)
 			break;
 
 		if (thumbViewModel->item(currThumb)->data(LoadedRole).toBool())

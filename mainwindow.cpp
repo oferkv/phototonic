@@ -1421,12 +1421,8 @@ void Phototonic::goForward()
 
 void Phototonic::goUp()
 {
-	QString parentDir = 
-			thumbView->currentViewDir.left(thumbView->currentViewDir.lastIndexOf(QDir::separator()));
-
-	if (parentDir.size() == 0)
-		parentDir = QDir::separator();
-	goTo(parentDir);
+	QFileInfo fileInfo = QFileInfo(thumbView->currentViewDir);
+	goTo(fileInfo.dir().absolutePath());
 }
 
 void Phototonic::goHome()

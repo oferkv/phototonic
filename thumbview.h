@@ -109,6 +109,7 @@ private:
 	bool thumbLoaderActive;
 	bool isNeedScroll;
 	int currentRow;
+	bool scrolledForward;
 	int thumbsRangeFirst;
 	int thumbsRangeLast;
 
@@ -124,7 +125,7 @@ signals:
 	void setStatus(QString state);
 
 public slots:
-	void loadVisibleThumbs();
+	void loadVisibleThumbs(int value = 0);
 	void handleSelectionChanged(const QItemSelection& selection);
 	void invertSelection();
 
