@@ -161,8 +161,8 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 
 KeyGrabLineEdit::KeyGrabLineEdit(QWidget *parent, QComboBox *combo) : QLineEdit(parent)
 {
-	setReadOnly(true);
 	keysCombo = combo;
+	setClearButtonEnabled(true);
 }
 
 void KeyGrabLineEdit::keyPressEvent(QKeyEvent *e)
@@ -205,8 +205,8 @@ void KeyGrabLineEdit::keyPressEvent(QKeyEvent *e)
 
 void KeyGrabLineEdit::clearShortcut()
 {
-	clear();
-	GData::actionKeys.value(keysCombo->currentText())->setShortcut(QKeySequence(""));
+	if (text() == "")
+		GData::actionKeys.value(keysCombo->currentText())->setShortcut(QKeySequence(""));
 }
 
 void SettingsDialog::setActionKeyText(const QString &text)
@@ -288,7 +288,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	thumbSpacingHbox->addStretch(1);
 
 	// Do not enlarge small thumbs
-	noSmallThumbCb = new QCheckBox("Do not enlarge thumbnails for images smaller than thumbnail size", this);
+	noSmallThumbCb = new QCheckBox("Show original size of images smaller than the thumbnail size", this);
 	noSmallThumbCb->setChecked(GData::noEnlargeSmallThumb);
 
 	// Thumbnail pages to read ahead
@@ -411,6 +411,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	// Keyboard shortcuts widgets
 	QComboBox *keysCombo = new QComboBox();
 	keyLine = new KeyGrabLineEdit(this, keysCombo);
+	connect(keyLine, SIGNAL(textChanged(const QString&)), keyLine, SLOT(clearShortcut()));
 	connect(keysCombo, SIGNAL(activated(const QString &)),
 							this, SLOT(setActionKeyText(const QString &)));
 
@@ -422,11 +423,6 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	}
 	keyLine->setText(GData::actionKeys.value(keysCombo->currentText())->shortcut().toString());
 
-	QToolButton *clearShortCutButton = new QToolButton();
-	clearShortCutButton->setStyleSheet("QToolButton {padding: 0px;}");
-	clearShortCutButton->setIcon(QIcon::fromTheme("edit-clear", QIcon(":/images/clear.png")));
-	connect(clearShortCutButton, SIGNAL(clicked()), keyLine, SLOT(clearShortcut()));
-
 	// Mouse settings
 	reverseMouseCb = new QCheckBox("Swap mouse left-click and middle-click actions", this);
 	reverseMouseCb->setChecked(GData::reverseMouseBehavior);
@@ -435,7 +431,6 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	QHBoxLayout *keyboardHbox = new QHBoxLayout;
 	keyboardHbox->addWidget(keysCombo);
 	keyboardHbox->addWidget(keyLine);
-	keyboardHbox->addWidget(clearShortCutButton);
 	keyboardHbox->addStretch(1);
 
 	QVBoxLayout *mouseVbox = new QVBoxLayout;
@@ -543,7 +538,7 @@ void SettingsDialog::pickThumbsTextColor()
 CropDialog::CropDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
 {
 	setWindowTitle("Cropping");
-	resize(300, 300);
+	resize(400, 400);
 	if (GData::dialogLastX)
 		move(GData::dialogLastX, GData::dialogLastY);
 	imageView = imageView_;

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2013 Ofer Kashayov <oferkv@live.com>
+ *  Copyright (C) 2013-2014 Ofer Kashayov <oferkv@live.com>
  *  This file is part of Phototonic Image Viewer.
  *
  *  Phototonic is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@
 
 Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 {
-	GData::appSettings = new QSettings("phototonic", "phototonic_099_git_03");
+	GData::appSettings = new QSettings("phototonic", "phototonic_100");
 	readSettings();
 	createThumbView();
 	createActions();
@@ -778,7 +778,7 @@ void Phototonic::showHiddenFiles()
 
 void Phototonic::about()
 {
-	QMessageBox::about(this, "About Phototonic", "<h2>Phototonic v0.99Git03</h2>"
+	QMessageBox::about(this, "About Phototonic", "<h2>Phototonic v1.00</h2>"
 							"<p>Image viewer and organizer</p>"
 							"<p><a href=\"http://oferkv.github.io/phototonic/\">Home page</a></p>"
 							"<p><a href=\"https://github.com/oferkv/phototonic/issues\">Reports Bugs</a></p>"
@@ -1847,6 +1847,7 @@ void Phototonic::loadImageFile(QString imageFileName)
 	{
 		GData::appSettings->setValue("Geometry", saveGeometry());
 		GData::appSettings->setValue("WindowState", saveState());
+		setToolBarsVisibility();
 	
 		QApplication::setOverrideCursor(Qt::OpenHandCursor);
 		stackedWidget->setCurrentIndex(imageViewIdx);
