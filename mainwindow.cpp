@@ -1847,7 +1847,6 @@ void Phototonic::loadImageFile(QString imageFileName)
 	{
 		GData::appSettings->setValue("Geometry", saveGeometry());
 		GData::appSettings->setValue("WindowState", saveState());
-		setToolBarsVisibility();
 	
 		QApplication::setOverrideCursor(Qt::OpenHandCursor);
 		stackedWidget->setCurrentIndex(imageViewIdx);
