@@ -25,7 +25,7 @@
 
 Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 {
-	GData::appSettings = new QSettings("phototonic", "phototonic_100");
+	GData::appSettings = new QSettings("phototonic", "phototonic_101");
 	readSettings();
 	createThumbView();
 	createActions();
@@ -117,6 +117,7 @@ void Phototonic::createThumbView()
 	iiDock->setObjectName("Image Info");
 	iiDock->setWidget(thumbView->infoView);
 	connect(iiDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setToolBarsVisibility()));	
+	connect(iiDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setToolBarsVisibility()));	
 }
 
 void Phototonic::addMenuSeparator(QWidget *widget)
@@ -683,6 +684,7 @@ void Phototonic::createFSTree()
 	fsTree = new FSTree(fsDock);
 	fsDock->setWidget(fsTree);
 	connect(fsDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setToolBarsVisibility()));	
+	connect(fsDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setToolBarsVisibility()));	
 	addDockWidget(Qt::LeftDockWidgetArea, fsDock);
 
 	// Context menu
@@ -778,7 +780,7 @@ void Phototonic::showHiddenFiles()
 
 void Phototonic::about()
 {
-	QMessageBox::about(this, "About Phototonic", "<h2>Phototonic v1.00</h2>"
+	QMessageBox::about(this, "About Phototonic", "<h2>Phototonic v1.01</h2>"
 							"<p>Image viewer and organizer</p>"
 							"<p><a href=\"http://oferkv.github.io/phototonic/\">Home page</a></p>"
 							"<p><a href=\"https://github.com/oferkv/phototonic/issues\">Reports Bugs</a></p>"
@@ -1833,6 +1835,9 @@ void Phototonic::openOp()
 
 void Phototonic::setToolBarsVisibility()
 {
+	if (stackedWidget->currentIndex() == imageViewIdx)
+		return;
+
 	editToolBarVisible = editToolBar->isVisible();
 	goToolBarVisible = goToolBar->isVisible();
 	viewToolBarVisible = viewToolBar->isVisible();

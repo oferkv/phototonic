@@ -761,7 +761,8 @@ void ImageView::saveImage()
 		exifError = true;
 	}
 
-	if (!displayPixmap.save(currentImageFullPath, 0, GData::defaultSaveQuality))
+	QImageReader imgReader(currentImageFullPath);
+	if (!displayPixmap.save(currentImageFullPath, imgReader.format().toUpper(), GData::defaultSaveQuality))
 	{
 		QMessageBox msgBox;
 		msgBox.critical(this, "Error", "Failed to save image");
@@ -776,7 +777,8 @@ void ImageView::saveImage()
 		}
 		catch (Exiv2::Error &error)
 		{
-			exifError = true;
+			QMessageBox msgBox;
+			msgBox.critical(this, "Error", "Failed to save Exif metadata");
 		}
 	}
 
