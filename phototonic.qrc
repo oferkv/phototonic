@@ -1,5 +1,6 @@
-<!DOCTYPE RCC><RCC version="1.0">
-	<qresource>
+<!DOCTYPE RCC>
+<RCC version="1.0">
+	<qresource prefix="/">
 		<file>images/error_image.png</file>
 		<file>images/no_image.png</file>
 		<file>images/home.png</file>
@@ -36,5 +37,6 @@
 		<file>images/blue.png</file>
 		<file>images/tree.png</file>
 		<file>images/clear.png</file>
+		<file>translations/phototonic_he.qm</file>
 	</qresource>
 </RCC>

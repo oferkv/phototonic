@@ -27,11 +27,13 @@ int main(int argc, char *argv[])
    		qDebug() << "Usage: phototonic [FILE or DIRECTORY]...";
    		return -1;
 	}
-	else
-	{
-	    Phototonic phototonic;
-	    phototonic.show();
-	    return QApp.exec();
-    }
+
+	QTranslator myappTranslator;
+	myappTranslator.load(":/translations/phototonic_" + QLocale::system().name());
+	QApp.installTranslator(&myappTranslator);
+
+    Phototonic phototonic;
+    phototonic.show();
+    return QApp.exec();
 }
 

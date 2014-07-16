@@ -19,3 +19,6 @@ desktop.files = phototonic.desktop
 desktop.path = /usr/share/applications
 
 INSTALLS += target icon desktop
+
+TRANSLATIONS    = translations/phototonic_he.ts
+
