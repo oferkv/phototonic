@@ -534,7 +534,7 @@ void ImageView::reload()
 		displayImage = origImage;
 		displayPixmap = QPixmap::fromImage(displayImage);
 		imageLabel->setPixmap(displayPixmap);
-		mainWindow->setWindowTitle("New image - Phototonic");
+		mainWindow->setWindowTitle(tr("New image") + " - Phototonic");
 		isAnimation = false;
 		return;
 	}
@@ -749,7 +749,7 @@ void ImageView::saveImage()
 		return;
 	}
 
-	popMessage("Saving...");
+	popMessage(tr("Saving..."));
 
 	try
 	{
@@ -765,7 +765,7 @@ void ImageView::saveImage()
 	if (!displayPixmap.save(currentImageFullPath, imgReader.format().toUpper(), GData::defaultSaveQuality))
 	{
 		QMessageBox msgBox;
-		msgBox.critical(this, "Error", "Failed to save image");
+		msgBox.critical(this, tr("Error"), tr("Failed to save image"));
 		return;
 	}
 
@@ -778,12 +778,12 @@ void ImageView::saveImage()
 		catch (Exiv2::Error &error)
 		{
 			QMessageBox msgBox;
-			msgBox.critical(this, "Error", "Failed to save Exif metadata");
+			msgBox.critical(this, tr("Error"), tr("Failed to save Exif metadata"));
 		}
 	}
 
 	reload();
-	popMessage("Image saved");
+	popMessage(tr("Image saved"));
 }
 
 void ImageView::setCursorOverrides(bool override)
@@ -811,9 +811,9 @@ void ImageView::saveImageAs()
 	bool exifError = false;
 
 	QString fileName = QFileDialog::getSaveFileName(this,
-		"Save image as",
+		tr("Save image as"),
 		currentImageFullPath,
-		"Image Files (*.jpg *.jpeg *.jpe *.png *.bmp *.tiff *.tif *.ppm *.xbm *.xpm)");
+		tr("Image Files") + " (*.jpg *.jpeg *.jpe *.png *.bmp *.tiff *.tif *.ppm *.xbm *.xpm)");
 		
 	if (!fileName.isEmpty())
 	{
@@ -831,7 +831,7 @@ void ImageView::saveImageAs()
 		if (!displayPixmap.save(fileName, 0, GData::defaultSaveQuality))
 		{
 			QMessageBox msgBox;
-			msgBox.critical(this, "Error", "Failed to save image");
+			msgBox.critical(this, tr("Error"), tr("Failed to save image"));
 		}
 		else
 		{
@@ -849,7 +849,7 @@ void ImageView::saveImageAs()
 				}
 			}
 		
-			popMessage("Image saved");
+			popMessage(tr("Image saved"));
 		}
 	}
 
@@ -900,9 +900,9 @@ void ImageView::hideMessage()
 	QToolTip::hideText();
 }
 
-void ImageView::popMessage(const char *message)
+void ImageView::popMessage(QString message)
 {
-	QToolTip::showText(QPoint((mainWindow->pos().x() + 10), (mainWindow->pos().y() + 10)), QString(message));
+	QToolTip::showText(QPoint((mainWindow->pos().x() + 10), (mainWindow->pos().y() + 10)), message);
 	QTimer::singleShot(1000, this, SLOT(hideMessage()));
 }
 

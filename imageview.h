@@ -84,7 +84,7 @@ public:
 	int getImageHeightPreCropped();
 	bool isNewImage();
 	void keyMoveEvent(int direction);
-	void popMessage(const char *message);
+	void popMessage(QString message);
 
 public slots:
 	void monitorCursorState();

@@ -36,7 +36,7 @@ InfoView::InfoView(QWidget *parent) : QTableView(parent)
 
 	// InfoView menu
 	infoMenu = new QMenu("");
-	copyAction = new QAction("Copy", this);
+	copyAction = new QAction(tr("Copy"), this);
 	connect(copyAction, SIGNAL(triggered()), this, SLOT(copyEntry()));
 	infoMenu->addAction(copyAction);
 	setContextMenuPolicy(Qt::CustomContextMenu);

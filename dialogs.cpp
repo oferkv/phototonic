@@ -25,7 +25,7 @@ CpMvDialog::CpMvDialog(QWidget *parent) : QDialog(parent)
 
     opLabel = new QLabel("");
     
-    cancelButton = new QPushButton("Cancel");
+    cancelButton = new QPushButton(tr("Cancel"));
     cancelButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(cancelButton, SIGNAL(clicked()), this, SLOT(abort()));
 
@@ -135,7 +135,7 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 			currFile = fileInfo.fileName();
 			destFile = destDir + QDir::separator() + currFile;
 
-			opLabel->setText((GData::copyOp? "Copying ":"Moving ") + sourceFile + " to " + destFile);
+			opLabel->setText((GData::copyOp? tr("Copying "):tr("Moving ")) + sourceFile + tr(" to ") + destFile);
 			QApplication::processEvents();
 
 			res = cpMvFile(GData::copyOp, currFile, sourceFile, destFile, destDir);
@@ -194,7 +194,7 @@ void KeyGrabLineEdit::keyPressEvent(QKeyEvent *e)
 		if (it.value()->shortcut().toString() == keySeqText)
 		{
 			QMessageBox msgBox;
-			msgBox.warning(this, "Set shortcut", "Already assigned to \"" + it.key() + "\" action");
+			msgBox.warning(this, tr("Set shortcut"), tr("Already assigned to \"") + it.key() + tr("\" action"));
 			return;
 		}
 	}
@@ -216,7 +216,7 @@ void SettingsDialog::setActionKeyText(const QString &text)
 
 SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 {
-	setWindowTitle("Preferences");
+	setWindowTitle(tr("Preferences"));
 
 	int height = parent->size().height() - 50;
 	if (height > 800)
@@ -229,10 +229,10 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	scrollArea->setWidgetResizable(true);
 	scrollArea->setFrameShadow(QFrame::Plain);
 	QHBoxLayout *buttonsHbox = new QHBoxLayout;
-    QPushButton *okButton = new QPushButton("OK");
+    QPushButton *okButton = new QPushButton(tr("OK"));
     okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	connect(okButton, SIGNAL(clicked()), this, SLOT(saveSettings()));
-	QPushButton *closeButton = new QPushButton("Cancel");
+	QPushButton *closeButton = new QPushButton(tr("Cancel"));
 	closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	connect(closeButton, SIGNAL(clicked()), this, SLOT(abort()));
 	buttonsHbox->addWidget(closeButton, 1, Qt::AlignRight);
@@ -244,7 +244,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	setLayout(mainVbox);
 
 	// imageView background color
-	QLabel *backgroundColorLab = new QLabel("Background color: ");
+	QLabel *backgroundColorLab = new QLabel(tr("Background color: "));
 	backgroundColorButton = new QToolButton();
 	QHBoxLayout *bgColBox = new QHBoxLayout;
 	bgColBox->addWidget(backgroundColorLab);
@@ -256,7 +256,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	bgColor = GData::backgroundColor;
 
 	// thumbView background color
-	QLabel *bgThumbTxtLab = new QLabel("Background color: ");
+	QLabel *bgThumbTxtLab = new QLabel(tr("Background color: "));
 	colThumbButton = new QToolButton();
 	QHBoxLayout *bgThumbColBox = new QHBoxLayout;
 	bgThumbColBox->addWidget(bgThumbTxtLab);
@@ -267,7 +267,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	thumbBgColor = GData::thumbsBackgroundColor;
 
 	// thumbView text color
-	QLabel *txtThumbTxtLab = new QLabel("\tLabel color: ");
+	QLabel *txtThumbTxtLab = new QLabel(tr("\tLabel color: "));
 	colThumbTextButton = new QToolButton();
 	bgThumbColBox->addWidget(txtThumbTxtLab);
 	bgThumbColBox->addWidget(colThumbTextButton);
@@ -278,7 +278,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	thumbTextColor = GData::thumbsTextColor;
 
 	// Thumbnail spacing
-	QLabel *thumbSpacingLab = new QLabel("Add space between thumbnails: ");
+	QLabel *thumbSpacingLab = new QLabel(tr("Add space between thumbnails: "));
 	thumbSpacingSpin = new QSpinBox;
 	thumbSpacingSpin->setRange(0, 15);
 	thumbSpacingSpin->setValue(GData::thumbSpacing);
@@ -288,11 +288,11 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	thumbSpacingHbox->addStretch(1);
 
 	// Do not enlarge small thumbs
-	noSmallThumbCb = new QCheckBox("Show original size of images smaller than the thumbnail size", this);
+	noSmallThumbCb = new QCheckBox(tr("Show original size of images smaller than the thumbnail size"), this);
 	noSmallThumbCb->setChecked(GData::noEnlargeSmallThumb);
 
 	// Thumbnail pages to read ahead
-	QLabel *thumbPagesLab = new QLabel("Number of thumbnail pages to read ahead: ");
+	QLabel *thumbPagesLab = new QLabel(tr("Number of thumbnail pages to read ahead: "));
 	thumbPagesSpin = new QSpinBox;
 	thumbPagesSpin->setRange(1, 10);
 	thumbPagesSpin->setValue(GData::thumbPagesReadahead);
@@ -302,7 +302,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	thumbPagesHbox->addStretch(1);
 
 	// Thumbnail options
-	QGroupBox *thumbOptsGroupBox = new QGroupBox("Thumbnails");
+	QGroupBox *thumbOptsGroupBox = new QGroupBox(tr("Thumbnails"));
 	QVBoxLayout *thumbsOptsBox = new QVBoxLayout;
 	thumbsOptsBox->addLayout(thumbSpacingHbox);
 	thumbsOptsBox->addWidget(noSmallThumbCb);
@@ -311,12 +311,12 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	thumbOptsGroupBox->setLayout(thumbsOptsBox);
 
 	// Zoom large images
-	QGroupBox *fitLargeGroupBox = new QGroupBox("Fit Large Images");
-	fitLargeRadios[0] = new QRadioButton("Disable");
-	fitLargeRadios[1] = new QRadioButton("By width and height");
-	fitLargeRadios[2] = new QRadioButton("By width");
-	fitLargeRadios[3] = new QRadioButton("By height");
-	fitLargeRadios[4] = new QRadioButton("Stretch disproportionately");
+	QGroupBox *fitLargeGroupBox = new QGroupBox(tr("Fit Large Images"));
+	fitLargeRadios[0] = new QRadioButton(tr("Disable"));
+	fitLargeRadios[1] = new QRadioButton(tr("By width and height"));
+	fitLargeRadios[2] = new QRadioButton(tr("By width"));
+	fitLargeRadios[3] = new QRadioButton(tr("By height"));
+	fitLargeRadios[4] = new QRadioButton(tr("Stretch disproportionately"));
 	QVBoxLayout *fitLargeVbox = new QVBoxLayout;
 	for (int i = 0; i < nZoomRadios; ++i)
 	{
@@ -328,12 +328,12 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	fitLargeRadios[GData::zoomOutFlags]->setChecked(true);
  	
 	// Zoom small images
-	QGroupBox *fitSmallGroupBox = new QGroupBox("Fit Small Images");
-	fitSmallRadios[0] = new QRadioButton("Disable");
-	fitSmallRadios[1] = new QRadioButton("By width and height");
-	fitSmallRadios[2] = new QRadioButton("By width");
-	fitSmallRadios[3] = new QRadioButton("By height");
-	fitSmallRadios[4] = new QRadioButton("Stretch disproportionately");
+	QGroupBox *fitSmallGroupBox = new QGroupBox(tr("Fit Small Images"));
+	fitSmallRadios[0] = new QRadioButton(tr("Disable"));
+	fitSmallRadios[1] = new QRadioButton(tr("By width and height"));
+	fitSmallRadios[2] = new QRadioButton(tr("By width"));
+	fitSmallRadios[3] = new QRadioButton(tr("By height"));
+	fitSmallRadios[4] = new QRadioButton(tr("Stretch disproportionately"));
 	QVBoxLayout *fitSmallVbox = new QVBoxLayout;
 	for (int i = 0; i < nZoomRadios; ++i)
 	{
@@ -345,15 +345,15 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	fitSmallRadios[GData::zoomInFlags]->setChecked(true);
 
 	// Exit when opening image
-	exitCliCb = new QCheckBox("Exit instead of closing, when image is loaded from command line", this);
+	exitCliCb = new QCheckBox(tr("Exit instead of closing, when image is loaded from command line"), this);
 	exitCliCb->setChecked(GData::exitInsteadOfClose);
 
 	// Exit when opening image
-	wrapListCb = new QCheckBox("Wrap image list when reaching last or first image", this);
+	wrapListCb = new QCheckBox(tr("Wrap image list when reaching last or first image"), this);
 	wrapListCb->setChecked(GData::wrapImageList);
 
 	// Save quality
-	QLabel *saveQualityLab = new QLabel("Default quality when saving images: ");
+	QLabel *saveQualityLab = new QLabel(tr("Default quality when saving images: "));
 	saveQualitySpin = new QSpinBox;
 	saveQualitySpin->setRange(0, 100);
 	saveQualitySpin->setValue(GData::defaultSaveQuality);
@@ -363,11 +363,11 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	saveQualityHbox->addStretch(1);
 
 	// Enable animations
-	enableAnimCb = new QCheckBox("Enable GIF animation", this);
+	enableAnimCb = new QCheckBox(tr("Enable GIF animation"), this);
 	enableAnimCb->setChecked(GData::enableAnimations);
 
 	// Enable Exif
-	enableExifCb = new QCheckBox("Rotate according to Exif orientation", this);
+	enableExifCb = new QCheckBox(tr("Rotate according to Exif orientation"), this);
 	enableExifCb->setChecked(GData::exifRotationEnabled);
 
 	// Viewer options
@@ -384,11 +384,11 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	viewerOptsBox->addLayout(saveQualityHbox);
 	viewerOptsBox->addWidget(enableAnimCb);
 	viewerOptsBox->addWidget(enableExifCb);
-	QGroupBox *viewerOptsGrp = new QGroupBox("Viewer");
+	QGroupBox *viewerOptsGrp = new QGroupBox(tr("Viewer"));
 	viewerOptsGrp->setLayout(viewerOptsBox);
 
 	// Slide show delay
-	QLabel *slideDelayLab = new QLabel("Delay between slides in seconds: ");
+	QLabel *slideDelayLab = new QLabel(tr("Delay between slides in seconds: "));
 	slideDelaySpin = new QSpinBox;
 	slideDelaySpin->setRange(1, 3600);
 	slideDelaySpin->setValue(GData::slideShowDelay);
@@ -398,14 +398,14 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	slideDelayHbox->addStretch(1);
 
 	// Slide show random
-	slideRandomCb = new QCheckBox("Show random images", this);
+	slideRandomCb = new QCheckBox(tr("Show random images"), this);
 	slideRandomCb->setChecked(GData::slideShowRandom);
 
 	// Slide show options
 	QVBoxLayout *slideShowVbox = new QVBoxLayout;
 	slideShowVbox->addLayout(slideDelayHbox);
 	slideShowVbox->addWidget(slideRandomCb);
-	QGroupBox *slideShowGbox = new QGroupBox("Slide Show");
+	QGroupBox *slideShowGbox = new QGroupBox(tr("Slide Show"));
 	slideShowGbox->setLayout(slideShowVbox);
 
 	// Keyboard shortcuts widgets
@@ -424,7 +424,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	keyLine->setText(GData::actionKeys.value(keysCombo->currentText())->shortcut().toString());
 
 	// Mouse settings
-	reverseMouseCb = new QCheckBox("Swap mouse left-click and middle-click actions", this);
+	reverseMouseCb = new QCheckBox(tr("Swap mouse left-click and middle-click actions"), this);
 	reverseMouseCb->setChecked(GData::reverseMouseBehavior);
 
 	// Keyboard and mouse group
@@ -437,7 +437,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	mouseVbox->addLayout(keyboardHbox);
 	mouseVbox->addWidget(reverseMouseCb);
 
-	QGroupBox *keyboardGbox = new QGroupBox("Keyboard and Mouse");
+	QGroupBox *keyboardGbox = new QGroupBox(tr("Keyboard and Mouse"));
 	keyboardGbox->setLayout(mouseVbox);
 
 	// General
@@ -537,14 +537,14 @@ void SettingsDialog::pickThumbsTextColor()
 
 CropDialog::CropDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
 {
-	setWindowTitle("Cropping");
+	setWindowTitle(tr("Cropping"));
 	resize(400, 400);
 	if (GData::dialogLastX)
 		move(GData::dialogLastX, GData::dialogLastY);
 	imageView = imageView_;
 
 	QHBoxLayout *buttonsHbox = new QHBoxLayout;
-	QPushButton *okButton = new QPushButton("OK");
+	QPushButton *okButton = new QPushButton(tr("OK"));
 	okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
 	buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);
@@ -572,10 +572,10 @@ CropDialog::CropDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
 
 	QGridLayout *mainGbox = new QGridLayout;
 
-	QLabel *topLab = new QLabel("Top");
-	QLabel *leftLab = new QLabel("Left");
-	QLabel *rightLab = new QLabel("Right");
-	QLabel *bottomLab = new QLabel("Bottom");
+	QLabel *topLab = new QLabel(tr("Top"));
+	QLabel *leftLab = new QLabel(tr("Left"));
+	QLabel *rightLab = new QLabel(tr("Right"));
+	QLabel *bottomLab = new QLabel(tr("Bottom"));
 
 	QHBoxLayout *topBox = new QHBoxLayout;
 	topBox->addWidget(topLab);
@@ -661,28 +661,28 @@ void CropDialog::ok()
 
 ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
 {
-	setWindowTitle("Colors");
+	setWindowTitle(tr("Colors"));
 	resize(500, 200);
 	if (GData::dialogLastX)
 		move(GData::dialogLastX, GData::dialogLastY);
 	imageView = imageView_;
 
 	QHBoxLayout *buttonsHbox = new QHBoxLayout;
-	QPushButton *resetButton = new QPushButton("Reset");
+	QPushButton *resetButton = new QPushButton(tr("Reset"));
 	resetButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	connect(resetButton, SIGNAL(clicked()), this, SLOT(reset()));
 	buttonsHbox->addWidget(resetButton, 0, Qt::AlignLeft);
-	QPushButton *okButton = new QPushButton("OK");
+	QPushButton *okButton = new QPushButton(tr("OK"));
 	okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
 	buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);
 
-	QLabel *hueLab = new QLabel("Hue");
-	QLabel *satLab = new QLabel("Saturation");
-	QLabel *lightLab = new QLabel("Lightness");
-	QLabel *channelsLab = new QLabel("Channels");
+	QLabel *hueLab = new QLabel(tr("Hue"));
+	QLabel *satLab = new QLabel(tr("Saturation"));
+	QLabel *lightLab = new QLabel(tr("Lightness"));
+	QLabel *channelsLab = new QLabel(tr("Channels"));
 
-	hueSatEnabledCb = new QCheckBox("Enable", this);
+	hueSatEnabledCb = new QCheckBox(tr("Enable"), this);
 	hueSatEnabledCb->setCheckState(GData::hueSatEnabled? Qt::Checked : Qt::Unchecked);
 	connect(hueSatEnabledCb, SIGNAL(stateChanged(int)), this, SLOT(enableHueSat(int)));	
 
@@ -694,7 +694,7 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	hueSlide->setValue(GData::hueVal);
 	connect(hueSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
 
-	colorizeCb = new QCheckBox("Colorize", this);
+	colorizeCb = new QCheckBox(tr("Colorize"), this);
 	colorizeCb->setCheckState(GData::colorizeEnabled? Qt::Checked : Qt::Unchecked);
 	connect(colorizeCb, SIGNAL(stateChanged(int)), this, SLOT(enableColorize(int)));	
 
@@ -748,7 +748,7 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	colChannelbox->addLayout(channelsHbox,		5, 1, 1, 1);
 	// colChannelbox->setColumnStretch(3, 1);
 
-	QGroupBox *colChannelgrp = new QGroupBox("Hue and Saturation");
+	QGroupBox *colChannelgrp = new QGroupBox(tr("Hue and Saturation"));
 	colChannelgrp->setLayout(colChannelbox);
 	QVBoxLayout *mainVbox = new QVBoxLayout;
 	mainVbox->addWidget(colChannelgrp);
@@ -829,7 +829,7 @@ void AppMgmtDialog::addTableModelItem(QStandardItemModel *model, QString &key, Q
 
 AppMgmtDialog::AppMgmtDialog(QWidget *parent) : QDialog(parent)
 {
-	setWindowTitle("Manage External Applications");
+	setWindowTitle(tr("Manage External Applications"));
 	resize(350, 250);
 
 	appsTable = new QTableView(this);
@@ -842,21 +842,21 @@ AppMgmtDialog::AppMgmtDialog(QWidget *parent) : QDialog(parent)
 	appsTable->verticalHeader()->setVisible(false);
 	appsTable->verticalHeader()->setDefaultSectionSize(appsTable->verticalHeader()->minimumSectionSize());
 	appsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-	appsTableModel->setHorizontalHeaderItem(0, new QStandardItem(QString("Name")));
-	appsTableModel->setHorizontalHeaderItem(1, new QStandardItem(QString("Path")));
+	appsTableModel->setHorizontalHeaderItem(0, new QStandardItem(QString(tr("Name"))));
+	appsTableModel->setHorizontalHeaderItem(1, new QStandardItem(QString(tr("Path"))));
 	appsTable->	setShowGrid(false);
 
 	QHBoxLayout *addRemoveHbox = new QHBoxLayout;
-    QPushButton *addButton = new QPushButton("Add");
+    QPushButton *addButton = new QPushButton(tr("Add"));
 	connect(addButton, SIGNAL(clicked()), this, SLOT(add()));
 	addRemoveHbox->addWidget(addButton, 0, Qt::AlignRight);
-    QPushButton *removeButton = new QPushButton("Remove");
+    QPushButton *removeButton = new QPushButton(tr("Remove"));
 	connect(removeButton, SIGNAL(clicked()), this, SLOT(remove()));
 	addRemoveHbox->addWidget(removeButton, 0, Qt::AlignRight);
 	addRemoveHbox->addStretch(1);	
 
 	QHBoxLayout *buttonsHbox = new QHBoxLayout;
-    QPushButton *okButton = new QPushButton("OK");
+    QPushButton *okButton = new QPushButton(tr("OK"));
     okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
 	buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);
@@ -893,7 +893,7 @@ void AppMgmtDialog::ok()
 
 void AppMgmtDialog::add()
 {
-	QString fileName = QFileDialog::getOpenFileName(this, "Choose Application", "", "");
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Choose Application"), "", "");
 	if (fileName.isEmpty())
 		return;
 		
@@ -901,7 +901,7 @@ void AppMgmtDialog::add()
 	if (!fileInfo.isExecutable())
 	{
 		QMessageBox msgBox;
-		msgBox.critical(this, "Error", "Not an executable");
+		msgBox.critical(this, tr("Error"), tr("Not an executable"));
 		return;
 	}
 	
@@ -920,7 +920,7 @@ void AppMgmtDialog::remove()
 
 CopyMoveToDialog::CopyMoveToDialog(QWidget *parent, QString thumbsPath) : QDialog(parent)
 {
-	setWindowTitle("Copy or Move Images to...");
+	setWindowTitle(tr("Copy or Move Images to..."));
 	resize(350, 250);
 	currentPath = thumbsPath;
 
@@ -939,22 +939,22 @@ CopyMoveToDialog::CopyMoveToDialog(QWidget *parent, QString thumbsPath) : QDialo
 	pathsTable->	setShowGrid(false);
 
 	QHBoxLayout *addRemoveHbox = new QHBoxLayout;
-    QPushButton *addButton = new QPushButton("Add");
+    QPushButton *addButton = new QPushButton(tr("Add"));
 	connect(addButton, SIGNAL(clicked()), this, SLOT(add()));
 	addRemoveHbox->addWidget(addButton, 0, Qt::AlignRight);
-    QPushButton *removeButton = new QPushButton("Remove");
+    QPushButton *removeButton = new QPushButton(tr("Remove"));
 	connect(removeButton, SIGNAL(clicked()), this, SLOT(remove()));
 	addRemoveHbox->addWidget(removeButton, 0, Qt::AlignRight);
 	addRemoveHbox->addStretch(1);	
 
 	QHBoxLayout *buttonsHbox = new QHBoxLayout;
-    QPushButton *closeButton = new QPushButton("Close");
+    QPushButton *closeButton = new QPushButton(tr("Close"));
     closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	connect(closeButton, SIGNAL(clicked()), this, SLOT(justClose()));
-    QPushButton *copyButton = new QPushButton("Copy");
+    QPushButton *copyButton = new QPushButton(tr("Copy"));
     copyButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	connect(copyButton, SIGNAL(clicked()), this, SLOT(copy()));
-    QPushButton *moveButton = new QPushButton("Move");
+    QPushButton *moveButton = new QPushButton(tr("Move"));
     moveButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	connect(moveButton, SIGNAL(clicked()), this, SLOT(move()));
 	buttonsHbox->addStretch(1);	
@@ -1020,7 +1020,7 @@ void CopyMoveToDialog::justClose()
 
 void CopyMoveToDialog::add()
 {
-	QString dirName = QFileDialog::getExistingDirectory(this, "Choose Directory", currentPath,
+	QString dirName = QFileDialog::getExistingDirectory(this, tr("Choose Directory"), currentPath,
 									QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 	if (dirName.isEmpty())
 		return;

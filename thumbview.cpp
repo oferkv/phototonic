@@ -214,10 +214,10 @@ void ThumbView::handleSelectionChanged(const QItemSelection&)
 	infoView->clear();
 
 	if (!nSelected)
-		state = QString::number(thumbViewModel->rowCount()) + " images";
+		state = QString::number(thumbViewModel->rowCount()) + tr(" images");
 	else if (nSelected >= 1)
-		state = QString("Selected " + QString::number(nSelected) + " of "
-							+ QString::number(thumbViewModel->rowCount()) + " images");
+		state = QString(tr("Selected ") + QString::number(nSelected) + tr(" of ")
+							+ QString::number(thumbViewModel->rowCount()) + tr(" images"));
 
 	if (nSelected == 1)
 	{
@@ -230,33 +230,33 @@ void ThumbView::handleSelectionChanged(const QItemSelection&)
 		{
 			QFileInfo imageInfo = QFileInfo(imageFullPath);
 
-			key = "File name";
+			key = tr("File name");
 			val = imageInfo.fileName();
 			infoView->addEntry(key, val);
 
-			key = "Location";
+			key = tr("Location");
 			val = imageInfo.path();
 			infoView->addEntry(key, val);
 
-			key = "Format";
+			key = tr("Format");
 			val = imageInfoReader.format().toUpper();
 			infoView->addEntry(key, val);
 
-			key = "Resolution";
+			key = tr("Resolution");
 			val = QString::number(imageInfoReader.size().width())
 					+ " x "
 					+ QString::number(imageInfoReader.size().height());
 			infoView->addEntry(key, val);
 
-			key = "Megapixel";
+			key = tr("Megapixel");
 			val = QString::number((imageInfoReader.size().width() * imageInfoReader.size().height()) / 1000000.0, 'f', 2);
 			infoView->addEntry(key, val);
 
-			key = "Size";
+			key = tr("Size");
 			val = QString::number(imageInfo.size() / 1024.0, 'f', 2) + "K";
 			infoView->addEntry(key, val);
 
-			key = "Modified";
+			key = tr("Modified");
 			val = imageInfo.lastModified().toString(Qt::SystemLocaleShortDate);
 			infoView->addEntry(key, val);
 			
@@ -380,11 +380,11 @@ void ThumbView::updateThumbsCount()
 {
 	if (thumbViewModel->rowCount() > 0)
 	{
-		QString state = (QString::number(thumbViewModel->rowCount()) + " images");
+		QString state = (QString::number(thumbViewModel->rowCount()) + tr(" images"));
 		emit setStatus(state);
 	}
 	else
-		emit setStatus("No images");
+		emit setStatus(tr("No images"));
 }
 
 void ThumbView::load(QString &cliImageName)

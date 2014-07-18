@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="he_IL">
+<TS version="2.1" language="ru_RU">
 <context>
     <name>AppMgmtDialog</name>
     <message>
         <location filename="../dialogs.cpp" line="832"/>
         <source>Manage External Applications</source>
-        <translation type="unfinished">נהל אפליקציות חיצוניות</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="845"/>
         <source>Name</source>
-        <translation type="unfinished">שם</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="846"/>
@@ -54,7 +54,7 @@
     <message>
         <location filename="../dialogs.cpp" line="664"/>
         <source>Colors</source>
-        <translation type="unfinished">צבעים</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="671"/>
@@ -127,7 +127,7 @@
     <message>
         <location filename="../dialogs.cpp" line="954"/>
         <source>Copy</source>
-        <translation type="unfinished">העתק</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="957"/>
@@ -151,19 +151,19 @@
         <location filename="../dialogs.cpp" line="112"/>
         <location filename="../dialogs.cpp" line="138"/>
         <source>Copying </source>
-        <translation>מעתיק </translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="112"/>
         <location filename="../dialogs.cpp" line="138"/>
         <source>Moving </source>
-        <translation>מעביר </translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="112"/>
         <location filename="../dialogs.cpp" line="138"/>
         <source> to </source>
-        <translation>ל </translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -171,7 +171,7 @@
     <message>
         <location filename="../dialogs.cpp" line="540"/>
         <source>Cropping</source>
-        <translation type="unfinished">חיתוך</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="547"/>
@@ -181,7 +181,7 @@
     <message>
         <location filename="../dialogs.cpp" line="575"/>
         <source>Top</source>
-        <translation type="unfinished">התחלה</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="576"/>
@@ -196,7 +196,7 @@
     <message>
         <location filename="../dialogs.cpp" line="578"/>
         <source>Bottom</source>
-        <translation type="unfinished">סוף</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -251,7 +251,7 @@
     <message>
         <location filename="../infoview.cpp" line="39"/>
         <source>Copy</source>
-        <translation type="unfinished">העתק</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -283,99 +283,99 @@
         <location filename="../mainwindow.cpp" line="201"/>
         <location filename="../mainwindow.cpp" line="202"/>
         <source>Zoom</source>
-        <translation>זום</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="213"/>
         <location filename="../mainwindow.cpp" line="214"/>
         <source>Transform</source>
-        <translation>ערוך</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="225"/>
         <location filename="../mainwindow.cpp" line="226"/>
         <source>Mirror</source>
-        <translation>מראה</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="257"/>
         <source>Top</source>
-        <translation>התחלה</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="261"/>
         <source>Bottom</source>
-        <translation>סוף</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="265"/>
         <source>Close Image</source>
-        <translation>סגור</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="268"/>
         <source>Full Screen</source>
-        <translation>מסך מלא</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="272"/>
         <source>Preferences</source>
-        <translation>הגדרות</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="276"/>
         <source>Exit</source>
-        <translation>יציאה</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="279"/>
         <source>Enlarge Thumbnails</source>
-        <translation>הגדל צלמיות</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="285"/>
         <source>Shrink Thumbnails</source>
-        <translation>הקטן צלמיות</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="291"/>
         <source>Cut</source>
-        <translation>גזור</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="296"/>
         <source>Copy</source>
-        <translation>העתק</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="301"/>
         <source>Copy/Move to...</source>
-        <translation>העתק/העבר ל...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="304"/>
         <source>Delete</source>
-        <translation>מחק</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="308"/>
         <source>Save</source>
-        <translation>שמור</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="311"/>
         <source>Save As</source>
-        <translation>שמור בשם</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="312"/>
         <source>Copy Image</source>
-        <translation>העתק תמונה</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="313"/>
         <source>Paste Image</source>
-        <translation>הדבק תמונה</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="315"/>
@@ -385,179 +385,179 @@
     <message>
         <location filename="../mainwindow.cpp" line="318"/>
         <source>Select All</source>
-        <translation>בחר הכל</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="321"/>
         <source>About</source>
-        <translation>אודות</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="326"/>
         <source>Name</source>
-        <translation>שם</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="327"/>
         <source>Time</source>
-        <translation>זמן</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="328"/>
         <source>Size</source>
-        <translation>גודל</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="329"/>
         <source>Type</source>
-        <translation>סוג</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="330"/>
         <source>Reverse</source>
-        <translation>סדר הפוך</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="349"/>
         <source>Show Hidden Files</source>
-        <translation>הראה קבצים מוסתרים</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="354"/>
         <source>Classic Thumbs</source>
-        <translation>צלמיות קלאסיות</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="355"/>
         <source>Compact</source>
-        <translation>קומפקטי</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="356"/>
         <source>Squarish</source>
-        <translation>ריבועים</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="367"/>
         <source>Reload</source>
-        <translation>טען מחדש</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="371"/>
         <source>Include Sub-folders</source>
-        <translation>כלול תת תיקיות</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="376"/>
         <source>Paste Here</source>
-        <translation>הדבק פה</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="381"/>
         <source>New Folder</source>
-        <translation>תיקיה חדשה</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="385"/>
         <source>Manage</source>
-        <translation>נהל</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="388"/>
         <source>Back</source>
-        <translation>קודם</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="393"/>
         <source>Forward</source>
-        <translation>הבא</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="398"/>
         <source>Up</source>
-        <translation>למעלה</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="402"/>
         <source>Home</source>
-        <translation>בית</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="406"/>
         <location filename="../mainwindow.cpp" line="1896"/>
         <source>Slide Show</source>
-        <translation>תצוגה אוטומטית</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="409"/>
         <source>Next</source>
-        <translation>הבא</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="413"/>
         <source>Previous</source>
-        <translation>הקודם</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="417"/>
         <source>First</source>
-        <translation>ראשון</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="421"/>
         <source>Last</source>
-        <translation>אחרון</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="425"/>
         <source>Random</source>
-        <translation>אקראי</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="428"/>
         <source>Open</source>
-        <translation>פתיחה</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="432"/>
         <source>New Image</source>
-        <translation>תמונה חדשה</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="436"/>
         <location filename="../mainwindow.cpp" line="437"/>
         <source>Open With</source>
-        <translation>פתח עם</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="439"/>
         <source>Manage External Applications</source>
-        <translation>נהל אפליקציות חיצוניות</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="442"/>
         <source>Zoom Out</source>
-        <translation>זום החוצה</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="446"/>
         <source>Zoom In</source>
-        <translation>זום פנימה</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="450"/>
         <source>Reset Zoom</source>
-        <translation>אתחל זום</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="454"/>
         <source>Original Size</source>
-        <translation>גודל מקורי</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="458"/>
         <source>Keep Zoom</source>
-        <translation>נעל זום</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="462"/>
@@ -572,17 +572,17 @@
     <message>
         <location filename="../mainwindow.cpp" line="470"/>
         <source>Flip Horizontally</source>
-        <translation>הפוך במאוזן</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="474"/>
         <source>Flip Vertically</source>
-        <translation>הפוך אנחית</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="478"/>
         <source>Cropping</source>
-        <translation>חיתוך</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="481"/>
@@ -597,94 +597,94 @@
     <message>
         <location filename="../mainwindow.cpp" line="487"/>
         <source>Colors</source>
-        <translation>צבעים</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="491"/>
         <source>Disable</source>
-        <translation>ללא</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="492"/>
         <source>Dual</source>
-        <translation>כפול</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="493"/>
         <source>Triple</source>
-        <translation>שלוש</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="494"/>
         <source>Dual Vertical</source>
-        <translation>כפול אנחית</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="495"/>
         <source>Quad</source>
-        <translation>ריבוע</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="509"/>
         <source>Keep Transformations</source>
-        <translation>נעל עריכה</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="513"/>
         <source>Move Left</source>
-        <translation>הזז שמאלה</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="515"/>
         <source>Move Right</source>
-        <translation>הזז ימינה</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="517"/>
         <source>Move Up</source>
-        <translation>הזז למעלה</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="519"/>
         <source>Move Down</source>
-        <translation>הזז למטה</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="522"/>
         <source>Invert Selection</source>
-        <translation>הפוך בחירה</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="528"/>
         <source>File</source>
-        <translation>קובץ</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="536"/>
         <location filename="../mainwindow.cpp" line="607"/>
         <source>Edit</source>
-        <translation>עריכה</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="549"/>
         <source>Go</source>
-        <translation>נתב</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="558"/>
         <location filename="../mainwindow.cpp" line="640"/>
         <source>View</source>
-        <translation>מראה</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="561"/>
         <source>Sort By</source>
-        <translation>מיין על פי</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="586"/>
         <source>Help</source>
-        <translation>עזרה</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="617"/>
@@ -694,7 +694,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="646"/>
         <source>Filter</source>
-        <translation>סינון</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="664"/>
@@ -955,7 +955,7 @@
     <message>
         <location filename="../dialogs.cpp" line="219"/>
         <source>Preferences</source>
-        <translation type="unfinished">הגדרות</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="232"/>
@@ -1007,7 +1007,7 @@
         <location filename="../dialogs.cpp" line="315"/>
         <location filename="../dialogs.cpp" line="332"/>
         <source>Disable</source>
-        <translation type="unfinished">ללא</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="316"/>
@@ -1081,7 +1081,7 @@
     <message>
         <location filename="../dialogs.cpp" line="408"/>
         <source>Slide Show</source>
-        <translation type="unfinished">תצוגה אוטומטית</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="427"/>
@@ -1141,7 +1141,7 @@
     <message>
         <location filename="../thumbview.cpp" line="255"/>
         <source>Size</source>
-        <translation type="unfinished">גודל</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../thumbview.cpp" line="259"/>
