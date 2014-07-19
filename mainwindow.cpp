@@ -25,7 +25,7 @@
 
 Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 {
-	GData::appSettings = new QSettings("phototonic", "phototonic_101");
+	GData::appSettings = new QSettings("phototonic", "phototonic_102");
 	readSettings();
 	createThumbView();
 	createActions();
@@ -780,12 +780,18 @@ void Phototonic::showHiddenFiles()
 
 void Phototonic::about()
 {
-	QMessageBox::about(this, "About Phototonic", "<h2>Phototonic v1.01</h2>"
+	QString aboutString =	"<h2>Phototonic v1.02</h2>"
 							"<p>Image viewer and organizer</p>"
+							"<p>Built with Qt" QT_VERSION_STR "</p>"
 							"<p><a href=\"http://oferkv.github.io/phototonic/\">Home page</a></p>"
 							"<p><a href=\"https://github.com/oferkv/phototonic/issues\">Reports Bugs</a></p>"
 							"<p>Copyright &copy; 2013-2014 Ofer Kashayov</p>"
-							"<p>Contact: oferkv@live.com</p>" "Built with Qt" QT_VERSION_STR);
+							"<p>Contact: oferkv@live.com</p>"
+							"Translations:";
+			
+	aboutString += QString::fromUtf8("<p>Polish: Robert Wojew\u00F3dzki (robwoj44@poczta.onet.pl)</p>");
+
+	QMessageBox::about(this, "About Phototonic", aboutString);
 }
 
 void Phototonic::runExternalApp()

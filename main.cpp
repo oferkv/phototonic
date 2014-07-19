@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2013 Ofer Kashayov <oferkv@live.com>
+ *  Copyright (C) 2013-2014 Ofer Kashayov <oferkv@live.com>
  *  This file is part of Phototonic Image Viewer.
  *
  *  Phototonic is free software: you can redistribute it and/or modify
@@ -28,9 +28,9 @@ int main(int argc, char *argv[])
    		return -1;
 	}
 
-	QTranslator myappTranslator;
-	myappTranslator.load(":/translations/phototonic_" + QLocale::system().name());
-	QApp.installTranslator(&myappTranslator);
+	QTranslator phototonicTranslator;
+	phototonicTranslator.load(":/translations/phototonic_" + QLocale::system().name());
+	QApp.installTranslator(&phototonicTranslator);
 
     Phototonic phototonic;
     phototonic.show();
