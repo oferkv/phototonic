@@ -148,9 +148,9 @@ private:
 	QCheckBox *colorizeCb;
 	QSlider *saturationSlide;
 	QSlider *lightnessSlide;
-	QToolButton *redB;
-	QToolButton *greenB;
-	QToolButton *blueB;
+	QCheckBox *redB;
+	QCheckBox *greenB;
+	QCheckBox *blueB;
 };
 
 class AppMgmtDialog : public QDialog

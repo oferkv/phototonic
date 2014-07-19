@@ -715,20 +715,17 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	connect(lightnessSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
 
 	QHBoxLayout *channelsHbox = new QHBoxLayout;
-	redB = new QToolButton();
-	redB->setIcon(QIcon(":/images/red.png"));
+	redB = new QCheckBox(tr("Red"));
 	redB->setCheckable(true);
 	redB->setChecked(GData::hueRedChannel);
 	connect(redB, SIGNAL(clicked()), this, SLOT(setRedChannel()));
 	channelsHbox->addWidget(redB, 0, Qt::AlignLeft);
-	greenB = new QToolButton();
-	greenB->setIcon(QIcon(":/images/green.png"));
+	greenB = new QCheckBox(tr("Green"));
 	greenB->setCheckable(true);
 	greenB->setChecked(GData::hueGreenChannel);
 	connect(greenB, SIGNAL(clicked()), this, SLOT(setGreenChannel()));
 	channelsHbox->addWidget(greenB, 0, Qt::AlignLeft);
-	blueB = new QToolButton();
-	blueB->setIcon(QIcon(":/images/blue.png"));
+	blueB = new QCheckBox(tr("Blue"));
 	blueB->setCheckable(true);
 	blueB->setChecked(GData::hueBlueChannel);
 	connect(blueB, SIGNAL(clicked()), this, SLOT(setBlueChannel()));

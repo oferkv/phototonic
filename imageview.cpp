@@ -491,8 +491,8 @@ void ImageView::colorize()
 			r = GData::hueRedChannel? hr : qRed(line[x]);
 			g = GData::hueGreenChannel? hg : qGreen(line[x]);
 			b = GData::hueBlueChannel? hb : qBlue(line[x]);
-			
-			displayImage.setPixel(x, y, qRgb(r, g, b));
+
+			line[x] = qRgb(r, g, b);
 		}
 	}
 }

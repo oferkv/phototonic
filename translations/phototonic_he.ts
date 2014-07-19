@@ -4,47 +4,47 @@
 <context>
     <name>AppMgmtDialog</name>
     <message>
-        <location filename="../dialogs.cpp" line="832"/>
+        <location filename="../dialogs.cpp" line="829"/>
         <source>Manage External Applications</source>
         <translation type="unfinished">נהל אפליקציות חיצוניות</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="845"/>
+        <location filename="../dialogs.cpp" line="842"/>
         <source>Name</source>
         <translation type="unfinished">שם</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="846"/>
+        <location filename="../dialogs.cpp" line="843"/>
         <source>Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="850"/>
+        <location filename="../dialogs.cpp" line="847"/>
         <source>Add</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="853"/>
+        <location filename="../dialogs.cpp" line="850"/>
         <source>Remove</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="859"/>
+        <location filename="../dialogs.cpp" line="856"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="896"/>
+        <location filename="../dialogs.cpp" line="893"/>
         <source>Choose Application</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="904"/>
+        <location filename="../dialogs.cpp" line="901"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="904"/>
+        <location filename="../dialogs.cpp" line="901"/>
         <source>Not an executable</source>
         <translation type="unfinished"></translation>
     </message>
@@ -97,7 +97,22 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="751"/>
+        <location filename="../dialogs.cpp" line="718"/>
+        <source>Red</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../dialogs.cpp" line="723"/>
+        <source>Green</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../dialogs.cpp" line="728"/>
+        <source>Blue</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../dialogs.cpp" line="748"/>
         <source>Hue and Saturation</source>
         <translation type="unfinished"></translation>
     </message>
@@ -105,37 +120,37 @@
 <context>
     <name>CopyMoveToDialog</name>
     <message>
-        <location filename="../dialogs.cpp" line="923"/>
+        <location filename="../dialogs.cpp" line="920"/>
         <source>Copy or Move Images to...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="942"/>
+        <location filename="../dialogs.cpp" line="939"/>
         <source>Add</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="945"/>
+        <location filename="../dialogs.cpp" line="942"/>
         <source>Remove</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="951"/>
+        <location filename="../dialogs.cpp" line="948"/>
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="954"/>
+        <location filename="../dialogs.cpp" line="951"/>
         <source>Copy</source>
         <translation type="unfinished">העתק</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="957"/>
+        <location filename="../dialogs.cpp" line="954"/>
         <source>Move</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1023"/>
+        <location filename="../dialogs.cpp" line="1020"/>
         <source>Choose Directory</source>
         <translation type="unfinished"></translation>
     </message>
