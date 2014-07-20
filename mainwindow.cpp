@@ -599,6 +599,7 @@ void Phototonic::createMenus()
 	thumbView->addAction(selectAllAction);
 	thumbView->addAction(invertSelectionAct);
 	thumbView->setContextMenuPolicy(Qt::ActionsContextMenu);
+	menuBar()->setVisible(true);
 }
 
 void Phototonic::createToolBars()
