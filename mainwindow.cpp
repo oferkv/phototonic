@@ -780,16 +780,16 @@ void Phototonic::showHiddenFiles()
 
 void Phototonic::about()
 {
-	QString aboutString =	"<h2>Phototonic v1.02</h2>"
-							"<p>Image viewer and organizer</p>"
-							"<p>Built with Qt" QT_VERSION_STR "</p>"
-							"<p><a href=\"http://oferkv.github.io/phototonic/\">Home page</a></p>"
-							"<p><a href=\"https://github.com/oferkv/phototonic/issues\">Reports Bugs</a></p>"
-							"<p>Copyright &copy; 2013-2014 Ofer Kashayov</p>"
-							"<p>Contact: oferkv@live.com</p>"
-							"Translations:";
-			
-	aboutString += QString::fromUtf8("<p>Polish: Robert Wojew\u00F3dzki (robwoj44@poczta.onet.pl)</p>");
+	QString aboutString = "<h2>Phototonic v1.02</h2>"
+						+ tr("<p>Image viewer and organizer</p>")
+						+ tr("<p>Built with Qt ") + QT_VERSION_STR "</p>"
+						+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
+						+ "<p><a href=\"https://github.com/oferkv/phototonic/issues\">" + tr("Bug reports") + "</a></p>"
+						+ "<p>Copyright &copy; 2013-2014 Ofer Kashayov</p>"
+						+ "<p>" + tr("Contact") + ": oferkv@live.com</p>" + tr("Translations:")
+						+	QString::fromUtf8("<p>Polish: Robert Wojew\u00F3dzki (robwoj44@poczta.onet.pl)</p>")
+						+	"German: Jonathan Hooverman (jonathan.hooverman@gmail.com)"
+						+	"<p>Phototonic is licensed under the GNU General Public License version 3</p>";
 
 	QMessageBox::about(this, "About Phototonic", aboutString);
 }

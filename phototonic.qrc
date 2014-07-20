@@ -34,8 +34,7 @@
 		<file>images/new.png</file>
 		<file>images/tree.png</file>
 		<file>images/clear.png</file>
-		<file>translations/phototonic_ru.qm</file>
 		<file>translations/phototonic_pl.qm</file>
-		<file>translations/phototonic_he.qm</file>
+		<file>translations/phototonic_de.qm</file>
 	</qresource>
 </RCC>
