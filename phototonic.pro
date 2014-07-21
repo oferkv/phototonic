@@ -21,5 +21,6 @@ desktop.path = /usr/share/applications
 INSTALLS += target icon desktop
 
 TRANSLATIONS = 	translations/phototonic_pl.ts \
-				translations/phototonic_de.ts
+		translations/phototonic_de.ts \
+		translations/phototonic_ru.ts
 
