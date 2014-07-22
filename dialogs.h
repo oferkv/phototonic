@@ -101,6 +101,7 @@ private:
 	QSpinBox *slideDelaySpin;
 	QCheckBox *slideRandomCb;
 	KeyGrabLineEdit *keyLine;
+	QRadioButton *startupDirRadios[3];
 
 	void setButtonBgColor(QColor &color, QToolButton *button);
 };

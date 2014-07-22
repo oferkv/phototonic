@@ -370,6 +370,34 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	enableExifCb = new QCheckBox(tr("Rotate according to Exif orientation"), this);
 	enableExifCb->setChecked(GData::exifRotationEnabled);
 
+	// Startup directory
+	QGroupBox *startupDirGroupBox = new QGroupBox(tr("Startup folder"));
+	startupDirRadios[0] = new QRadioButton(tr("Default or specified by command line argument"));
+	startupDirRadios[1] = new QRadioButton(tr("Remember last"));
+
+	QLineEdit *startupDirEdit = new QLineEdit;
+	startupDirEdit->setClearButtonEnabled(true);
+	startupDirEdit->setMinimumWidth(300);
+	startupDirEdit->setMaximumWidth(400);
+	startupDirRadios[2] = new QRadioButton(tr("Specify:"));
+	QToolButton *chooseStartupDirButton = new QToolButton();
+	QHBoxLayout *startupDirEditBox = new QHBoxLayout;
+	startupDirEditBox->addWidget(startupDirRadios[2]);
+	startupDirEditBox->addWidget(startupDirEdit);
+	startupDirEditBox->addWidget(chooseStartupDirButton);
+	startupDirEditBox->addStretch(1);
+
+	QVBoxLayout *startupDirVbox = new QVBoxLayout;
+	for (int i = 0; i < 2; ++i)
+	{
+		startupDirVbox->addWidget(startupDirRadios[i]);
+		startupDirRadios[i]->setChecked(false);
+	}
+	startupDirVbox->addLayout(startupDirEditBox);
+	startupDirVbox->addStretch(1);
+	startupDirGroupBox->setLayout(startupDirVbox);
+	startupDirRadios[0]->setChecked(true);
+
 	// Viewer options
 	QVBoxLayout *viewerOptsBox = new QVBoxLayout;
 	QHBoxLayout *zoomOptsBox = new QHBoxLayout;
@@ -384,6 +412,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	viewerOptsBox->addLayout(saveQualityHbox);
 	viewerOptsBox->addWidget(enableAnimCb);
 	viewerOptsBox->addWidget(enableExifCb);
+	viewerOptsBox->addWidget(startupDirGroupBox);
 	QGroupBox *viewerOptsGrp = new QGroupBox(tr("Viewer"));
 	viewerOptsGrp->setLayout(viewerOptsBox);
 
