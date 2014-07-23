@@ -54,7 +54,6 @@ private slots:
 	void reload();
 	void setIncludeSubFolders();
 	void refreshThumbs(bool noScroll);
-	void setFlagsByQAction(QAction *act, QDir::SortFlags SortFlag);
 	void showSettings();
 	void toggleFullScreen();
 	void updateActions(QWidget *old, QWidget *now);

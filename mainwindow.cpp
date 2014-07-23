@@ -107,6 +107,7 @@ void Phototonic::createThumbView()
 {
 	thumbView = new ThumbView(this);
 	thumbView->thumbsSortFlags = (QDir::SortFlags)GData::appSettings->value("thumbsSortFlags").toInt();
+	thumbView->thumbsSortFlags |= QDir::IgnoreCase;
 
 	connect(thumbView, SIGNAL(unsetBusy()), this, SLOT(unsetBusy()));
 	connect(thumbView, SIGNAL(setStatus(QString)), this, SLOT(setStatus(QString)));
@@ -339,11 +340,14 @@ void Phototonic::createActions()
 	connect(actType, SIGNAL(triggered()), this, SLOT(sortThumbnains()));
 	connect(actReverse, SIGNAL(triggered()), this, SLOT(sortThumbnains()));
 
-	actName->setChecked(thumbView->thumbsSortFlags == QDir::Name || 
-						thumbView->thumbsSortFlags == QDir::Reversed); 
-	actTime->setChecked(thumbView->thumbsSortFlags & QDir::Time); 
-	actSize->setChecked(thumbView->thumbsSortFlags & QDir::Size); 
-	actType->setChecked(thumbView->thumbsSortFlags & QDir::Type); 
+	if (thumbView->thumbsSortFlags & QDir::Time)
+		actTime->setChecked(true);	
+	else if (thumbView->thumbsSortFlags & QDir::Size)
+		actSize->setChecked(true);	
+	else if (thumbView->thumbsSortFlags & QDir::Type)
+		actType->setChecked(true);	
+	else
+		actName->setChecked(true);	
 	actReverse->setChecked(thumbView->thumbsSortFlags & QDir::Reversed); 
 
 	actShowHidden = new QAction(tr("Show Hidden Files"), this);;
@@ -715,20 +719,22 @@ void Phototonic::createFSTree()
 	fsTree->setCurrentIndex(fsModel->index(QDir::currentPath()));
 }
 
-void Phototonic::setFlagsByQAction(QAction *act, QDir::SortFlags SortFlag)
-{
-	if (act->isChecked())
-		thumbView->thumbsSortFlags |= SortFlag;
-}
-
 void Phototonic::sortThumbnains()
 {
-	thumbView->thumbsSortFlags = 0;
-	setFlagsByQAction(actName, QDir::Name);
-	setFlagsByQAction(actTime, QDir::Time);
-	setFlagsByQAction(actSize, QDir::Size);
-	setFlagsByQAction(actType, QDir::Type);
-	setFlagsByQAction(actReverse, QDir::Reversed);
+	thumbView->thumbsSortFlags = QDir::IgnoreCase;
+
+	if (actName->isChecked())
+		thumbView->thumbsSortFlags |= QDir::Name;
+	else if (actTime->isChecked())
+		thumbView->thumbsSortFlags |= QDir::Time;
+	else if (actSize->isChecked())
+		thumbView->thumbsSortFlags |= QDir::Size;
+	else if (actType->isChecked())
+		thumbView->thumbsSortFlags |= QDir::Type;
+
+	if (actReverse->isChecked())
+		thumbView->thumbsSortFlags |= QDir::Reversed;
+
 	refreshThumbs(false);
 }
 
