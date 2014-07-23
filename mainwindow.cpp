@@ -2427,9 +2427,9 @@ void Phototonic::wheelEvent(QWheelEvent *event)
 		if (event->modifiers() == Qt::ControlModifier)
 		{
 			if (event->delta() < 0)
-				zoomIn();
+				zoomOut();				
 			else
-				zoomOut();
+				zoomIn();
 		}
 		else
 		{

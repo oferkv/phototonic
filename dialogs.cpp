@@ -246,6 +246,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	// imageView background color
 	QLabel *backgroundColorLab = new QLabel(tr("Background color: "));
 	backgroundColorButton = new QToolButton();
+	backgroundColorButton->setFixedSize(48, 24);
 	QHBoxLayout *bgColBox = new QHBoxLayout;
 	bgColBox->addWidget(backgroundColorLab);
 	bgColBox->addWidget(backgroundColorButton);
@@ -258,6 +259,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	// thumbView background color
 	QLabel *bgThumbTxtLab = new QLabel(tr("Background color: "));
 	colThumbButton = new QToolButton();
+	colThumbButton->setFixedSize(48, 24);
 	QHBoxLayout *bgThumbColBox = new QHBoxLayout;
 	bgThumbColBox->addWidget(bgThumbTxtLab);
 	bgThumbColBox->addWidget(colThumbButton);
@@ -269,6 +271,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	// thumbView text color
 	QLabel *txtThumbTxtLab = new QLabel(tr("\tLabel color: "));
 	colThumbTextButton = new QToolButton();
+	colThumbTextButton->setFixedSize(48, 24);
 	bgThumbColBox->addWidget(txtThumbTxtLab);
 	bgThumbColBox->addWidget(colThumbTextButton);
 	bgThumbColBox->addStretch(1);
@@ -381,6 +384,10 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	startupDirEdit->setMaximumWidth(400);
 	startupDirRadios[2] = new QRadioButton(tr("Specify:"));
 	QToolButton *chooseStartupDirButton = new QToolButton();
+	chooseStartupDirButton->setIcon(QIcon::fromTheme("document-open", QIcon(":/images/open.png")));
+	chooseStartupDirButton->setFixedSize(26, 26);
+	chooseStartupDirButton->setIconSize(QSize(16, 16));
+	
 	QHBoxLayout *startupDirEditBox = new QHBoxLayout;
 	startupDirEditBox->addWidget(startupDirRadios[2]);
 	startupDirEditBox->addWidget(startupDirEdit);
