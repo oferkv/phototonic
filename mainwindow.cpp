@@ -51,9 +51,7 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	stackedWidget->addWidget(imageView);
 	setCentralWidget(stackedWidget);
 
-	cliImageLoaded = handleArgs();
-	if (cliImageLoaded)
-		loadImagefromCli();
+	handleStartupArgs();
 
 	initComplete = true;
 	thumbViewBusy = false;
@@ -65,7 +63,7 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 		thumbView->setFocus(Qt::OtherFocusReason);
 }
 
-bool Phototonic::handleArgs()
+void Phototonic::handleStartupArgs()
 {
 	if (QCoreApplication::arguments().size() == 2)
 	{
@@ -73,19 +71,24 @@ bool Phototonic::handleArgs()
 		if (cliArg.isDir())
 		{
 			thumbView->currentViewDir = QCoreApplication::arguments().at(1);
-			selectCurrentViewDir();
-			return false;
+			cliImageLoaded = false;
 		}
 		else
 		{
 			thumbView->currentViewDir = cliArg.absolutePath();
-			selectCurrentViewDir();
 			cliFileName = thumbView->currentViewDir + QDir::separator() + cliArg.fileName();
-			return true;
+			cliImageLoaded = true;
+			loadImagefromCli();
 		}
 	}
-	
-	return false;
+	else
+	{
+		if (GData::startupDir == GData::specifiedDir)
+			thumbView->currentViewDir = GData::specifiedStartDir;
+		else if (GData::startupDir == GData::rememberLastDir)
+			thumbView->currentViewDir = GData::appSettings->value("lastDir").toString();
+	}
+	selectCurrentViewDir();
 }
 
 void Phototonic::unsetBusy()
@@ -181,6 +184,8 @@ void Phototonic::createImageView()
 	imageView->addAction(newImageAction);
 
 	// Actions
+	imageView->ImagePopUpMenu->addAction(imageNameAction);
+	addMenuSeparator(imageView->ImagePopUpMenu);
 	imageView->ImagePopUpMenu->addAction(nextImageAction);
 	imageView->ImagePopUpMenu->addAction(prevImageAction);
 	imageView->ImagePopUpMenu->addAction(firstImageAction);
@@ -189,7 +194,6 @@ void Phototonic::createImageView()
 	imageView->ImagePopUpMenu->addAction(slideShowAction);
 
 	addMenuSeparator(imageView->ImagePopUpMenu);
-	imageView->ImagePopUpMenu->addAction(newImageAction);
 	imageView->ImagePopUpMenu->addAction(copyImageAction);
 	imageView->ImagePopUpMenu->addAction(pasteImageAction);
 	imageView->ImagePopUpMenu->addAction(copyMoveAction);
@@ -197,6 +201,7 @@ void Phototonic::createImageView()
 	imageView->ImagePopUpMenu->addAction(saveAsAction);
 	imageView->ImagePopUpMenu->addAction(deleteAction);
 	imageView->ImagePopUpMenu->addAction(openWithMenuAct);
+	imageView->ImagePopUpMenu->addAction(newImageAction);
 
 	addMenuSeparator(imageView->ImagePopUpMenu);
 	zoomSubMenu = new QMenu(tr("Zoom"));
@@ -410,6 +415,8 @@ void Phototonic::createActions()
 	slideShowAction = new QAction(tr("Slide Show"), this);
 	connect(slideShowAction, SIGNAL(triggered()), this, SLOT(slideShow()));
 
+	imageNameAction = new QAction("", this);
+
 	nextImageAction = new QAction(tr("Next"), this);
 	nextImageAction->setIcon(QIcon::fromTheme("go-next", QIcon(":/images/next.png")));
 	connect(nextImageAction, SIGNAL(triggered()), this, SLOT(loadNextImage()));
@@ -433,8 +440,8 @@ void Phototonic::createActions()
 	openAction->setIcon(QIcon::fromTheme("document-open", QIcon(":/images/open.png")));
 	connect(openAction, SIGNAL(triggered()), this, SLOT(openOp()));
 
-	newImageAction = new QAction(tr("New Image"), this);
-	newImageAction->setIcon(QIcon::fromTheme("list-add", QIcon(":/images/new.png")));
+	newImageAction = new QAction(tr("Show Clipboard"), this);
+	newImageAction->setIcon(QIcon::fromTheme("window-new", QIcon(":/images/new.png")));
 	connect(newImageAction, SIGNAL(triggered()), this, SLOT(newImage()));
 
 	openWithSubMenu = new QMenu(tr("Open With"));
@@ -529,15 +536,15 @@ void Phototonic::createActions()
 
 void Phototonic::createMenus()
 {
-	fileMenu = menuBar()->addMenu(tr("File"));
-	fileMenu->addAction(newImageAction);
+	fileMenu = menuBar()->addMenu(tr("&File"));
 	fileMenu->addAction(openAction);
 	fileMenu->addAction(subFoldersAction);
 	fileMenu->addAction(createDirAction);
+	fileMenu->addAction(newImageAction);
 	fileMenu->addSeparator();
 	fileMenu->addAction(exitAction);
 
-	editMenu = menuBar()->addMenu(tr("Edit"));
+	editMenu = menuBar()->addMenu(tr("&Edit"));
 	editMenu->addAction(cutAction);
 	editMenu->addAction(copyAction);
 	editMenu->addAction(copyMoveAction);
@@ -550,7 +557,7 @@ void Phototonic::createMenus()
 	editMenu->addSeparator();
 	editMenu->addAction(settingsAction);
 
-	goMenu = menuBar()->addMenu(tr("Go"));
+	goMenu = menuBar()->addMenu(tr("&Go"));
 	goMenu->addAction(goBackAction);
 	goMenu->addAction(goFrwdAction);
 	goMenu->addAction(goUpAction);
@@ -559,7 +566,7 @@ void Phototonic::createMenus()
 	goMenu->addAction(thumbsGoTopAct);
 	goMenu->addAction(thumbsGoBottomAct);
 
-	viewMenu = menuBar()->addMenu(tr("View"));
+	viewMenu = menuBar()->addMenu(tr("&View"));
 	viewMenu->addAction(thumbsZoomInAct);
 	viewMenu->addAction(thumbsZoomOutAct);
 	sortMenu = viewMenu->addMenu(tr("Sort By"));
@@ -587,7 +594,7 @@ void Phototonic::createMenus()
 	viewMenu->addAction(refreshAction);
 
 	menuBar()->addSeparator();
-	helpMenu = menuBar()->addMenu(tr("Help"));
+	helpMenu = menuBar()->addMenu(tr("&Help"));
 	helpMenu->addAction(aboutAction);
 
 	// thumbview context menu
@@ -611,11 +618,11 @@ void Phototonic::createToolBars()
 	/* Edit */
 	editToolBar = addToolBar(tr("Edit"));
 	editToolBar->setObjectName("Edit");
-	editToolBar->addAction(newImageAction);
 	editToolBar->addAction(cutAction);
 	editToolBar->addAction(copyAction);
 	editToolBar->addAction(pasteAction);
 	editToolBar->addAction(deleteAction);
+	editToolBar->addAction(newImageAction);
 	connect(editToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setToolBarsVisibility()));
 
 	/* Navigation */
@@ -802,6 +809,11 @@ void Phototonic::about()
 	QMessageBox::about(this, "About Phototonic", aboutString);
 }
 
+void Phototonic::cleanupExternalApp()
+{
+	delete QObject::sender();
+}
+
 void Phototonic::runExternalApp()
 {
 	QString execCommand;
@@ -830,16 +842,19 @@ void Phototonic::runExternalApp()
 		selectedFileNames += " ";
 		for (int tn = selectedIdxList.size() - 1; tn >= 0 ; --tn)
 		{
-			selectedFileNames += "" +
+			selectedFileNames += "\"" +
 				thumbView->thumbViewModel->item(selectedIdxList[tn].row())->data(thumbView->FileNameRole).toString();
 			if (tn) 
-				selectedFileNames += " ";
+				selectedFileNames += "\" ";
 		}
 		
 		execCommand += selectedFileNames;
 	}
 
-	externalProcess.start(execCommand);
+	QProcess *externalProcess = new QProcess();
+	connect(externalProcess, SIGNAL(finished(int, QProcess::ExitStatus)),
+																this, SLOT(cleanupExternalApp()));
+	externalProcess->start(execCommand);
 }
 
 void Phototonic::updateExternalApps()
@@ -1500,6 +1515,10 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("viewToolBarVisible", (bool)viewToolBarVisible);
 	GData::appSettings->setValue("fsDockVisible", (bool)fsDockVisible);
 	GData::appSettings->setValue("iiDockVisible", (bool)iiDockVisible);
+	GData::appSettings->setValue("startupDir", (int)GData::startupDir);
+	GData::appSettings->setValue("specifiedStartDir", GData::specifiedStartDir);
+	GData::appSettings->setValue("lastDir", GData::startupDir == GData::rememberLastDir?
+																		thumbView->currentViewDir: "");
 
 	/* Action shortcuts */
 	GData::appSettings->beginGroup("Shortcuts");
@@ -1595,6 +1614,8 @@ void Phototonic::readSettings()
 	viewToolBarVisible = GData::appSettings->value("viewToolBarVisible").toBool();
 	fsDockVisible = GData::appSettings->value("fsDockVisible").toBool();
 	iiDockVisible = GData::appSettings->value("iiDockVisible").toBool();
+	GData::startupDir = (GData::StartupDir)GData::appSettings->value("startupDir").toInt();
+	GData::specifiedStartDir = GData::appSettings->value("specifiedStartDir").toString();
 
 	GData::appSettings->beginGroup("ExternalApps");
 	QStringList extApps = GData::appSettings->childKeys();
@@ -1736,6 +1757,8 @@ void Phototonic::closeEvent(QCloseEvent *event)
 {
 	thumbView->abort();
 	writeSettings();
+	if (!QApplication::clipboard()->image().isNull())
+		QApplication::clipboard()->clear();
 	event->accept();
 }
 
@@ -1829,14 +1852,24 @@ void Phototonic::openOp()
 		goSelectedDir(fsTree->getCurrentIndex());
 	else if (QApplication::focusWidget() == thumbView)
 	{
+		QModelIndex idx;
 		QModelIndexList indexesList = thumbView->selectionModel()->selectedIndexes();
-		if (indexesList.size() != 1)
+		if (indexesList.size() > 0)
+			idx = indexesList.first();
+		else
 		{
-			setStatus(tr("Invalid selection"));
-			return;
+			if (thumbView->thumbViewModel->rowCount() == 0)
+			{
+				setStatus(tr("No images"));
+				return;
+			}
+
+			idx = thumbView->thumbViewModel->indexFromItem(thumbView->thumbViewModel->item(0));
+			thumbView->selectionModel()->select(idx, QItemSelectionModel::Toggle);
+			thumbView->setCurrentRow(0);
 		}
 
-		loadImagefromThumb(indexesList.first());
+		loadImagefromThumb(idx);
 	}
 	else if (QApplication::focusWidget() == filterBar)
 	{
@@ -1878,6 +1911,13 @@ void Phototonic::loadImageFile(QString imageFileName)
 			imageView->setCursorHiding(true);
 		}
 	}
+
+	if (imageFileName.isEmpty())
+		imageNameAction->setText("Clipboard");
+	else
+	{
+		imageNameAction->setText(QFileInfo(imageFileName).fileName());
+	}
 }
 
 void Phototonic::loadImagefromThumb(const QModelIndex &idx)
@@ -1900,6 +1940,7 @@ void Phototonic::loadImagefromCli()
 
 	loadImageFile(cliFileName);
 	thumbView->setCurrentIndexByName(cliFileName);
+	setWindowTitle(cliFileName + " - Phototonic");
 }
 
 void Phototonic::slideShow()

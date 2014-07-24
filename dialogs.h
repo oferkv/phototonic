@@ -73,6 +73,7 @@ private slots:
 	void pickColor();
 	void pickThumbsColor();
 	void pickThumbsTextColor();
+	void pickStartupDir();
 	void setActionKeyText(const QString &text);
 
 public slots:
@@ -102,6 +103,7 @@ private:
 	QCheckBox *slideRandomCb;
 	KeyGrabLineEdit *keyLine;
 	QRadioButton *startupDirRadios[3];
+	QLineEdit *startupDirEdit;
 
 	void setButtonBgColor(QColor &color, QToolButton *button);
 };

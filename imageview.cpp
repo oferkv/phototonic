@@ -534,7 +534,8 @@ void ImageView::reload()
 		displayImage = origImage;
 		displayPixmap = QPixmap::fromImage(displayImage);
 		imageLabel->setPixmap(displayPixmap);
-		mainWindow->setWindowTitle(tr("New image") + " - Phototonic");
+		pasteImage();
+		mainWindow->setWindowTitle(tr("Clipboard") + " - Phototonic");
 		isAnimation = false;
 		return;
 	}

@@ -20,7 +20,6 @@
 
 namespace GData
 {
-	// app settings
 	QSettings *appSettings;
 	unsigned int zoomInFlags;
 	unsigned int zoomOutFlags;
@@ -63,13 +62,13 @@ namespace GData
 	QMap<QString, QString> externalApps;
 	QSet<QString> copyMoveToPaths;
 	bool reverseMouseBehavior;
-	
-	// app data
 	QModelIndexList copyCutIdxList;
 	bool copyOp;
 	QStringList copyCutFileList;
 	bool isFullScreen;
 	int dialogLastX;
 	int dialogLastY;
+	StartupDir startupDir;
+	QString specifiedStartDir;
 }
 

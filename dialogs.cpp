@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2013 Ofer Kashayov <oferkv@live.com>
+ *  Copyright (C) 2013-2014 Ofer Kashayov <oferkv@live.com>
  *  This file is part of Phototonic Image Viewer.
  *
  *  Phototonic is free software: you can redistribute it and/or modify
@@ -130,12 +130,14 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 		int tn = 0;
 		for (tn = GData::copyCutIdxList.size() - 1; tn >= 0 ; --tn)
 		{
-			sourceFile = thumbView->thumbViewModel->item(GData::copyCutIdxList[tn].row())->data(thumbView->FileNameRole).toString();
+			sourceFile = thumbView->thumbViewModel->item(GData::copyCutIdxList[tn].row())->
+																data(thumbView->FileNameRole).toString();
 			fileInfo = QFileInfo(sourceFile);
 			currFile = fileInfo.fileName();
 			destFile = destDir + QDir::separator() + currFile;
 
-			opLabel->setText((GData::copyOp? tr("Copying "):tr("Moving ")) + sourceFile + tr(" to ") + destFile);
+			opLabel->setText((GData::copyOp? tr("Copying ") : 
+												tr("Moving ")) + sourceFile + tr(" to ") + destFile);
 			QApplication::processEvents();
 
 			res = cpMvFile(GData::copyOp, currFile, sourceFile, destFile, destDir);
@@ -194,7 +196,8 @@ void KeyGrabLineEdit::keyPressEvent(QKeyEvent *e)
 		if (it.value()->shortcut().toString() == keySeqText)
 		{
 			QMessageBox msgBox;
-			msgBox.warning(this, tr("Set shortcut"), tr("Already assigned to \"") + it.key() + tr("\" action"));
+			msgBox.warning(this, tr("Set shortcut"), tr("Already assigned to \"")
+																		+ it.key() + tr("\" action"));
 			return;
 		}
 	}
@@ -291,7 +294,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	thumbSpacingHbox->addStretch(1);
 
 	// Do not enlarge small thumbs
-	noSmallThumbCb = new QCheckBox(tr("Show original size of images smaller than the thumbnail size"), this);
+	noSmallThumbCb = new 
+				QCheckBox(tr("Show original size of images smaller than the thumbnail size"), this);
 	noSmallThumbCb->setChecked(GData::noEnlargeSmallThumb);
 
 	// Thumbnail pages to read ahead
@@ -348,7 +352,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	fitSmallRadios[GData::zoomInFlags]->setChecked(true);
 
 	// Exit when opening image
-	exitCliCb = new QCheckBox(tr("Exit instead of closing, when image is loaded from command line"), this);
+	exitCliCb = new 
+				QCheckBox(tr("Exit instead of closing, when image is loaded from command line"), this);
 	exitCliCb->setChecked(GData::exitInsteadOfClose);
 
 	// Exit when opening image
@@ -375,18 +380,20 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 
 	// Startup directory
 	QGroupBox *startupDirGroupBox = new QGroupBox(tr("Startup folder"));
-	startupDirRadios[0] = new QRadioButton(tr("Default or specified by command line argument"));
-	startupDirRadios[1] = new QRadioButton(tr("Remember last"));
-
-	QLineEdit *startupDirEdit = new QLineEdit;
+	startupDirRadios[GData::defaultDir] = new QRadioButton(tr("Default, or specified by command line argument"));
+	startupDirRadios[GData::rememberLastDir] = new QRadioButton(tr("Remember last"));
+	startupDirRadios[GData::specifiedDir] = new QRadioButton(tr("Specify:"));
+	
+	startupDirEdit = new QLineEdit;
 	startupDirEdit->setClearButtonEnabled(true);
 	startupDirEdit->setMinimumWidth(300);
 	startupDirEdit->setMaximumWidth(400);
-	startupDirRadios[2] = new QRadioButton(tr("Specify:"));
+
 	QToolButton *chooseStartupDirButton = new QToolButton();
 	chooseStartupDirButton->setIcon(QIcon::fromTheme("document-open", QIcon(":/images/open.png")));
 	chooseStartupDirButton->setFixedSize(26, 26);
 	chooseStartupDirButton->setIconSize(QSize(16, 16));
+	connect(chooseStartupDirButton, SIGNAL(clicked()), this, SLOT(pickStartupDir()));
 	
 	QHBoxLayout *startupDirEditBox = new QHBoxLayout;
 	startupDirEditBox->addWidget(startupDirRadios[2]);
@@ -403,7 +410,14 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	startupDirVbox->addLayout(startupDirEditBox);
 	startupDirVbox->addStretch(1);
 	startupDirGroupBox->setLayout(startupDirVbox);
-	startupDirRadios[0]->setChecked(true);
+
+	if (GData::startupDir == GData::specifiedDir)
+		startupDirRadios[GData::specifiedDir]->setChecked(true);
+	else if (GData::startupDir == GData::rememberLastDir)
+		startupDirRadios[GData::rememberLastDir]->setChecked(true);
+	else
+		startupDirRadios[GData::defaultDir]->setChecked(true);
+	startupDirEdit->setText(GData::specifiedStartDir);
 
 	// Viewer options
 	QVBoxLayout *viewerOptsBox = new QVBoxLayout;
@@ -414,12 +428,12 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	zoomOptsBox->addStretch(1);
 	viewerOptsBox->addLayout(zoomOptsBox);
 	viewerOptsBox->addLayout(bgColBox);
-	viewerOptsBox->addWidget(exitCliCb);
 	viewerOptsBox->addWidget(wrapListCb);
 	viewerOptsBox->addLayout(saveQualityHbox);
 	viewerOptsBox->addWidget(enableAnimCb);
 	viewerOptsBox->addWidget(enableExifCb);
 	viewerOptsBox->addWidget(startupDirGroupBox);
+	viewerOptsBox->addWidget(exitCliCb);
 	QGroupBox *viewerOptsGrp = new QGroupBox(tr("Viewer"));
 	viewerOptsGrp->setLayout(viewerOptsBox);
 
@@ -526,6 +540,17 @@ void SettingsDialog::saveSettings()
 	GData::exifRotationEnabled = enableExifCb->isChecked();
 	GData::reverseMouseBehavior = reverseMouseCb->isChecked();
 
+	if (startupDirRadios[0]->isChecked())
+		GData::startupDir = GData::defaultDir;
+	else if (startupDirRadios[1]->isChecked())
+		GData::startupDir = GData::rememberLastDir;
+	else 
+	{
+		GData::startupDir = GData::specifiedDir;
+		GData::specifiedStartDir = startupDirEdit->text();
+	
+	}
+
 	accept();
 }
 
@@ -569,6 +594,13 @@ void SettingsDialog::pickThumbsTextColor()
 		setButtonBgColor(userColor, colThumbTextButton);
 		thumbTextColor = userColor;
 	}
+}
+
+void SettingsDialog::pickStartupDir()
+{
+	QString dirName = QFileDialog::getExistingDirectory(this, tr("Choose Startup Folder"), "",
+									QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+	startupDirEdit->setText(dirName);
 }
 
 CropDialog::CropDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
@@ -967,7 +999,8 @@ CopyMoveToDialog::CopyMoveToDialog(QWidget *parent, QString thumbsPath) : QDialo
 	pathsTable->setModel(pathsTableModel);
 	pathsTable->verticalHeader()->setVisible(false);
 	pathsTable->horizontalHeader()->setVisible(false);
-	pathsTable->verticalHeader()->setDefaultSectionSize(pathsTable->verticalHeader()->minimumSectionSize());
+	pathsTable->verticalHeader()->setDefaultSectionSize(pathsTable->verticalHeader()->
+																				minimumSectionSize());
 	pathsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	pathsTable->	setShowGrid(false);
 
@@ -1016,7 +1049,8 @@ void CopyMoveToDialog::savePaths()
 	GData::copyMoveToPaths.clear();
     for (int i = 0; i < pathsTableModel->rowCount(); ++i)
     {
-    	GData::copyMoveToPaths.insert(pathsTableModel->itemFromIndex(pathsTableModel->index(i, 0))->text());
+    	GData::copyMoveToPaths.insert
+    						(pathsTableModel->itemFromIndex(pathsTableModel->index(i, 0))->text());
    	}
 }
 
@@ -1053,7 +1087,7 @@ void CopyMoveToDialog::justClose()
 
 void CopyMoveToDialog::add()
 {
-	QString dirName = QFileDialog::getExistingDirectory(this, tr("Choose Directory"), currentPath,
+	QString dirName = QFileDialog::getExistingDirectory(this, tr("Choose Folder"), currentPath,
 									QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 	if (dirName.isEmpty())
 		return;
@@ -1062,7 +1096,8 @@ void CopyMoveToDialog::add()
 	pathsTableModel->insertRow(pathsTableModel->rowCount(), item);
 
 	pathsTable->selectionModel()->clearSelection();
-	pathsTable->selectionModel()->select(pathsTableModel->index(pathsTableModel->rowCount() - 1, 0), QItemSelectionModel::Select);
+	pathsTable->selectionModel()->select(pathsTableModel->index(pathsTableModel->rowCount() - 1, 0),
+																			QItemSelectionModel::Select);
 }
 
 void CopyMoveToDialog::remove()

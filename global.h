@@ -28,7 +28,13 @@
 
 namespace GData
 {
-	// app settings
+	enum StartupDir
+	{
+		defaultDir = 0,
+		rememberLastDir,
+		specifiedDir
+	};
+	
 	extern QSettings *appSettings;
 	extern unsigned int zoomInFlags;
 	extern unsigned int zoomOutFlags;
@@ -71,14 +77,14 @@ namespace GData
 	extern QMap<QString, QString> externalApps;
 	extern QSet<QString> copyMoveToPaths;
 	extern bool reverseMouseBehavior;
-
-	// app data
 	extern QModelIndexList copyCutIdxList;
 	extern bool copyOp;
 	extern QStringList copyCutFileList;
 	extern bool isFullScreen;
 	extern int dialogLastX;
 	extern int dialogLastY;
+	extern StartupDir startupDir;
+	extern QString specifiedStartDir;
 }
 
 #endif // GLOBAL_H

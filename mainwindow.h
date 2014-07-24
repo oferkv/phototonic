@@ -126,6 +126,7 @@ private slots:
 	void chooseExternalApp();
 	void updateExternalApps();
 	void runExternalApp();
+	void cleanupExternalApp();
 	void setToolBarsVisibility();
 
 private:
@@ -218,6 +219,7 @@ private:
 	QAction *goUpAction;
 	QAction *goHomeAction;
 
+	QAction *imageNameAction;
 	QAction *slideShowAction;
 	QAction *nextImageAction;
 	QAction *prevImageAction;
@@ -242,7 +244,6 @@ private:
 	ThumbView *thumbView;
 	ImageView *imageView;
 	QList<QString> pathHistory;
-	QProcess externalProcess;
 	QTimer *SlideShowTimer;
 	CopyMoveToDialog *copyMoveToDialog;
 
@@ -270,7 +271,7 @@ private:
 	void deleteViewerImage();
 	void updateCurrentImage(int currentRow);
 	void selectCurrentViewDir();
-	bool handleArgs();
+	void handleStartupArgs();
 	void addMenuSeparator(QWidget *widget);
 	void createImageView();
 	void createThumbView();
