@@ -64,9 +64,11 @@ namespace GData
 	extern bool slideShowActive;
 	extern QMap<QString, QAction *> actionKeys;
 	extern bool hueSatEnabled;
+	extern bool brightContrastEnabled;
 	extern int hueVal;
 	extern int saturationVal;
 	extern int lightnessVal;
+	extern int contrastVal;
 	extern bool colorizeEnabled;
 	extern bool hueRedChannel;
 	extern bool hueGreenChannel;

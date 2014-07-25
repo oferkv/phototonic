@@ -138,6 +138,7 @@ public slots:
 	void ok();
 	void reset();
 	void enableHueSat(int state);
+	void enableBrightContrast(int state);
 	void enableColorize(int state);
 	void setRedChannel();
 	void setGreenChannel();
@@ -154,6 +155,9 @@ private:
 	QCheckBox *redB;
 	QCheckBox *greenB;
 	QCheckBox *blueB;
+
+	QCheckBox *brightContrastEnabledCb;
+	QSlider *contrastSlide;
 };
 
 class AppMgmtDialog : public QDialog

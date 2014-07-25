@@ -745,6 +745,7 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
 	buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);
 
+	/* hue saturation */
 	QLabel *hueLab = new QLabel(tr("Hue"));
 	QLabel *satLab = new QLabel(tr("Saturation"));
 	QLabel *lightLab = new QLabel(tr("Lightness"));
@@ -800,23 +801,48 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	channelsHbox->addWidget(blueB, 0, Qt::AlignLeft);
 	channelsHbox->addStretch(1);
 
-	QGridLayout *colChannelbox = new QGridLayout;
-	colChannelbox->addWidget(hueSatEnabledCb,	0, 0, Qt::AlignLeft);
-	colChannelbox->addWidget(hueLab,				1, 0, 1, 1);
-	colChannelbox->addWidget(hueSlide,			1, 1, 1, 1);
-	colChannelbox->addWidget(colorizeCb,			2, 1, 1, 1);
-	colChannelbox->addWidget(satLab,				3, 0, 1, 1);
-	colChannelbox->addWidget(saturationSlide,	3, 1, 1, 1);
-	colChannelbox->addWidget(lightLab, 			4, 0, 1, 1);
-	colChannelbox->addWidget(lightnessSlide,		4, 1, 1, 1);
-	colChannelbox->addWidget(channelsLab,		5, 0, 1, 1);
-	colChannelbox->addLayout(channelsHbox,		5, 1, 1, 1);
-	// colChannelbox->setColumnStretch(3, 1);
+	QGridLayout *hueSatbox = new QGridLayout;
+	hueSatbox->addWidget(hueSatEnabledCb,	0, 0, Qt::AlignLeft);
+	hueSatbox->addWidget(hueLab,				1, 0, 1, 1);
+	hueSatbox->addWidget(hueSlide,			1, 1, 1, 1);
+	hueSatbox->addWidget(colorizeCb,			2, 1, 1, 1);
+	hueSatbox->addWidget(satLab,				3, 0, 1, 1);
+	hueSatbox->addWidget(saturationSlide,	3, 1, 1, 1);
+	hueSatbox->addWidget(lightLab, 			4, 0, 1, 1);
+	hueSatbox->addWidget(lightnessSlide,		4, 1, 1, 1);
+	hueSatbox->addWidget(channelsLab,		5, 0, 1, 1);
+	hueSatbox->addLayout(channelsHbox,		5, 1, 1, 1);
 
-	QGroupBox *colChannelgrp = new QGroupBox(tr("Hue and Saturation"));
-	colChannelgrp->setLayout(colChannelbox);
+	QGroupBox *hueSatGroup = new QGroupBox(tr("Hue and Saturation"));
+	hueSatGroup->setLayout(hueSatbox);
+
+	/* brightness contrast */
+	QLabel *contrastLab = new QLabel(tr("Contrast"));
+
+	brightContrastEnabledCb = new QCheckBox(tr("Enable"), this);
+	brightContrastEnabledCb->setCheckState(GData::brightContrastEnabled? Qt::Checked : Qt::Unchecked);
+	connect(brightContrastEnabledCb, SIGNAL(stateChanged(int)), this, SLOT(enableBrightContrast(int)));	
+
+	contrastSlide = new QSlider(Qt::Horizontal);
+	contrastSlide->setTickPosition(QSlider::TicksAbove);
+	contrastSlide->setTickInterval(25);
+	contrastSlide->setRange(-50, 150);
+	contrastSlide->setTracking(false);
+	contrastSlide->setValue(GData::contrastVal);
+	contrastSlide->setInvertedAppearance(true);
+	connect(contrastSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
+
+	QGridLayout *brightContrastbox = new QGridLayout;
+	brightContrastbox->addWidget(brightContrastEnabledCb, 0, 0, Qt::AlignLeft);
+	brightContrastbox->addWidget(contrastLab, 1, 0, 1, 1);
+	brightContrastbox->addWidget(contrastSlide,	1, 1, 1, 1);
+
+	QGroupBox *brightContrastGroup = new QGroupBox(tr("Brightness and Contrast"));
+	brightContrastGroup->setLayout(brightContrastbox);
+
 	QVBoxLayout *mainVbox = new QVBoxLayout;
-	mainVbox->addWidget(colChannelgrp);
+	mainVbox->addWidget(brightContrastGroup);
+	mainVbox->addWidget(hueSatGroup);
 	mainVbox->addStretch(1);	
 	mainVbox->addLayout(buttonsHbox);
 	setLayout(mainVbox);
@@ -827,6 +853,7 @@ void ColorsDialog::applyColors(int)
 	GData::hueVal = hueSlide->value();
 	GData::saturationVal = saturationSlide->value();
 	GData::lightnessVal = lightnessSlide->value();
+	GData::contrastVal = contrastSlide->value();
 
 	imageView->refresh();
 }
@@ -850,12 +877,21 @@ void ColorsDialog::reset()
 	GData::hueRedChannel = true;
 	GData::hueGreenChannel = true;
 	GData::hueBlueChannel = true;
+
+	contrastSlide->setValue(79);
+	
 	imageView->refresh();
 }
 
 void ColorsDialog::enableHueSat(int state)
 {
 	GData::hueSatEnabled = state;
+	imageView->refresh();
+}
+
+void ColorsDialog::enableBrightContrast(int state)
+{
+	GData::brightContrastEnabled = state;
 	imageView->refresh();
 }
 

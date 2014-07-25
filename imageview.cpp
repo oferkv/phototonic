@@ -18,6 +18,7 @@
 
 #include "imageview.h"
 #include "thumbview.h"
+#include <math.h>
 #include "global.h"
 
 #define NEW_IMAGE_NAME	"newImage.png"
@@ -75,6 +76,9 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	GData::hueGreenChannel = true;
 	GData::hueBlueChannel = true;
 
+	GData::brightContrastEnabled = false;
+	GData::contrastVal = 79;
+
 	GData::dialogLastX = 0;
 	GData::dialogLastY = 0;
 
@@ -130,12 +134,14 @@ void ImageView::resizeImage()
 		{
 			case Disable:
 				if (imgSize.width() < size().width() && imgSize.height() < size().height())
-					imgSize.scale(calcZoom(imgSize.width()), calcZoom(imgSize.height()), Qt::KeepAspectRatio);
+					imgSize.scale(calcZoom(imgSize.width()), calcZoom(imgSize.height()),
+																					Qt::KeepAspectRatio);
 				break;
 				
 			case WidthNHeight:
 				if (imgSize.width() < size().width() && imgSize.height() < size().height())
-					imgSize.scale(calcZoom(size().width()), calcZoom(size().height()), Qt::KeepAspectRatio);
+					imgSize.scale(calcZoom(size().width()), calcZoom(size().height()),
+																					Qt::KeepAspectRatio);
 				break;
 
 			case Width:
@@ -147,8 +153,8 @@ void ImageView::resizeImage()
 				
 			case Height:
 				if (imgSize.height() < size().height())
-					imgSize.scale(calcZoom(getWidthByHeight(imgSize.height(), imgSize.width(), size().height())),
-						calcZoom(size().height()), Qt::KeepAspectRatio);
+					imgSize.scale(calcZoom(getWidthByHeight(imgSize.height(), imgSize.width(),
+									size().height())), calcZoom(size().height()), Qt::KeepAspectRatio);
 				break;
 
 			case Disprop:
@@ -165,23 +171,27 @@ void ImageView::resizeImage()
 		{
 			case Disable:
 				if (imgSize.width() >= size().width() || imgSize.height() >= size().height())
-					imgSize.scale(calcZoom(imgSize.width()), calcZoom(imgSize.height()), Qt::KeepAspectRatio);
+					imgSize.scale(calcZoom(imgSize.width()), calcZoom(imgSize.height()),
+																					Qt::KeepAspectRatio);
 				break;
 		
 			case WidthNHeight:
 				if (imgSize.width() >= size().width() || imgSize.height() >= size().height())
-					imgSize.scale(calcZoom(size().width()), calcZoom(size().height()), Qt::KeepAspectRatio);
+					imgSize.scale(calcZoom(size().width()), calcZoom(size().height()),
+																					Qt::KeepAspectRatio);
 				break;
 
 			case Width:
 				if (imgSize.width() > size().width())
 					imgSize.scale(calcZoom(size().width()), 
-						calcZoom(getHeightByWidth(imgSize.width(), imgSize.height(), size().width())), Qt::KeepAspectRatio);
+						calcZoom(getHeightByWidth(imgSize.width(), imgSize.height(), size().width())),
+																					Qt::KeepAspectRatio);
 				break;
 				
 			case Height:
 				if (imgSize.height() > size().height())
-					imgSize.scale(calcZoom(getWidthByHeight(imgSize.height(), imgSize.width(), size().height())),
+					imgSize.scale(calcZoom(getWidthByHeight(imgSize.height(), imgSize.width(), 
+																					size().height())),
 						calcZoom(size().height()), Qt::KeepAspectRatio);
 			
 				break;
@@ -314,7 +324,8 @@ void ImageView::mirror()
 	{
 		case LayDual:
 		{
-			mirrorImage = QImage(displayImage.width() * 2, displayImage.height(), QImage::QImage::Format_ARGB32);
+			mirrorImage = QImage(displayImage.width() * 2, displayImage.height(),
+																		QImage::QImage::Format_ARGB32);
 			QPainter painter(&mirrorImage);
 			painter.drawImage(0, 0, displayImage);
 			painter.drawImage(displayImage.width(), 0, displayImage.mirrored(true, false));
@@ -323,7 +334,8 @@ void ImageView::mirror()
 
 		case LayTriple:
 		{
-			mirrorImage = QImage(displayImage.width() * 3, displayImage.height(), QImage::QImage::Format_ARGB32);
+			mirrorImage = QImage(displayImage.width() * 3, displayImage.height(),
+																		QImage::QImage::Format_ARGB32);
 			QPainter painter(&mirrorImage);
 			painter.drawImage(0, 0, displayImage);
 			painter.drawImage(displayImage.width(), 0, displayImage.mirrored(true, false));
@@ -333,18 +345,21 @@ void ImageView::mirror()
 
 		case LayQuad:
 		{
-			mirrorImage = QImage(displayImage.width() * 2, displayImage.height() * 2, QImage::QImage::Format_ARGB32);
+			mirrorImage = QImage(displayImage.width() * 2, displayImage.height() * 2,
+																		QImage::QImage::Format_ARGB32);
 			QPainter painter(&mirrorImage);
 			painter.drawImage(0, 0, displayImage);
 			painter.drawImage(displayImage.width(), 0, displayImage.mirrored(true, false));
 			painter.drawImage(0, displayImage.height(), displayImage.mirrored(false, true));
-			painter.drawImage(displayImage.width(), displayImage.height(), displayImage.mirrored(true, true));
+			painter.drawImage(displayImage.width(), displayImage.height(),
+																	displayImage.mirrored(true, true));
 			break;
 		}
 
 		case LayVDual:
 		{
-			mirrorImage = QImage(displayImage.width(), displayImage.height() * 2, QImage::QImage::Format_ARGB32);
+			mirrorImage = QImage(displayImage.width(), displayImage.height() * 2,
+																		QImage::QImage::Format_ARGB32);
 			QPainter painter(&mirrorImage);
 			painter.drawImage(0, 0, displayImage);
 			painter.drawImage(0, displayImage.height(), displayImage.mirrored(false, true));
@@ -469,6 +484,21 @@ void ImageView::colorize()
 	int r, g, b;
 	QRgb *line;
 	unsigned char h, s, l;
+	static int Contrast_transform[256];
+	 
+	if (GData::brightContrastEnabled)
+	{
+		float contrast = ((float)GData::contrastVal / 100.0);
+		for(int i = 0; i < 256; i++)
+		{
+			if (i < (int)(128.0f + 128.0f * tan(contrast)) && i > (int)(128.0f - 128.0f * tan(contrast)))
+				Contrast_transform[i] = (i - 128) / tan(contrast) + 128;
+			else if (i >= (int)(128.0f + 128.0f * tan(contrast)))
+				Contrast_transform[i] = 255;
+			else
+				Contrast_transform[i] = 0;
+		}
+	}
  
 	for(y = 0; y < displayImage.height(); ++y)
 	{
@@ -476,21 +506,35 @@ void ImageView::colorize()
  
 		for(x = 0; x < displayImage.width(); ++x)
 		{
-			rgbToHsl(qRed(line[x]), qGreen(line[x]), qBlue(line[x]), &h, &s, &l);
-								
-			if (GData::colorizeEnabled)
-				h = GData::hueVal;
-			else
-				h += GData::hueVal;
+			r = qRed(line[x]);
+			g = qGreen(line[x]);
+			b = qBlue(line[x]);
 
-			s = bound0_255(((s * GData::saturationVal) / 100));
-			l = bound0_255(((l * GData::lightnessVal) / 100));
+			if (GData::brightContrastEnabled)
+			{
+				r = Contrast_transform[qRed(line[x])];
+				g = Contrast_transform[qGreen(line[x])];
+				b = Contrast_transform[qBlue(line[x])];
+			}
 
-			hslToRgb(h, s, l, &hr, &hg, &hb);
+			if (GData::hueSatEnabled)
+			{
+				rgbToHsl(r, g, b, &h, &s, &l);
+									
+				if (GData::colorizeEnabled)
+					h = GData::hueVal;
+				else
+					h += GData::hueVal;
 
-			r = GData::hueRedChannel? hr : qRed(line[x]);
-			g = GData::hueGreenChannel? hg : qGreen(line[x]);
-			b = GData::hueBlueChannel? hb : qBlue(line[x]);
+				s = bound0_255(((s * GData::saturationVal) / 100));
+				l = bound0_255(((l * GData::lightnessVal) / 100));
+
+				hslToRgb(h, s, l, &hr, &hg, &hb);
+
+				r = GData::hueRedChannel? hr : qRed(line[x]);
+				g = GData::hueGreenChannel? hg : qGreen(line[x]);
+				b = GData::hueBlueChannel? hb : qBlue(line[x]);
+			}
 
 			line[x] = qRgb(r, g, b);
 		}
@@ -504,7 +548,7 @@ void ImageView::refresh()
 
 	displayImage = origImage;
 	transform();
-	if (GData::hueSatEnabled)
+	if (GData::brightContrastEnabled || GData::hueSatEnabled)
 		colorize();
 	if (mirrorLayout)
 		mirror();
@@ -558,14 +602,15 @@ void ImageView::reload()
 			origImage.load(currentImageFullPath);
 			displayImage = origImage;
 			transform();
-			if (GData::hueSatEnabled)
+			if (GData::brightContrastEnabled || GData::hueSatEnabled)
 				colorize();
 			if (mirrorLayout)
 				mirror();
 			displayPixmap = QPixmap::fromImage(displayImage);
 		}
 		else
-			displayPixmap = QIcon::fromTheme("image-missing", QIcon(":/images/error_image.png")).pixmap(128, 128);
+			displayPixmap = QIcon::fromTheme("image-missing", 
+													QIcon(":/images/error_image.png")).pixmap(128, 128);
 
 		imageLabel->setPixmap(displayPixmap);
 	}
@@ -763,7 +808,8 @@ void ImageView::saveImage()
 	}
 
 	QImageReader imgReader(currentImageFullPath);
-	if (!displayPixmap.save(currentImageFullPath, imgReader.format().toUpper(), GData::defaultSaveQuality))
+	if (!displayPixmap.save(currentImageFullPath, imgReader.format().toUpper(),
+																			GData::defaultSaveQuality))
 	{
 		QMessageBox msgBox;
 		msgBox.critical(this, tr("Error"), tr("Failed to save image"));
