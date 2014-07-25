@@ -181,10 +181,21 @@ void Phototonic::createImageView()
 	imageView->addAction(moveLeftAct);
 	imageView->addAction(moveUpAct);
 	imageView->addAction(moveDownAct);
-	imageView->addAction(newImageAction);
+	imageView->addAction(showClipboardAction);
+	imageView->addAction(copyMoveAction);
 
 	// Actions
-	imageView->ImagePopUpMenu->addAction(imageNameAction);
+	imageFileSubMenu = new QMenu("");
+	imageFileMenuAct = new QAction("", this);
+	imageFileMenuAct->setIcon(QIcon::fromTheme("image", QIcon(":/images/image.png")));
+	imageFileMenuAct->setMenu(imageFileSubMenu);
+	imageView->ImagePopUpMenu->addAction(imageFileMenuAct);
+	imageFileSubMenu->addAction(copyMoveAction);
+	imageFileSubMenu->addAction(saveAction);
+	imageFileSubMenu->addAction(saveAsAction);
+	imageFileSubMenu->addAction(deleteAction);
+	imageFileSubMenu->addAction(openWithMenuAct);
+	
 	addMenuSeparator(imageView->ImagePopUpMenu);
 	imageView->ImagePopUpMenu->addAction(nextImageAction);
 	imageView->ImagePopUpMenu->addAction(prevImageAction);
@@ -192,16 +203,6 @@ void Phototonic::createImageView()
 	imageView->ImagePopUpMenu->addAction(lastImageAction);
 	imageView->ImagePopUpMenu->addAction(randomImageAction);
 	imageView->ImagePopUpMenu->addAction(slideShowAction);
-
-	addMenuSeparator(imageView->ImagePopUpMenu);
-	imageView->ImagePopUpMenu->addAction(copyImageAction);
-	imageView->ImagePopUpMenu->addAction(pasteImageAction);
-	imageView->ImagePopUpMenu->addAction(copyMoveAction);
-	imageView->ImagePopUpMenu->addAction(saveAction);
-	imageView->ImagePopUpMenu->addAction(saveAsAction);
-	imageView->ImagePopUpMenu->addAction(deleteAction);
-	imageView->ImagePopUpMenu->addAction(openWithMenuAct);
-	imageView->ImagePopUpMenu->addAction(newImageAction);
 
 	addMenuSeparator(imageView->ImagePopUpMenu);
 	zoomSubMenu = new QMenu(tr("Zoom"));
@@ -241,12 +242,14 @@ void Phototonic::createImageView()
 	MirroringSubMenu->addActions(mirroringGroup->actions());
 	addMenuSeparator(transformSubMenu);
 	transformSubMenu->addAction(keepTransformAct);
-
 	imageView->ImagePopUpMenu->addAction(colorsAct);
-	
+
 	addMenuSeparator(imageView->ImagePopUpMenu);
+	imageView->ImagePopUpMenu->addAction(copyImageAction);
+	imageView->ImagePopUpMenu->addAction(pasteImageAction);
 	imageView->ImagePopUpMenu->addAction(fullScreenAct);
 	imageView->ImagePopUpMenu->addAction(refreshAction);
+	imageView->ImagePopUpMenu->addAction(showClipboardAction);
 	imageView->ImagePopUpMenu->addAction(closeImageAct);
 
 	addMenuSeparator(imageView->ImagePopUpMenu);
@@ -304,7 +307,7 @@ void Phototonic::createActions()
 	connect(copyAction, SIGNAL(triggered()), this, SLOT(copyThumbs()));
 	copyAction->setEnabled(false);
 
-	copyMoveAction = new QAction(tr("Copy/Move to..."), this);
+	copyMoveAction = new QAction(tr("Copy or Move to..."), this);
 	connect(copyMoveAction, SIGNAL(triggered()), this, SLOT(copyMoveImages()));
 	
 	deleteAction = new QAction(tr("Delete"), this);
@@ -415,8 +418,6 @@ void Phototonic::createActions()
 	slideShowAction = new QAction(tr("Slide Show"), this);
 	connect(slideShowAction, SIGNAL(triggered()), this, SLOT(slideShow()));
 
-	imageNameAction = new QAction("", this);
-
 	nextImageAction = new QAction(tr("Next"), this);
 	nextImageAction->setIcon(QIcon::fromTheme("go-next", QIcon(":/images/next.png")));
 	connect(nextImageAction, SIGNAL(triggered()), this, SLOT(loadNextImage()));
@@ -440,9 +441,9 @@ void Phototonic::createActions()
 	openAction->setIcon(QIcon::fromTheme("document-open", QIcon(":/images/open.png")));
 	connect(openAction, SIGNAL(triggered()), this, SLOT(openOp()));
 
-	newImageAction = new QAction(tr("Show Clipboard"), this);
-	newImageAction->setIcon(QIcon::fromTheme("window-new", QIcon(":/images/new.png")));
-	connect(newImageAction, SIGNAL(triggered()), this, SLOT(newImage()));
+	showClipboardAction = new QAction(tr("Show Clipboard"), this);
+	showClipboardAction->setIcon(QIcon::fromTheme("window-new", QIcon(":/images/new.png")));
+	connect(showClipboardAction, SIGNAL(triggered()), this, SLOT(newImage()));
 
 	openWithSubMenu = new QMenu(tr("Open With"));
 	openWithMenuAct = new QAction(tr("Open With"), this);
@@ -540,7 +541,7 @@ void Phototonic::createMenus()
 	fileMenu->addAction(openAction);
 	fileMenu->addAction(subFoldersAction);
 	fileMenu->addAction(createDirAction);
-	fileMenu->addAction(newImageAction);
+	fileMenu->addAction(showClipboardAction);
 	fileMenu->addSeparator();
 	fileMenu->addAction(exitAction);
 
@@ -622,7 +623,7 @@ void Phototonic::createToolBars()
 	editToolBar->addAction(copyAction);
 	editToolBar->addAction(pasteAction);
 	editToolBar->addAction(deleteAction);
-	editToolBar->addAction(newImageAction);
+	editToolBar->addAction(showClipboardAction);
 	connect(editToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setToolBarsVisibility()));
 
 	/* Navigation */
@@ -964,6 +965,7 @@ void Phototonic::copyThumbs()
 
 void Phototonic::copyMoveImages()
 {
+	imageView->setCursorOverrides(false);
 	copyMoveToDialog = new CopyMoveToDialog(this, getSelectedPath());
 	if (copyMoveToDialog->exec())
 	{
@@ -1010,6 +1012,7 @@ void Phototonic::copyMoveImages()
 	
 	delete(copyMoveToDialog);
 	copyMoveToDialog = 0;
+	imageView->setCursorOverrides(true);
 }
 
 void Phototonic::thumbsZoomIn()
@@ -1654,7 +1657,7 @@ void Phototonic::loadShortcuts()
 	GData::actionKeys[saveAsAction->text()] = saveAsAction;
 	GData::actionKeys[keepTransformAct->text()] = keepTransformAct;
 	GData::actionKeys[keepZoomAct->text()] = keepZoomAct;
-	GData::actionKeys[newImageAction->text()] = newImageAction;
+	GData::actionKeys[showClipboardAction->text()] = showClipboardAction;
 	GData::actionKeys[copyImageAction->text()] = copyImageAction;
 	GData::actionKeys[pasteImageAction->text()] = pasteImageAction;
 	GData::actionKeys[renameAction->text()] = renameAction;
@@ -1688,7 +1691,8 @@ void Phototonic::loadShortcuts()
 	GData::actionKeys[moveUpAct->text()] = moveUpAct;
 	GData::actionKeys[moveRightAct->text()] = moveRightAct;
 	GData::actionKeys[moveLeftAct->text()] = moveLeftAct;
-
+	GData::actionKeys[copyMoveAction->text()] = copyMoveAction;
+	
 	GData::appSettings->beginGroup("Shortcuts");
 	QStringList groupKeys = GData::appSettings->childKeys();
 
@@ -1748,6 +1752,7 @@ void Phototonic::loadShortcuts()
 		moveUpAct->setShortcut(QKeySequence("Up"));
 		moveLeftAct->setShortcut(QKeySequence("Left"));
 		moveRightAct->setShortcut(QKeySequence("Right"));
+		copyMoveAction->setShortcut(QKeySequence("M"));
 	}
 		
 	GData::appSettings->endGroup();
@@ -1913,10 +1918,13 @@ void Phototonic::loadImageFile(QString imageFileName)
 	}
 
 	if (imageFileName.isEmpty())
-		imageNameAction->setText("Clipboard");
+		imageFileMenuAct->setText("Clipboard");
 	else
 	{
-		imageNameAction->setText(QFileInfo(imageFileName).fileName());
+		QString displayFileName = QFileInfo(imageFileName).fileName();
+		if (displayFileName.length() > 20)
+			displayFileName = displayFileName.left(20) + "...";
+		imageFileMenuAct->setText(displayFileName);
 	}
 }
 

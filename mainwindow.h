@@ -140,6 +140,7 @@ private:
 	QMenu *helpMenu;
 	QMenu *zoomSubMenu;
 	QMenu *transformSubMenu;
+	QMenu *imageFileSubMenu;
 	QMenu *MirroringSubMenu;
 	QMenu *openWithSubMenu;
 
@@ -158,7 +159,7 @@ private:
 	QAction *selectAllAction;
 	QAction *copyImageAction;
 	QAction *pasteImageAction;
-	QAction *newImageAction;
+	QAction *showClipboardAction;
 
 	QActionGroup *sortTypesGroup;
 	QActionGroup *thumbLayoutsGroup;
@@ -203,6 +204,7 @@ private:
 	QAction *moveRightAct;
 	QAction *moveUpAct;
 	QAction *moveDownAct;
+	QAction *imageFileMenuAct;
 	
 	QAction *actClassic;
 	QAction *actCompact;
@@ -219,7 +221,6 @@ private:
 	QAction *goUpAction;
 	QAction *goHomeAction;
 
-	QAction *imageNameAction;
 	QAction *slideShowAction;
 	QAction *nextImageAction;
 	QAction *prevImageAction;
