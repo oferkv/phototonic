@@ -194,7 +194,6 @@ void Phototonic::createImageView()
 	imageFileSubMenu->addAction(saveAction);
 	imageFileSubMenu->addAction(saveAsAction);
 	imageFileSubMenu->addAction(deleteAction);
-	imageFileSubMenu->addAction(openWithMenuAct);
 	
 	addMenuSeparator(imageView->ImagePopUpMenu);
 	imageView->ImagePopUpMenu->addAction(nextImageAction);
@@ -245,6 +244,7 @@ void Phototonic::createImageView()
 	imageView->ImagePopUpMenu->addAction(colorsAct);
 
 	addMenuSeparator(imageView->ImagePopUpMenu);
+	imageView->ImagePopUpMenu->addAction(openWithMenuAct);
 	imageView->ImagePopUpMenu->addAction(copyImageAction);
 	imageView->ImagePopUpMenu->addAction(pasteImageAction);
 	imageView->ImagePopUpMenu->addAction(fullScreenAct);
@@ -538,7 +538,6 @@ void Phototonic::createActions()
 void Phototonic::createMenus()
 {
 	fileMenu = menuBar()->addMenu(tr("&File"));
-	fileMenu->addAction(openAction);
 	fileMenu->addAction(subFoldersAction);
 	fileMenu->addAction(createDirAction);
 	fileMenu->addAction(showClipboardAction);
@@ -1692,6 +1691,7 @@ void Phototonic::loadShortcuts()
 	GData::actionKeys[moveRightAct->text()] = moveRightAct;
 	GData::actionKeys[moveLeftAct->text()] = moveLeftAct;
 	GData::actionKeys[copyMoveAction->text()] = copyMoveAction;
+	GData::actionKeys[goUpAction->text()] = goUpAction;
 	
 	GData::appSettings->beginGroup("Shortcuts");
 	QStringList groupKeys = GData::appSettings->childKeys();
@@ -1724,6 +1724,7 @@ void Phototonic::loadShortcuts()
 		pasteAction->setShortcut(QKeySequence("Ctrl+V"));
 		goBackAction->setShortcut(QKeySequence("Alt+Left"));
 		goFrwdAction->setShortcut(QKeySequence("Alt+Right"));
+		goUpAction->setShortcut(QKeySequence("Alt+Up"));
 		slideShowAction->setShortcut(QKeySequence("W"));
 		nextImageAction->setShortcut(QKeySequence("PgDown"));
 		prevImageAction->setShortcut(QKeySequence("PgUp"));

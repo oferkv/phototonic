@@ -157,6 +157,7 @@ private:
 	QCheckBox *blueB;
 
 	QCheckBox *brightContrastEnabledCb;
+	QSlider *brightSlide;
 	QSlider *contrastSlide;
 };
 

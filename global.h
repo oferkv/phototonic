@@ -26,6 +26,8 @@
 #include <QAction>
 #include <QSet>
 
+#define		CONTRAST_MID		78
+
 namespace GData
 {
 	enum StartupDir
@@ -69,6 +71,7 @@ namespace GData
 	extern int saturationVal;
 	extern int lightnessVal;
 	extern int contrastVal;
+	extern int brightVal;
 	extern bool colorizeEnabled;
 	extern bool hueRedChannel;
 	extern bool hueGreenChannel;

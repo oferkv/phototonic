@@ -77,7 +77,8 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	GData::hueBlueChannel = true;
 
 	GData::brightContrastEnabled = false;
-	GData::contrastVal = 79;
+	GData::contrastVal = CONTRAST_MID;
+	GData::brightVal = 0;
 
 	GData::dialogLastX = 0;
 	GData::dialogLastY = 0;
@@ -484,7 +485,7 @@ void ImageView::colorize()
 	int r, g, b;
 	QRgb *line;
 	unsigned char h, s, l;
-	static int Contrast_transform[256];
+	static int contrastTransform[256];
 	 
 	if (GData::brightContrastEnabled)
 	{
@@ -492,14 +493,14 @@ void ImageView::colorize()
 		for(int i = 0; i < 256; i++)
 		{
 			if (i < (int)(128.0f + 128.0f * tan(contrast)) && i > (int)(128.0f - 128.0f * tan(contrast)))
-				Contrast_transform[i] = (i - 128) / tan(contrast) + 128;
+				contrastTransform[i] = (i - 128) / tan(contrast) + 128;
 			else if (i >= (int)(128.0f + 128.0f * tan(contrast)))
-				Contrast_transform[i] = 255;
+				contrastTransform[i] = 255;
 			else
-				Contrast_transform[i] = 0;
+				contrastTransform[i] = 0;
 		}
 	}
- 
+
 	for(y = 0; y < displayImage.height(); ++y)
 	{
 		line = (QRgb *)displayImage.scanLine(y);
@@ -512,9 +513,9 @@ void ImageView::colorize()
 
 			if (GData::brightContrastEnabled)
 			{
-				r = Contrast_transform[qRed(line[x])];
-				g = Contrast_transform[qGreen(line[x])];
-				b = Contrast_transform[qBlue(line[x])];
+				r = bound0_255(contrastTransform[r] + GData::brightVal);
+				g = bound0_255(contrastTransform[g] + GData::brightVal);
+				b = bound0_255(contrastTransform[b] + GData::brightVal);
 			}
 
 			if (GData::hueSatEnabled)
@@ -533,7 +534,7 @@ void ImageView::colorize()
 
 				r = GData::hueRedChannel? hr : qRed(line[x]);
 				g = GData::hueGreenChannel? hg : qGreen(line[x]);
-				b = GData::hueBlueChannel? hb : qBlue(line[x]);
+				b = GData::hueBlueChannel? hb: qBlue(line[x]);
 			}
 
 			line[x] = qRgb(r, g, b);
