@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="de_DE">
+<TS version="2.0" language="de_DE">
 <context>
     <name>AppMgmtDialog</name>
     <message>
@@ -724,32 +724,32 @@
     <message>
         <location filename="../mainwindow.cpp" line="785"/>
         <source>&lt;p&gt;Image viewer and organizer&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Bildbetrachter und -verwalter</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="786"/>
         <source>&lt;p&gt;Built with Qt </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Kompiliert mit Qt</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="787"/>
         <source>Home page</source>
-        <translation type="unfinished"></translation>
+        <translation>Homepage</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="788"/>
         <source>Bug reports</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehlerberichte</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="790"/>
         <source>Contact</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontakt</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="790"/>
         <source>Translations:</source>
-        <translation type="unfinished"></translation>
+        <translation>Übersetzungen:</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="819"/>
