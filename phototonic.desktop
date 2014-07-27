@@ -1,7 +1,9 @@
 [Desktop Entry]
 Name=Phototonic
 Comment=View photos on your computer
+Comment[de]=Photos betrachten und verwalten
 GenericName=Image Viewer
+GenericName[de]=Bildbetrachter
 Exec=phototonic %F
 Icon=phototonic
 Terminal=false
