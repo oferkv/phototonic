@@ -90,6 +90,7 @@ namespace GData
 	extern int dialogLastY;
 	extern StartupDir startupDir;
 	extern QString specifiedStartDir;
+	extern bool enableImageInfoFS;
 }
 
 #endif // GLOBAL_H

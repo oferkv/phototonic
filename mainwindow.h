@@ -204,7 +204,6 @@ private:
 	QAction *moveRightAct;
 	QAction *moveUpAct;
 	QAction *moveDownAct;
-	QAction *imageFileMenuAct;
 	
 	QAction *actClassic;
 	QAction *actCompact;

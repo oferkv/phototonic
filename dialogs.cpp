@@ -378,6 +378,10 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	enableExifCb = new QCheckBox(tr("Rotate according to Exif orientation"), this);
 	enableExifCb->setChecked(GData::exifRotationEnabled);
 
+	// Image Info
+	imageInfoCb = new QCheckBox(tr("Show image file name in full screen mode"), this);
+	imageInfoCb->setChecked(GData::enableImageInfoFS);
+
 	// Startup directory
 	QGroupBox *startupDirGroupBox = new QGroupBox(tr("Startup folder"));
 	startupDirRadios[GData::defaultDir] = new QRadioButton(tr("Default, or specified by command line argument"));
@@ -432,6 +436,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	viewerOptsBox->addLayout(saveQualityHbox);
 	viewerOptsBox->addWidget(enableAnimCb);
 	viewerOptsBox->addWidget(enableExifCb);
+	viewerOptsBox->addWidget(imageInfoCb);
 	viewerOptsBox->addWidget(startupDirGroupBox);
 	viewerOptsBox->addWidget(exitCliCb);
 	QGroupBox *viewerOptsGrp = new QGroupBox(tr("Viewer"));
@@ -538,6 +543,7 @@ void SettingsDialog::saveSettings()
 	GData::slideShowRandom = slideRandomCb->isChecked();
 	GData::enableAnimations = enableAnimCb->isChecked();
 	GData::exifRotationEnabled = enableExifCb->isChecked();
+	GData::enableImageInfoFS = imageInfoCb->isChecked();
 	GData::reverseMouseBehavior = reverseMouseCb->isChecked();
 
 	if (startupDirRadios[0]->isChecked())

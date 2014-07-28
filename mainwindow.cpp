@@ -185,16 +185,6 @@ void Phototonic::createImageView()
 	imageView->addAction(copyMoveAction);
 
 	// Actions
-	imageFileSubMenu = new QMenu("");
-	imageFileMenuAct = new QAction("", this);
-	imageFileMenuAct->setIcon(QIcon::fromTheme("image", QIcon(":/images/image.png")));
-	imageFileMenuAct->setMenu(imageFileSubMenu);
-	imageView->ImagePopUpMenu->addAction(imageFileMenuAct);
-	imageFileSubMenu->addAction(copyMoveAction);
-	imageFileSubMenu->addAction(saveAction);
-	imageFileSubMenu->addAction(saveAsAction);
-	imageFileSubMenu->addAction(deleteAction);
-	
 	addMenuSeparator(imageView->ImagePopUpMenu);
 	imageView->ImagePopUpMenu->addAction(nextImageAction);
 	imageView->ImagePopUpMenu->addAction(prevImageAction);
@@ -244,7 +234,13 @@ void Phototonic::createImageView()
 	imageView->ImagePopUpMenu->addAction(colorsAct);
 
 	addMenuSeparator(imageView->ImagePopUpMenu);
+	imageView->ImagePopUpMenu->addAction(copyMoveAction);
+	imageView->ImagePopUpMenu->addAction(saveAction);
+	imageView->ImagePopUpMenu->addAction(saveAsAction);
+	imageView->ImagePopUpMenu->addAction(deleteAction);
 	imageView->ImagePopUpMenu->addAction(openWithMenuAct);
+
+	addMenuSeparator(imageView->ImagePopUpMenu);
 	imageView->ImagePopUpMenu->addAction(copyImageAction);
 	imageView->ImagePopUpMenu->addAction(pasteImageAction);
 	imageView->ImagePopUpMenu->addAction(fullScreenAct);
@@ -1521,6 +1517,7 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("specifiedStartDir", GData::specifiedStartDir);
 	GData::appSettings->setValue("lastDir", GData::startupDir == GData::rememberLastDir?
 																		thumbView->currentViewDir: "");
+	GData::appSettings->setValue("enableImageInfoFS", (bool)GData::enableImageInfoFS);
 
 	/* Action shortcuts */
 	GData::appSettings->beginGroup("Shortcuts");
@@ -1590,6 +1587,7 @@ void Phototonic::readSettings()
 		GData::appSettings->setValue("viewToolBarVisible", (bool)true);
 		GData::appSettings->setValue("fsDockVisible", (bool)true);
 		GData::appSettings->setValue("iiDockVisible", (bool)true);
+		GData::appSettings->setValue("enableImageInfoFS", (bool)false);
 	}
 
 	GData::exitInsteadOfClose = GData::appSettings->value("exitInsteadOfClose").toBool();
@@ -1618,6 +1616,7 @@ void Phototonic::readSettings()
 	iiDockVisible = GData::appSettings->value("iiDockVisible").toBool();
 	GData::startupDir = (GData::StartupDir)GData::appSettings->value("startupDir").toInt();
 	GData::specifiedStartDir = GData::appSettings->value("specifiedStartDir").toString();
+	GData::enableImageInfoFS = GData::appSettings->value("enableImageInfoFS").toBool();
 
 	GData::appSettings->beginGroup("ExternalApps");
 	QStringList extApps = GData::appSettings->childKeys();
@@ -1916,16 +1915,6 @@ void Phototonic::loadImageFile(QString imageFileName)
 			showFullScreen();
 			imageView->setCursorHiding(true);
 		}
-	}
-
-	if (imageFileName.isEmpty())
-		imageFileMenuAct->setText("Clipboard");
-	else
-	{
-		QString displayFileName = QFileInfo(imageFileName).fileName();
-		if (displayFileName.length() > 20)
-			displayFileName = displayFileName.left(20) + "...";
-		imageFileMenuAct->setText(displayFileName);
 	}
 }
 

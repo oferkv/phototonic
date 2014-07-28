@@ -123,6 +123,7 @@ private:
 	bool isAnimation;
 	int preCroppedWidth;
 	int preCroppedHeight;
+	QLabel *infoLabel;
 
 	void centerImage(QSize &imgSize);
 	long getExifOrientation();

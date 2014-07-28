@@ -73,5 +73,6 @@ namespace GData
 	int dialogLastY;
 	StartupDir startupDir;
 	QString specifiedStartDir;
+	bool enableImageInfoFS;
 }
 

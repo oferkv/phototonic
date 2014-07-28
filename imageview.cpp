@@ -59,6 +59,10 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	mainVLayout->setContentsMargins(0, 0, 0, 0);
 	mainVLayout->addWidget(scrlArea);
 	this->setLayout(mainVLayout);
+
+	infoLabel = new QLabel("", this);
+	infoLabel->setHidden(true);
+	infoLabel->move(10, 10);
 	
 	mouseMovementTimer = new QTimer(this);
 	connect(mouseMovementTimer, SIGNAL(timeout()), this, SLOT(monitorCursorState()));
@@ -628,6 +632,15 @@ void ImageView::loadImage(QString &imageFileName)
 	if (!GData::keepZoomFactor)
 		GData::imageZoomFactor = 1.0;
 
+	if (GData::enableImageInfoFS)
+	{
+		if (imageFileName.isEmpty())
+			infoLabel->setText("Clipboard");
+		else
+			infoLabel->setText(QFileInfo(imageFileName).fileName());
+		infoLabel->adjustSize();
+	}
+
 	reload();
 }
 
@@ -659,6 +672,9 @@ void ImageView::setCursorHiding(bool hide)
 	if (hide)
 	{
 		mouseMovementTimer->start(500);
+
+		if (GData::enableImageInfoFS)
+			infoLabel->show();
 	}
 	else
 	{
@@ -668,6 +684,10 @@ void ImageView::setCursorHiding(bool hide)
 			QApplication::restoreOverrideCursor();
 			cursorIsHidden = false;
 		}
+
+		if (GData::enableImageInfoFS)
+			infoLabel->hide();
+
 	}
 }
 
