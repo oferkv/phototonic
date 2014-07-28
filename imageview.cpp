@@ -564,6 +564,15 @@ void ImageView::refresh()
 
 void ImageView::reload()
 {
+	if (GData::enableImageInfoFS)
+	{
+		if (currentImageFullPath.isEmpty())
+			infoLabel->setText("Clipboard");
+		else
+			infoLabel->setText(QFileInfo(currentImageFullPath).fileName());
+		infoLabel->adjustSize();
+	}
+
 	if (!GData::keepTransform)
 	{
 		GData::cropLeft = 0;
@@ -631,15 +640,6 @@ void ImageView::loadImage(QString &imageFileName)
 
 	if (!GData::keepZoomFactor)
 		GData::imageZoomFactor = 1.0;
-
-	if (GData::enableImageInfoFS)
-	{
-		if (imageFileName.isEmpty())
-			infoLabel->setText("Clipboard");
-		else
-			infoLabel->setText(QFileInfo(imageFileName).fileName());
-		infoLabel->adjustSize();
-	}
 
 	reload();
 }

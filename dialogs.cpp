@@ -554,7 +554,6 @@ void SettingsDialog::saveSettings()
 	{
 		GData::startupDir = GData::specifiedDir;
 		GData::specifiedStartDir = startupDirEdit->text();
-	
 	}
 
 	accept();
