@@ -123,6 +123,7 @@ private slots:
 	void setCompactThumbs();
 	void setSquarishThumbs();
 	void showHiddenFiles();
+	void showLabels();
 	void chooseExternalApp();
 	void updateExternalApps();
 	void runExternalApp();
@@ -210,6 +211,7 @@ private:
 	QAction *actSquarish;
 	QAction *aboutAction;
 	QAction *actShowHidden;
+	QAction *actShowLabels;
 
 	QAction *pasteAction;
 	QAction *createDirAction;

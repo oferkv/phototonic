@@ -359,8 +359,13 @@ void Phototonic::createActions()
 	actShowHidden->setChecked(GData::showHiddenFiles);
 	connect(actShowHidden, SIGNAL(triggered()), this, SLOT(showHiddenFiles()));
 
+	actShowLabels = new QAction(tr("Show Lables"), this);;
+	actShowLabels->setCheckable(true);
+	actShowLabels->setChecked(GData::showLabels);
+	connect(actShowLabels, SIGNAL(triggered()), this, SLOT(showLabels()));
+
 	actClassic = new QAction(tr("Classic Thumbs"), this);
-	actCompact = new QAction(tr("Compact"), this);
+	actCompact = new QAction(tr("Compact (slower)"), this);
 	actSquarish = new QAction(tr("Squarish"), this);
 	connect(actClassic, SIGNAL(triggered()), this, SLOT(setClassicThumbs()));
 	connect(actCompact, SIGNAL(triggered()), this, SLOT(setCompactThumbs()));
@@ -565,6 +570,7 @@ void Phototonic::createMenus()
 	viewMenu = menuBar()->addMenu(tr("&View"));
 	viewMenu->addAction(thumbsZoomInAct);
 	viewMenu->addAction(thumbsZoomOutAct);
+	viewMenu->addAction(actShowLabels);
 	sortMenu = viewMenu->addMenu(tr("Sort By"));
 	sortTypesGroup = new QActionGroup(this);
 	sortTypesGroup->addAction(actName);
@@ -785,6 +791,12 @@ void Phototonic::showHiddenFiles()
 {
 	GData::showHiddenFiles = actShowHidden->isChecked();
 	setfsModelFlags();
+	refreshThumbs(false);
+}
+
+void Phototonic::showLabels()
+{
+	GData::showLabels = actShowLabels->isChecked();
 	refreshThumbs(false);
 }
 
@@ -1518,6 +1530,7 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("lastDir", GData::startupDir == GData::rememberLastDir?
 																		thumbView->currentViewDir: "");
 	GData::appSettings->setValue("enableImageInfoFS", (bool)GData::enableImageInfoFS);
+	GData::appSettings->setValue("showLabels", (bool)GData::showLabels);
 
 	/* Action shortcuts */
 	GData::appSettings->beginGroup("Shortcuts");
@@ -1588,6 +1601,7 @@ void Phototonic::readSettings()
 		GData::appSettings->setValue("fsDockVisible", (bool)true);
 		GData::appSettings->setValue("iiDockVisible", (bool)true);
 		GData::appSettings->setValue("enableImageInfoFS", (bool)false);
+		GData::appSettings->setValue("showLabels", (bool)true);
 	}
 
 	GData::exitInsteadOfClose = GData::appSettings->value("exitInsteadOfClose").toBool();
@@ -1617,6 +1631,7 @@ void Phototonic::readSettings()
 	GData::startupDir = (GData::StartupDir)GData::appSettings->value("startupDir").toInt();
 	GData::specifiedStartDir = GData::appSettings->value("specifiedStartDir").toString();
 	GData::enableImageInfoFS = GData::appSettings->value("enableImageInfoFS").toBool();
+	GData::showLabels = GData::appSettings->value("showLabels").toBool();
 
 	GData::appSettings->beginGroup("ExternalApps");
 	QStringList extApps = GData::appSettings->childKeys();

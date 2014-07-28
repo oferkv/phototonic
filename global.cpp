@@ -74,5 +74,6 @@ namespace GData
 	StartupDir startupDir;
 	QString specifiedStartDir;
 	bool enableImageInfoFS;
+	bool showLabels;
 }
 

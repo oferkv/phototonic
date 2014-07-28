@@ -501,7 +501,7 @@ void ThumbView::initThumbs()
 		thumbIitem->setData(false, LoadedRole);
 		thumbIitem->setData(currThumb, SortRole);
 		thumbIitem->setData(thumbFileInfo.filePath(), FileNameRole);
-		if (GData::thumbsLayout == Classic)
+		if (GData::thumbsLayout != Squares && GData::showLabels)
 			thumbIitem->setData(thumbFileInfo.fileName(), Qt::DisplayRole);
 		if (GData::thumbsLayout == Compact)
 			thumbIitem->setIcon(emptyPixMap);
