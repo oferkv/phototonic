@@ -437,7 +437,6 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	viewerOptsBox->addWidget(enableAnimCb);
 	viewerOptsBox->addWidget(enableExifCb);
 	viewerOptsBox->addWidget(imageInfoCb);
-	viewerOptsBox->addWidget(startupDirGroupBox);
 	viewerOptsBox->addWidget(exitCliCb);
 	QGroupBox *viewerOptsGrp = new QGroupBox(tr("Viewer"));
 	viewerOptsGrp->setLayout(viewerOptsBox);
@@ -483,7 +482,9 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	reverseMouseCb->setChecked(GData::reverseMouseBehavior);
 
 	// Keyboard and mouse group
+	QLabel *changeKeysLab = new QLabel(tr("keyboard shortcuts:"));
 	QHBoxLayout *keyboardHbox = new QHBoxLayout;
+	keyboardHbox->addWidget(changeKeysLab);
 	keyboardHbox->addWidget(keysCombo);
 	keyboardHbox->addWidget(keyLine);
 	keyboardHbox->addStretch(1);
@@ -495,6 +496,11 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	QGroupBox *keyboardGbox = new QGroupBox(tr("Keyboard and Mouse"));
 	keyboardGbox->setLayout(mouseVbox);
 
+	QVBoxLayout *generalVbox = new QVBoxLayout;
+	generalVbox->addWidget(startupDirGroupBox);
+	QGroupBox *generalGbox = new QGroupBox(tr("General"));
+	generalGbox->setLayout(generalVbox);
+	
 	// General
 	QVBoxLayout *optsLayout = new QVBoxLayout;
 	optsWidgetArea->setLayout(optsLayout);
@@ -503,6 +509,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	optsLayout->addWidget(thumbOptsGroupBox);
 	optsLayout->addWidget(slideShowGbox);
 	optsLayout->addWidget(keyboardGbox);
+	optsLayout->addWidget(generalGbox);
 	optsLayout->addStretch(1);
 }
 

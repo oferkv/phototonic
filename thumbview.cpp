@@ -396,7 +396,7 @@ void ThumbView::load(QString &cliImageName)
 		thumbAspect = 1.5;
 
 	thumbHeight = (GData::thumbsLayout == Squares)? thumbSize * thumbAspect : thumbSize;
-	thumbWidth = (GData::thumbsLayout != Classic)? thumbHeight * thumbAspect : thumbHeight;
+	thumbWidth = thumbHeight * thumbAspect;
 	setIconSize(QSize(thumbWidth, thumbHeight));
 
 	fileFilters->clear();
@@ -492,7 +492,8 @@ void ThumbView::initThumbs()
 	if (GData::thumbsLayout == Squares)
 		hintSize = QSize(thumbWidth / 2, thumbWidth / 2);
 	else if (GData::thumbsLayout == Classic)
-		hintSize = QSize(thumbWidth, thumbHeight + QFontMetrics(font()).height() + 5);
+		hintSize = QSize(thumbWidth, thumbHeight + (GData::showLabels?
+															QFontMetrics(font()).height() + 5 : 0));
 
 	for (currThumb = 0; currThumb < thumbFileInfoList.size(); ++currThumb)
 	{
@@ -595,7 +596,7 @@ void ThumbView::addThumb(QString &imageFullPath)
 	thumbIitem->setData(true, LoadedRole);
 	thumbIitem->setData(0, SortRole);
 	thumbIitem->setData(thumbFileInfo.filePath(), FileNameRole);
-	if (GData::thumbsLayout == Classic)
+	if (GData::thumbsLayout != Squares && GData::showLabels)
 		thumbIitem->setData(thumbFileInfo.fileName(), Qt::DisplayRole);
 
 	thumbReader.setFileName(imageFullPath);
