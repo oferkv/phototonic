@@ -482,7 +482,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	reverseMouseCb->setChecked(GData::reverseMouseBehavior);
 
 	// Keyboard and mouse group
-	QLabel *changeKeysLab = new QLabel(tr("keyboard shortcuts:"));
+	QLabel *changeKeysLab = new QLabel(tr("Keyboard Shortcuts:"));
 	QHBoxLayout *keyboardHbox = new QHBoxLayout;
 	keyboardHbox->addWidget(changeKeysLab);
 	keyboardHbox->addWidget(keysCombo);
