@@ -19,6 +19,7 @@
 #include "imageview.h"
 #include "thumbview.h"
 #include <math.h>
+#include <QGraphicsDropShadowEffect>
 #include "global.h"
 
 #define NEW_IMAGE_NAME	"newImage.png"
@@ -63,6 +64,10 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	infoLabel = new QLabel("", this);
 	infoLabel->setHidden(true);
 	infoLabel->move(10, 10);
+    QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect(this);
+    shadow->setColor(QColor(0, 0, 0));
+    shadow->setOffset(1, 1);
+    infoLabel->setGraphicsEffect(shadow);
 	
 	mouseMovementTimer = new QTimer(this);
 	connect(mouseMovementTimer, SIGNAL(timeout()), this, SLOT(monitorCursorState()));
