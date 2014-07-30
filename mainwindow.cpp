@@ -359,7 +359,7 @@ void Phototonic::createActions()
 	actShowHidden->setChecked(GData::showHiddenFiles);
 	connect(actShowHidden, SIGNAL(triggered()), this, SLOT(showHiddenFiles()));
 
-	actShowLabels = new QAction(tr("Show Lables"), this);;
+	actShowLabels = new QAction(tr("Show Labels"), this);;
 	actShowLabels->setCheckable(true);
 	actShowLabels->setChecked(GData::showLabels);
 	connect(actShowLabels, SIGNAL(triggered()), this, SLOT(showLabels()));

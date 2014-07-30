@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="de_DE">
+<TS version="2.0" language="de_DE">
 <context>
     <name>AppMgmtDialog</name>
     <message>
@@ -120,17 +120,17 @@
     <message>
         <location filename="../dialogs.cpp" line="832"/>
         <source>Brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Helligkeit</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="833"/>
         <source>Contrast</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontrast</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="863"/>
         <source>Brightness and Contrast</source>
-        <translation type="unfinished"></translation>
+        <translation>Helligkeit und Kontrast</translation>
     </message>
 </context>
 <context>
@@ -168,11 +168,11 @@
     <message>
         <location filename="../dialogs.cpp" line="1151"/>
         <source>Choose Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Verzeichnis wählen</translation>
     </message>
     <message>
         <source>Choose Directory</source>
-        <translation type="vanished">Verzeichnis auswählen</translation>
+        <translation>Verzeichnis auswählen</translation>
     </message>
 </context>
 <context>
@@ -238,12 +238,12 @@
     <name>ImageView</name>
     <message>
         <source>New image</source>
-        <translation type="vanished">Neues Bild</translation>
+        <translation>Neues Bild</translation>
     </message>
     <message>
         <location filename="../imageview.cpp" line="596"/>
         <source>Clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Zwischenablage</translation>
     </message>
     <message>
         <location filename="../imageview.cpp" line="819"/>
@@ -388,7 +388,7 @@
     </message>
     <message>
         <source>Copy/Move to...</source>
-        <translation type="vanished">Kopieren/ Verschieben nach...</translation>
+        <translation>Kopieren/ Verschieben nach...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="309"/>
@@ -467,7 +467,7 @@
     </message>
     <message>
         <source>Compact</source>
-        <translation type="vanished">Kompakt</translation>
+        <translation>Kompakt</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="369"/>
@@ -557,7 +557,7 @@
     </message>
     <message>
         <source>New Image</source>
-        <translation type="vanished">Neues Bild</translation>
+        <translation>Neues Bild</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="449"/>
@@ -692,7 +692,7 @@
     </message>
     <message>
         <source>File</source>
-        <translation type="vanished">Datei</translation>
+        <translation>Datei</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="621"/>
@@ -701,7 +701,7 @@
     </message>
     <message>
         <source>Go</source>
-        <translation type="vanished">Los</translation>
+        <translation>Los</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="654"/>
@@ -715,7 +715,7 @@
     </message>
     <message>
         <source>Help</source>
-        <translation type="vanished">Hilfe</translation>
+        <translation>Hilfe</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="631"/>
@@ -744,7 +744,7 @@
     </message>
     <message>
         <source>&lt;p&gt;Built with Qt </source>
-        <translation type="vanished">&lt;p&gt;Kompiliert mit Qt</translation>
+        <translation>&lt;p&gt;Kompiliert mit Qt</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="808"/>
@@ -758,66 +758,66 @@
     </message>
     <message>
         <source>Contact</source>
-        <translation type="vanished">Kontakt</translation>
+        <translation>Kontakt</translation>
     </message>
     <message>
         <source>Translations:</source>
-        <translation type="vanished">Übersetzungen:</translation>
+        <translation>Übersetzungen:</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="306"/>
         <source>Copy or Move to...</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopieren oder Verschieben nach...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="362"/>
         <source>Show Lables</source>
-        <translation type="unfinished"></translation>
+        <translation>Label anzeigen</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="368"/>
         <source>Compact (slower)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kompakt (langsamer)</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="445"/>
         <source>Show Clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Zwischenablage anzeigen</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="541"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Datei</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="548"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Bearbeiten</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="561"/>
         <source>&amp;Go</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Los</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="570"/>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ansicht</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="599"/>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Hilfe</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="807"/>
         <source>Built with Qt </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Kompiliert mit Qt</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="811"/>
         <source>Translators:&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Übersetzer:&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="846"/>
@@ -926,7 +926,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="1883"/>
         <source>No images</source>
-        <translation type="unfinished">Keine Bilder</translation>
+        <translation>Keine Bilder</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1949"/>
@@ -1183,27 +1183,27 @@
     <message>
         <location filename="../dialogs.cpp" line="382"/>
         <source>Show image file name in full screen mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Name der Bilddatei im Vollbildmodus anzeigen</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="386"/>
         <source>Startup folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Verzeichnis bei Programmstart</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="387"/>
         <source>Default, or specified by command line argument</source>
-        <translation type="unfinished"></translation>
+        <translation>Standard oder mit Befehlszeilenparameter angeben</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="388"/>
         <source>Remember last</source>
-        <translation type="unfinished"></translation>
+        <translation>Letztes speichern</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="389"/>
         <source>Specify:</source>
-        <translation type="unfinished"></translation>
+        <translation>Bitte angeben:</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="441"/>
@@ -1233,7 +1233,7 @@
     <message>
         <location filename="../dialogs.cpp" line="485"/>
         <source>keyboard shortcuts:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tastenkombinationen:</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="496"/>
@@ -1243,12 +1243,12 @@
     <message>
         <location filename="../dialogs.cpp" line="501"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Allgemein</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="613"/>
         <source>Choose Startup Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Verzeichnis bei Programmstart wählen</translation>
     </message>
 </context>
 <context>
