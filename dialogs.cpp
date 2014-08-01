@@ -26,6 +26,7 @@ CpMvDialog::CpMvDialog(QWidget *parent) : QDialog(parent)
     opLabel = new QLabel("");
     
     cancelButton = new QPushButton(tr("Cancel"));
+   	cancelButton->setIcon(QIcon::fromTheme("dialog-cancel"));
     cancelButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(cancelButton, SIGNAL(clicked()), this, SLOT(abort()));
 
@@ -233,9 +234,11 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	scrollArea->setFrameShadow(QFrame::Plain);
 	QHBoxLayout *buttonsHbox = new QHBoxLayout;
     QPushButton *okButton = new QPushButton(tr("OK"));
+   	okButton->setIcon(QIcon::fromTheme("dialog-ok"));
     okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	connect(okButton, SIGNAL(clicked()), this, SLOT(saveSettings()));
 	QPushButton *closeButton = new QPushButton(tr("Cancel"));
+   	closeButton->setIcon(QIcon::fromTheme("dialog-cancel"));
 	closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	connect(closeButton, SIGNAL(clicked()), this, SLOT(abort()));
 	buttonsHbox->addWidget(closeButton, 1, Qt::AlignRight);
@@ -625,6 +628,7 @@ CropDialog::CropDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
 
 	QHBoxLayout *buttonsHbox = new QHBoxLayout;
 	QPushButton *okButton = new QPushButton(tr("OK"));
+	okButton->setIcon(QIcon::fromTheme("dialog-ok"));
 	okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
 	buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);
@@ -742,30 +746,46 @@ void CropDialog::ok()
 ResizeDialog::ResizeDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
 {
 	setWindowTitle(tr("Resize Image (Demo)"));
-//	resize(400, 400);
+	resize(300, 200);
+
 	if (GData::dialogLastX)
 		move(GData::dialogLastX, GData::dialogLastY);
 	imageView = imageView_;
 
+	int width = imageView->getImageWidthPreCropped();
+	int height = imageView->getImageHeightPreCropped();
+
 	QHBoxLayout *buttonsHbox = new QHBoxLayout;
 	QPushButton *okButton = new QPushButton(tr("OK"));
-	okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+	okButton->setIcon(QIcon::fromTheme("dialog-ok"));
 	connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
+	QPushButton *cancelButton = new QPushButton(tr("Cancel"));
+	cancelButton->setIcon(QIcon::fromTheme("dialog-cancel"));
+    connect(cancelButton, SIGNAL(clicked()), this, SLOT(abort()));
+	buttonsHbox->addWidget(cancelButton, 1, Qt::AlignRight);
 	buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);
 
 	widthSpin = new QSpinBox;
 	heightSpin = new QSpinBox;
+	widthSpin->setRange(0, width * 10);
+	heightSpin->setRange(0, height * 10);
+	widthSpin->setValue(width);
+	heightSpin->setValue(height);
+
 	QGridLayout *mainGbox = new QGridLayout;
-	QLabel *origSizeLab = new QLabel(tr("Original size"));
-	QLabel *origSizePixelsLab = new QLabel(tr("2565 x 5654"));
-	QLabel *widthLab = new QLabel(tr("Width"));
-	QLabel *heightLab = new QLabel(tr("Height"));
-	QLabel *unitsLab = new QLabel(tr("Units:"));
+	QLabel *origSizeLab = new QLabel(tr("Original size: "));
+
+	QString imageSizeStr = QString::number(width) + " x " + QString::number(height);
+	QLabel *origSizePixelsLab = new QLabel(imageSizeStr);
+	QLabel *widthLab = new QLabel(tr("Width: "));
+	QLabel *heightLab = new QLabel(tr("Height: "));
+	QLabel *unitsLab = new QLabel(tr("Units: "));
 
 	QRadioButton *pixelsRadio = new QRadioButton(tr("Pixels"));
 	QRadioButton *percentRadio = new QRadioButton(tr("Percent"));
 	pixelsRadio->setChecked(true);
 	QCheckBox *lockAspectCb = new QCheckBox(tr("Lock aspect ratio"), this);
+	lockAspectCb->setChecked(true);
 
 	QHBoxLayout *radiosHbox = new QHBoxLayout;
 	radiosHbox->addStretch(1);
@@ -789,16 +809,7 @@ ResizeDialog::ResizeDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	mainVbox->addLayout(mainGbox);
 	mainVbox->addLayout(buttonsHbox);
 	setLayout(mainVbox);
-
-/*	int width = imageView->getImageWidthPreCropped();
-	int height = imageView->getImageHeightPreCropped();*/
-
-/*	topSpin->setRange(0, height);
-	bottomSpin->setRange(0, height);*/
-
-
-//	topSpin->setValue(GData::cropTop);
-//	bottomSpin->setValue(GData::cropHeight);
+	widthSpin->setFocus(Qt::OtherFocusReason);
 }
 
 void ResizeDialog::applyResize(int)
@@ -813,10 +824,14 @@ void ResizeDialog::ok()
 	accept();
 }
 
+void ResizeDialog::abort()
+{
+	reject();
+}
+
 ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
 {
 	setWindowTitle(tr("Colors"));
-	resize(500, 200);
 	if (GData::dialogLastX)
 		move(GData::dialogLastX, GData::dialogLastY);
 	imageView = imageView_;
@@ -824,9 +839,11 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	QHBoxLayout *buttonsHbox = new QHBoxLayout;
 	QPushButton *resetButton = new QPushButton(tr("Reset"));
 	resetButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+	resetButton->setIcon(QIcon::fromTheme("document-revert"));
 	connect(resetButton, SIGNAL(clicked()), this, SLOT(reset()));
 	buttonsHbox->addWidget(resetButton, 0, Qt::AlignLeft);
 	QPushButton *okButton = new QPushButton(tr("OK"));
+	okButton->setIcon(QIcon::fromTheme("dialog-ok"));
 	okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
 	buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);
@@ -1048,15 +1065,18 @@ AppMgmtDialog::AppMgmtDialog(QWidget *parent) : QDialog(parent)
 
 	QHBoxLayout *addRemoveHbox = new QHBoxLayout;
     QPushButton *addButton = new QPushButton(tr("Add"));
+   	addButton->setIcon(QIcon::fromTheme("list-add"));
 	connect(addButton, SIGNAL(clicked()), this, SLOT(add()));
 	addRemoveHbox->addWidget(addButton, 0, Qt::AlignRight);
     QPushButton *removeButton = new QPushButton(tr("Remove"));
+   	removeButton->setIcon(QIcon::fromTheme("list-remove"));
 	connect(removeButton, SIGNAL(clicked()), this, SLOT(remove()));
 	addRemoveHbox->addWidget(removeButton, 0, Qt::AlignRight);
 	addRemoveHbox->addStretch(1);	
 
 	QHBoxLayout *buttonsHbox = new QHBoxLayout;
     QPushButton *okButton = new QPushButton(tr("OK"));
+   	okButton->setIcon(QIcon::fromTheme("dialog-ok"));
     okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
 	buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);
@@ -1141,21 +1161,26 @@ CopyMoveToDialog::CopyMoveToDialog(QWidget *parent, QString thumbsPath) : QDialo
 
 	QHBoxLayout *addRemoveHbox = new QHBoxLayout;
     QPushButton *addButton = new QPushButton(tr("Add"));
+   	addButton->setIcon(QIcon::fromTheme("list-add"));
 	connect(addButton, SIGNAL(clicked()), this, SLOT(add()));
 	addRemoveHbox->addWidget(addButton, 0, Qt::AlignRight);
     QPushButton *removeButton = new QPushButton(tr("Remove"));
+   	removeButton->setIcon(QIcon::fromTheme("list-remove"));
 	connect(removeButton, SIGNAL(clicked()), this, SLOT(remove()));
 	addRemoveHbox->addWidget(removeButton, 0, Qt::AlignRight);
 	addRemoveHbox->addStretch(1);	
 
 	QHBoxLayout *buttonsHbox = new QHBoxLayout;
     QPushButton *closeButton = new QPushButton(tr("Close"));
+	closeButton->setIcon(QIcon::fromTheme("dialog-ok"));
     closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	connect(closeButton, SIGNAL(clicked()), this, SLOT(justClose()));
     QPushButton *copyButton = new QPushButton(tr("Copy"));
+   	copyButton->setIcon(QIcon::fromTheme("edit-copy"));
     copyButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	connect(copyButton, SIGNAL(clicked()), this, SLOT(copy()));
     QPushButton *moveButton = new QPushButton(tr("Move"));
+   	moveButton->setIcon(QIcon::fromTheme("go-next"));
     moveButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	connect(moveButton, SIGNAL(clicked()), this, SLOT(move()));
 	buttonsHbox->addStretch(1);	

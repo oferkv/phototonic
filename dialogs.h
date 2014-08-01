@@ -137,6 +137,7 @@ public:
 
 public slots:
 	void ok();
+	void abort();
 	void applyResize(int);
 
 private:
