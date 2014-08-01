@@ -22,7 +22,7 @@
 #include <QGraphicsDropShadowEffect>
 #include "global.h"
 
-#define NEW_IMAGE_NAME	"newImage.png"
+#define CLIPBOARD_IMAGE_NAME		"clipboard.png"
 #define ROUND(x) ((int) ((x) + 0.5))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
@@ -61,13 +61,15 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	mainVLayout->addWidget(scrlArea);
 	this->setLayout(mainVLayout);
 
-	infoLabel = new QLabel("", this);
+	infoLabel = new QLabel(this);
 	infoLabel->setHidden(true);
+    infoLabel->setMargin(3);
 	infoLabel->move(10, 10);
-    QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect(this);
-    shadow->setColor(QColor(0, 0, 0));
-    shadow->setOffset(1, 1);
-    infoLabel->setGraphicsEffect(shadow);
+	infoLabel->setStyleSheet("QLabel { background-color : black; color : white; border-radius: 3px} ");
+
+	QGraphicsOpacityEffect *effect = new QGraphicsOpacityEffect;
+	effect->	setOpacity(0.5);
+    infoLabel->setGraphicsEffect(effect);
 	
 	mouseMovementTimer = new QTimer(this);
 	connect(mouseMovementTimer, SIGNAL(timeout()), this, SLOT(monitorCursorState()));
@@ -592,7 +594,7 @@ void ImageView::reload()
 	if (newImage || currentImageFullPath.isEmpty())
 	{
 		newImage = true;
-		currentImageFullPath = NEW_IMAGE_NAME;
+		currentImageFullPath = CLIPBOARD_IMAGE_NAME;
 		origImage.load(":/images/no_image.png");
 		displayImage = origImage;
 		displayPixmap = QPixmap::fromImage(displayImage);
