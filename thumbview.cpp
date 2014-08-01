@@ -393,10 +393,10 @@ void ThumbView::load(QString &cliImageName)
 	if (GData::thumbsLayout == Compact)
 		thumbAspect = 1.77;
 	else if (GData::thumbsLayout == Squares)
-		thumbAspect = 1.5;
+		thumbAspect = 2;
 
 	thumbHeight = (GData::thumbsLayout == Squares)? thumbSize * thumbAspect : thumbSize;
-	thumbWidth = thumbHeight * thumbAspect;
+	thumbWidth = (GData::thumbsLayout == Squares)? thumbSize * thumbAspect : thumbHeight * thumbAspect;
 	setIconSize(QSize(thumbWidth, thumbHeight));
 
 	fileFilters->clear();
@@ -563,6 +563,9 @@ void ThumbView::loadThumbsRange()
 
 		if (GData::thumbsLayout == Compact)
 		{
+			if (GData::showLabels)
+				currThumbSize.setHeight(currThumbSize.height() + QFontMetrics(font()).height() + 5);
+			thumbViewModel->item(currThumb)->setSizeHint(currThumbSize);
 			if (isThumbVisible(thumbViewModel->item(currThumb)->index()))
 				setRowHidden(currThumb, false);
 		}

@@ -369,7 +369,7 @@ void Phototonic::createActions()
 	connect(actShowLabels, SIGNAL(triggered()), this, SLOT(showLabels()));
 
 	actClassic = new QAction(tr("Classic Thumbs"), this);
-	actCompact = new QAction(tr("Compact (slower)"), this);
+	actCompact = new QAction(tr("Compact"), this);
 	actSquarish = new QAction(tr("Squarish"), this);
 	connect(actClassic, SIGNAL(triggered()), this, SLOT(setClassicThumbs()));
 	connect(actCompact, SIGNAL(triggered()), this, SLOT(setCompactThumbs()));
