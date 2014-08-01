@@ -1986,10 +1986,11 @@ void Phototonic::slideShow()
 		SlideShowTimer = new QTimer(this);
 		connect(SlideShowTimer, SIGNAL(timeout()), this, SLOT(slideShowHandler()));
 		SlideShowTimer->start(GData::slideShowDelay * 1000);
-		slideShowHandler();
 
-		slideShowAction->setText(tr("End Slide Show"));
+		slideShowAction->setText(tr("Stop Slide Show"));
 		imageView->popMessage(tr("Slide show started"));
+
+		slideShowHandler();
 	}
 }
 
