@@ -181,14 +181,24 @@ void KeyGrabLineEdit::keyPressEvent(QKeyEvent *e)
 	if (e->modifiers() & Qt::AltModifier)
 		modifierText += "Alt+";
 
-	if ((e->key() >= Qt::Key_Shift &&  e->key() <= Qt::Key_ScrollLock) || 
-			(e->key() >= Qt::Key_Super_L &&  e->key() <= Qt::Key_Direction_R) ||
-			e->key() == Qt::Key_AltGr ||
-			e->key() < 0) 
+	if (	(e->key() >= Qt::Key_Shift &&  e->key() <= Qt::Key_ScrollLock)
+		|| 	(e->key() >= Qt::Key_Super_L &&  e->key() <= Qt::Key_Direction_R)
+		||	e->key() == Qt::Key_AltGr
+		||	e->key() < 0) 
+	{
 		return;
+	}
 
 	keyText = QKeySequence(e->key()).toString();
 	keySeqText = modifierText + keyText;
+
+	if (e->modifiers() & Qt::AltModifier && (e->key() > Qt::Key_0 &&  e->key() <= Qt::Key_Colon))
+	{
+		QMessageBox msgBox;
+		msgBox.warning(this, tr("Set shortcut"), keySeqText +
+											tr(" is reserved for shortcuts to external applications"));
+		return;
+	}
 
 	QMapIterator<QString, QAction *> it(GData::actionKeys);
 	while (it.hasNext())
@@ -197,7 +207,7 @@ void KeyGrabLineEdit::keyPressEvent(QKeyEvent *e)
 		if (it.value()->shortcut().toString() == keySeqText)
 		{
 			QMessageBox msgBox;
-			msgBox.warning(this, tr("Set shortcut"), tr("Already assigned to \"")
+			msgBox.warning(this, tr("Set shortcut"), keySeqText + tr(" is already assigned to \"")
 																		+ it.key() + tr("\" action"));
 			return;
 		}
