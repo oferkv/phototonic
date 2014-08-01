@@ -103,6 +103,7 @@ private slots:
 	void rotateRight();
 	void flipVert();
 	void cropImage();
+	void resizeImage();
 	void freeRotateLeft();
 	void freeRotateRight();
 	void showColorsDialog();
@@ -195,6 +196,7 @@ private:
 	QAction *flipHAct;
 	QAction *flipVAct;
 	QAction *cropAct;
+	QAction *resizeAct;
 	QAction *freeRotateLeftAct;
 	QAction *freeRotateRightAct;
 	QAction *colorsAct;

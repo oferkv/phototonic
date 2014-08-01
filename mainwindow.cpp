@@ -161,6 +161,7 @@ void Phototonic::createImageView()
 	imageView->addAction(flipHAct);
 	imageView->addAction(flipVAct);
 	imageView->addAction(cropAct);
+	imageView->addAction(resizeAct);
 	imageView->addAction(saveAction);
 	imageView->addAction(saveAsAction);
 	imageView->addAction(copyImageAction);
@@ -220,8 +221,8 @@ void Phototonic::createImageView()
 	transformSubMenu->addAction(flipVAct);
 	transformSubMenu->addAction(cropAct);
 
-	MirroringSubMenu = new QMenu(tr("Mirror"));
-	mirrorSubMenuAct = new QAction(tr("Mirror"), this);
+	MirroringSubMenu = new QMenu(tr("Mirroring"));
+	mirrorSubMenuAct = new QAction(tr("Mirroring"), this);
 	mirrorSubMenuAct->setMenu(MirroringSubMenu);
 	imageView->ImagePopUpMenu->addAction(mirrorSubMenuAct);
 	mirroringGroup = new QActionGroup(this);
@@ -234,6 +235,7 @@ void Phototonic::createImageView()
 	addMenuSeparator(transformSubMenu);
 	transformSubMenu->addAction(keepTransformAct);
 	imageView->ImagePopUpMenu->addAction(colorsAct);
+	imageView->ImagePopUpMenu->addAction(resizeAct);
 
 	addMenuSeparator(imageView->ImagePopUpMenu);
 	imageView->ImagePopUpMenu->addAction(copyMoveAction);
@@ -492,6 +494,9 @@ void Phototonic::createActions()
 
 	cropAct = new QAction(tr("Cropping"), this);
 	connect(cropAct, SIGNAL(triggered()), this, SLOT(cropImage()));
+
+	resizeAct = new QAction(tr("Resize Image"), this);
+	connect(resizeAct, SIGNAL(triggered()), this, SLOT(resizeImage()));
 
 	freeRotateLeftAct = new QAction(tr("Rotate 1 degree CCW"), this);
 	connect(freeRotateLeftAct, SIGNAL(triggered()), this, SLOT(freeRotateLeft()));
@@ -1111,6 +1116,16 @@ void Phototonic::flipVert()
 void Phototonic::cropImage()
 {
 	CropDialog *dialog = new CropDialog(this, imageView);
+
+	imageView->setCursorOverrides(false);
+	dialog->exec();
+	imageView->setCursorOverrides(true);
+	delete(dialog);
+}
+
+void Phototonic::resizeImage()
+{
+	ResizeDialog *dialog = new ResizeDialog(this, imageView);
 
 	imageView->setCursorOverrides(false);
 	dialog->exec();
@@ -2372,7 +2387,7 @@ void Phototonic::rename()
 									+ QFileInfo(selectedImageFileName).fileName()
 									+ ":\t\t\t",
 									QLineEdit::Normal,
-									QFileInfo(selectedImageFileName).baseName(),
+									QFileInfo(selectedImageFileName).completeBaseName(),
 									&ok);
 
 	if (!ok)													

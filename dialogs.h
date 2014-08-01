@@ -128,6 +128,23 @@ private:
 	ImageView *imageView;
 };
 
+class ResizeDialog : public QDialog
+{
+    Q_OBJECT
+
+public:
+    ResizeDialog(QWidget *parent, ImageView *imageView);
+
+public slots:
+	void ok();
+	void applyResize(int);
+
+private:
+	QSpinBox *widthSpin;
+	QSpinBox *heightSpin;
+	ImageView *imageView;
+};
+
 class ColorsDialog : public QDialog
 {
     Q_OBJECT

@@ -739,6 +739,80 @@ void CropDialog::ok()
 	accept();
 }
 
+ResizeDialog::ResizeDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
+{
+	setWindowTitle(tr("Resize Image (Demo)"));
+//	resize(400, 400);
+	if (GData::dialogLastX)
+		move(GData::dialogLastX, GData::dialogLastY);
+	imageView = imageView_;
+
+	QHBoxLayout *buttonsHbox = new QHBoxLayout;
+	QPushButton *okButton = new QPushButton(tr("OK"));
+	okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+	connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
+	buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);
+
+	widthSpin = new QSpinBox;
+	heightSpin = new QSpinBox;
+	QGridLayout *mainGbox = new QGridLayout;
+	QLabel *origSizeLab = new QLabel(tr("Original size"));
+	QLabel *origSizePixelsLab = new QLabel(tr("2565 x 5654"));
+	QLabel *widthLab = new QLabel(tr("Width"));
+	QLabel *heightLab = new QLabel(tr("Height"));
+	QLabel *unitsLab = new QLabel(tr("Units:"));
+
+	QRadioButton *pixelsRadio = new QRadioButton(tr("Pixels"));
+	QRadioButton *percentRadio = new QRadioButton(tr("Percent"));
+	pixelsRadio->setChecked(true);
+	QCheckBox *lockAspectCb = new QCheckBox(tr("Lock aspect ratio"), this);
+
+	QHBoxLayout *radiosHbox = new QHBoxLayout;
+	radiosHbox->addStretch(1);
+	radiosHbox->addWidget(pixelsRadio);
+	radiosHbox->addWidget(percentRadio);
+
+	mainGbox->addWidget(origSizeLab, 2, 2, 1, 1);
+	mainGbox->addWidget(origSizePixelsLab, 2, 4, 1, 1);
+	mainGbox->addWidget(widthLab, 6, 2, 1, 1);
+	mainGbox->addWidget(heightLab, 7, 2, 1, 1);
+	mainGbox->addWidget(unitsLab, 3, 2, 1, 1);
+	mainGbox->addWidget(widthSpin, 6, 4, 1, 2);
+	mainGbox->addWidget(heightSpin, 7, 4, 1, 2);
+	mainGbox->addLayout(radiosHbox, 3, 4, 1, 3);
+	mainGbox->addWidget(lockAspectCb, 5, 2, 1, 3);
+	mainGbox->setRowStretch(8, 1);
+	mainGbox->setColumnStretch(3, 1);
+
+
+	QVBoxLayout *mainVbox = new QVBoxLayout;
+	mainVbox->addLayout(mainGbox);
+	mainVbox->addLayout(buttonsHbox);
+	setLayout(mainVbox);
+
+/*	int width = imageView->getImageWidthPreCropped();
+	int height = imageView->getImageHeightPreCropped();*/
+
+/*	topSpin->setRange(0, height);
+	bottomSpin->setRange(0, height);*/
+
+
+//	topSpin->setValue(GData::cropTop);
+//	bottomSpin->setValue(GData::cropHeight);
+}
+
+void ResizeDialog::applyResize(int)
+{
+	imageView->refresh();
+}
+
+void ResizeDialog::ok()
+{
+	GData::dialogLastX = pos().x();
+	GData::dialogLastY = pos().y(); 
+	accept();
+}
+
 ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
 {
 	setWindowTitle(tr("Colors"));
