@@ -2365,10 +2365,15 @@ void Phototonic::rename()
 	}
 
 	bool ok;
-	QString fileName = QFileInfo(selectedImageFileName).fileName();
-	QString title = tr("Rename ") + fileName;
-	QString newImageName = QInputDialog::getText(this, title, tr("New name:"),
-															QLineEdit::Normal, fileName, &ok);
+
+	QString title = tr("Rename Image");
+	QString newImageName = QInputDialog::getText(this,
+									title, tr("Enter a new name for ")
+									+ QFileInfo(selectedImageFileName).fileName()
+									+ ":\t\t\t",
+									QLineEdit::Normal,
+									QFileInfo(selectedImageFileName).baseName(),
+									&ok);
 
 	if (!ok)													
 		return;
@@ -2380,6 +2385,7 @@ void Phototonic::rename()
 		return;
 	}
 
+	newImageName += "." + QFileInfo(selectedImageFileName).suffix();
 	QString currnetFilePath = selectedImageFileName;
 	QFile currentFile(currnetFilePath);
 	QString newImageFullPath = thumbView->currentViewDir + QDir::separator() + newImageName;
