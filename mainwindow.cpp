@@ -38,6 +38,8 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	loadShortcuts();
 	addDockWidget(Qt::LeftDockWidgetArea, iiDock);
 	copyMoveToDialog = 0;
+	(viewMenu->insertMenu(thumbsZoomInAct, QMainWindow::createPopupMenu()))->
+																	setText(tr("Docks and Toolbars"));
 
 	connect(qApp, SIGNAL(focusChanged(QWidget*, QWidget*)), 
 				this, SLOT(updateActions(QWidget*, QWidget*)));
@@ -120,8 +122,8 @@ void Phototonic::createThumbView()
 	iiDock = new QDockWidget(tr("Image Info"), this);
 	iiDock->setObjectName("Image Info");
 	iiDock->setWidget(thumbView->infoView);
-	connect(iiDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setToolBarsVisibility()));	
-	connect(iiDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setToolBarsVisibility()));	
+	connect(iiDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setIiDockVisibility()));	
+	connect(iiDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setIiDockVisibility()));	
 }
 
 void Phototonic::addMenuSeparator(QWidget *widget)
@@ -570,7 +572,6 @@ void Phototonic::createMenus()
 	viewMenu = menuBar()->addMenu(tr("&View"));
 	viewMenu->addAction(thumbsZoomInAct);
 	viewMenu->addAction(thumbsZoomOutAct);
-	viewMenu->addAction(actShowLabels);
 	sortMenu = viewMenu->addMenu(tr("Sort By"));
 	sortTypesGroup = new QActionGroup(this);
 	sortTypesGroup->addAction(actName);
@@ -591,6 +592,7 @@ void Phototonic::createMenus()
 	thumbLayoutsGroup->addAction(actSquarish);
 	viewMenu->addActions(thumbLayoutsGroup->actions());
 	viewMenu->addSeparator();
+	viewMenu->addAction(actShowLabels);
 	viewMenu->addAction(actShowHidden);
 	viewMenu->addSeparator();
 	viewMenu->addAction(refreshAction);
@@ -625,7 +627,7 @@ void Phototonic::createToolBars()
 	editToolBar->addAction(pasteAction);
 	editToolBar->addAction(deleteAction);
 	editToolBar->addAction(showClipboardAction);
-	connect(editToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setToolBarsVisibility()));
+	connect(editToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setEditToolBarVisibility()));
 
 	/* Navigation */
 	goToolBar = addToolBar(tr("Navigation"));
@@ -648,7 +650,7 @@ void Phototonic::createToolBars()
 	goToolBar->addWidget(pathBar);
 	goToolBar->addAction(refreshAction);
 	goToolBar->addAction(subFoldersAction);
-	connect(goToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setToolBarsVisibility()));
+	connect(goToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setGoToolBarVisibility()));
 
 	/* View */
 	viewToolBar = addToolBar(tr("View"));
@@ -670,7 +672,7 @@ void Phototonic::createToolBars()
 
 	viewToolBar->addSeparator();
 	viewToolBar->addWidget(filterBar);
-	connect(viewToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setToolBarsVisibility()));	
+	connect(viewToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setViewToolBarVisibility()));	
 }
 
 void Phototonic::createStatusBar()
@@ -697,8 +699,8 @@ void Phototonic::createFSTree()
 
 	fsTree = new FSTree(fsDock);
 	fsDock->setWidget(fsTree);
-	connect(fsDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setToolBarsVisibility()));	
-	connect(fsDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setToolBarsVisibility()));	
+	connect(fsDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setFsDockVisibility()));	
+	connect(fsDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setFsDockVisibility()));	
 	addDockWidget(Qt::LeftDockWidgetArea, fsDock);
 
 	// Context menu
@@ -1901,15 +1903,34 @@ void Phototonic::openOp()
 	}
 }
 
-void Phototonic::setToolBarsVisibility()
+void Phototonic::setEditToolBarVisibility()
+{
+	editToolBarVisible = editToolBar->isVisible();
+}
+
+void Phototonic::setGoToolBarVisibility()
+{
+	goToolBarVisible = goToolBar->isVisible();
+}
+
+void Phototonic::setViewToolBarVisibility()
+{
+	viewToolBarVisible = viewToolBar->isVisible();
+}
+
+void Phototonic::setFsDockVisibility()
 {
 	if (stackedWidget->currentIndex() == imageViewIdx)
 		return;
 
-	editToolBarVisible = editToolBar->isVisible();
-	goToolBarVisible = goToolBar->isVisible();
-	viewToolBarVisible = viewToolBar->isVisible();
 	fsDockVisible = fsDock->isVisible();
+}
+
+void Phototonic::setIiDockVisibility()
+{
+	if (stackedWidget->currentIndex() == imageViewIdx)
+		return;
+
 	iiDockVisible = iiDock->isVisible();
 }
 

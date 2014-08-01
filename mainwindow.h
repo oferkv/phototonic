@@ -128,7 +128,11 @@ private slots:
 	void updateExternalApps();
 	void runExternalApp();
 	void cleanupExternalApp();
-	void setToolBarsVisibility();
+	void setEditToolBarVisibility();
+	void setGoToolBarVisibility();
+	void setViewToolBarVisibility();
+	void setFsDockVisibility();
+	void setIiDockVisibility();
 
 private:
 	QString cliFileName;
