@@ -89,7 +89,7 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 
 	GData::brightContrastEnabled = false;
 	GData::contrastVal = CONTRAST_MID;
-	GData::brightVal = 0;
+	GData::brightVal = BRIGHTNESS_MID;
 
 	GData::dialogLastX = 0;
 	GData::dialogLastY = 0;
@@ -496,12 +496,16 @@ void ImageView::colorize()
 	int r, g, b;
 	QRgb *line;
 	unsigned char h, s, l;
-	static int contrastTransform[256];
-	 
+	static unsigned char contrastTransform[256];	
+	static unsigned char brightTransform[256];
+
 	if (GData::brightContrastEnabled)
 	{
+		int i;
 		float contrast = ((float)GData::contrastVal / 100.0);
-		for(int i = 0; i < 256; i++)
+		float brightness = ((float)GData::brightVal / 100.0);
+		
+		for(i = 0; i < 256; ++i)
 		{
 			if (i < (int)(128.0f + 128.0f * tan(contrast)) && i > (int)(128.0f - 128.0f * tan(contrast)))
 				contrastTransform[i] = (i - 128) / tan(contrast) + 128;
@@ -509,6 +513,11 @@ void ImageView::colorize()
 				contrastTransform[i] = 255;
 			else
 				contrastTransform[i] = 0;
+		}
+
+		for (i = 0; i < 256; ++i)
+		{
+			brightTransform[i] = MIN(255,(int)((255.0 * pow(i / 255.0, 1.0 / brightness)) + 0.5));
 		}
 	}
 
@@ -524,9 +533,12 @@ void ImageView::colorize()
 
 			if (GData::brightContrastEnabled)
 			{
-				r = bound0_255(contrastTransform[r] + GData::brightVal);
-				g = bound0_255(contrastTransform[g] + GData::brightVal);
-				b = bound0_255(contrastTransform[b] + GData::brightVal);
+				r = bound0_255(contrastTransform[r]);
+				g = bound0_255(contrastTransform[g]);
+				b = bound0_255(contrastTransform[b]);
+				r = bound0_255(brightTransform[r]);
+				g = bound0_255(brightTransform[g]);
+				b = bound0_255(brightTransform[b]);
 			}
 
 			if (GData::hueSatEnabled)

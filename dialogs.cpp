@@ -769,7 +769,7 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 
 	hueSlide = new QSlider(Qt::Horizontal);
 	hueSlide->setTickPosition(QSlider::TicksAbove);
-	hueSlide->setTickInterval(25);
+	hueSlide->setTickInterval(64);
 	hueSlide->setRange(0, 255);
 	hueSlide->setTracking(false);
 	hueSlide->setValue(GData::hueVal);
@@ -781,7 +781,7 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 
 	saturationSlide = new QSlider(Qt::Horizontal);
 	saturationSlide->setTickPosition(QSlider::TicksAbove);
-	saturationSlide->setTickInterval(25);
+	saturationSlide->setTickInterval(100);
 	saturationSlide->setRange(0, 500);
 	saturationSlide->setTracking(false);
 	saturationSlide->setValue(GData::saturationVal);
@@ -789,7 +789,7 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 
 	lightnessSlide = new QSlider(Qt::Horizontal);
 	lightnessSlide->setTickPosition(QSlider::TicksAbove);
-	lightnessSlide->setTickInterval(25);
+	lightnessSlide->setTickInterval(100);
 	lightnessSlide->setRange(0, 500);
 	lightnessSlide->setTracking(false);
 	lightnessSlide->setValue(GData::lightnessVal);
@@ -838,16 +838,16 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 
 	brightSlide = new QSlider(Qt::Horizontal);
 	brightSlide->setTickPosition(QSlider::TicksAbove);
-	brightSlide->setTickInterval(50);
-	brightSlide->setRange(-200, 200);
+	brightSlide->setTickInterval(100);
+	brightSlide->setRange(0, 400);
 	brightSlide->setTracking(false);
 	brightSlide->setValue(GData::brightVal);
 	connect(brightSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
 
 	contrastSlide = new QSlider(Qt::Horizontal);
 	contrastSlide->setTickPosition(QSlider::TicksAbove);
-	contrastSlide->setTickInterval(50);
-	contrastSlide->setRange(-79, 157);
+	contrastSlide->setTickInterval(39);
+	contrastSlide->setRange(0, 157);
 	contrastSlide->setTracking(false);
 	contrastSlide->setValue(GData::contrastVal);
 	contrastSlide->setInvertedAppearance(true);
@@ -903,7 +903,7 @@ void ColorsDialog::reset()
 	GData::hueBlueChannel = true;
 
 	contrastSlide->setValue(CONTRAST_MID);
-	brightSlide->setValue(0);
+	brightSlide->setValue(BRIGHTNESS_MID);
 	
 	imageView->refresh();
 }
