@@ -922,9 +922,6 @@ void Phototonic::chooseExternalApp()
 
 void Phototonic::showSettings()
 {
-	if (stackedWidget->currentIndex() == imageViewIdx)
-		imageView->setCursorOverrides(false);
-
 	if (GData::slideShowActive)
 		slideShow();
 	
@@ -945,9 +942,6 @@ void Phototonic::showSettings()
 	}
 
 	delete dialog;
-
-	if (stackedWidget->currentIndex() == imageViewIdx)
-		imageView->setCursorOverrides(true);
 }
 
 void Phototonic::toggleFullScreen()
@@ -1002,7 +996,6 @@ void Phototonic::copyThumbs()
 
 void Phototonic::copyMoveImages()
 {
-	imageView->setCursorOverrides(false);
 	copyMoveToDialog = new CopyMoveToDialog(this, getSelectedPath());
 	if (copyMoveToDialog->exec())
 	{
@@ -1049,7 +1042,6 @@ void Phototonic::copyMoveImages()
 	
 	delete(copyMoveToDialog);
 	copyMoveToDialog = 0;
-	imageView->setCursorOverrides(true);
 }
 
 void Phototonic::thumbsZoomIn()
@@ -1139,10 +1131,7 @@ void Phototonic::flipVert()
 void Phototonic::cropImage()
 {
 	CropDialog *dialog = new CropDialog(this, imageView);
-
-	imageView->setCursorOverrides(false);
 	dialog->exec();
-	imageView->setCursorOverrides(true);
 	delete(dialog);
 }
 
@@ -1150,12 +1139,9 @@ void Phototonic::resizeImage()
 {
 	ResizeDialog *dialog = new ResizeDialog(this, imageView);
 
-	imageView->setCursorOverrides(false);
-
 	if (dialog->exec())
 		imageView->refresh();
 
-	imageView->setCursorOverrides(true);
 	delete(dialog);
 }
 
@@ -1178,9 +1164,7 @@ void Phototonic::freeRotateRight()
 void Phototonic::showColorsDialog()
 {
 	ColorsDialog *dialog = new ColorsDialog(this, imageView);
-	imageView->setCursorOverrides(false);
 	dialog->exec();
-	imageView->setCursorOverrides(true);
 	delete(dialog);
 }
 
@@ -1353,10 +1337,8 @@ void Phototonic::deleteViewerImage()
 	QFileInfo fileInfo = QFileInfo(imageView->currentImageFullPath);
 	QString fileName = fileInfo.fileName();
 
-	imageView->setCursorOverrides(false);
 	ret = QMessageBox::warning(this, tr("Delete image"), tr("Permanently delete ") + fileName,
 									QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
-	imageView->setCursorOverrides(true);
 
 	if (ret == QMessageBox::Yes)
 	{
@@ -1887,8 +1869,10 @@ void Phototonic::mouseReleaseEvent(QMouseEvent *event)
 		if (event->button() == Qt::LeftButton)
 		{
 			imageView->setMouseMoveData(false, 0, 0);
-			QApplication::setOverrideCursor(Qt::OpenHandCursor);
+			while (QApplication::overrideCursor())
+				QApplication::restoreOverrideCursor();
 		}
+		
 	}
 }
 
@@ -1985,7 +1969,6 @@ void Phototonic::loadImageFile(QString imageFileName)
 		GData::appSettings->setValue("Geometry", saveGeometry());
 		GData::appSettings->setValue("WindowState", saveState());
 	
-		QApplication::setOverrideCursor(Qt::OpenHandCursor);
 		stackedWidget->setCurrentIndex(imageViewIdx);
 		setThumbViewWidgetsVisible(false);
 		if (GData::isFullScreen == true)

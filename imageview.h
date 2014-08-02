@@ -79,7 +79,6 @@ public:
 	void refresh();
 	void refreshColors();
 	void reload();
-	void setCursorOverrides(bool override);
 	int getImageWidthPreCropped();
 	int getImageHeightPreCropped();
 	bool isNewImage();

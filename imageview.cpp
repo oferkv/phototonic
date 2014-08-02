@@ -715,7 +715,6 @@ void ImageView::setCursorHiding(bool hide)
 
 		if (GData::enableImageInfoFS)
 			infoLabel->hide();
-
 	}
 }
 
@@ -882,26 +881,8 @@ void ImageView::saveImage()
 	popMessage(tr("Image saved"));
 }
 
-void ImageView::setCursorOverrides(bool override)
-{
-	if (override)
-	{
-		QApplication::setOverrideCursor(Qt::OpenHandCursor);
-		if (mainWindow->isFullScreen())
-			setCursorHiding(true);
-	}
-	else
-	{
-		setCursorHiding(false);
-		while (QApplication::overrideCursor())
-			QApplication::restoreOverrideCursor();
-	}
-}
-
 void ImageView::saveImageAs()
 {
-	setCursorOverrides(false);
-
 	Exiv2::Image::AutoPtr exifImage;
 	Exiv2::Image::AutoPtr newExifImage;
 	bool exifError = false;
@@ -948,15 +929,14 @@ void ImageView::saveImageAs()
 			popMessage(tr("Image saved"));
 		}
 	}
-
-	setCursorOverrides(true);
 }
 
 void ImageView::contextMenuEvent(QContextMenuEvent *)
 {
-	setCursorOverrides(false);
+	while (QApplication::overrideCursor())
+		QApplication::restoreOverrideCursor();
+
 	ImagePopUpMenu->exec(QCursor::pos());
-	setCursorOverrides(true);
 }
 
 int ImageView::getImageWidthPreCropped()
