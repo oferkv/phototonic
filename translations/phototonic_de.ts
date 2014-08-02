@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="de_DE">
+<TS version="2.0" language="de_DE">
 <context>
     <name>AppMgmtDialog</name>
     <message>
@@ -172,7 +172,7 @@
     </message>
     <message>
         <source>Choose Directory</source>
-        <translation type="vanished">Verzeichnis auswählen</translation>
+        <translation>Verzeichnis auswählen</translation>
     </message>
 </context>
 <context>
@@ -238,7 +238,7 @@
     <name>ImageView</name>
     <message>
         <source>New image</source>
-        <translation type="vanished">Neues Bild</translation>
+        <translation>Neues Bild</translation>
     </message>
     <message>
         <location filename="../imageview.cpp" line="615"/>
@@ -332,7 +332,7 @@
     </message>
     <message>
         <source>Mirror</source>
-        <translation type="vanished">Spiegeln</translation>
+        <translation>Spiegeln</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="266"/>
@@ -386,18 +386,18 @@
     </message>
     <message>
         <source>Copy/Move to...</source>
-        <translation type="vanished">Kopieren/ Verschieben nach...</translation>
+        <translation>Kopieren/ Verschieben nach...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="42"/>
         <source>Docks and Toolbars</source>
-        <translation type="unfinished"></translation>
+        <translation>Dock und Werkzeugleiste</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="224"/>
         <location filename="../mainwindow.cpp" line="225"/>
         <source>Mirroring</source>
-        <translation type="unfinished"></translation>
+        <translation>Spiegeln</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="313"/>
@@ -472,7 +472,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="366"/>
         <source>Show Labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Label anzeigen</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="371"/>
@@ -573,11 +573,11 @@
     <message>
         <location filename="../mainwindow.cpp" line="2026"/>
         <source>Stop Slide Show</source>
-        <translation type="unfinished"></translation>
+        <translation>Diashow beenden</translation>
     </message>
     <message>
         <source>New Image</source>
-        <translation type="vanished">Neues Bild</translation>
+        <translation>Neues Bild</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="453"/>
@@ -712,7 +712,7 @@
     </message>
     <message>
         <source>File</source>
-        <translation type="vanished">Datei</translation>
+        <translation>Datei</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="628"/>
@@ -721,7 +721,7 @@
     </message>
     <message>
         <source>Go</source>
-        <translation type="vanished">Los</translation>
+        <translation>Los</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="661"/>
@@ -735,7 +735,7 @@
     </message>
     <message>
         <source>Help</source>
-        <translation type="vanished">Hilfe</translation>
+        <translation>Hilfe</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="638"/>
@@ -764,7 +764,7 @@
     </message>
     <message>
         <source>&lt;p&gt;Built with Qt </source>
-        <translation type="vanished">&lt;p&gt;Kompiliert mit Qt</translation>
+        <translation>&lt;p&gt;Kompiliert mit Qt</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="815"/>
@@ -778,11 +778,11 @@
     </message>
     <message>
         <source>Contact</source>
-        <translation type="vanished">Kontakt</translation>
+        <translation>Kontakt</translation>
     </message>
     <message>
         <source>Translations:</source>
-        <translation type="vanished">Übersetzungen:</translation>
+        <translation>Übersetzungen:</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="310"/>
@@ -791,11 +791,11 @@
     </message>
     <message>
         <source>Show Lables</source>
-        <translation type="vanished">Label anzeigen</translation>
+        <translation>Label anzeigen</translation>
     </message>
     <message>
         <source>Compact (slower)</source>
-        <translation type="vanished">Kompakt (langsamer)</translation>
+        <translation>Kompakt (langsamer)</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="449"/>
@@ -805,7 +805,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="498"/>
         <source>Resize Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Bildgröße ändern</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="548"/>
@@ -968,7 +968,7 @@
     </message>
     <message>
         <source>End Slide Show</source>
-        <translation type="vanished">Diashow beenden</translation>
+        <translation>Diashow beenden</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2027"/>
@@ -1024,12 +1024,12 @@
     <message>
         <location filename="../mainwindow.cpp" line="2384"/>
         <source>Rename Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Bild umbenennen</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2386"/>
         <source>Enter a new name for </source>
-        <translation type="unfinished"></translation>
+        <translation>Neuen Namen eingeben</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2399"/>
@@ -1102,52 +1102,52 @@
     <message>
         <location filename="../dialogs.cpp" line="748"/>
         <source>Resize Image (Demo)</source>
-        <translation type="unfinished"></translation>
+        <translation>Bildgröße ändern (Demo)</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="759"/>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="762"/>
         <source>Cancel</source>
-        <translation type="unfinished">Abbrechen</translation>
+        <translation>Abbrechen</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="776"/>
         <source>Original size: </source>
-        <translation type="unfinished"></translation>
+        <translation>Originalgröße:</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="780"/>
         <source>Width: </source>
-        <translation type="unfinished"></translation>
+        <translation>Breite:</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="781"/>
         <source>Height: </source>
-        <translation type="unfinished"></translation>
+        <translation>Höhe:</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="782"/>
         <source>Units: </source>
-        <translation type="unfinished"></translation>
+        <translation>Einheit: </translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="784"/>
         <source>Pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>Pixel</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="785"/>
         <source>Percent</source>
-        <translation type="unfinished"></translation>
+        <translation>Prozent</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="787"/>
         <source>Lock aspect ratio</source>
-        <translation type="unfinished"></translation>
+        <translation>Größenverhältnis beibehalten</translation>
     </message>
 </context>
 <context>
@@ -1316,11 +1316,11 @@
     <message>
         <location filename="../dialogs.cpp" line="488"/>
         <source>Keyboard Shortcuts:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tastenkombinationen:</translation>
     </message>
     <message>
         <source>keyboard shortcuts:</source>
-        <translation type="vanished">Tastenkombinationen:</translation>
+        <translation>Tastenkombinationen:</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="499"/>
