@@ -38,6 +38,8 @@ namespace GData
 	bool keepTransform;
 	bool flipH;
 	bool flipV;
+	int scaledWidth;
+	int scaledHeight;
 	int defaultSaveQuality;
 	int cropLeft;
 	int cropTop;

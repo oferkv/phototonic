@@ -186,6 +186,7 @@ void Phototonic::createImageView()
 	imageView->addAction(moveDownAct);
 	imageView->addAction(showClipboardAction);
 	imageView->addAction(copyMoveAction);
+	imageView->addAction(resizeAct);
 
 	// Actions
 	addMenuSeparator(imageView->ImagePopUpMenu);
@@ -199,7 +200,7 @@ void Phototonic::createImageView()
 	addMenuSeparator(imageView->ImagePopUpMenu);
 	zoomSubMenu = new QMenu(tr("Zoom"));
 	zoomSubMenuAct = new QAction(tr("Zoom"), this);
-	zoomSubMenuAct->setIcon(QIcon::fromTheme("zoom-fit-best", QIcon(":/images/zoom.png")));
+	zoomSubMenuAct->setIcon(QIcon::fromTheme("edit-find", QIcon(":/images/zoom.png")));
 	zoomSubMenuAct->setMenu(zoomSubMenu);
 	imageView->ImagePopUpMenu->addAction(zoomSubMenuAct);
 	zoomSubMenu->addAction(zoomInAct);
@@ -495,7 +496,8 @@ void Phototonic::createActions()
 	cropAct = new QAction(tr("Cropping"), this);
 	connect(cropAct, SIGNAL(triggered()), this, SLOT(cropImage()));
 
-	resizeAct = new QAction(tr("Resize Image"), this);
+	resizeAct = new QAction(tr("Scale Image"), this);
+	resizeAct->setIcon(QIcon::fromTheme("transform-scale"));
 	connect(resizeAct, SIGNAL(triggered()), this, SLOT(resizeImage()));
 
 	freeRotateLeftAct = new QAction(tr("Rotate 1 degree CCW"), this);
@@ -1149,7 +1151,10 @@ void Phototonic::resizeImage()
 	ResizeDialog *dialog = new ResizeDialog(this, imageView);
 
 	imageView->setCursorOverrides(false);
-	dialog->exec();
+
+	if (dialog->exec())
+		imageView->refresh();
+
 	imageView->setCursorOverrides(true);
 	delete(dialog);
 }
@@ -1744,6 +1749,7 @@ void Phototonic::loadShortcuts()
 	GData::actionKeys[moveLeftAct->text()] = moveLeftAct;
 	GData::actionKeys[copyMoveAction->text()] = copyMoveAction;
 	GData::actionKeys[goUpAction->text()] = goUpAction;
+	GData::actionKeys[resizeAct->text()] = resizeAct;
 	
 	GData::appSettings->beginGroup("Shortcuts");
 	QStringList groupKeys = GData::appSettings->childKeys();
@@ -1806,6 +1812,7 @@ void Phototonic::loadShortcuts()
 		moveLeftAct->setShortcut(QKeySequence("Left"));
 		moveRightAct->setShortcut(QKeySequence("Right"));
 		copyMoveAction->setShortcut(QKeySequence("M"));
+		resizeAct->setShortcut(QKeySequence("Ctrl+L"));
 	}
 		
 	GData::appSettings->endGroup();
@@ -2152,8 +2159,8 @@ void Phototonic::scrollToLastImage()
 {
 	if (thumbView->thumbViewModel->rowCount() > 0) 
 	{
-		thumbView->setCurrentIndexByName(imageView->currentImageFullPath);
-		thumbView->selectCurrentIndex();
+		if (thumbView->setCurrentIndexByName(imageView->currentImageFullPath))
+			thumbView->selectCurrentIndex();
 	}
 }
 

@@ -78,7 +78,7 @@ public:
 		isNeedScroll = needScroll;
 	}
 	void setThumbColors();
-	void setCurrentIndexByName(QString &FileName);
+	bool setCurrentIndexByName(QString &FileName);
 	void selectCurrentIndex();
 	int getNextRow();
 	int getPrevRow();

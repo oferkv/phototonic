@@ -570,7 +570,11 @@ void ImageView::refresh()
 	if (isAnimation)
 		return;
 
-	displayImage = origImage;
+	if (GData::scaledWidth)
+		displayImage = origImage.scaled(GData::scaledWidth, GData::scaledHeight,
+											Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+	else
+		displayImage = origImage;
 	transform();
 	if (GData::brightContrastEnabled || GData::hueSatEnabled)
 		colorize();
@@ -602,6 +606,8 @@ void ImageView::reload()
 		GData::flipH = false;
 		GData::flipV = false;
 	}
+	GData::scaledWidth = 0;
+	GData::scaledHeight = 0;
 
 	if (newImage || currentImageFullPath.isEmpty())
 	{

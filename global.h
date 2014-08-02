@@ -56,6 +56,8 @@ namespace GData
 	extern bool keepTransform;
 	extern bool flipH;
 	extern bool flipV;
+	extern int scaledWidth;
+	extern int scaledHeight;
 	extern int defaultSaveQuality;
 	extern int cropLeft;
 	extern int cropTop;

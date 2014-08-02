@@ -231,6 +231,7 @@ void SettingsDialog::setActionKeyText(const QString &text)
 SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 {
 	setWindowTitle(tr("Preferences"));
+	setWindowIcon(QIcon::fromTheme("document-properties", QIcon(":/images/phototonic.png")));
 
 	int height = parent->size().height() - 50;
 	if (height > 800)
@@ -755,18 +756,19 @@ void CropDialog::ok()
 
 ResizeDialog::ResizeDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
 {
-	setWindowTitle(tr("Resize Image (Demo)"));
+	setWindowTitle(tr("Scale Image"));
+	setWindowIcon(QIcon::fromTheme("transform-scale", QIcon(":/images/phototonic.png")));
 	resize(300, 200);
 
 	if (GData::dialogLastX)
 		move(GData::dialogLastX, GData::dialogLastY);
 	imageView = imageView_;
 
-	int width = imageView->getImageWidthPreCropped();
-	int height = imageView->getImageHeightPreCropped();
+	width = lastWidth = imageView->getImageWidthPreCropped();
+	height = lastHeight = imageView->getImageHeightPreCropped();
 
 	QHBoxLayout *buttonsHbox = new QHBoxLayout;
-	QPushButton *okButton = new QPushButton(tr("OK"));
+	QPushButton *okButton = new QPushButton(tr("Scale"));
 	okButton->setIcon(QIcon::fromTheme("dialog-ok"));
 	connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
 	QPushButton *cancelButton = new QPushButton(tr("Cancel"));
@@ -776,26 +778,36 @@ ResizeDialog::ResizeDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);
 
 	widthSpin = new QSpinBox;
-	heightSpin = new QSpinBox;
 	widthSpin->setRange(0, width * 10);
-	heightSpin->setRange(0, height * 10);
 	widthSpin->setValue(width);
+	connect(widthSpin, SIGNAL(valueChanged(int)), this, SLOT(adjustSizes()));
+	heightSpin = new QSpinBox;
+	heightSpin->setRange(0, height * 10);
 	heightSpin->setValue(height);
+	connect(heightSpin, SIGNAL(valueChanged(int)), this, SLOT(adjustSizes()));
 
 	QGridLayout *mainGbox = new QGridLayout;
 	QLabel *origSizeLab = new QLabel(tr("Original size: "));
-
 	QString imageSizeStr = QString::number(width) + " x " + QString::number(height);
 	QLabel *origSizePixelsLab = new QLabel(imageSizeStr);
 	QLabel *widthLab = new QLabel(tr("Width: "));
 	QLabel *heightLab = new QLabel(tr("Height: "));
 	QLabel *unitsLab = new QLabel(tr("Units: "));
 
-	QRadioButton *pixelsRadio = new QRadioButton(tr("Pixels"));
-	QRadioButton *percentRadio = new QRadioButton(tr("Percent"));
+	QLabel *newSizeLab = new QLabel(tr("New size: "));
+	newSizePixelsLab = new QLabel(imageSizeStr);
+
+	pixelsRadio = new QRadioButton(tr("Pixels"));
+	connect(pixelsRadio, SIGNAL(clicked()), this, SLOT(setUnits()));
+	percentRadio = new QRadioButton(tr("Percent"));
+	connect(percentRadio, SIGNAL(clicked()), this, SLOT(setUnits()));
 	pixelsRadio->setChecked(true);
+	pixelUnits = true;
+
 	QCheckBox *lockAspectCb = new QCheckBox(tr("Lock aspect ratio"), this);
 	lockAspectCb->setChecked(true);
+	connect(lockAspectCb, SIGNAL(clicked()), this, SLOT(setAspectLock()));
+	aspectLocked = true;
 
 	QHBoxLayout *radiosHbox = new QHBoxLayout;
 	radiosHbox->addStretch(1);
@@ -811,9 +823,10 @@ ResizeDialog::ResizeDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	mainGbox->addWidget(heightSpin, 7, 4, 1, 2);
 	mainGbox->addLayout(radiosHbox, 3, 4, 1, 3);
 	mainGbox->addWidget(lockAspectCb, 5, 2, 1, 3);
-	mainGbox->setRowStretch(8, 1);
+	mainGbox->addWidget(newSizeLab, 8, 2, 1, 1);
+	mainGbox->addWidget(newSizePixelsLab, 8, 4, 1, 1);
+	mainGbox->setRowStretch(9, 1);
 	mainGbox->setColumnStretch(3, 1);
-
 
 	QVBoxLayout *mainVbox = new QVBoxLayout;
 	mainVbox->addLayout(mainGbox);
@@ -827,10 +840,108 @@ void ResizeDialog::applyResize(int)
 	imageView->refresh();
 }
 
+void ResizeDialog::setAspectLock()
+{
+	aspectLocked = ((QCheckBox*)QObject::sender())->isChecked();
+	adjustSizes();
+}
+
+void ResizeDialog::setUnits()
+{
+	int newWidth;
+	int newHeight;
+
+	if (pixelsRadio->isChecked() && !pixelUnits)
+	{
+		newWidth = (width * widthSpin->value()) / 100;
+		newHeight = (height * heightSpin->value()) / 100;
+		widthSpin->setRange(0, width * 10);
+		heightSpin->setRange(0, height * 10);
+		pixelUnits = true;
+	}
+	else
+	{
+		newWidth = (100 * widthSpin->value()) / width;
+		newHeight = (100 * heightSpin->value()) / height;
+		widthSpin->setRange(0, 100 * 10);
+		heightSpin->setRange(0, 100 * 10);
+		pixelUnits = false;
+	}
+
+	widthSpin->setValue(newWidth);
+	if (!aspectLocked)
+		heightSpin->setValue(newHeight);
+}
+
+void ResizeDialog::adjustSizes()
+{
+	static bool busy = false;
+	if (busy)
+		return;
+	busy = true;
+
+	if (aspectLocked)
+	{
+		if (pixelUnits)
+		{
+			QSize imageSize(width, height);
+			if (widthSpin->value() > lastWidth || heightSpin->value() > lastHeight)
+			{
+				imageSize.scale(widthSpin->value(), heightSpin->value(), Qt::KeepAspectRatioByExpanding);
+			}
+			else
+			{
+				imageSize.scale(widthSpin->value(), heightSpin->value(), Qt::KeepAspectRatio);
+			}
+
+			widthSpin->setValue(imageSize.width());
+			heightSpin->setValue(imageSize.height());
+			lastWidth = widthSpin->value();
+			lastHeight = heightSpin->value();
+			newWidth = imageSize.width();
+			newHeight = imageSize.height();
+		}
+		else
+		{
+			if (widthSpin->value() != lastWidth)
+			{
+				heightSpin->setValue(widthSpin->value());
+			}
+			else
+			{
+				widthSpin->setValue(heightSpin->value());
+			}
+
+
+			lastWidth = widthSpin->value();
+			lastHeight = heightSpin->value();
+
+			newWidth = (width * widthSpin->value()) / 100;
+			newHeight = (height * heightSpin->value()) / 100;
+		}
+	}
+	else
+	{
+		if (pixelUnits)
+		{
+			newWidth = widthSpin->value();
+			newHeight = heightSpin->value();
+		}
+		else
+		{
+			newWidth = (width * widthSpin->value()) / 100;
+			newHeight = (height * heightSpin->value()) / 100;
+		}
+	}
+
+	newSizePixelsLab->setText(QString::number(newWidth) + " x " + QString::number(newHeight));
+	busy = false;
+}
+
 void ResizeDialog::ok()
 {
-	GData::dialogLastX = pos().x();
-	GData::dialogLastY = pos().y(); 
+	GData::scaledWidth = newWidth;
+	GData::scaledHeight = newHeight; 
 	accept();
 }
 
@@ -842,6 +953,8 @@ void ResizeDialog::abort()
 ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
 {
 	setWindowTitle(tr("Colors"));
+	setWindowIcon(QIcon(":/images/colors.png"));
+	
 	if (GData::dialogLastX)
 		move(GData::dialogLastX, GData::dialogLastY);
 	imageView = imageView_;
@@ -1057,6 +1170,7 @@ void AppMgmtDialog::addTableModelItem(QStandardItemModel *model, QString &key, Q
 AppMgmtDialog::AppMgmtDialog(QWidget *parent) : QDialog(parent)
 {
 	setWindowTitle(tr("Manage External Applications"));
+	setWindowIcon(QIcon::fromTheme("document-properties", QIcon(":/images/phototonic.png")));
 	resize(350, 250);
 
 	appsTable = new QTableView(this);

@@ -71,7 +71,7 @@ void ThumbView::setThumbColors()
 
 void ThumbView::selectCurrentIndex()
 {
-	if (thumbViewModel->rowCount() > 0)
+	if (currentIndex.isValid() && thumbViewModel->rowCount() > 0)
 	{
 		scrollTo(currentIndex);
 		setCurrentIndex(currentIndex);
@@ -138,14 +138,17 @@ void ThumbView::setImageviewWindowTitle()
 	mainWindow->setWindowTitle(title);
 }
 
-void ThumbView::setCurrentIndexByName(QString &FileName)
+bool ThumbView::setCurrentIndexByName(QString &FileName)
 {
 	QModelIndexList indexList = thumbViewModel->match(thumbViewModel->index(0, 0), FileNameRole, FileName);
 	if (indexList.size())
 	{
 	 	currentIndex = indexList[0];
 	 	setCurrentRow(currentIndex.row());
+	 	return true;
  	}
+
+ 	return false;
 }
 
 void ThumbView::updateExifInfo(QString imageFullPath)
@@ -445,7 +448,7 @@ void ThumbView::load(QString &cliImageName)
 
 	if (!cliImageName.isEmpty())
 	{
-		setCurrentIndexByName(cliImageName);
+		setCurrentIndexByName(cliImageName); // bug here
 	}
 
 	updateThumbsCount();
@@ -559,8 +562,6 @@ void ThumbView::loadThumbsRange()
 													QIcon(":/images/error_image.png")).pixmap(64, 64));
 		}
 
-		QApplication::processEvents();
-
 		if (GData::thumbsLayout == Compact)
 		{
 			if (GData::showLabels)
@@ -572,6 +573,7 @@ void ThumbView::loadThumbsRange()
 
 		thumbViewModel->item(currThumb)->setData(true, LoadedRole);
 
+		QApplication::processEvents();
 	}
 
 	if (GData::thumbsLayout == Compact && thumbViewModel->rowCount() > 0)

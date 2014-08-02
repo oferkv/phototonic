@@ -139,10 +139,25 @@ public slots:
 	void ok();
 	void abort();
 	void applyResize(int);
-
+	void setAspectLock();
+	void setUnits();
+	void adjustSizes();
+	
 private:
+	int width;
+	int height;
+	int lastWidth;
+	int lastHeight;
+	bool aspectLocked;
+	bool pixelUnits;
+	int newWidth;
+	int newHeight;
+	
 	QSpinBox *widthSpin;
 	QSpinBox *heightSpin;
+	QRadioButton *pixelsRadio;
+	QRadioButton *percentRadio;
+	QLabel *newSizePixelsLab;
 	ImageView *imageView;
 };
 
