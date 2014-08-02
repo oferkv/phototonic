@@ -499,6 +499,9 @@ void ImageView::colorize()
 	static unsigned char contrastTransform[256];	
 	static unsigned char brightTransform[256];
 
+	if (displayImage.format() == QImage::Format_Indexed8)
+		displayImage = displayImage.convertToFormat(QImage::Format_RGB32);
+
 	if (GData::brightContrastEnabled)
 	{
 		int i;
