@@ -390,7 +390,7 @@ void ThumbView::updateThumbsCount()
 		emit setStatus(tr("No images"));
 }
 
-void ThumbView::load(QString &cliImageName)
+void ThumbView::load()
 {
 	float thumbAspect = 1.33;
 	if (GData::thumbsLayout == Compact)
@@ -445,11 +445,6 @@ void ThumbView::load(QString &cliImageName)
 	thumbsRangeLast = -1;
 
 	initThumbs();
-
-	if (!cliImageName.isEmpty())
-	{
-		setCurrentIndexByName(cliImageName); // bug here
-	}
 
 	updateThumbsCount();
 	loadVisibleThumbs();

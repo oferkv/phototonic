@@ -2151,8 +2151,8 @@ void Phototonic::closeImage()
 {
 	if (cliImageLoaded && GData::exitInsteadOfClose)
 	{
-		showNormal();
 		close();
+		return;
 	}
 
 	setThumbViewWidgetsVisible(true);
@@ -2329,7 +2329,7 @@ void Phototonic::reloadThumbsSlot()
 	}
 
 	thumbViewBusy = true;
-	thumbView->load(cliFileName);
+	thumbView->load();
 }
 
 void Phototonic::setThumbviewWindowTitle()

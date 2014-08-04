@@ -72,7 +72,7 @@ public:
 	};
 
 	ThumbView(QWidget *parent);
-	void load(QString &cliImageName);
+	void load();
 	void setNeedScroll(bool needScroll)
 	{
 		isNeedScroll = needScroll;
