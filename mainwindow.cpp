@@ -2150,7 +2150,10 @@ void Phototonic::scrollToLastImage()
 void Phototonic::closeImage()
 {
 	if (cliImageLoaded && GData::exitInsteadOfClose)
+	{
+		showNormal();
 		close();
+	}
 
 	setThumbViewWidgetsVisible(true);
 	stackedWidget->setCurrentIndex(thumbViewIdx);
