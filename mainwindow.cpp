@@ -280,7 +280,7 @@ void Phototonic::createActions()
 	connect(fullScreenAct, SIGNAL(triggered()), this, SLOT(toggleFullScreen()));
 	
 	settingsAction = new QAction(tr("Preferences"), this);
-	settingsAction->setIcon(QIcon::fromTheme("document-properties", QIcon(":/images/settings.png")));
+	settingsAction->setIcon(QIcon::fromTheme("preferences-other", QIcon(":/images/settings.png")));
 	connect(settingsAction, SIGNAL(triggered()), this, SLOT(showSettings()));
 
 	exitAction = new QAction(tr("Exit"), this);

@@ -13,12 +13,15 @@ RESOURCES += phototonic.qrc
 target.path = /usr/bin/
 
 icon.files = images/phototonic.png
-icon.path = /usr/share/pixmaps
+icon.path = /usr/share/icons/hicolor/48x48/apps
+
+icon2.files = images/phototonic.png
+icon2.path = /usr/share/pixmaps
 
 desktop.files = phototonic.desktop
 desktop.path = /usr/share/applications
 
-INSTALLS += target icon desktop
+INSTALLS += target icon icon2 desktop
 
 TRANSLATIONS = 	translations/phototonic_pl.ts \
 		translations/phototonic_de.ts \

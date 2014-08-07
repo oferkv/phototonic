@@ -231,7 +231,7 @@ void SettingsDialog::setActionKeyText(const QString &text)
 SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 {
 	setWindowTitle(tr("Preferences"));
-	setWindowIcon(QIcon::fromTheme("document-properties", QIcon(":/images/phototonic.png")));
+	setWindowIcon(QIcon::fromTheme("preferences-other", QIcon(":/images/phototonic.png")));
 
 	int height = parent->size().height() - 50;
 	if (height > 800)
