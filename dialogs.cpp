@@ -1176,15 +1176,14 @@ AppMgmtDialog::AppMgmtDialog(QWidget *parent) : QDialog(parent)
 	appsTable = new QTableView(this);
 	appsTable->setSelectionBehavior(QAbstractItemView::SelectItems);
 	appsTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
-	appsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	appsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
 	appsTableModel = new QStandardItemModel(this);
 	appsTable->setModel(appsTableModel);
 	appsTable->verticalHeader()->setVisible(false);
 	appsTable->verticalHeader()->setDefaultSectionSize(appsTable->verticalHeader()->minimumSectionSize());
 	appsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-	appsTableModel->setHorizontalHeaderItem(0, new QStandardItem(QString(tr("Command"))));
-	appsTableModel->setHorizontalHeaderItem(1, new QStandardItem(QString(tr("Path"))));
+	appsTableModel->setHorizontalHeaderItem(0, new QStandardItem(QString(tr("Application name"))));
+	appsTableModel->setHorizontalHeaderItem(1, new QStandardItem(QString(tr("Full path and arguments"))));
 	appsTable->	setShowGrid(false);
 
 	QHBoxLayout *addRemoveHbox = new QHBoxLayout;
