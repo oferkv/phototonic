@@ -444,7 +444,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="328"/>
         <source>Select All</source>
-        <translation>Alle markieren</translation>
+        <translation>Alle auswählen</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="331"/>
