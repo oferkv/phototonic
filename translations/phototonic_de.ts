@@ -15,7 +15,7 @@
     <message>
         <location filename="../dialogs.cpp" line="1187"/>
         <source>Command</source>
-        <translation type="unfinished"></translation>
+        <translation>Befehl</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1188"/>
@@ -1126,12 +1126,12 @@
     <message>
         <location filename="../dialogs.cpp" line="760"/>
         <source>Scale Image</source>
-        <translation type="unfinished">Bild skalieren</translation>
+        <translation>Bild skalieren</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="772"/>
         <source>Scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Skalieren</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="775"/>
