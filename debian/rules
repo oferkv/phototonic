@@ -13,4 +13,4 @@ DEB_PREF = $(shell gcc -print-multiarch)
 	dh $@
 
 override_dh_auto_configure:
-	/usr/lib/$(DEB_PREF)/qt5/bin/qmake target.path=/usr/lib/$(DEB_PREF)/qt5/ .
+	/usr/lib/$(DEB_PREF)/qt5/bin/qmake .
