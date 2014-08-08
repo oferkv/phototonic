@@ -1,134 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="de_DE">
+<TS version="2.0" language="de_DE">
 <context>
     <name>AppMgmtDialog</name>
     <message>
-        <location filename="../dialogs.cpp" line="1172"/>
+        <location filename="../dialogs.cpp" line="1173"/>
         <source>Manage External Applications</source>
         <translation>Externe Anwendungen verwalten</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1186"/>
         <source>Name</source>
-        <translation>Name</translation>
+        <translation type="obsolete">Name</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1187"/>
+        <source>Command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../dialogs.cpp" line="1188"/>
         <source>Path</source>
         <translation>Pfad</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1191"/>
+        <location filename="../dialogs.cpp" line="1192"/>
         <source>Add</source>
         <translation>Hinzufügen</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1195"/>
+        <location filename="../dialogs.cpp" line="1196"/>
         <source>Remove</source>
         <translation>Entfernen</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1202"/>
+        <location filename="../dialogs.cpp" line="1203"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1240"/>
+        <location filename="../dialogs.cpp" line="1241"/>
         <source>Choose Application</source>
         <translation>Anwendung auswählen</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1248"/>
         <source>Error</source>
-        <translation>Fehler</translation>
+        <translation type="obsolete">Fehler</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1248"/>
         <source>Not an executable</source>
-        <translation>Keine ausführbare Datei</translation>
+        <translation type="obsolete">Keine ausführbare Datei</translation>
     </message>
 </context>
 <context>
     <name>ColorsDialog</name>
     <message>
-        <location filename="../dialogs.cpp" line="955"/>
+        <location filename="../dialogs.cpp" line="956"/>
         <source>Colors</source>
         <translation>Farben</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="963"/>
+        <location filename="../dialogs.cpp" line="964"/>
         <source>Reset</source>
         <translation>Zurücksetzen</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="968"/>
+        <location filename="../dialogs.cpp" line="969"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="975"/>
+        <location filename="../dialogs.cpp" line="976"/>
         <source>Hue</source>
         <translation>Farbton</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="976"/>
+        <location filename="../dialogs.cpp" line="977"/>
         <source>Saturation</source>
         <translation>Sättigung</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="977"/>
+        <location filename="../dialogs.cpp" line="978"/>
         <source>Lightness</source>
         <translation>Helligkeit</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="978"/>
+        <location filename="../dialogs.cpp" line="979"/>
         <source>Channels</source>
         <translation>Kanäle</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="980"/>
-        <location filename="../dialogs.cpp" line="1049"/>
+        <location filename="../dialogs.cpp" line="981"/>
+        <location filename="../dialogs.cpp" line="1050"/>
         <source>Enable</source>
         <translation>Aktivieren</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="992"/>
+        <location filename="../dialogs.cpp" line="993"/>
         <source>Colorize</source>
         <translation>Einfärben</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1013"/>
+        <location filename="../dialogs.cpp" line="1014"/>
         <source>Red</source>
         <translation>Rot</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1018"/>
+        <location filename="../dialogs.cpp" line="1019"/>
         <source>Green</source>
         <translation>Grün</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1023"/>
+        <location filename="../dialogs.cpp" line="1024"/>
         <source>Blue</source>
         <translation>Blau</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1042"/>
+        <location filename="../dialogs.cpp" line="1043"/>
         <source>Hue and Saturation</source>
         <translation>Farbton und Sättigung</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1046"/>
+        <location filename="../dialogs.cpp" line="1047"/>
         <source>Brightness</source>
         <translation>Helligkeit</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1047"/>
+        <location filename="../dialogs.cpp" line="1048"/>
         <source>Contrast</source>
         <translation>Kontrast</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1077"/>
+        <location filename="../dialogs.cpp" line="1078"/>
         <source>Brightness and Contrast</source>
         <translation>Helligkeit und Kontrast</translation>
     </message>
@@ -136,43 +138,43 @@
 <context>
     <name>CopyMoveToDialog</name>
     <message>
-        <location filename="../dialogs.cpp" line="1267"/>
+        <location filename="../dialogs.cpp" line="1261"/>
         <source>Copy or Move Images to...</source>
         <translation>Bilder kopieren oder verschieben nach...</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1287"/>
+        <location filename="../dialogs.cpp" line="1281"/>
         <source>Add</source>
         <translation>Hinzufügen</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1291"/>
+        <location filename="../dialogs.cpp" line="1285"/>
         <source>Remove</source>
         <translation>Entfernen</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1298"/>
+        <location filename="../dialogs.cpp" line="1292"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1302"/>
+        <location filename="../dialogs.cpp" line="1296"/>
         <source>Copy</source>
         <translation>Kopieren</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1306"/>
+        <location filename="../dialogs.cpp" line="1300"/>
         <source>Move</source>
         <translation>Verschieben</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1374"/>
+        <location filename="../dialogs.cpp" line="1368"/>
         <source>Choose Folder</source>
         <translation>Verzeichnis wählen</translation>
     </message>
     <message>
         <source>Choose Directory</source>
-        <translation type="vanished">Verzeichnis auswählen</translation>
+        <translation type="obsolete">Verzeichnis auswählen</translation>
     </message>
 </context>
 <context>
@@ -204,32 +206,32 @@
 <context>
     <name>CropDialog</name>
     <message>
-        <location filename="../dialogs.cpp" line="634"/>
+        <location filename="../dialogs.cpp" line="635"/>
         <source>Cropping</source>
         <translation>Zuschneiden</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="641"/>
+        <location filename="../dialogs.cpp" line="642"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="670"/>
+        <location filename="../dialogs.cpp" line="671"/>
         <source>Top</source>
         <translation>Oben</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="671"/>
+        <location filename="../dialogs.cpp" line="672"/>
         <source>Left</source>
         <translation>Links</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="672"/>
+        <location filename="../dialogs.cpp" line="673"/>
         <source>Right</source>
         <translation>Rechts</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="673"/>
+        <location filename="../dialogs.cpp" line="674"/>
         <source>Bottom</source>
         <translation>Unten</translation>
     </message>
@@ -238,7 +240,7 @@
     <name>ImageView</name>
     <message>
         <source>New image</source>
-        <translation type="vanished">Neues Bild</translation>
+        <translation type="obsolete">Neues Bild</translation>
     </message>
     <message>
         <location filename="../imageview.cpp" line="624"/>
@@ -304,21 +306,21 @@
     <message>
         <location filename="../dialogs.cpp" line="199"/>
         <source> is reserved for shortcuts to external applications</source>
-        <translation type="unfinished"></translation>
+        <translation> ist für Zugriff auf externe Programme reserviert</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="210"/>
         <source> is already assigned to &quot;</source>
-        <translation type="unfinished"></translation>
+        <translation> ist bereits &quot;</translation>
     </message>
     <message>
         <source>Already assigned to &quot;</source>
-        <translation type="vanished">Bereits zugewiesen an &quot;</translation>
+        <translation type="obsolete">Bereits zugewiesen an &quot;</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="211"/>
         <source>&quot; action</source>
-        <translation>&quot; Aktion</translation>
+        <translation>&quot; zugewiesen</translation>
     </message>
 </context>
 <context>
@@ -342,7 +344,7 @@
     </message>
     <message>
         <source>Mirror</source>
-        <translation type="vanished">Spiegeln</translation>
+        <translation type="obsolete">Spiegeln</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="267"/>
@@ -396,7 +398,7 @@
     </message>
     <message>
         <source>Copy/Move to...</source>
-        <translation type="vanished">Kopieren/ Verschieben nach...</translation>
+        <translation type="obsolete">Kopieren/ Verschieben nach...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="42"/>
@@ -482,7 +484,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="367"/>
         <source>Show Labels</source>
-        <translation>Label anzeigen</translation>
+        <translation>Namen anzeigen</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="372"/>
@@ -507,7 +509,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="389"/>
         <source>Include Sub-folders</source>
-        <translation>Unterverzeichnisse einschließen</translation>
+        <translation>Unterverzeichnisse einbeziehen</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="394"/>
@@ -583,7 +585,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="499"/>
         <source>Scale Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Bild skalieren</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2037"/>
@@ -592,7 +594,7 @@
     </message>
     <message>
         <source>New Image</source>
-        <translation type="vanished">Neues Bild</translation>
+        <translation type="obsolete">Neues Bild</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="454"/>
@@ -608,12 +610,12 @@
     <message>
         <location filename="../mainwindow.cpp" line="460"/>
         <source>Zoom Out</source>
-        <translation>Ansicht verkleinern</translation>
+        <translation>Zoom verringern</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="464"/>
         <source>Zoom In</source>
-        <translation>Ansicht vergrößern</translation>
+        <translation>Zomm erhöhen</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="468"/>
@@ -643,12 +645,12 @@
     <message>
         <location filename="../mainwindow.cpp" line="488"/>
         <source>Flip Horizontally</source>
-        <translation>An horizontaler Achse spiegeln</translation>
+        <translation>Horizontal spiegeln</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="492"/>
         <source>Flip Vertically</source>
-        <translation>An vertikaler Achse spiegeln</translation>
+        <translation>Vertikal spiegeln</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="496"/>
@@ -727,7 +729,7 @@
     </message>
     <message>
         <source>File</source>
-        <translation type="vanished">Datei</translation>
+        <translation type="obsolete">Datei</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="630"/>
@@ -736,7 +738,7 @@
     </message>
     <message>
         <source>Go</source>
-        <translation type="vanished">Los</translation>
+        <translation type="obsolete">Los</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="663"/>
@@ -750,7 +752,7 @@
     </message>
     <message>
         <source>Help</source>
-        <translation type="vanished">Hilfe</translation>
+        <translation type="obsolete">Hilfe</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="640"/>
@@ -779,7 +781,7 @@
     </message>
     <message>
         <source>&lt;p&gt;Built with Qt </source>
-        <translation type="vanished">&lt;p&gt;Kompiliert mit Qt</translation>
+        <translation type="obsolete">&lt;p&gt;Kompiliert mit Qt</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="817"/>
@@ -793,11 +795,11 @@
     </message>
     <message>
         <source>Contact</source>
-        <translation type="vanished">Kontakt</translation>
+        <translation type="obsolete">Kontakt</translation>
     </message>
     <message>
         <source>Translations:</source>
-        <translation type="vanished">Übersetzungen:</translation>
+        <translation type="obsolete">Übersetzungen:</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="311"/>
@@ -806,11 +808,11 @@
     </message>
     <message>
         <source>Show Lables</source>
-        <translation type="vanished">Label anzeigen</translation>
+        <translation type="obsolete">Label anzeigen</translation>
     </message>
     <message>
         <source>Compact (slower)</source>
-        <translation type="vanished">Kompakt (langsamer)</translation>
+        <translation type="obsolete">Kompakt (langsamer)</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="450"/>
@@ -819,7 +821,7 @@
     </message>
     <message>
         <source>Resize Image</source>
-        <translation type="vanished">Bildgröße ändern</translation>
+        <translation type="obsolete">Bildgröße ändern</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="550"/>
@@ -897,7 +899,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="1267"/>
         <source>Can not cut and paste in the same folder</source>
-        <translation>Ausschneiden und Einfügen in demselben Verzeichnis nicht möglich</translation>
+        <translation>Ausschneiden und Einfügen im selben Verzeichnis nicht möglich</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1283"/>
@@ -953,7 +955,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="1409"/>
         <source>Deleted </source>
-        <translation>Gelöscht</translation>
+        <translation>Gelöscht </translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1440"/>
@@ -968,7 +970,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="1996"/>
         <source>Failed to open file </source>
-        <translation>Öffnen der Datei fehlgeschlagen</translation>
+        <translation>Öffnen der Datei fehlgeschlagen </translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1996"/>
@@ -982,7 +984,7 @@
     </message>
     <message>
         <source>End Slide Show</source>
-        <translation type="vanished">Diashow beenden</translation>
+        <translation type="obsolete">Diashow beenden</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2038"/>
@@ -1017,7 +1019,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="2346"/>
         <source>Rename </source>
-        <translation>Umbenennen</translation>
+        <translation>Umbenennen </translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2348"/>
@@ -1043,7 +1045,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="2400"/>
         <source>Enter a new name for </source>
-        <translation>Neuen Namen eingeben</translation>
+        <translation>Neuen Namen eingeben </translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2413"/>
@@ -1115,64 +1117,64 @@
     <name>ResizeDialog</name>
     <message>
         <source>Resize Image (Demo)</source>
-        <translation type="vanished">Bildgröße ändern (Demo)</translation>
+        <translation type="obsolete">Bildgröße ändern (Demo)</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation type="vanished">OK</translation>
+        <translation type="obsolete">OK</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="759"/>
+        <location filename="../dialogs.cpp" line="760"/>
         <source>Scale Image</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bild skalieren</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="771"/>
+        <location filename="../dialogs.cpp" line="772"/>
         <source>Scale</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="774"/>
+        <location filename="../dialogs.cpp" line="775"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="790"/>
+        <location filename="../dialogs.cpp" line="791"/>
         <source>Original size: </source>
         <translation>Originalgröße:</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="793"/>
+        <location filename="../dialogs.cpp" line="794"/>
         <source>Width: </source>
         <translation>Breite:</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="794"/>
+        <location filename="../dialogs.cpp" line="795"/>
         <source>Height: </source>
         <translation>Höhe:</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="795"/>
+        <location filename="../dialogs.cpp" line="796"/>
         <source>Units: </source>
         <translation>Einheit: </translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="797"/>
+        <location filename="../dialogs.cpp" line="798"/>
         <source>New size: </source>
-        <translation type="unfinished"></translation>
+        <translation>Neue Größe: </translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="800"/>
+        <location filename="../dialogs.cpp" line="801"/>
         <source>Pixels</source>
         <translation>Pixel</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="802"/>
+        <location filename="../dialogs.cpp" line="803"/>
         <source>Percent</source>
         <translation>Prozent</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="807"/>
+        <location filename="../dialogs.cpp" line="808"/>
         <source>Lock aspect ratio</source>
         <translation>Größenverhältnis beibehalten</translation>
     </message>
@@ -1313,7 +1315,7 @@
     <message>
         <location filename="../dialogs.cpp" line="403"/>
         <source>Specify:</source>
-        <translation>Bitte angeben:</translation>
+        <translation>Auswählen:</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="455"/>
@@ -1326,41 +1328,41 @@
         <translation>Verzögerung zwischen den Dias in Sekunden:</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="469"/>
+        <location filename="../dialogs.cpp" line="470"/>
         <source>Show random images</source>
         <translation>Zufällig ausgewählte Bilder anzeigen</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="476"/>
+        <location filename="../dialogs.cpp" line="477"/>
         <source>Slide Show</source>
         <translation>Diashow</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="495"/>
+        <location filename="../dialogs.cpp" line="496"/>
         <source>Swap mouse left-click and middle-click actions</source>
         <translation>Links-Klick- und Mittel-Klick-Aktionen der Maus tauschen</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="499"/>
+        <location filename="../dialogs.cpp" line="500"/>
         <source>Keyboard Shortcuts:</source>
         <translation>Tastenkombinationen:</translation>
     </message>
     <message>
         <source>keyboard shortcuts:</source>
-        <translation type="vanished">Tastenkombinationen:</translation>
+        <translation type="obsolete">Tastenkombinationen:</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="510"/>
+        <location filename="../dialogs.cpp" line="511"/>
         <source>Keyboard and Mouse</source>
         <translation>Tastatur und Maus</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="515"/>
+        <location filename="../dialogs.cpp" line="516"/>
         <source>General</source>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="627"/>
+        <location filename="../dialogs.cpp" line="628"/>
         <source>Choose Startup Folder</source>
         <translation>Verzeichnis bei Programmstart wählen</translation>
     </message>
