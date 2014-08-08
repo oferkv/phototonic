@@ -544,7 +544,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="420"/>
         <source>Home</source>
-        <translation>Startseite</translation>
+        <translation>Persönliches Verzeichnis</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="424"/>
