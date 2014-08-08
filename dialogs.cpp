@@ -1183,7 +1183,7 @@ AppMgmtDialog::AppMgmtDialog(QWidget *parent) : QDialog(parent)
 	appsTable->verticalHeader()->setVisible(false);
 	appsTable->verticalHeader()->setDefaultSectionSize(appsTable->verticalHeader()->minimumSectionSize());
 	appsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-	appsTableModel->setHorizontalHeaderItem(0, new QStandardItem(QString(tr("Name"))));
+	appsTableModel->setHorizontalHeaderItem(0, new QStandardItem(QString(tr("Command"))));
 	appsTableModel->setHorizontalHeaderItem(1, new QStandardItem(QString(tr("Path"))));
 	appsTable->	setShowGrid(false);
 
@@ -1242,13 +1242,6 @@ void AppMgmtDialog::add()
 		return;
 		
 	QFileInfo fileInfo = QFileInfo(fileName);
-	if (!fileInfo.isExecutable())
-	{
-		QMessageBox msgBox;
-		msgBox.critical(this, tr("Error"), tr("Not an executable"));
-		return;
-	}
-	
 	QString appName = fileInfo.fileName();
 	addTableModelItem(appsTableModel, appName, fileName);
 }
