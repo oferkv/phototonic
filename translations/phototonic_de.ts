@@ -16,7 +16,7 @@
     <message>
         <location filename="../dialogs.cpp" line="1186"/>
         <source>Application path and arguments</source>
-        <translation type="unfinished"></translation>
+	<translation>Programmpfad und -argumente</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1192"/>
@@ -170,10 +170,6 @@
         <source>Choose Folder</source>
         <translation>Verzeichnis wählen</translation>
     </message>
-    <message>
-        <source>Choose Directory</source>
-        <translation type="obsolete">Verzeichnis auswählen</translation>
-    </message>
 </context>
 <context>
     <name>CpMvDialog</name>
@@ -236,10 +232,6 @@
 </context>
 <context>
     <name>ImageView</name>
-    <message>
-        <source>New image</source>
-        <translation type="obsolete">Neues Bild</translation>
-    </message>
     <message>
         <location filename="../imageview.cpp" line="624"/>
         <source>Clipboard</source>
@@ -312,10 +304,6 @@
         <translation> ist bereits &quot;</translation>
     </message>
     <message>
-        <source>Already assigned to &quot;</source>
-        <translation type="obsolete">Bereits zugewiesen an &quot;</translation>
-    </message>
-    <message>
         <location filename="../dialogs.cpp" line="211"/>
         <source>&quot; action</source>
         <translation>&quot; zugewiesen</translation>
@@ -339,10 +327,6 @@
         <location filename="../mainwindow.cpp" line="214"/>
         <source>Transform</source>
         <translation>Transformieren</translation>
-    </message>
-    <message>
-        <source>Mirror</source>
-        <translation type="obsolete">Spiegeln</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="267"/>
@@ -393,10 +377,6 @@
         <location filename="../mainwindow.cpp" line="306"/>
         <source>Copy</source>
         <translation>Kopieren</translation>
-    </message>
-    <message>
-        <source>Copy/Move to...</source>
-        <translation type="obsolete">Kopieren/ Verschieben nach...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="42"/>
