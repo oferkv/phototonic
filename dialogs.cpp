@@ -457,9 +457,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 
 	// Slide show delay
 	QLabel *slideDelayLab = new QLabel(tr("Delay between slides in seconds: "));
-	slideDelaySpin = new QDoubleSpinBox;
-	slideDelaySpin->setRange(0.1, 3600.0);
-	slideDelaySpin->setSingleStep(0.1);
+	slideDelaySpin = new QSpinBox;
+	slideDelaySpin->setRange(1, 3600);
 	slideDelaySpin->setValue(GData::slideShowDelay);
 	QHBoxLayout *slideDelayHbox = new QHBoxLayout;
 	slideDelayHbox->addWidget(slideDelayLab);
