@@ -208,6 +208,7 @@ public slots:
 private slots:
 	void add();
 	void remove();
+	void entry();
 
 private:
 	QTableView *appsTable;
