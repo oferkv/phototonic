@@ -100,7 +100,7 @@ private:
 	QCheckBox *imageInfoCb;
 	QCheckBox *noSmallThumbCb;
 	QCheckBox *reverseMouseCb;
-	QSpinBox *slideDelaySpin;
+	QDoubleSpinBox *slideDelaySpin;
 	QCheckBox *slideRandomCb;
 	KeyGrabLineEdit *keyLine;
 	QRadioButton *startupDirRadios[3];
