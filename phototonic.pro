@@ -29,5 +29,7 @@ INSTALLS += target icon icon2 desktop
 
 TRANSLATIONS = 	translations/phototonic_pl.ts \
 		translations/phototonic_de.ts \
-		translations/phototonic_ru.ts
+		translations/phototonic_ru.ts \
+		translations/phototonic_cs.ts 
+
 
