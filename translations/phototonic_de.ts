@@ -1,46 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="de_DE">
+<TS version="2.1" language="de_DE">
 <context>
     <name>AppMgmtDialog</name>
     <message>
-        <location filename="../dialogs.cpp" line="1173"/>
+        <location filename="../dialogs.cpp" line="1172"/>
         <source>Manage External Applications</source>
         <translation>Externe Anwendungen verwalten</translation>
     </message>
     <message>
+        <location filename="../dialogs.cpp" line="1184"/>
         <source>Name</source>
-        <translation type="obsolete">Name</translation>
+        <translation type="unfinished">Name</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1187"/>
         <source>Command</source>
-        <translation>Befehl</translation>
+        <translation type="vanished">Befehl</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1188"/>
         <source>Path</source>
-        <translation>Pfad</translation>
+        <translation type="vanished">Pfad</translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation type="vanished">Hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../dialogs.cpp" line="1186"/>
+        <source>Application path and arguments</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1192"/>
-        <source>Add</source>
-        <translation>Hinzufügen</translation>
+        <source>Choose</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1196"/>
+        <source>Add manually</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../dialogs.cpp" line="1200"/>
         <source>Remove</source>
         <translation>Entfernen</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1203"/>
+        <location filename="../dialogs.cpp" line="1207"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1241"/>
+        <location filename="../dialogs.cpp" line="1247"/>
         <source>Choose Application</source>
         <translation>Anwendung auswählen</translation>
+    </message>
+    <message>
+        <location filename="../dialogs.cpp" line="1259"/>
+        <source>New Application</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Error</source>
@@ -54,83 +72,83 @@
 <context>
     <name>ColorsDialog</name>
     <message>
-        <location filename="../dialogs.cpp" line="956"/>
+        <location filename="../dialogs.cpp" line="955"/>
         <source>Colors</source>
         <translation>Farben</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="964"/>
+        <location filename="../dialogs.cpp" line="963"/>
         <source>Reset</source>
         <translation>Zurücksetzen</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="969"/>
+        <location filename="../dialogs.cpp" line="968"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="976"/>
+        <location filename="../dialogs.cpp" line="975"/>
         <source>Hue</source>
         <translation>Farbton</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="977"/>
+        <location filename="../dialogs.cpp" line="976"/>
         <source>Saturation</source>
         <translation>Sättigung</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="978"/>
+        <location filename="../dialogs.cpp" line="977"/>
         <source>Lightness</source>
         <translation>Helligkeit</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="979"/>
+        <location filename="../dialogs.cpp" line="978"/>
         <source>Channels</source>
         <translation>Kanäle</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="981"/>
-        <location filename="../dialogs.cpp" line="1050"/>
+        <location filename="../dialogs.cpp" line="980"/>
+        <location filename="../dialogs.cpp" line="1049"/>
         <source>Enable</source>
         <translation>Aktivieren</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="993"/>
+        <location filename="../dialogs.cpp" line="992"/>
         <source>Colorize</source>
         <translation>Einfärben</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1014"/>
+        <location filename="../dialogs.cpp" line="1013"/>
         <source>Red</source>
         <translation>Rot</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1019"/>
+        <location filename="../dialogs.cpp" line="1018"/>
         <source>Green</source>
         <translation>Grün</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1024"/>
+        <location filename="../dialogs.cpp" line="1023"/>
         <source>Blue</source>
         <translation>Blau</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1043"/>
+        <location filename="../dialogs.cpp" line="1042"/>
         <source>Hue and Saturation</source>
         <translation>Farbton und Sättigung</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1047"/>
+        <location filename="../dialogs.cpp" line="1046"/>
         <source>Brightness</source>
         <translation>Helligkeit</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1048"/>
+        <location filename="../dialogs.cpp" line="1047"/>
         <source>Contrast</source>
         <translation>Kontrast</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1078"/>
+        <location filename="../dialogs.cpp" line="1077"/>
         <source>Brightness and Contrast</source>
         <translation>Helligkeit und Kontrast</translation>
     </message>
@@ -138,37 +156,37 @@
 <context>
     <name>CopyMoveToDialog</name>
     <message>
-        <location filename="../dialogs.cpp" line="1261"/>
+        <location filename="../dialogs.cpp" line="1274"/>
         <source>Copy or Move Images to...</source>
         <translation>Bilder kopieren oder verschieben nach...</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1281"/>
+        <location filename="../dialogs.cpp" line="1294"/>
         <source>Add</source>
         <translation>Hinzufügen</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1285"/>
+        <location filename="../dialogs.cpp" line="1298"/>
         <source>Remove</source>
         <translation>Entfernen</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1292"/>
+        <location filename="../dialogs.cpp" line="1305"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1296"/>
+        <location filename="../dialogs.cpp" line="1309"/>
         <source>Copy</source>
         <translation>Kopieren</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1300"/>
+        <location filename="../dialogs.cpp" line="1313"/>
         <source>Move</source>
         <translation>Verschieben</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="1368"/>
+        <location filename="../dialogs.cpp" line="1381"/>
         <source>Choose Folder</source>
         <translation>Verzeichnis wählen</translation>
     </message>
@@ -206,32 +224,32 @@
 <context>
     <name>CropDialog</name>
     <message>
-        <location filename="../dialogs.cpp" line="635"/>
+        <location filename="../dialogs.cpp" line="634"/>
         <source>Cropping</source>
         <translation>Zuschneiden</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="642"/>
+        <location filename="../dialogs.cpp" line="641"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="671"/>
+        <location filename="../dialogs.cpp" line="670"/>
         <source>Top</source>
         <translation>Oben</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="672"/>
+        <location filename="../dialogs.cpp" line="671"/>
         <source>Left</source>
         <translation>Links</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="673"/>
+        <location filename="../dialogs.cpp" line="672"/>
         <source>Right</source>
         <translation>Rechts</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="674"/>
+        <location filename="../dialogs.cpp" line="673"/>
         <source>Bottom</source>
         <translation>Unten</translation>
     </message>
@@ -548,7 +566,7 @@
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="424"/>
-        <location filename="../mainwindow.cpp" line="2011"/>
+        <location filename="../mainwindow.cpp" line="2013"/>
         <source>Slide Show</source>
         <translation>Diashow</translation>
     </message>
@@ -588,7 +606,17 @@
         <translation>Bild skalieren</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2037"/>
+        <location filename="../mainwindow.cpp" line="820"/>
+        <source>&lt;u&gt;Contributors&lt;/u&gt;:&lt;br&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="822"/>
+        <source>&lt;u&gt;Translators&lt;/u&gt;:&lt;br&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="2039"/>
         <source>Stop Slide Show</source>
         <translation>Diashow beenden</translation>
     </message>
@@ -854,131 +882,130 @@
         <translation>&lt;p&gt;Kompiliert mit Qt</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="820"/>
         <source>Translators:&lt;br&gt;</source>
-        <translation>Übersetzer:&lt;br&gt;</translation>
+        <translation type="vanished">Übersetzer:&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="855"/>
-        <location filename="../mainwindow.cpp" line="2392"/>
+        <location filename="../mainwindow.cpp" line="857"/>
+        <location filename="../mainwindow.cpp" line="2394"/>
         <source>Invalid selection</source>
         <translation>Ungültige Auswahl</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1029"/>
-        <location filename="../mainwindow.cpp" line="1251"/>
-        <location filename="../mainwindow.cpp" line="1267"/>
-        <location filename="../mainwindow.cpp" line="1355"/>
-        <location filename="../mainwindow.cpp" line="1404"/>
-        <location filename="../mainwindow.cpp" line="1440"/>
-        <location filename="../mainwindow.cpp" line="1996"/>
-        <location filename="../mainwindow.cpp" line="2207"/>
-        <location filename="../mainwindow.cpp" line="2214"/>
-        <location filename="../mainwindow.cpp" line="2226"/>
-        <location filename="../mainwindow.cpp" line="2316"/>
-        <location filename="../mainwindow.cpp" line="2359"/>
-        <location filename="../mainwindow.cpp" line="2370"/>
-        <location filename="../mainwindow.cpp" line="2413"/>
-        <location filename="../mainwindow.cpp" line="2434"/>
-        <location filename="../mainwindow.cpp" line="2461"/>
-        <location filename="../mainwindow.cpp" line="2495"/>
-        <location filename="../mainwindow.cpp" line="2506"/>
+        <location filename="../mainwindow.cpp" line="1031"/>
+        <location filename="../mainwindow.cpp" line="1253"/>
+        <location filename="../mainwindow.cpp" line="1269"/>
+        <location filename="../mainwindow.cpp" line="1357"/>
+        <location filename="../mainwindow.cpp" line="1406"/>
+        <location filename="../mainwindow.cpp" line="1442"/>
+        <location filename="../mainwindow.cpp" line="1998"/>
+        <location filename="../mainwindow.cpp" line="2209"/>
+        <location filename="../mainwindow.cpp" line="2216"/>
+        <location filename="../mainwindow.cpp" line="2228"/>
+        <location filename="../mainwindow.cpp" line="2318"/>
+        <location filename="../mainwindow.cpp" line="2361"/>
+        <location filename="../mainwindow.cpp" line="2372"/>
+        <location filename="../mainwindow.cpp" line="2415"/>
+        <location filename="../mainwindow.cpp" line="2436"/>
+        <location filename="../mainwindow.cpp" line="2463"/>
+        <location filename="../mainwindow.cpp" line="2497"/>
+        <location filename="../mainwindow.cpp" line="2508"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1029"/>
+        <location filename="../mainwindow.cpp" line="1031"/>
         <source>Failed to copy or move image</source>
         <translation>Kopieren oder Verschieben des Bildes fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1251"/>
+        <location filename="../mainwindow.cpp" line="1253"/>
         <source>Can not copy or move to </source>
         <translation>Kopieren oder Verschieben nicht möglich</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1267"/>
+        <location filename="../mainwindow.cpp" line="1269"/>
         <source>Can not cut and paste in the same folder</source>
         <translation>Ausschneiden und Einfügen im selben Verzeichnis nicht möglich</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1283"/>
-        <location filename="../mainwindow.cpp" line="2235"/>
+        <location filename="../mainwindow.cpp" line="1285"/>
+        <location filename="../mainwindow.cpp" line="2237"/>
         <source>Copied </source>
         <translation>Kopiert </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1283"/>
-        <location filename="../mainwindow.cpp" line="2235"/>
+        <location filename="../mainwindow.cpp" line="1285"/>
+        <location filename="../mainwindow.cpp" line="2237"/>
         <source>Moved </source>
         <translation>Verschoben </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1284"/>
-        <location filename="../mainwindow.cpp" line="1409"/>
-        <location filename="../mainwindow.cpp" line="2235"/>
+        <location filename="../mainwindow.cpp" line="1286"/>
+        <location filename="../mainwindow.cpp" line="1411"/>
+        <location filename="../mainwindow.cpp" line="2237"/>
         <source> images</source>
         <translation> Bilder</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1340"/>
+        <location filename="../mainwindow.cpp" line="1342"/>
         <source>Delete image</source>
         <translation>Bild löschen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1340"/>
-        <location filename="../mainwindow.cpp" line="2445"/>
+        <location filename="../mainwindow.cpp" line="1342"/>
+        <location filename="../mainwindow.cpp" line="2447"/>
         <source>Permanently delete </source>
         <translation>Endgültig löschen </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1355"/>
-        <location filename="../mainwindow.cpp" line="1404"/>
+        <location filename="../mainwindow.cpp" line="1357"/>
+        <location filename="../mainwindow.cpp" line="1406"/>
         <source>Failed to delete image</source>
         <translation>Löschen des Bildes fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1379"/>
+        <location filename="../mainwindow.cpp" line="1381"/>
         <source>No selection</source>
         <translation>Keine Auswahl</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1384"/>
+        <location filename="../mainwindow.cpp" line="1386"/>
         <source>Delete images</source>
         <translation>Bilder löschen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1384"/>
+        <location filename="../mainwindow.cpp" line="1386"/>
         <source>Permanently delete selected images?</source>
         <translation>Möchten Sie die ausgewählten Bilder endgültig löschen?</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1409"/>
+        <location filename="../mainwindow.cpp" line="1411"/>
         <source>Deleted </source>
         <translation>Gelöscht </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1440"/>
+        <location filename="../mainwindow.cpp" line="1442"/>
         <source>Invalid Path: </source>
         <translation>Ungültiger Pfad: </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1912"/>
+        <location filename="../mainwindow.cpp" line="1914"/>
         <source>No images</source>
         <translation>Keine Bilder</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1996"/>
+        <location filename="../mainwindow.cpp" line="1998"/>
         <source>Failed to open file </source>
         <translation>Öffnen der Datei fehlgeschlagen </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1996"/>
+        <location filename="../mainwindow.cpp" line="1998"/>
         <source>, file not found</source>
         <translation>, Datei wurde nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2012"/>
+        <location filename="../mainwindow.cpp" line="2014"/>
         <source>Slide show stopped</source>
         <translation>Diashow angehalten</translation>
     </message>
@@ -987,128 +1014,128 @@
         <translation type="obsolete">Diashow beenden</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2038"/>
+        <location filename="../mainwindow.cpp" line="2040"/>
         <source>Slide show started</source>
         <translation>Diashow gestartet</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2207"/>
+        <location filename="../mainwindow.cpp" line="2209"/>
         <source>Can not move or copy images to this folder</source>
         <translation>Verschieben oder Kopieren von Bildern in dieses Verzeichnis nicht möglich</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2214"/>
+        <location filename="../mainwindow.cpp" line="2216"/>
         <source>Destination folder is same as source</source>
         <translation>Ziel- und Quellverzeichnis sind identisch</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2226"/>
+        <location filename="../mainwindow.cpp" line="2228"/>
         <source>Failed to move folder</source>
         <translation>Verschieben des Verzeichnisses fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2228"/>
+        <location filename="../mainwindow.cpp" line="2230"/>
         <source>Folder moved</source>
         <translation>Verzeichnis verschoben</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2316"/>
+        <location filename="../mainwindow.cpp" line="2318"/>
         <source>Failed to open folder: </source>
         <translation>Öffnen des Verzeichnisses fehlgeschlagen:</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2346"/>
+        <location filename="../mainwindow.cpp" line="2348"/>
         <source>Rename </source>
         <translation>Umbenennen </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2348"/>
+        <location filename="../mainwindow.cpp" line="2350"/>
         <source>New name:</source>
         <translation>Neuer Name:</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2359"/>
-        <location filename="../mainwindow.cpp" line="2495"/>
+        <location filename="../mainwindow.cpp" line="2361"/>
+        <location filename="../mainwindow.cpp" line="2497"/>
         <source>Invalid name entered</source>
         <translation>Name ungültig</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2370"/>
+        <location filename="../mainwindow.cpp" line="2372"/>
         <source>Failed to rename folder</source>
         <translation>Umbenennen des Verzeichnisses fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2398"/>
+        <location filename="../mainwindow.cpp" line="2400"/>
         <source>Rename Image</source>
         <translation>Bild umbenennen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2400"/>
+        <location filename="../mainwindow.cpp" line="2402"/>
         <source>Enter a new name for </source>
         <translation>Neuen Namen eingeben </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2413"/>
+        <location filename="../mainwindow.cpp" line="2415"/>
         <source>No name entered</source>
         <translation>Kein Name eingegeben</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2434"/>
+        <location filename="../mainwindow.cpp" line="2436"/>
         <source>Failed to rename image</source>
         <translation>Umbenennen des Bildes fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2445"/>
+        <location filename="../mainwindow.cpp" line="2447"/>
         <source> and all of its contents?</source>
         <translation> und der gesamte Inhalt?</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2447"/>
+        <location filename="../mainwindow.cpp" line="2449"/>
         <source>Delete folder</source>
         <translation>Verzeichnis löschen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2461"/>
+        <location filename="../mainwindow.cpp" line="2463"/>
         <source>Failed to delete folder</source>
         <translation>Löschen des Verzeichnisses fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2465"/>
+        <location filename="../mainwindow.cpp" line="2467"/>
         <source>Removed </source>
         <translation>Entfernt</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2483"/>
+        <location filename="../mainwindow.cpp" line="2485"/>
         <source>New Sub folder</source>
         <translation>Neues Unterverzeichnis</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2484"/>
+        <location filename="../mainwindow.cpp" line="2486"/>
         <source>New folder name:</source>
         <translation>Neuer Verzeichnisname:</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2506"/>
+        <location filename="../mainwindow.cpp" line="2508"/>
         <source>Failed to create new folder</source>
         <translation>Erstellen des neuen Verzeichnisses fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2511"/>
+        <location filename="../mainwindow.cpp" line="2513"/>
         <source>Created </source>
         <translation>Erstellt </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2518"/>
+        <location filename="../mainwindow.cpp" line="2520"/>
         <source>Executing file manager...</source>
         <translation>Datei-Manager ausführen...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2558"/>
+        <location filename="../mainwindow.cpp" line="2560"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2558"/>
+        <location filename="../mainwindow.cpp" line="2560"/>
         <source>Cannot perform action with temporary image</source>
         <translation>Aktion kann mit temporärem Bild nicht ausgeführt werden</translation>
     </message>
@@ -1124,57 +1151,57 @@
         <translation type="obsolete">OK</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="760"/>
+        <location filename="../dialogs.cpp" line="759"/>
         <source>Scale Image</source>
         <translation>Bild skalieren</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="772"/>
+        <location filename="../dialogs.cpp" line="771"/>
         <source>Scale</source>
         <translation>Skalieren</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="775"/>
+        <location filename="../dialogs.cpp" line="774"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="791"/>
+        <location filename="../dialogs.cpp" line="790"/>
         <source>Original size: </source>
         <translation>Originalgröße:</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="794"/>
+        <location filename="../dialogs.cpp" line="793"/>
         <source>Width: </source>
         <translation>Breite:</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="795"/>
+        <location filename="../dialogs.cpp" line="794"/>
         <source>Height: </source>
         <translation>Höhe:</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="796"/>
+        <location filename="../dialogs.cpp" line="795"/>
         <source>Units: </source>
         <translation>Einheit: </translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="798"/>
+        <location filename="../dialogs.cpp" line="797"/>
         <source>New size: </source>
         <translation>Neue Größe: </translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="801"/>
+        <location filename="../dialogs.cpp" line="800"/>
         <source>Pixels</source>
         <translation>Pixel</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="803"/>
+        <location filename="../dialogs.cpp" line="802"/>
         <source>Percent</source>
         <translation>Prozent</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="808"/>
+        <location filename="../dialogs.cpp" line="807"/>
         <source>Lock aspect ratio</source>
         <translation>Größenverhältnis beibehalten</translation>
     </message>
@@ -1328,22 +1355,22 @@
         <translation>Verzögerung zwischen den Dias in Sekunden:</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="470"/>
+        <location filename="../dialogs.cpp" line="469"/>
         <source>Show random images</source>
         <translation>Zufällig ausgewählte Bilder anzeigen</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="477"/>
+        <location filename="../dialogs.cpp" line="476"/>
         <source>Slide Show</source>
         <translation>Diashow</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="496"/>
+        <location filename="../dialogs.cpp" line="495"/>
         <source>Swap mouse left-click and middle-click actions</source>
         <translation>Links-Klick- und Mittel-Klick-Aktionen der Maus tauschen</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="500"/>
+        <location filename="../dialogs.cpp" line="499"/>
         <source>Keyboard Shortcuts:</source>
         <translation>Tastenkombinationen:</translation>
     </message>
@@ -1352,17 +1379,17 @@
         <translation type="obsolete">Tastenkombinationen:</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="511"/>
+        <location filename="../dialogs.cpp" line="510"/>
         <source>Keyboard and Mouse</source>
         <translation>Tastatur und Maus</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="516"/>
+        <location filename="../dialogs.cpp" line="515"/>
         <source>General</source>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="628"/>
+        <location filename="../dialogs.cpp" line="627"/>
         <source>Choose Startup Folder</source>
         <translation>Verzeichnis bei Programmstart wählen</translation>
     </message>

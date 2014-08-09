@@ -1,0 +1,24 @@
+Source: phototonic
+Section: graphics
+Priority: optional
+Maintainer: Christopher Roy Bratusek <nano@jpberlin.de>
+Build-Depends: debhelper (>= 9), g++ (>= 4.5), qt5-qmake, qtbase5-dev, qtquick1-5-dev,
+               qtdeclarative5-dev, qtscript5-dev, libqt5opengl5-dev, libexiv2-dev
+Standards-Version: 3.9.5
+Homepage: https://oferkv.github.io/phototonic/
+
+Package: phototonic
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Qt5 image viewer and organizer
+ Photonic features various functionality for viewing and organizing
+ your images, like:
+  - Slideshow
+  - image transformation (resize, recolor, rotation)
+  - copying, renaming, (re)moving single or multiple images
+  - creating new images
+  - view basic image information
+  - single- and subfolder-view mode
+  - opening files with user-set external applications
+  - full-fledged keybindings support
+  - quite configurable
