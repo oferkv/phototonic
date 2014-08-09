@@ -1176,22 +1176,25 @@ AppMgmtDialog::AppMgmtDialog(QWidget *parent) : QDialog(parent)
 	appsTable = new QTableView(this);
 	appsTable->setSelectionBehavior(QAbstractItemView::SelectItems);
 	appsTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
-	appsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	appsTable->setSelectionBehavior(QAbstractItemView::SelectRows);
 	appsTableModel = new QStandardItemModel(this);
 	appsTable->setModel(appsTableModel);
 	appsTable->verticalHeader()->setVisible(false);
 	appsTable->verticalHeader()->setDefaultSectionSize(appsTable->verticalHeader()->minimumSectionSize());
 	appsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-	appsTableModel->setHorizontalHeaderItem(0, new QStandardItem(QString(tr("Command"))));
-	appsTableModel->setHorizontalHeaderItem(1, new QStandardItem(QString(tr("Path"))));
+	appsTableModel->setHorizontalHeaderItem(0, new QStandardItem(QString(tr("Application name"))));
+	appsTableModel->setHorizontalHeaderItem(1, new QStandardItem(QString(tr("Full path and arguments"))));
 	appsTable->	setShowGrid(false);
 
 	QHBoxLayout *addRemoveHbox = new QHBoxLayout;
-    QPushButton *addButton = new QPushButton(tr("Add"));
+    QPushButton *addButton = new QPushButton(tr("Choose application"));
    	addButton->setIcon(QIcon::fromTheme("list-add"));
 	connect(addButton, SIGNAL(clicked()), this, SLOT(add()));
 	addRemoveHbox->addWidget(addButton, 0, Qt::AlignRight);
+    QPushButton *entryButton = new QPushButton(tr("Add new entry"));
+        entryButton->setIcon(QIcon::fromTheme("list-add"));
+	connect(entryButton, SIGNAL(clicked()), this, SLOT(entry()));
+	addRemoveHbox->addWidget(entryButton, 0, Qt::AlignRight);
     QPushButton *removeButton = new QPushButton(tr("Remove"));
    	removeButton->setIcon(QIcon::fromTheme("list-remove"));
 	connect(removeButton, SIGNAL(clicked()), this, SLOT(remove()));
@@ -1228,10 +1231,10 @@ void AppMgmtDialog::ok()
 	GData::externalApps.clear();
     for (int i = 0; i < row ; ++i)
     {
+	    if ( appsTableModel->itemFromIndex(appsTableModel->index(i, 0))->text() != "new entry" )
 		GData::externalApps[appsTableModel->itemFromIndex(appsTableModel->index(i, 0))->text()] =
 						appsTableModel->itemFromIndex(appsTableModel->index(i, 1))->text();
-   	}
-
+    }
 	accept();
 }
 
@@ -1244,6 +1247,13 @@ void AppMgmtDialog::add()
 	QFileInfo fileInfo = QFileInfo(fileName);
 	QString appName = fileInfo.fileName();
 	addTableModelItem(appsTableModel, appName, fileName);
+}
+
+void AppMgmtDialog::entry()
+{
+	int atRow = appsTableModel->rowCount();
+	QStandardItem *itemKey = new QStandardItem(QString(tr("new entry")));
+	appsTableModel->insertRow(atRow, itemKey);
 }
 
 void AppMgmtDialog::remove()
