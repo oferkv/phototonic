@@ -1181,18 +1181,20 @@ AppMgmtDialog::AppMgmtDialog(QWidget *parent) : QDialog(parent)
 	appsTable->setModel(appsTableModel);
 	appsTable->verticalHeader()->setVisible(false);
 	appsTable->verticalHeader()->setDefaultSectionSize(appsTable->verticalHeader()->minimumSectionSize());
-	appsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-	appsTableModel->setHorizontalHeaderItem(0, new QStandardItem(QString(tr("Application name"))));
-	appsTableModel->setHorizontalHeaderItem(1, new QStandardItem(QString(tr("Full path and arguments"))));
+	appsTableModel->setHorizontalHeaderItem(0, new QStandardItem(QString(tr("Name"))));
+	appsTableModel->setHorizontalHeaderItem(1,
+									new QStandardItem(QString(tr("Application path and arguments"))));
+	appsTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Interactive);
+	appsTable->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
 	appsTable->	setShowGrid(false);
 
 	QHBoxLayout *addRemoveHbox = new QHBoxLayout;
-    QPushButton *addButton = new QPushButton(tr("Choose application"));
+    QPushButton *addButton = new QPushButton(tr("Choose"));
    	addButton->setIcon(QIcon::fromTheme("list-add"));
 	connect(addButton, SIGNAL(clicked()), this, SLOT(add()));
 	addRemoveHbox->addWidget(addButton, 0, Qt::AlignRight);
-    QPushButton *entryButton = new QPushButton(tr("Add new entry"));
-        entryButton->setIcon(QIcon::fromTheme("list-add"));
+    QPushButton *entryButton = new QPushButton(tr("Add manually"));
+	entryButton->setIcon(QIcon::fromTheme("list-add"));
 	connect(entryButton, SIGNAL(clicked()), this, SLOT(entry()));
 	addRemoveHbox->addWidget(entryButton, 0, Qt::AlignRight);
     QPushButton *removeButton = new QPushButton(tr("Remove"));
@@ -1231,9 +1233,11 @@ void AppMgmtDialog::ok()
 	GData::externalApps.clear();
     for (int i = 0; i < row ; ++i)
     {
-	    if ( appsTableModel->itemFromIndex(appsTableModel->index(i, 0))->text() != "new entry" )
-		GData::externalApps[appsTableModel->itemFromIndex(appsTableModel->index(i, 0))->text()] =
+	    if (!appsTableModel->itemFromIndex(appsTableModel->index(i, 1))->text().isEmpty())
+	    {
+			GData::externalApps[appsTableModel->itemFromIndex(appsTableModel->index(i, 0))->text()] =
 						appsTableModel->itemFromIndex(appsTableModel->index(i, 1))->text();
+		}
     }
 	accept();
 }
@@ -1252,7 +1256,7 @@ void AppMgmtDialog::add()
 void AppMgmtDialog::entry()
 {
 	int atRow = appsTableModel->rowCount();
-	QStandardItem *itemKey = new QStandardItem(QString(tr("new entry")));
+	QStandardItem *itemKey = new QStandardItem(QString(tr("New Application")));
 	appsTableModel->insertRow(atRow, itemKey);
 }
 
