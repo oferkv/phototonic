@@ -11,34 +11,22 @@
     <message>
         <location filename="../dialogs.cpp" line="1184"/>
         <source>Name</source>
-        <translation type="unfinished">Name</translation>
-    </message>
-    <message>
-        <source>Command</source>
-        <translation type="vanished">Befehl</translation>
-    </message>
-    <message>
-        <source>Path</source>
-        <translation type="vanished">Pfad</translation>
-    </message>
-    <message>
-        <source>Add</source>
-        <translation type="vanished">Hinzufügen</translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1186"/>
         <source>Application path and arguments</source>
-        <translation type="unfinished"></translation>
+	<translation>Programmpfad und -argumente</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1192"/>
         <source>Choose</source>
-        <translation type="unfinished"></translation>
+        <translation>Auswählen</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1196"/>
         <source>Add manually</source>
-        <translation type="unfinished"></translation>
+        <translation>Manuell hinzufügen</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1200"/>
@@ -58,15 +46,7 @@
     <message>
         <location filename="../dialogs.cpp" line="1259"/>
         <source>New Application</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Fehler</translation>
-    </message>
-    <message>
-        <source>Not an executable</source>
-        <translation type="obsolete">Keine ausführbare Datei</translation>
+        <translation>Neue Applikationi</translation>
     </message>
 </context>
 <context>
@@ -190,10 +170,6 @@
         <source>Choose Folder</source>
         <translation>Verzeichnis wählen</translation>
     </message>
-    <message>
-        <source>Choose Directory</source>
-        <translation type="obsolete">Verzeichnis auswählen</translation>
-    </message>
 </context>
 <context>
     <name>CpMvDialog</name>
@@ -256,10 +232,6 @@
 </context>
 <context>
     <name>ImageView</name>
-    <message>
-        <source>New image</source>
-        <translation type="obsolete">Neues Bild</translation>
-    </message>
     <message>
         <location filename="../imageview.cpp" line="624"/>
         <source>Clipboard</source>
@@ -332,10 +304,6 @@
         <translation> ist bereits &quot;</translation>
     </message>
     <message>
-        <source>Already assigned to &quot;</source>
-        <translation type="obsolete">Bereits zugewiesen an &quot;</translation>
-    </message>
-    <message>
         <location filename="../dialogs.cpp" line="211"/>
         <source>&quot; action</source>
         <translation>&quot; zugewiesen</translation>
@@ -359,10 +327,6 @@
         <location filename="../mainwindow.cpp" line="214"/>
         <source>Transform</source>
         <translation>Transformieren</translation>
-    </message>
-    <message>
-        <source>Mirror</source>
-        <translation type="obsolete">Spiegeln</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="267"/>
@@ -413,10 +377,6 @@
         <location filename="../mainwindow.cpp" line="306"/>
         <source>Copy</source>
         <translation>Kopieren</translation>
-    </message>
-    <message>
-        <source>Copy/Move to...</source>
-        <translation type="obsolete">Kopieren/ Verschieben nach...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="42"/>
@@ -608,12 +568,12 @@
     <message>
         <location filename="../mainwindow.cpp" line="820"/>
         <source>&lt;u&gt;Contributors&lt;/u&gt;:&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;u&gt;Mitwirkende&lt;/u&gt;:&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="822"/>
         <source>&lt;u&gt;Translators&lt;/u&gt;:&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+	<translation>&lt;u&gt;Übersetzer&lt;/u&gt;:&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2039"/>
@@ -882,10 +842,6 @@
         <translation>&lt;p&gt;Kompiliert mit Qt</translation>
     </message>
     <message>
-        <source>Translators:&lt;br&gt;</source>
-        <translation type="vanished">Übersetzer:&lt;br&gt;</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="857"/>
         <location filename="../mainwindow.cpp" line="2394"/>
         <source>Invalid selection</source>
@@ -1008,10 +964,6 @@
         <location filename="../mainwindow.cpp" line="2014"/>
         <source>Slide show stopped</source>
         <translation>Diashow angehalten</translation>
-    </message>
-    <message>
-        <source>End Slide Show</source>
-        <translation type="obsolete">Diashow beenden</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2040"/>
@@ -1142,14 +1094,6 @@
 </context>
 <context>
     <name>ResizeDialog</name>
-    <message>
-        <source>Resize Image (Demo)</source>
-        <translation type="obsolete">Bildgröße ändern (Demo)</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">OK</translation>
-    </message>
     <message>
         <location filename="../dialogs.cpp" line="759"/>
         <source>Scale Image</source>
@@ -1373,10 +1317,6 @@
         <location filename="../dialogs.cpp" line="499"/>
         <source>Keyboard Shortcuts:</source>
         <translation>Tastenkombinationen:</translation>
-    </message>
-    <message>
-        <source>keyboard shortcuts:</source>
-        <translation type="obsolete">Tastenkombinationen:</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="510"/>
