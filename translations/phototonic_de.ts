@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="de_DE">
+<TS version="2.0" language="de_DE">
 <context>
     <name>AppMgmtDialog</name>
     <message>
@@ -16,7 +16,7 @@
     <message>
         <location filename="../dialogs.cpp" line="1186"/>
         <source>Application path and arguments</source>
-	<translation>Programmpfad und -argumente</translation>
+        <translation>Programmpfad und -argumente</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1192"/>
@@ -46,7 +46,7 @@
     <message>
         <location filename="../dialogs.cpp" line="1259"/>
         <source>New Application</source>
-        <translation>Neue Applikationi</translation>
+        <translation>Neue Applikation</translation>
     </message>
 </context>
 <context>
@@ -573,7 +573,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="822"/>
         <source>&lt;u&gt;Translators&lt;/u&gt;:&lt;br&gt;</source>
-	<translation>&lt;u&gt;Übersetzer&lt;/u&gt;:&lt;br&gt;</translation>
+        <translation>&lt;u&gt;Übersetzer&lt;/u&gt;:&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2039"/>
@@ -603,7 +603,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="464"/>
         <source>Zoom In</source>
-        <translation>Zomm erhöhen</translation>
+        <translation>Zoom erhöhen</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="468"/>
