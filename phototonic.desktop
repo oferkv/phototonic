@@ -10,4 +10,4 @@ Terminal=false
 Type=Application
 Categories=Graphics;Viewer;
 StartupNotify=true
-MimeType=image/png;image/gif;image/jpeg;image/bmp;image/svg+xml
+MimeType=image/png;image/gif;image/jpeg;image/bmp;image/svg+xml;

@@ -813,6 +813,7 @@ void Phototonic::about()
 {
 	QString aboutString = "<h2>Phototonic v1.03</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
+		+ tr("<p>Git build v1.03.02 (" __DATE__ " " __TIME__ ")</p>")
 		+ tr("Built with Qt ") + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
 		+ "<p><a href=\"https://github.com/oferkv/phototonic/issues\">" + tr("Bug reports") + "</a></p>"
@@ -823,7 +824,7 @@ void Phototonic::about()
 		+ "&nbsp;&nbsp;Czech: Pavel Fric (pavelfric@seznam.cz)<br>"
 		+ "&nbsp;&nbsp;German: Jonathan Hooverman (jonathan.hooverman@gmail.com)<br>"
 		+ QString::fromUtf8("&nbsp;&nbsp;Polish: Robert Wojew\u00F3dzki (robwoj44@poczta.onet.pl)<br>")
-		+ "&nbsp;&nbsp;Russian: Ilya alexandrovich (yast4ik@gmail.com)"
+		+ "&nbsp;&nbsp;Russian: Ilya Alexandrovich (yast4ik@gmail.com)"
 		+ "<p>Phototonic is licensed under the GNU General Public License version 3</p>";
 
 	QMessageBox::about(this, "About Phototonic", aboutString);
