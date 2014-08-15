@@ -80,6 +80,7 @@ namespace GData
 	extern bool hueGreenChannel;
 	extern bool hueBlueChannel;
 	extern bool exifRotationEnabled;
+	extern bool exifThumbRotationEnabled;
 	extern bool includeSubFolders;
 	extern bool showHiddenFiles;
 	extern QMap<QString, QString> externalApps;

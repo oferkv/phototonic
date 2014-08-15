@@ -97,6 +97,7 @@ private:
 	QCheckBox *wrapListCb;
 	QCheckBox *enableAnimCb;
 	QCheckBox *enableExifCb;
+	QCheckBox *enableThumbExifCb;
 	QCheckBox *imageInfoCb;
 	QCheckBox *noSmallThumbCb;
 	QCheckBox *reverseMouseCb;

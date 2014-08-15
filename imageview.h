@@ -84,6 +84,7 @@ public:
 	bool isNewImage();
 	void keyMoveEvent(int direction);
 	void popMessage(QString message);
+	static void rotateByExifRotation(QImage &image, const QString &imageFullPath);
 
 public slots:
 	void monitorCursorState();
@@ -125,7 +126,6 @@ private:
 	QLabel *infoLabel;
 
 	void centerImage(QSize &imgSize);
-	long getExifOrientation();
 	void transform();
 	void mirror();
 	void colorize();

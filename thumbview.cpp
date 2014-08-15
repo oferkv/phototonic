@@ -18,6 +18,8 @@
 
 #include "thumbview.h"
 
+#define BAD_IMG_SZ	64
+
 ThumbView::ThumbView(QWidget *parent) : QListView(parent)
 {
 	GData::thumbsBackgroundColor = GData::appSettings->value("backgroundThumbColor").value<QColor>();
@@ -490,8 +492,8 @@ void ThumbView::initThumbs()
 	if (GData::thumbsLayout == Squares)
 		hintSize = QSize(thumbWidth / 2, thumbWidth / 2);
 	else if (GData::thumbsLayout == Classic)
-		hintSize = QSize(thumbWidth, thumbHeight + (GData::showLabels?
-															QFontMetrics(font()).height() + 5 : 0));
+		hintSize = QSize(thumbWidth, thumbHeight + 
+							(GData::showLabels? QFontMetrics(font()).height() + 5 : 0));
 
 	for (currThumb = 0; currThumb < thumbFileInfoList.size(); ++currThumb)
 	{
@@ -518,6 +520,8 @@ void ThumbView::loadThumbsRange()
 	static QImageReader thumbReader;
 	static QSize currThumbSize;
 	static int currRowCount;
+	static QString imageFileName;
+	static QImage thumb;
 	int currThumb;
 
 	if (inProgress)
@@ -540,21 +544,36 @@ void ThumbView::loadThumbsRange()
 		if (thumbViewModel->item(currThumb)->data(LoadedRole).toBool())
 			continue;
 
-		thumbReader.setFileName(thumbViewModel->item(currThumb)->data(FileNameRole).toString());
+		imageFileName = thumbViewModel->item(currThumb)->data(FileNameRole).toString();
+		thumbReader.setFileName(imageFileName);
 		currThumbSize = thumbReader.size();
 
 		if (currThumbSize.isValid())
 		{
-			if (!GData::noEnlargeSmallThumb || (currThumbSize.width() > thumbWidth || currThumbSize.height() > thumbHeight))
+			if (!GData::noEnlargeSmallThumb
+				|| (currThumbSize.width() > thumbWidth || currThumbSize.height() > thumbHeight))
+			{
 				currThumbSize.scale(QSize(thumbWidth, thumbHeight), Qt::KeepAspectRatio);
-				
+			}
+
 			thumbReader.setScaledSize(currThumbSize);
-			thumbViewModel->item(currThumb)->setIcon(QPixmap::fromImage(thumbReader.read()));
+			thumb = thumbReader.read();
+
+			if (GData::exifThumbRotationEnabled)
+			{
+				ImageView::rotateByExifRotation(thumb, imageFileName);
+				currThumbSize = thumb.size();
+				currThumbSize.scale(QSize(thumbWidth, thumbHeight), Qt::KeepAspectRatio);
+			}
+				
+			thumbViewModel->item(currThumb)->setIcon(QPixmap::fromImage(thumb));
 		}
 		else
 		{
 			thumbViewModel->item(currThumb)->setIcon(QIcon::fromTheme("image-missing",
-													QIcon(":/images/error_image.png")).pixmap(64, 64));
+									QIcon(":/images/error_image.png")).pixmap(BAD_IMG_SZ, BAD_IMG_SZ));
+			currThumbSize.setHeight(BAD_IMG_SZ);
+			currThumbSize.setWidth(BAD_IMG_SZ);
 		}
 
 		if (GData::thumbsLayout == Compact)
@@ -586,11 +605,13 @@ void ThumbView::addThumb(QString &imageFullPath)
 	QImageReader thumbReader;
 	QSize hintSize;
 	QSize currThumbSize;
+	static QImage thumb;
 
 	if (GData::thumbsLayout == Squares)
 		hintSize = QSize(thumbWidth / 2, thumbWidth / 2);
 	else if (GData::thumbsLayout == Classic)
-		hintSize = QSize(thumbWidth, thumbHeight + QFontMetrics(font()).height() + 5);
+		hintSize = QSize(thumbWidth, thumbHeight + 
+							(GData::showLabels? QFontMetrics(font()).height() + 5 : 0));
 	
 	thumbFileInfo = QFileInfo(imageFullPath);
 	thumbIitem->setData(true, LoadedRole);
@@ -603,23 +624,39 @@ void ThumbView::addThumb(QString &imageFullPath)
 	currThumbSize = thumbReader.size();
 	if (currThumbSize.isValid())
 	{
-		if (!GData::noEnlargeSmallThumb || (currThumbSize.width() > thumbWidth || 
-													currThumbSize.height() > thumbHeight))
+		if (!GData::noEnlargeSmallThumb
+			|| (currThumbSize.width() > thumbWidth || currThumbSize.height() > thumbHeight))
 		{
 			currThumbSize.scale(QSize(thumbWidth, thumbHeight), Qt::KeepAspectRatio);
 		}
 			
 		thumbReader.setScaledSize(currThumbSize);
-		thumbIitem->setIcon(QPixmap::fromImage(thumbReader.read()));
+		thumb = thumbReader.read();
+
+		if (GData::exifThumbRotationEnabled)
+		{
+			ImageView::rotateByExifRotation(thumb, imageFullPath);
+			currThumbSize = thumb.size();
+			currThumbSize.scale(QSize(thumbWidth, thumbHeight), Qt::KeepAspectRatio);
+		}
+			
+		thumbIitem->setIcon(QPixmap::fromImage(thumb));
 	}
 	else
 	{
 		thumbIitem->setIcon(QIcon::fromTheme("image-missing",
-												QIcon(":/images/error_image.png")).pixmap(64, 64));
+								QIcon(":/images/error_image.png")).pixmap(BAD_IMG_SZ, BAD_IMG_SZ));
+		currThumbSize.setHeight(BAD_IMG_SZ);
+		currThumbSize.setWidth(BAD_IMG_SZ);
 	}
 
-	thumbIitem->setTextAlignment(Qt::AlignTop | Qt::AlignHCenter);
-	if (GData::thumbsLayout != Compact)
+	if (GData::thumbsLayout == Compact)
+	{
+		if (GData::showLabels)
+			currThumbSize.setHeight(currThumbSize.height() + QFontMetrics(font()).height() + 5);
+		thumbIitem->setSizeHint(currThumbSize);
+	}
+	else
 		thumbIitem->setSizeHint(hintSize);
 
 	thumbViewModel->appendRow(thumbIitem);

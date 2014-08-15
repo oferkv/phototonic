@@ -322,13 +322,17 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	thumbPagesHbox->addWidget(thumbPagesSpin);
 	thumbPagesHbox->addStretch(1);
 
+	enableThumbExifCb = new QCheckBox(tr("Rotate thumbnails according to Exif orientation"), this);
+	enableThumbExifCb->setChecked(GData::exifThumbRotationEnabled);
+
 	// Thumbnail options
 	QGroupBox *thumbOptsGroupBox = new QGroupBox(tr("Thumbnails"));
 	QVBoxLayout *thumbsOptsBox = new QVBoxLayout;
-	thumbsOptsBox->addLayout(thumbSpacingHbox);
-	thumbsOptsBox->addWidget(noSmallThumbCb);
 	thumbsOptsBox->addLayout(bgThumbColBox);
+	thumbsOptsBox->addLayout(thumbSpacingHbox);
+	thumbsOptsBox->addWidget(enableThumbExifCb);
 	thumbsOptsBox->addLayout(thumbPagesHbox);
+	thumbsOptsBox->addWidget(noSmallThumbCb);
 	thumbOptsGroupBox->setLayout(thumbsOptsBox);
 
 	// Zoom large images
@@ -388,8 +392,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	enableAnimCb = new QCheckBox(tr("Enable GIF animation"), this);
 	enableAnimCb->setChecked(GData::enableAnimations);
 
-	// Enable Exif
-	enableExifCb = new QCheckBox(tr("Rotate according to Exif orientation"), this);
+	// Enable image Exif rotation
+	enableExifCb = new QCheckBox(tr("Rotate image according to Exif orientation"), this);
 	enableExifCb->setChecked(GData::exifRotationEnabled);
 
 	// Image Info
@@ -444,13 +448,14 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	zoomOptsBox->addWidget(fitLargeGroupBox);
 	zoomOptsBox->addWidget(fitSmallGroupBox);
 	zoomOptsBox->addStretch(1);
+
 	viewerOptsBox->addLayout(zoomOptsBox);
 	viewerOptsBox->addLayout(bgColBox);
-	viewerOptsBox->addWidget(wrapListCb);
-	viewerOptsBox->addLayout(saveQualityHbox);
-	viewerOptsBox->addWidget(enableAnimCb);
 	viewerOptsBox->addWidget(enableExifCb);
 	viewerOptsBox->addWidget(imageInfoCb);
+	viewerOptsBox->addWidget(wrapListCb);
+	viewerOptsBox->addWidget(enableAnimCb);
+	viewerOptsBox->addLayout(saveQualityHbox);
 	viewerOptsBox->addWidget(exitCliCb);
 	QGroupBox *viewerOptsGrp = new QGroupBox(tr("Viewer"));
 	viewerOptsGrp->setLayout(viewerOptsBox);
@@ -564,6 +569,7 @@ void SettingsDialog::saveSettings()
 	GData::slideShowRandom = slideRandomCb->isChecked();
 	GData::enableAnimations = enableAnimCb->isChecked();
 	GData::exifRotationEnabled = enableExifCb->isChecked();
+	GData::exifThumbRotationEnabled = enableThumbExifCb->isChecked();
 	GData::enableImageInfoFS = imageInfoCb->isChecked();
 	GData::reverseMouseBehavior = reverseMouseCb->isChecked();
 

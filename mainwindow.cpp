@@ -813,7 +813,7 @@ void Phototonic::about()
 {
 	QString aboutString = "<h2>Phototonic v1.03</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
-		+ tr("<p>Git build v1.03.02 (" __DATE__ " " __TIME__ ")</p>")
+		+ tr("<p>Git build v1.03.03 (" __DATE__ " " __TIME__ ")</p>")
 		+ tr("Built with Qt ") + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
 		+ "<p><a href=\"https://github.com/oferkv/phototonic/issues\">" + tr("Bug reports") + "</a></p>"
@@ -1540,6 +1540,7 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("exitInsteadOfClose", (int)GData::exitInsteadOfClose);
 	GData::appSettings->setValue("enableAnimations", (bool)GData::enableAnimations);
 	GData::appSettings->setValue("exifRotationEnabled", (bool)GData::exifRotationEnabled);
+	GData::appSettings->setValue("exifThumbRotationEnabled", (bool)GData::exifThumbRotationEnabled);
 	GData::appSettings->setValue("reverseMouseBehavior", (bool)GData::reverseMouseBehavior);
 	GData::appSettings->setValue("showHiddenFiles", (bool)GData::showHiddenFiles);
 	GData::appSettings->setValue("wrapImageList", (bool)GData::wrapImageList);
@@ -1603,12 +1604,12 @@ void Phototonic::readSettings()
 	{
 		resize(800, 600);
 		GData::appSettings->setValue("thumbsSortFlags", (int)0);
-		GData::appSettings->setValue("thumbsZoomVal", (int)200);
+		GData::appSettings->setValue("thumbsZoomVal", (int)150);
 		GData::appSettings->setValue("isFullScreen", (bool)false);
 		GData::appSettings->setValue("backgroundColor", QColor(25, 25, 25));
 		GData::appSettings->setValue("backgroundThumbColor", QColor(200, 200, 200));
 		GData::appSettings->setValue("textThumbColor", QColor(25, 25, 25));
-		GData::appSettings->setValue("thumbSpacing", (int)5);
+		GData::appSettings->setValue("thumbSpacing", (int)3);
 		GData::appSettings->setValue("thumbPagesReadahead", (int)2);
 		GData::appSettings->setValue("thumbLayout", (int)GData::thumbsLayout);
 		GData::appSettings->setValue("zoomOutFlags", (int)1);
@@ -1620,6 +1621,7 @@ void Phototonic::readSettings()
 		GData::appSettings->setValue("noEnlargeSmallThumb", (bool)true);
 		GData::appSettings->setValue("enableAnimations", (bool)true);
 		GData::appSettings->setValue("exifRotationEnabled", (bool)true);
+		GData::appSettings->setValue("exifThumbRotationEnabled", (bool)false);
 		GData::appSettings->setValue("reverseMouseBehavior", (bool)false);
 		GData::appSettings->setValue("showHiddenFiles", (bool)false);
 		GData::appSettings->setValue("slideShowDelay", (int)5);
@@ -1636,6 +1638,7 @@ void Phototonic::readSettings()
 	GData::exitInsteadOfClose = GData::appSettings->value("exitInsteadOfClose").toBool();
 	GData::enableAnimations = GData::appSettings->value("enableAnimations").toBool();
 	GData::exifRotationEnabled = GData::appSettings->value("exifRotationEnabled").toBool();
+	GData::exifThumbRotationEnabled = GData::appSettings->value("exifThumbRotationEnabled").toBool();
 	GData::reverseMouseBehavior = GData::appSettings->value("reverseMouseBehavior").toBool();
 	GData::showHiddenFiles = GData::appSettings->value("showHiddenFiles").toBool();
 	GData::wrapImageList = GData::appSettings->value("wrapImageList").toBool();

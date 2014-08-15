@@ -237,22 +237,23 @@ void ImageView::centerImage(QSize &imgSize)
 		imageLabel->move(newX, newY);
 }
 
-long ImageView::getExifOrientation()
+void ImageView::rotateByExifRotation(QImage &image, const QString &imageFullPath)
 {
+	QTransform trans;
 	Exiv2::Image::AutoPtr exifImage;
 
 	try
 	{
-		exifImage = Exiv2::ImageFactory::open(currentImageFullPath.toStdString());
+		exifImage = Exiv2::ImageFactory::open(imageFullPath.toStdString());
 	}
 	catch (Exiv2::Error &error)
 	{
-		return 0;
+		return;
 	}
 
 	exifImage->readMetadata();
 	Exiv2::ExifData &exifData = exifImage->exifData();
-	long orientation;
+	long orientation = 1;
 
 	if (!exifData.empty())
 	{
@@ -262,48 +263,48 @@ long ImageView::getExifOrientation()
 		}
 		catch (Exiv2::Error &error)
 		{
-			return 0;
+			return;
 		}
 	}
-	return orientation;
+	
+	switch(orientation)
+	{
+		case 2:
+			image = image.mirrored(true, false);
+			break;
+		case 3:
+			trans.rotate(180);
+			image = image.transformed(trans, Qt::SmoothTransformation);
+			break;
+		case 4:
+			image = image.mirrored(false, true);
+			break;
+		case 5:
+			trans.rotate(90);
+			image = image.transformed(trans, Qt::SmoothTransformation);
+			image = image.mirrored(true, false);
+			break;
+		case 6:
+			trans.rotate(90);
+			image = image.transformed(trans, Qt::SmoothTransformation);
+			break;
+		case 7:
+			trans.rotate(90);
+			image = image.transformed(trans, Qt::SmoothTransformation);
+			image = image.mirrored(false, true);
+			break;
+		case 8:
+			trans.rotate(270);
+			image = image.transformed(trans, Qt::SmoothTransformation);
+			break;
+	}
 }
 
 void ImageView::transform()
 {
 	if (GData::exifRotationEnabled)
 	{
-		QTransform trans;
-		switch(getExifOrientation())
-		{
-			case 2:
-				displayImage = displayImage.mirrored(true, false);
-				break;
- 			case 3:
-				trans.rotate(180);
-				displayImage = displayImage.transformed(trans, Qt::SmoothTransformation);
-				break;
- 			case 4:
-				displayImage = displayImage.mirrored(false, true);
-				break;
- 			case 5:
-				trans.rotate(90);
-				displayImage = displayImage.transformed(trans, Qt::SmoothTransformation);
-				displayImage = displayImage.mirrored(true, false);
-				break;
- 			case 6:
-				trans.rotate(90);
-				displayImage = displayImage.transformed(trans, Qt::SmoothTransformation);
-				break;
- 			case 7:
-				trans.rotate(90);
-				displayImage = displayImage.transformed(trans, Qt::SmoothTransformation);
-				displayImage = displayImage.mirrored(false, true);
-				break;
- 			case 8:
-				trans.rotate(270);
-				displayImage = displayImage.transformed(trans, Qt::SmoothTransformation);
-				break;
-		}
+		rotateByExifRotation(displayImage, currentImageFullPath);
 	}
 
 	if (GData::rotation)

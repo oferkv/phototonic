@@ -39,6 +39,7 @@
 #include <QTimer>
 #include "global.h"
 #include "infoview.h"
+#include "imageview.h"
 
 class ThumbView : public QListView
 {
