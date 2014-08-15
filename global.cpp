@@ -78,5 +78,6 @@ namespace GData
 	QString specifiedStartDir;
 	bool enableImageInfoFS;
 	bool showLabels;
+	bool smallIcons;
 }
 

@@ -38,8 +38,8 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	loadShortcuts();
 	addDockWidget(Qt::LeftDockWidgetArea, iiDock);
 	copyMoveToDialog = 0;
-	(viewMenu->insertMenu(thumbsZoomInAct, QMainWindow::createPopupMenu()))->
-																	setText(tr("Docks and Toolbars"));
+	(viewMenu->insertMenu(refreshAction, QMainWindow::createPopupMenu()))->
+													setText(tr("Docks and Toolbars"));
 
 	connect(qApp, SIGNAL(focusChanged(QWidget*, QWidget*)), 
 				this, SLOT(updateActions(QWidget*, QWidget*)));
@@ -423,6 +423,7 @@ void Phototonic::createActions()
 
 	slideShowAction = new QAction(tr("Slide Show"), this);
 	connect(slideShowAction, SIGNAL(triggered()), this, SLOT(slideShow()));
+	slideShowAction->setIcon(QIcon::fromTheme("media-playback-start", QIcon(":/images/play.png")));
 
 	nextImageAction = new QAction(tr("Next"), this);
 	nextImageAction->setIcon(QIcon::fromTheme("go-next", QIcon(":/images/next.png")));
@@ -577,6 +578,9 @@ void Phototonic::createMenus()
 	goMenu->addAction(thumbsGoBottomAct);
 
 	viewMenu = menuBar()->addMenu(tr("&View"));
+	viewMenu->addAction(slideShowAction);
+	viewMenu->addSeparator();
+	
 	viewMenu->addAction(thumbsZoomInAct);
 	viewMenu->addAction(thumbsZoomOutAct);
 	sortMenu = viewMenu->addMenu(tr("Sort By"));
@@ -590,15 +594,13 @@ void Phototonic::createMenus()
 	sortMenu->addAction(actReverse);
 	viewMenu->addSeparator();
 
-	viewMenu->addAction(slideShowAction);
-	viewMenu->addSeparator();
-
 	thumbLayoutsGroup = new QActionGroup(this);
 	thumbLayoutsGroup->addAction(actClassic);
 	thumbLayoutsGroup->addAction(actCompact);
 	thumbLayoutsGroup->addAction(actSquarish);
 	viewMenu->addActions(thumbLayoutsGroup->actions());
 	viewMenu->addSeparator();
+
 	viewMenu->addAction(actShowLabels);
 	viewMenu->addAction(actShowHidden);
 	viewMenu->addSeparator();
@@ -635,6 +637,7 @@ void Phototonic::createToolBars()
 	editToolBar->addAction(deleteAction);
 	editToolBar->addAction(showClipboardAction);
 	connect(editToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setEditToolBarVisibility()));
+	editToolBar->setIconSize(QSize(16, 16));
 
 	/* Navigation */
 	goToolBar = addToolBar(tr("Navigation"));
@@ -658,10 +661,12 @@ void Phototonic::createToolBars()
 	goToolBar->addAction(refreshAction);
 	goToolBar->addAction(subFoldersAction);
 	connect(goToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setGoToolBarVisibility()));
+	goToolBar->setIconSize(QSize(16, 16));
 
 	/* View */
 	viewToolBar = addToolBar(tr("View"));
 	viewToolBar->setObjectName("View");
+	viewToolBar->addAction(slideShowAction);
 	viewToolBar->addAction(thumbsZoomInAct);
 	viewToolBar->addAction(thumbsZoomOutAct);
 
@@ -679,7 +684,9 @@ void Phototonic::createToolBars()
 
 	viewToolBar->addSeparator();
 	viewToolBar->addWidget(filterBar);
+	viewToolBar->addAction(settingsAction);
 	connect(viewToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setViewToolBarVisibility()));	
+	viewToolBar->setIconSize(QSize(16, 16));
 }
 
 void Phototonic::createStatusBar()
@@ -2020,6 +2027,7 @@ void Phototonic::slideShow()
 
 		SlideShowTimer->stop();
 		delete SlideShowTimer;
+		slideShowAction->setIcon(QIcon::fromTheme("media-playback-start", QIcon(":/images/play.png")));
 	}
 	else
 	{
@@ -2043,6 +2051,7 @@ void Phototonic::slideShow()
 
 		slideShowAction->setText(tr("Stop Slide Show"));
 		imageView->popMessage(tr("Slide show started"));
+		slideShowAction->setIcon(QIcon::fromTheme("media-playback-stop", QIcon(":/images/stop.png")));
 
 		slideShowHandler();
 	}

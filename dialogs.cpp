@@ -110,7 +110,8 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 			currFile = fileInfo.fileName();
 			destFile = destDir + QDir::separator() + currFile;
 
-			opLabel->setText((GData::copyOp? tr("Copying "):tr("Moving ")) + sourceFile + tr(" to ") + destFile);
+			opLabel->setText((GData::copyOp? tr("Copying "):tr("Moving "))
+												+ sourceFile + tr(" to ") + destFile);
 			QApplication::processEvents();
 
 			res = cpMvFile(GData::copyOp, currFile, sourceFile, destFile, destDir);
@@ -196,7 +197,7 @@ void KeyGrabLineEdit::keyPressEvent(QKeyEvent *e)
 	{
 		QMessageBox msgBox;
 		msgBox.warning(this, tr("Set shortcut"), keySeqText +
-											tr(" is reserved for shortcuts to external applications"));
+						tr(" is reserved for shortcuts to external applications"));
 		return;
 	}
 
@@ -208,7 +209,7 @@ void KeyGrabLineEdit::keyPressEvent(QKeyEvent *e)
 		{
 			QMessageBox msgBox;
 			msgBox.warning(this, tr("Set shortcut"), keySeqText + tr(" is already assigned to \"")
-																		+ it.key() + tr("\" action"));
+							+ it.key() + tr("\" action"));
 			return;
 		}
 	}
@@ -233,32 +234,40 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	setWindowTitle(tr("Preferences"));
 	setWindowIcon(QIcon::fromTheme("preferences-other", QIcon(":/images/phototonic.png")));
 
-	int height = parent->size().height() - 50;
-	if (height > 800)
-		height = 800;
-	resize(600, height);
-
-	QWidget *optsWidgetArea = new QWidget(this);
-	QScrollArea *scrollArea = new QScrollArea;
-	scrollArea->setWidget(optsWidgetArea);
-	scrollArea->setWidgetResizable(true);
-	scrollArea->setFrameShadow(QFrame::Plain);
-	QHBoxLayout *buttonsHbox = new QHBoxLayout;
-    QPushButton *okButton = new QPushButton(tr("OK"));
-   	okButton->setIcon(QIcon::fromTheme("dialog-ok"));
-    okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-	connect(okButton, SIGNAL(clicked()), this, SLOT(saveSettings()));
-	QPushButton *closeButton = new QPushButton(tr("Cancel"));
-   	closeButton->setIcon(QIcon::fromTheme("dialog-cancel"));
-	closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-	connect(closeButton, SIGNAL(clicked()), this, SLOT(abort()));
-	buttonsHbox->addWidget(closeButton, 1, Qt::AlignRight);
-	buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);
-
-	QVBoxLayout *mainVbox = new QVBoxLayout;
-	mainVbox->addWidget(scrollArea);
-	mainVbox->addLayout(buttonsHbox);
-	setLayout(mainVbox);
+	// Image Viewer Options
+	// Zoom large images
+	QGroupBox *fitLargeGroupBox = new QGroupBox(tr("Fit Large Images"));
+	fitLargeRadios[0] = new QRadioButton(tr("Disable"));
+	fitLargeRadios[1] = new QRadioButton(tr("By width and height"));
+	fitLargeRadios[2] = new QRadioButton(tr("By width"));
+	fitLargeRadios[3] = new QRadioButton(tr("By height"));
+	fitLargeRadios[4] = new QRadioButton(tr("Stretch disproportionately"));
+	QVBoxLayout *fitLargeVbox = new QVBoxLayout;
+	for (int i = 0; i < nZoomRadios; ++i)
+	{
+		fitLargeVbox->addWidget(fitLargeRadios[i]);
+		fitLargeRadios[i]->setChecked(false);
+	}
+	fitLargeVbox->addStretch(1);
+	fitLargeGroupBox->setLayout(fitLargeVbox);
+	fitLargeRadios[GData::zoomOutFlags]->setChecked(true);
+ 	
+	// Zoom small images
+	QGroupBox *fitSmallGroupBox = new QGroupBox(tr("Fit Small Images"));
+	fitSmallRadios[0] = new QRadioButton(tr("Disable"));
+	fitSmallRadios[1] = new QRadioButton(tr("By width and height"));
+	fitSmallRadios[2] = new QRadioButton(tr("By width"));
+	fitSmallRadios[3] = new QRadioButton(tr("By height"));
+	fitSmallRadios[4] = new QRadioButton(tr("Stretch disproportionately"));
+	QVBoxLayout *fitSmallVbox = new QVBoxLayout;
+	for (int i = 0; i < nZoomRadios; ++i)
+	{
+		fitSmallVbox->addWidget(fitSmallRadios[i]);
+		fitSmallRadios[i]->setChecked(false);
+	}
+	fitSmallVbox->addStretch(1);
+	fitSmallGroupBox->setLayout(fitSmallVbox);
+	fitSmallRadios[GData::zoomInFlags]->setChecked(true);
 
 	// imageView background color
 	QLabel *backgroundColorLab = new QLabel(tr("Background color: "));
@@ -273,6 +282,56 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	backgroundColorButton->setAutoFillBackground(true);
 	bgColor = GData::backgroundColor;
 
+	// Exit when opening image
+	exitCliCb = new 
+				QCheckBox(tr("Exit instead of closing, when image is loaded from command line"), this);
+	exitCliCb->setChecked(GData::exitInsteadOfClose);
+
+	// Wrap image list
+	wrapListCb = new QCheckBox(tr("Wrap image list when reaching last or first image"), this);
+	wrapListCb->setChecked(GData::wrapImageList);
+
+	// Save quality
+	QLabel *saveQualityLab = new QLabel(tr("Default quality when saving images: "));
+	saveQualitySpin = new QSpinBox;
+	saveQualitySpin->setRange(0, 100);
+	saveQualitySpin->setValue(GData::defaultSaveQuality);
+	QHBoxLayout *saveQualityHbox = new QHBoxLayout;
+	saveQualityHbox->addWidget(saveQualityLab);
+	saveQualityHbox->addWidget(saveQualitySpin);
+	saveQualityHbox->addStretch(1);
+
+	// Enable animations
+	enableAnimCb = new QCheckBox(tr("Enable GIF animation"), this);
+	enableAnimCb->setChecked(GData::enableAnimations);
+
+	// Enable image Exif rotation
+	enableExifCb = new QCheckBox(tr("Rotate image according to Exif orientation"), this);
+	enableExifCb->setChecked(GData::exifRotationEnabled);
+
+	// Image Info
+	imageInfoCb = new QCheckBox(tr("Show image file name in full screen mode"), this);
+	imageInfoCb->setChecked(GData::enableImageInfoFS);
+
+	// Viewer options
+	QVBoxLayout *viewerOptsBox = new QVBoxLayout;
+	QHBoxLayout *zoomOptsBox = new QHBoxLayout;
+	zoomOptsBox->setAlignment(Qt::AlignTop);
+	zoomOptsBox->addWidget(fitLargeGroupBox);
+	zoomOptsBox->addWidget(fitSmallGroupBox);
+	zoomOptsBox->addStretch(1);
+
+	viewerOptsBox->addLayout(zoomOptsBox);
+	viewerOptsBox->addLayout(bgColBox);
+	viewerOptsBox->addWidget(enableExifCb);
+	viewerOptsBox->addWidget(imageInfoCb);
+	viewerOptsBox->addWidget(wrapListCb);
+	viewerOptsBox->addWidget(enableAnimCb);
+	viewerOptsBox->addLayout(saveQualityHbox);
+	viewerOptsBox->addWidget(exitCliCb);
+	viewerOptsBox->addStretch(1);
+
+	// Thumbnail Options
 	// thumbView background color
 	QLabel *bgThumbTxtLab = new QLabel(tr("Background color: "));
 	colThumbButton = new QToolButton();
@@ -326,83 +385,38 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	enableThumbExifCb->setChecked(GData::exifThumbRotationEnabled);
 
 	// Thumbnail options
-	QGroupBox *thumbOptsGroupBox = new QGroupBox(tr("Thumbnails"));
 	QVBoxLayout *thumbsOptsBox = new QVBoxLayout;
 	thumbsOptsBox->addLayout(bgThumbColBox);
 	thumbsOptsBox->addLayout(thumbSpacingHbox);
 	thumbsOptsBox->addWidget(enableThumbExifCb);
 	thumbsOptsBox->addLayout(thumbPagesHbox);
 	thumbsOptsBox->addWidget(noSmallThumbCb);
-	thumbOptsGroupBox->setLayout(thumbsOptsBox);
+	thumbsOptsBox->addStretch(1);
 
-	// Zoom large images
-	QGroupBox *fitLargeGroupBox = new QGroupBox(tr("Fit Large Images"));
-	fitLargeRadios[0] = new QRadioButton(tr("Disable"));
-	fitLargeRadios[1] = new QRadioButton(tr("By width and height"));
-	fitLargeRadios[2] = new QRadioButton(tr("By width"));
-	fitLargeRadios[3] = new QRadioButton(tr("By height"));
-	fitLargeRadios[4] = new QRadioButton(tr("Stretch disproportionately"));
-	QVBoxLayout *fitLargeVbox = new QVBoxLayout;
-	for (int i = 0; i < nZoomRadios; ++i)
-	{
-		fitLargeVbox->addWidget(fitLargeRadios[i]);
-		fitLargeRadios[i]->setChecked(false);
-	}
-	fitLargeVbox->addStretch(1);
-	fitLargeGroupBox->setLayout(fitLargeVbox);
-	fitLargeRadios[GData::zoomOutFlags]->setChecked(true);
- 	
-	// Zoom small images
-	QGroupBox *fitSmallGroupBox = new QGroupBox(tr("Fit Small Images"));
-	fitSmallRadios[0] = new QRadioButton(tr("Disable"));
-	fitSmallRadios[1] = new QRadioButton(tr("By width and height"));
-	fitSmallRadios[2] = new QRadioButton(tr("By width"));
-	fitSmallRadios[3] = new QRadioButton(tr("By height"));
-	fitSmallRadios[4] = new QRadioButton(tr("Stretch disproportionately"));
-	QVBoxLayout *fitSmallVbox = new QVBoxLayout;
-	for (int i = 0; i < nZoomRadios; ++i)
-	{
-		fitSmallVbox->addWidget(fitSmallRadios[i]);
-		fitSmallRadios[i]->setChecked(false);
-	}
-	fitSmallVbox->addStretch(1);
-	fitSmallGroupBox->setLayout(fitSmallVbox);
-	fitSmallRadios[GData::zoomInFlags]->setChecked(true);
+	// Slide show delay
+	QLabel *slideDelayLab = new QLabel(tr("Delay between slides in seconds: "));
+	slideDelaySpin = new QSpinBox;
+	slideDelaySpin->setRange(1, 3600);
+	slideDelaySpin->setValue(GData::slideShowDelay);
+	QHBoxLayout *slideDelayHbox = new QHBoxLayout;
+	slideDelayHbox->addWidget(slideDelayLab);
+	slideDelayHbox->addWidget(slideDelaySpin);
+	slideDelayHbox->addStretch(1);
 
-	// Exit when opening image
-	exitCliCb = new 
-				QCheckBox(tr("Exit instead of closing, when image is loaded from command line"), this);
-	exitCliCb->setChecked(GData::exitInsteadOfClose);
+	// Slide show random
+	slideRandomCb = new QCheckBox(tr("Show random images"), this);
+	slideRandomCb->setChecked(GData::slideShowRandom);
 
-	// Exit when opening image
-	wrapListCb = new QCheckBox(tr("Wrap image list when reaching last or first image"), this);
-	wrapListCb->setChecked(GData::wrapImageList);
-
-	// Save quality
-	QLabel *saveQualityLab = new QLabel(tr("Default quality when saving images: "));
-	saveQualitySpin = new QSpinBox;
-	saveQualitySpin->setRange(0, 100);
-	saveQualitySpin->setValue(GData::defaultSaveQuality);
-	QHBoxLayout *saveQualityHbox = new QHBoxLayout;
-	saveQualityHbox->addWidget(saveQualityLab);
-	saveQualityHbox->addWidget(saveQualitySpin);
-	saveQualityHbox->addStretch(1);
-
-	// Enable animations
-	enableAnimCb = new QCheckBox(tr("Enable GIF animation"), this);
-	enableAnimCb->setChecked(GData::enableAnimations);
-
-	// Enable image Exif rotation
-	enableExifCb = new QCheckBox(tr("Rotate image according to Exif orientation"), this);
-	enableExifCb->setChecked(GData::exifRotationEnabled);
-
-	// Image Info
-	imageInfoCb = new QCheckBox(tr("Show image file name in full screen mode"), this);
-	imageInfoCb->setChecked(GData::enableImageInfoFS);
+	// Slide show options
+	QVBoxLayout *slideShowVbox = new QVBoxLayout;
+	slideShowVbox->addLayout(slideDelayHbox);
+	slideShowVbox->addWidget(slideRandomCb);
+	slideShowVbox->addStretch(1);
 
 	// Startup directory
 	QGroupBox *startupDirGroupBox = new QGroupBox(tr("Startup folder"));
-	startupDirRadios[GData::defaultDir] = new QRadioButton(tr("Default, or specified by command line argument"));
+	startupDirRadios[GData::defaultDir] = 
+					new QRadioButton(tr("Default, or specified by command line argument"));
 	startupDirRadios[GData::rememberLastDir] = new QRadioButton(tr("Remember last"));
 	startupDirRadios[GData::specifiedDir] = new QRadioButton(tr("Specify:"));
 	
@@ -441,46 +455,6 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 		startupDirRadios[GData::defaultDir]->setChecked(true);
 	startupDirEdit->setText(GData::specifiedStartDir);
 
-	// Viewer options
-	QVBoxLayout *viewerOptsBox = new QVBoxLayout;
-	QHBoxLayout *zoomOptsBox = new QHBoxLayout;
-	zoomOptsBox->setAlignment(Qt::AlignTop);
-	zoomOptsBox->addWidget(fitLargeGroupBox);
-	zoomOptsBox->addWidget(fitSmallGroupBox);
-	zoomOptsBox->addStretch(1);
-
-	viewerOptsBox->addLayout(zoomOptsBox);
-	viewerOptsBox->addLayout(bgColBox);
-	viewerOptsBox->addWidget(enableExifCb);
-	viewerOptsBox->addWidget(imageInfoCb);
-	viewerOptsBox->addWidget(wrapListCb);
-	viewerOptsBox->addWidget(enableAnimCb);
-	viewerOptsBox->addLayout(saveQualityHbox);
-	viewerOptsBox->addWidget(exitCliCb);
-	QGroupBox *viewerOptsGrp = new QGroupBox(tr("Viewer"));
-	viewerOptsGrp->setLayout(viewerOptsBox);
-
-	// Slide show delay
-	QLabel *slideDelayLab = new QLabel(tr("Delay between slides in seconds: "));
-	slideDelaySpin = new QSpinBox;
-	slideDelaySpin->setRange(1, 3600);
-	slideDelaySpin->setValue(GData::slideShowDelay);
-	QHBoxLayout *slideDelayHbox = new QHBoxLayout;
-	slideDelayHbox->addWidget(slideDelayLab);
-	slideDelayHbox->addWidget(slideDelaySpin);
-	slideDelayHbox->addStretch(1);
-
-	// Slide show random
-	slideRandomCb = new QCheckBox(tr("Show random images"), this);
-	slideRandomCb->setChecked(GData::slideShowRandom);
-
-	// Slide show options
-	QVBoxLayout *slideShowVbox = new QVBoxLayout;
-	slideShowVbox->addLayout(slideDelayHbox);
-	slideShowVbox->addWidget(slideRandomCb);
-	QGroupBox *slideShowGbox = new QGroupBox(tr("Slide Show"));
-	slideShowGbox->setLayout(slideShowVbox);
-
 	// Keyboard shortcuts widgets
 	QComboBox *keysCombo = new QComboBox();
 	keyLine = new KeyGrabLineEdit(this, keysCombo);
@@ -500,36 +474,57 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	reverseMouseCb = new QCheckBox(tr("Swap mouse left-click and middle-click actions"), this);
 	reverseMouseCb->setChecked(GData::reverseMouseBehavior);
 
-	// Keyboard and mouse group
-	QLabel *changeKeysLab = new QLabel(tr("Keyboard Shortcuts:"));
+	// Keyboard and mouse
+
+	QGroupBox *keyboardGrp = new QGroupBox(tr("Keyboard shortcuts"));
 	QHBoxLayout *keyboardHbox = new QHBoxLayout;
-	keyboardHbox->addWidget(changeKeysLab);
 	keyboardHbox->addWidget(keysCombo);
 	keyboardHbox->addWidget(keyLine);
 	keyboardHbox->addStretch(1);
-
-	QVBoxLayout *mouseVbox = new QVBoxLayout;
-	mouseVbox->addLayout(keyboardHbox);
-	mouseVbox->addWidget(reverseMouseCb);
-
-	QGroupBox *keyboardGbox = new QGroupBox(tr("Keyboard and Mouse"));
-	keyboardGbox->setLayout(mouseVbox);
+	keyboardGrp->setLayout(keyboardHbox);
 
 	QVBoxLayout *generalVbox = new QVBoxLayout;
+	generalVbox->addWidget(keyboardGrp);
+	generalVbox->addWidget(reverseMouseCb);
 	generalVbox->addWidget(startupDirGroupBox);
-	QGroupBox *generalGbox = new QGroupBox(tr("General"));
-	generalGbox->setLayout(generalVbox);
+	generalVbox->addStretch(1);
 	
-	// General
-	QVBoxLayout *optsLayout = new QVBoxLayout;
-	optsWidgetArea->setLayout(optsLayout);
-	optsLayout->addWidget(viewerOptsGrp);
-	optsLayout->addSpacerItem(new QSpacerItem(0, 5, QSizePolicy::Fixed, QSizePolicy::Expanding));
-	optsLayout->addWidget(thumbOptsGroupBox);
-	optsLayout->addWidget(slideShowGbox);
-	optsLayout->addWidget(keyboardGbox);
-	optsLayout->addWidget(generalGbox);
-	optsLayout->addStretch(1);
+	/* Confirmation buttons */
+	QHBoxLayout *buttonsHbox = new QHBoxLayout;
+    QPushButton *okButton = new QPushButton(tr("OK"));
+   	okButton->setIcon(QIcon::fromTheme("dialog-ok"));
+    okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+	connect(okButton, SIGNAL(clicked()), this, SLOT(saveSettings()));
+	QPushButton *closeButton = new QPushButton(tr("Cancel"));
+   	closeButton->setIcon(QIcon::fromTheme("dialog-cancel"));
+	closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+	connect(closeButton, SIGNAL(clicked()), this, SLOT(abort()));
+	buttonsHbox->addWidget(closeButton, 1, Qt::AlignRight);
+	buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);
+
+	/* Tabs */
+	QTabWidget *tabs = new QTabWidget;
+
+	QWidget *viewerSettings = new QWidget;
+	viewerSettings->setLayout(viewerOptsBox);
+	tabs->addTab(viewerSettings, tr("Viewer"));
+
+	QWidget *thumbSettings = new QWidget;
+	thumbSettings->setLayout(thumbsOptsBox);
+	tabs->addTab(thumbSettings, tr("Thumbnails"));
+
+	QWidget *slideSettings = new QWidget;
+	slideSettings->setLayout(slideShowVbox);
+	tabs->addTab(slideSettings, tr("Slide Show"));
+
+	QWidget *generalSettings = new QWidget;
+	generalSettings->setLayout(generalVbox);
+	tabs->addTab(generalSettings, tr("General"));
+
+	QVBoxLayout *mainVbox = new QVBoxLayout;
+	mainVbox->addWidget(tabs);
+	mainVbox->addLayout(buttonsHbox);
+	setLayout(mainVbox);
 }
 
 void SettingsDialog::saveSettings()

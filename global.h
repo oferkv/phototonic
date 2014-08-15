@@ -96,6 +96,7 @@ namespace GData
 	extern QString specifiedStartDir;
 	extern bool enableImageInfoFS;
 	extern bool showLabels;
+	extern bool smallIcons;
 }
 
 #endif // GLOBAL_H

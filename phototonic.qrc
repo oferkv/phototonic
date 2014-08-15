@@ -34,7 +34,8 @@
 		<file>images/new.png</file>
 		<file>images/tree.png</file>
 		<file>images/clear.png</file>
-		<file>images/image.png</file>
+		<file>images/play.png</file>
+		<file>images/stop.png</file>
 		<file>translations/phototonic_pl.qm</file>
 		<file>translations/phototonic_de.qm</file>
 		<file>translations/phototonic_ru.qm</file>
