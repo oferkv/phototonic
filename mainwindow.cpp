@@ -2234,15 +2234,24 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvD
 
 	if (dirOp)
 	{
-		QString dirOnly = cpMvDirPath.right(cpMvDirPath.size() - cpMvDirPath.lastIndexOf(QDir::separator()) - 1);
-		QFile dir(cpMvDirPath);
-		bool ok = dir.rename(destDir + QDir::separator() + dirOnly);
-		if (!ok)
+		QString dirOnly = 
+			cpMvDirPath.right(cpMvDirPath.size() - cpMvDirPath.lastIndexOf(QDir::separator()) - 1);
+
+		QString question = tr("Move ") + dirOnly + tr(" to ") + destDir + "?";
+		int ret = QMessageBox::question(this, tr("Move folder"), question,
+							QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
+
+		if (ret == QMessageBox::Yes)
 		{
-			QMessageBox msgBox;
-			msgBox.critical(this, tr("Error"), tr("Failed to move folder"));
+			QFile dir(cpMvDirPath);
+			bool ok = dir.rename(destDir + QDir::separator() + dirOnly);
+			if (!ok)
+			{
+				QMessageBox msgBox;
+				msgBox.critical(this, tr("Error"), tr("Failed to move folder"));
+			}
+			setStatus(tr("Folder moved"));
 		}
-		setStatus(tr("Folder moved"));
 	}
 	else
 	{
