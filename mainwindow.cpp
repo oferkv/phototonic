@@ -22,6 +22,7 @@
 
 #define THUMB_SIZE_MIN	50
 #define THUMB_SIZE_MAX	300
+#define TOOL_BAR_SIZE	16
 
 Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 {
@@ -637,7 +638,7 @@ void Phototonic::createToolBars()
 	editToolBar->addAction(deleteAction);
 	editToolBar->addAction(showClipboardAction);
 	connect(editToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setEditToolBarVisibility()));
-	editToolBar->setIconSize(QSize(16, 16));
+	editToolBar->setIconSize(QSize(TOOL_BAR_SIZE, TOOL_BAR_SIZE));
 
 	/* Navigation */
 	goToolBar = addToolBar(tr("Navigation"));
@@ -661,7 +662,7 @@ void Phototonic::createToolBars()
 	goToolBar->addAction(refreshAction);
 	goToolBar->addAction(subFoldersAction);
 	connect(goToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setGoToolBarVisibility()));
-	goToolBar->setIconSize(QSize(16, 16));
+	goToolBar->setIconSize(QSize(TOOL_BAR_SIZE, TOOL_BAR_SIZE));
 
 	/* View */
 	viewToolBar = addToolBar(tr("View"));
@@ -686,7 +687,7 @@ void Phototonic::createToolBars()
 	viewToolBar->addWidget(filterBar);
 	viewToolBar->addAction(settingsAction);
 	connect(viewToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setViewToolBarVisibility()));	
-	viewToolBar->setIconSize(QSize(16, 16));
+	viewToolBar->setIconSize(QSize(TOOL_BAR_SIZE, TOOL_BAR_SIZE));
 }
 
 void Phototonic::createStatusBar()
@@ -820,7 +821,7 @@ void Phototonic::about()
 {
 	QString aboutString = "<h2>Phototonic v1.03</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
-		+ tr("<p>Git build v1.03.03 (" __DATE__ " " __TIME__ ")</p>")
+		+ tr("<p>Git release") + " v1.03.04 (built " __DATE__ " " __TIME__ ")</p>"
 		+ tr("Built with Qt ") + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
 		+ "<p><a href=\"https://github.com/oferkv/phototonic/issues\">" + tr("Bug reports") + "</a></p>"
