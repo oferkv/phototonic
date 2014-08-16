@@ -22,7 +22,6 @@
 
 #define THUMB_SIZE_MIN	50
 #define THUMB_SIZE_MAX	300
-#define TOOL_BAR_SIZE	16
 
 Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 {
@@ -39,8 +38,11 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	loadShortcuts();
 	addDockWidget(Qt::LeftDockWidgetArea, iiDock);
 	copyMoveToDialog = 0;
-	(viewMenu->insertMenu(refreshAction, QMainWindow::createPopupMenu()))->
-													setText(tr("Docks and Toolbars"));
+
+	QAction *docksNToolbarsAct = viewMenu->insertMenu(refreshAction, QMainWindow::createPopupMenu());
+	docksNToolbarsAct->setText(tr("Docks and Toolbars"));
+	docksNToolbarsAct->menu()->addSeparator();
+	docksNToolbarsAct->menu()->addAction(actSmallIcons);
 
 	connect(qApp, SIGNAL(focusChanged(QWidget*, QWidget*)), 
 				this, SLOT(updateActions(QWidget*, QWidget*)));
@@ -370,6 +372,11 @@ void Phototonic::createActions()
 	actShowLabels->setChecked(GData::showLabels);
 	connect(actShowLabels, SIGNAL(triggered()), this, SLOT(showLabels()));
 
+	actSmallIcons = new QAction(tr("Small Icons"), this);;
+	actSmallIcons->setCheckable(true);
+	actSmallIcons->setChecked(GData::smallIcons);
+	connect(actSmallIcons, SIGNAL(triggered()), this, SLOT(setToolbarIconSize()));
+
 	actClassic = new QAction(tr("Classic Thumbs"), this);
 	actCompact = new QAction(tr("Compact"), this);
 	actSquarish = new QAction(tr("Squarish"), this);
@@ -638,7 +645,6 @@ void Phototonic::createToolBars()
 	editToolBar->addAction(deleteAction);
 	editToolBar->addAction(showClipboardAction);
 	connect(editToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setEditToolBarVisibility()));
-	editToolBar->setIconSize(QSize(TOOL_BAR_SIZE, TOOL_BAR_SIZE));
 
 	/* Navigation */
 	goToolBar = addToolBar(tr("Navigation"));
@@ -662,7 +668,6 @@ void Phototonic::createToolBars()
 	goToolBar->addAction(refreshAction);
 	goToolBar->addAction(subFoldersAction);
 	connect(goToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setGoToolBarVisibility()));
-	goToolBar->setIconSize(QSize(TOOL_BAR_SIZE, TOOL_BAR_SIZE));
 
 	/* View */
 	viewToolBar = addToolBar(tr("View"));
@@ -687,7 +692,21 @@ void Phototonic::createToolBars()
 	viewToolBar->addWidget(filterBar);
 	viewToolBar->addAction(settingsAction);
 	connect(viewToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setViewToolBarVisibility()));	
-	viewToolBar->setIconSize(QSize(TOOL_BAR_SIZE, TOOL_BAR_SIZE));
+
+	setToolbarIconSize();
+}
+
+void Phototonic::setToolbarIconSize()
+{
+	int iconSize;
+	if (initComplete)
+		GData::smallIcons = actSmallIcons->isChecked();
+	iconSize = GData::smallIcons? 16 : 24;
+	QSize iconQSize(iconSize, iconSize);
+
+	editToolBar->setIconSize(iconQSize);
+	goToolBar->setIconSize(iconQSize);
+	viewToolBar->setIconSize(iconQSize);
 }
 
 void Phototonic::createStatusBar()
@@ -821,7 +840,7 @@ void Phototonic::about()
 {
 	QString aboutString = "<h2>Phototonic v1.03</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
-		+ tr("<p>Git release") + " v1.03.04 (built " __DATE__ " " __TIME__ ")</p>"
+		+ tr("<p>Git release") + " v1.03.05 (built " __DATE__ " " __TIME__ ")</p>"
 		+ tr("Built with Qt ") + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
 		+ "<p><a href=\"https://github.com/oferkv/phototonic/issues\">" + tr("Bug reports") + "</a></p>"
@@ -1569,6 +1588,7 @@ void Phototonic::writeSettings()
 																		thumbView->currentViewDir: "");
 	GData::appSettings->setValue("enableImageInfoFS", (bool)GData::enableImageInfoFS);
 	GData::appSettings->setValue("showLabels", (bool)GData::showLabels);
+	GData::appSettings->setValue("smallIcons", (bool)GData::smallIcons);
 
 	/* Action shortcuts */
 	GData::appSettings->beginGroup("Shortcuts");
@@ -1641,6 +1661,7 @@ void Phototonic::readSettings()
 		GData::appSettings->setValue("iiDockVisible", (bool)true);
 		GData::appSettings->setValue("enableImageInfoFS", (bool)false);
 		GData::appSettings->setValue("showLabels", (bool)true);
+		GData::appSettings->setValue("smallIcons", (bool)false);
 	}
 
 	GData::exitInsteadOfClose = GData::appSettings->value("exitInsteadOfClose").toBool();
@@ -1672,6 +1693,7 @@ void Phototonic::readSettings()
 	GData::specifiedStartDir = GData::appSettings->value("specifiedStartDir").toString();
 	GData::enableImageInfoFS = GData::appSettings->value("enableImageInfoFS").toBool();
 	GData::showLabels = GData::appSettings->value("showLabels").toBool();
+	GData::smallIcons = GData::appSettings->value("smallIcons").toBool();
 
 	GData::appSettings->beginGroup("ExternalApps");
 	QStringList extApps = GData::appSettings->childKeys();

@@ -125,6 +125,7 @@ private slots:
 	void setSquarishThumbs();
 	void showHiddenFiles();
 	void showLabels();
+	void setToolbarIconSize();
 	void chooseExternalApp();
 	void updateExternalApps();
 	void runExternalApp();
@@ -218,7 +219,8 @@ private:
 	QAction *aboutAction;
 	QAction *actShowHidden;
 	QAction *actShowLabels;
-
+	QAction *actSmallIcons;
+	
 	QAction *pasteAction;
 	QAction *createDirAction;
 	QAction *manageDirAction;
