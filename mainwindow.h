@@ -129,12 +129,13 @@ private slots:
 	void chooseExternalApp();
 	void updateExternalApps();
 	void runExternalApp();
-	void cleanupExternalApp();
+	void cleanupSender();
 	void setEditToolBarVisibility();
 	void setGoToolBarVisibility();
 	void setViewToolBarVisibility();
 	void setFsDockVisibility();
 	void setIiDockVisibility();
+	void enableImageView();
 
 private:
 	QString cliFileName;
@@ -304,6 +305,7 @@ private:
 	void wheelEvent(QWheelEvent *event);	
 	void copyOrCutThumbs(bool copy);
 	void showNewImageWarning(QWidget *parent);
+	void disableImageView();
 	bool removeDirOp(QString dirToDelete);
 };
 

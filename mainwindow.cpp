@@ -840,7 +840,7 @@ void Phototonic::about()
 {
 	QString aboutString = "<h2>Phototonic v1.03</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
-		+ tr("<p>Git release") + " v1.03.06 (built " __DATE__ " " __TIME__ ")</p>"
+		+ tr("<p>Git release") + " v1.03.07 (built " __DATE__ " " __TIME__ ")</p>"
 		+ tr("Built with Qt ") + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
 		+ "<p><a href=\"https://github.com/oferkv/phototonic/issues\">" + tr("Bug reports") + "</a></p>"
@@ -859,7 +859,7 @@ void Phototonic::about()
 	QMessageBox::about(this, "About Phototonic", aboutString);
 }
 
-void Phototonic::cleanupExternalApp()
+void Phototonic::cleanupSender()
 {
 	delete QObject::sender();
 }
@@ -903,7 +903,7 @@ void Phototonic::runExternalApp()
 
 	QProcess *externalProcess = new QProcess();
 	connect(externalProcess, SIGNAL(finished(int, QProcess::ExitStatus)),
-																this, SLOT(cleanupExternalApp()));
+						this, SLOT(cleanupSender()));
 	externalProcess->start(execCommand);
 }
 
@@ -1196,9 +1196,17 @@ void Phototonic::freeRotateRight()
 
 void Phototonic::showColorsDialog()
 {
-	ColorsDialog *dialog = new ColorsDialog(this, imageView);
-	dialog->exec();
-	delete(dialog);
+	if (GData::slideShowActive)
+		slideShow();
+
+	ColorsDialog *colorsDialog = new ColorsDialog(this, imageView);
+	connect(colorsDialog, SIGNAL(accepted()), this, SLOT(enableImageView()));
+	connect(colorsDialog, SIGNAL(rejected()), this, SLOT(enableImageView()));
+	connect(colorsDialog, SIGNAL(accepted()), this, SLOT(cleanupSender()));
+	connect(colorsDialog, SIGNAL(rejected()), this, SLOT(cleanupSender()));
+
+	colorsDialog->show();
+	disableImageView();
 }
 
 void Phototonic::flipHoriz()
@@ -1865,7 +1873,7 @@ void Phototonic::mouseDoubleClickEvent(QMouseEvent *event)
 				toggleFullScreen();
 				event->accept();
 			}
-			else
+			else if (closeImageAct->isEnabled())
 			{
 				closeImage();
 				event->accept();
@@ -1880,7 +1888,7 @@ void Phototonic::mousePressEvent(QMouseEvent *event)
 	{
 		if (event->button() == Qt::MiddleButton)
 		{
-			if (GData::reverseMouseBehavior)
+			if (GData::reverseMouseBehavior && closeImageAct->isEnabled())
 			{
 				closeImage();
 				event->accept();
@@ -2592,7 +2600,7 @@ void Phototonic::wheelEvent(QWheelEvent *event)
 			else
 				zoomIn();
 		}
-		else
+		else if (nextImageAction->isEnabled())
 		{
 			if (event->delta() < 0)
 				loadNextImage();
@@ -2627,5 +2635,33 @@ bool Phototonic::removeDirOp(QString dirToDelete)
 	ok = dir.rmdir(dirToDelete);
 
 	return ok;
+}
+
+void Phototonic::disableImageView()
+{
+	colorsAct->setEnabled(false);
+	closeImageAct->setEnabled(false);
+	nextImageAction->setEnabled(false);
+	prevImageAction->setEnabled(false);
+	firstImageAction->setEnabled(false);
+	lastImageAction->setEnabled(false);
+	randomImageAction->setEnabled(false);
+	slideShowAction->setEnabled(false);
+	copyMoveAction->setEnabled(false);
+	deleteAction->setEnabled(false);
+}
+
+void Phototonic::enableImageView()
+{
+	colorsAct->setEnabled(true);
+	closeImageAct->setEnabled(true);
+	nextImageAction->setEnabled(true);
+	prevImageAction->setEnabled(true);
+	firstImageAction->setEnabled(true);
+	lastImageAction->setEnabled(true);
+	randomImageAction->setEnabled(true);
+	slideShowAction->setEnabled(true);
+	copyMoveAction->setEnabled(true);
+	deleteAction->setEnabled(true);
 }
 
