@@ -108,7 +108,7 @@ bool Phototonic::event(QEvent *event)
 		thumbView->loadVisibleThumbs();
 	}
 	
-	return QMainWindow::event(event);;
+	return QMainWindow::event(event);
 }
 
 void Phototonic::createThumbView()
@@ -362,17 +362,17 @@ void Phototonic::createActions()
 		actName->setChecked(true);	
 	actReverse->setChecked(thumbView->thumbsSortFlags & QDir::Reversed); 
 
-	actShowHidden = new QAction(tr("Show Hidden Files"), this);;
+	actShowHidden = new QAction(tr("Show Hidden Files"), this);
 	actShowHidden->setCheckable(true);
 	actShowHidden->setChecked(GData::showHiddenFiles);
 	connect(actShowHidden, SIGNAL(triggered()), this, SLOT(showHiddenFiles()));
 
-	actShowLabels = new QAction(tr("Show Labels"), this);;
+	actShowLabels = new QAction(tr("Show Labels"), this);
 	actShowLabels->setCheckable(true);
 	actShowLabels->setChecked(GData::showLabels);
 	connect(actShowLabels, SIGNAL(triggered()), this, SLOT(showLabels()));
 
-	actSmallIcons = new QAction(tr("Small Icons"), this);;
+	actSmallIcons = new QAction(tr("Small Icons"), this);
 	actSmallIcons->setCheckable(true);
 	actSmallIcons->setChecked(GData::smallIcons);
 	connect(actSmallIcons, SIGNAL(triggered()), this, SLOT(setToolbarIconSize()));
@@ -840,18 +840,20 @@ void Phototonic::about()
 {
 	QString aboutString = "<h2>Phototonic v1.03</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
-		+ tr("<p>Git release") + " v1.03.05 (built " __DATE__ " " __TIME__ ")</p>"
+		+ tr("<p>Git release") + " v1.03.06 (built " __DATE__ " " __TIME__ ")</p>"
 		+ tr("Built with Qt ") + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
 		+ "<p><a href=\"https://github.com/oferkv/phototonic/issues\">" + tr("Bug reports") + "</a></p>"
 		+ "<p>Copyright &copy; 2013-2014 Ofer Kashayov (oferkv@live.com)</p>"
-		+ tr("Contributors:<br>")
-		+ "&nbsp;&nbsp;Christopher Roy Bratusek (nano@jpberlin.de)<br><br>"
-		+ tr("Contributors / Translations:<br>")
-		+ "&nbsp;&nbsp;Czech: Pavel Fric (pavelfric@seznam.cz)<br>"
-		+ "&nbsp;&nbsp;German: Jonathan Hooverman (jonathan.hooverman@gmail.com)<br>"
-		+ QString::fromUtf8("&nbsp;&nbsp;Polish: Robert Wojew\u00F3dzki (robwoj44@poczta.onet.pl)<br>")
-		+ "&nbsp;&nbsp;Russian: Ilya Alexandrovich (yast4ik@gmail.com)"
+		+ tr("Contributors / Code:<br>")
+		+ "Christopher Roy Bratusek (nano@jpberlin.de)<br><br>"
+		+ tr("Contributors / Translations:")
+		+ "<table><tr><td>Czech:</td><td>Pavel Fric (pavelfric@seznam.cz)</td></tr>"
+		+ "<tr><td>French:</td><td>David Geiger (david.david@mageialinux-online.org)</td></tr>"
+		+ "<tr><td></td><td>Adrien Daugabel (adrien.d@mageialinux-online.org)</td></tr>"
+		+ "<tr><td>German:</td><td>Jonathan Hooverman (jonathan.hooverman@gmail.com)</td></tr>"
+		+ QString::fromUtf8("<tr><td>Polish:</td><td>Robert Wojew\u00F3dzki (robwoj44@poczta.onet.pl)</td></tr>")
+		+ "<tr><td>Russian:</td><td>Ilya Alexandrovich (yast4ik@gmail.com)</td></tr></table>"
 		+ "<p>Phototonic is licensed under the GNU General Public License version 3</p>";
 
 	QMessageBox::about(this, "About Phototonic", aboutString);

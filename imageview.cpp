@@ -972,14 +972,9 @@ void ImageView::pasteImage()
 	}
 }
 
-void ImageView::hideMessage()
-{
-	QToolTip::hideText();
-}
-
 void ImageView::popMessage(QString message)
 {
-	QToolTip::showText(QPoint((mainWindow->pos().x() + 10), (mainWindow->pos().y() + 10)), message);
-	QTimer::singleShot(1000, this, SLOT(hideMessage()));
+	QToolTip::showText(QPoint((mainWindow->pos().x() + 10), (mainWindow->pos().y() + 10)), message, 
+						this, QRect(), 2000);
 }
 
