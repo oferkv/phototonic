@@ -836,11 +836,6 @@ ResizeDialog::ResizeDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	widthSpin->setFocus(Qt::OtherFocusReason);
 }
 
-void ResizeDialog::applyResize(int)
-{
-	imageView->refresh();
-}
-
 void ResizeDialog::setAspectLock()
 {
 	aspectLocked = ((QCheckBox*)QObject::sender())->isChecked();
@@ -943,6 +938,7 @@ void ResizeDialog::ok()
 {
 	GData::scaledWidth = newWidth;
 	GData::scaledHeight = newHeight; 
+	imageView->refresh();
 	accept();
 }
 

@@ -97,18 +97,6 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	newImage = false;
 }
 
-void ImageView::resizeEvent(QResizeEvent *event)
-{
-	QWidget::resizeEvent(event);
-	resizeImage();
-}
-
-void ImageView::showEvent(QShowEvent *event)
-{
-	QWidget::showEvent(event);
-	resizeImage();
-}
-
 static unsigned int getHeightByWidth(int imgWidth, int imgHeight, int newWidth)
 {
 	float aspect;
@@ -223,6 +211,18 @@ void ImageView::resizeImage()
 	imageLabel->setVisible(true);
 	centerImage(imgSize);
 	busy = false;
+}
+
+void ImageView::resizeEvent(QResizeEvent *event)
+{
+	QWidget::resizeEvent(event);
+	resizeImage();
+}
+
+void ImageView::showEvent(QShowEvent *event)
+{
+	QWidget::showEvent(event);
+	resizeImage();
 }
 
 void ImageView::centerImage(QSize &imgSize)

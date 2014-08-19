@@ -103,7 +103,7 @@ private slots:
 	void rotateRight();
 	void flipVert();
 	void cropImage();
-	void resizeImage();
+	void scaleImage();
 	void freeRotateLeft();
 	void freeRotateRight();
 	void showColorsDialog();

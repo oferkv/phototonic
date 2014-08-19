@@ -139,7 +139,6 @@ public:
 public slots:
 	void ok();
 	void abort();
-	void applyResize(int);
 	void setAspectLock();
 	void setUnits();
 	void adjustSizes();

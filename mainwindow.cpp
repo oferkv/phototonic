@@ -507,7 +507,7 @@ void Phototonic::createActions()
 
 	resizeAct = new QAction(tr("Scale Image"), this);
 	resizeAct->setIcon(QIcon::fromTheme("transform-scale"));
-	connect(resizeAct, SIGNAL(triggered()), this, SLOT(resizeImage()));
+	connect(resizeAct, SIGNAL(triggered()), this, SLOT(scaleImage()));
 
 	freeRotateLeftAct = new QAction(tr("Rotate 1 degree CCW"), this);
 	connect(freeRotateLeftAct, SIGNAL(triggered()), this, SLOT(freeRotateLeft()));
@@ -1163,19 +1163,32 @@ void Phototonic::flipVert()
 
 void Phototonic::cropImage()
 {
-	CropDialog *dialog = new CropDialog(this, imageView);
-	dialog->exec();
-	delete(dialog);
+	if (GData::slideShowActive)
+		slideShow();
+
+	CropDialog *cropDialog = new CropDialog(this, imageView);
+	connect(cropDialog, SIGNAL(accepted()), this, SLOT(enableImageView()));
+	connect(cropDialog, SIGNAL(rejected()), this, SLOT(enableImageView()));
+	connect(cropDialog, SIGNAL(accepted()), this, SLOT(cleanupSender()));
+	connect(cropDialog, SIGNAL(rejected()), this, SLOT(cleanupSender()));
+
+	cropDialog->show();
+	disableImageView();
 }
 
-void Phototonic::resizeImage()
+void Phototonic::scaleImage()
 {
-	ResizeDialog *dialog = new ResizeDialog(this, imageView);
+	if (GData::slideShowActive)
+		slideShow();
 
-	if (dialog->exec())
-		imageView->refresh();
+	ResizeDialog *resizeDialog = new ResizeDialog(this, imageView);
+	connect(resizeDialog, SIGNAL(accepted()), this, SLOT(enableImageView()));
+	connect(resizeDialog, SIGNAL(rejected()), this, SLOT(enableImageView()));
+	connect(resizeDialog, SIGNAL(accepted()), this, SLOT(cleanupSender()));
+	connect(resizeDialog, SIGNAL(rejected()), this, SLOT(cleanupSender()));
 
-	delete(dialog);
+	resizeDialog->show();
+	disableImageView();
 }
 
 void Phototonic::freeRotateLeft()
@@ -2640,6 +2653,8 @@ bool Phototonic::removeDirOp(QString dirToDelete)
 void Phototonic::disableImageView()
 {
 	colorsAct->setEnabled(false);
+	cropAct->setEnabled(false);
+	resizeAct->setEnabled(false);
 	closeImageAct->setEnabled(false);
 	nextImageAction->setEnabled(false);
 	prevImageAction->setEnabled(false);
@@ -2654,6 +2669,8 @@ void Phototonic::disableImageView()
 void Phototonic::enableImageView()
 {
 	colorsAct->setEnabled(true);
+	cropAct->setEnabled(true);
+	resizeAct->setEnabled(true);
 	closeImageAct->setEnabled(true);
 	nextImageAction->setEnabled(true);
 	prevImageAction->setEnabled(true);
