@@ -28,6 +28,12 @@ int main(int argc, char *argv[])
    		return -1;
 	}
 
+	QTranslator qtTranslator;
+
+	qtTranslator.load("qt_" + QLocale::system().name(),
+					QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+	QApp.installTranslator(&qtTranslator);
+
 	QTranslator phototonicTranslator;
 	phototonicTranslator.load(":/translations/phototonic_" + QLocale::system().name());
 	QApp.installTranslator(&phototonicTranslator);

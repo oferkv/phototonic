@@ -840,12 +840,12 @@ void Phototonic::about()
 {
 	QString aboutString = "<h2>Phototonic v1.03</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
-		+ tr("<p>Git release") + " v1.03.07 (built " __DATE__ " " __TIME__ ")</p>"
+		+ tr("<p>Git release") + " v1.03.08 (built " __DATE__ " " __TIME__ ")</p>"
 		+ tr("Built with Qt ") + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
 		+ "<p><a href=\"https://github.com/oferkv/phototonic/issues\">" + tr("Bug reports") + "</a></p>"
 		+ "<p>Copyright &copy; 2013-2014 Ofer Kashayov (oferkv@live.com)</p>"
-		+ tr("Contributors / Code:<br>")
+		+ tr("Contributors / Code:") + "<br>"
 		+ "Christopher Roy Bratusek (nano@jpberlin.de)<br><br>"
 		+ tr("Contributors / Translations:")
 		+ "<table><tr><td>Czech:</td><td>Pavel Fric (pavelfric@seznam.cz)</td></tr>"
@@ -856,7 +856,7 @@ void Phototonic::about()
 		+ "<tr><td>Russian:</td><td>Ilya Alexandrovich (yast4ik@gmail.com)</td></tr></table>"
 		+ "<p>Phototonic is licensed under the GNU General Public License version 3</p>";
 
-	QMessageBox::about(this, "About Phototonic", aboutString);
+	QMessageBox::about(this, tr("About") + "Phototonic", aboutString);
 }
 
 void Phototonic::cleanupSender()
@@ -1386,13 +1386,18 @@ void Phototonic::deleteViewerImage()
 	}
 
 	bool ok;
-	int ret;
-
 	QFileInfo fileInfo = QFileInfo(imageView->currentImageFullPath);
 	QString fileName = fileInfo.fileName();
 
-	ret = QMessageBox::warning(this, tr("Delete image"), tr("Permanently delete ") + fileName,
-									QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
+	QMessageBox msgBox;
+	msgBox.setText(tr("Permanently delete ") + fileName);
+	msgBox.setWindowTitle(tr("Delete image"));
+	msgBox.setIcon(QMessageBox::Warning);
+	msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+	msgBox.setDefaultButton(QMessageBox::Cancel);
+	msgBox.setButtonText(QMessageBox::Yes, tr("Yes"));  
+    msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));  
+	int ret = msgBox.exec();
 
 	if (ret == QMessageBox::Yes)
 	{
@@ -1434,13 +1439,21 @@ void Phototonic::deleteOp()
 		return;
 	}
 
-	bool ok;
-	int ret = QMessageBox::warning(this, tr("Delete images"), tr("Permanently delete selected images?"),
-										QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
+	QMessageBox msgBox;
+	msgBox.setText(tr("Permanently delete selected images?"));
+	msgBox.setWindowTitle(tr("Delete images"));
+	msgBox.setIcon(QMessageBox::Warning);
+	msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+	msgBox.setDefaultButton(QMessageBox::Cancel);
+	msgBox.setButtonText(QMessageBox::Yes, tr("Yes"));  
+    msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));  
+	int ret = msgBox.exec();
+
 	if (ret == QMessageBox::Yes)
 	{
 		QModelIndexList indexesList;
 		int nfiles = 0;
+		bool ok;
 	
 		while((indexesList = thumbView->selectionModel()->selectedIndexes()).size())
 		{
@@ -2515,8 +2528,15 @@ void Phototonic::deleteDir()
 	QFileInfo dirInfo = QFileInfo(deletePath);
 	QString question = tr("Permanently delete ") + dirInfo.completeBaseName() + tr(" and all of its contents?");
 
-	int ret = QMessageBox::warning(this, tr("Delete folder"), question,
-								QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
+	QMessageBox msgBox;
+	msgBox.setText(question);
+	msgBox.setWindowTitle(tr("Delete folder"));
+	msgBox.setIcon(QMessageBox::Warning);
+	msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+	msgBox.setDefaultButton(QMessageBox::Cancel);
+	msgBox.setButtonText(QMessageBox::Yes, tr("Yes"));  
+    msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));  
+	int ret = msgBox.exec();
 
 	if (ret == QMessageBox::Yes)
 		ok = removeDirOp(deletePath);
