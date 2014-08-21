@@ -476,7 +476,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 
 	// Keyboard and mouse
 
-	QGroupBox *keyboardGrp = new QGroupBox(tr("Keyboard shortcuts"));
+	QGroupBox *keyboardGrp = new QGroupBox(tr("Keyboard Shortcuts"));
 	QHBoxLayout *keyboardHbox = new QHBoxLayout;
 	keyboardHbox->addWidget(keysCombo);
 	keyboardHbox->addWidget(keyLine);
