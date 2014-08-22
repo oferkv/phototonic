@@ -19,18 +19,20 @@ target.path = /usr/bin/
 icon.files = images/phototonic.png
 icon.path = /usr/share/icons/hicolor/48x48/apps
 
-icon2.files = images/phototonic.png
-icon2.path = /usr/share/pixmaps
+icon16.files = images/icon16/phototonic.png
+icon16.path = /usr/share/icons/hicolor/16x16/apps
+
+iconPixmaps.files = images/icon16/phototonic.png
+iconPixmaps.path = /usr/share/pixmaps
 
 desktop.files = phototonic.desktop
 desktop.path = /usr/share/applications
 
-INSTALLS += target icon icon2 desktop
+INSTALLS += target icon icon16 iconPixmaps desktop
 
 TRANSLATIONS = 	translations/phototonic_pl.ts \
 		translations/phototonic_de.ts \
 		translations/phototonic_ru.ts \
 		translations/phototonic_cs.ts \
 		translations/phototonic_fr.ts
-
 
