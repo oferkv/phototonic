@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="de_DE">
+<TS version="2.0" language="de_DE">
 <context>
     <name>AppMgmtDialog</name>
     <message>
@@ -468,7 +468,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="375"/>
         <source>Small Icons</source>
-        <translation type="unfinished"></translation>
+        <translation>Kleine Symbole</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="380"/>
@@ -573,11 +573,11 @@
     </message>
     <message>
         <source>&lt;u&gt;Contributors&lt;/u&gt;:&lt;br&gt;</source>
-        <translation type="vanished">&lt;u&gt;Mitwirkende&lt;/u&gt;:&lt;br&gt;</translation>
+        <translation>&lt;u&gt;Mitwirkende&lt;/u&gt;:&lt;br&gt;</translation>
     </message>
     <message>
         <source>&lt;u&gt;Translators&lt;/u&gt;:&lt;br&gt;</source>
-        <translation type="vanished">&lt;u&gt;Übersetzer&lt;/u&gt;:&lt;br&gt;</translation>
+        <translation>&lt;u&gt;Übersetzer&lt;/u&gt;:&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2111"/>
@@ -843,7 +843,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="843"/>
         <source>&lt;p&gt;Git release</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Git-Version</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="844"/>
@@ -947,26 +947,26 @@
     <message>
         <location filename="../mainwindow.cpp" line="848"/>
         <source>Contributors / Code:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mitwirkende / Code:</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="850"/>
         <source>Contributors / Translations:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mitwirkende / Übersetzungen:</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1398"/>
         <location filename="../mainwindow.cpp" line="1448"/>
         <location filename="../mainwindow.cpp" line="2537"/>
         <source>Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>Ja</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1399"/>
         <location filename="../mainwindow.cpp" line="1449"/>
         <location filename="../mainwindow.cpp" line="2538"/>
         <source>Cancel</source>
-        <translation type="unfinished">Abbrechen</translation>
+        <translation>Abbrechen</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1476"/>
@@ -1016,17 +1016,17 @@
     <message>
         <location filename="../mainwindow.cpp" line="2298"/>
         <source>Move </source>
-        <translation type="unfinished"></translation>
+        <translation>Verschieben</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2298"/>
         <source> to </source>
-        <translation type="unfinished"> nach </translation>
+        <translation> nach </translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2299"/>
         <source>Move folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Verzeichnis verschieben</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2309"/>
@@ -1224,7 +1224,7 @@
     <message>
         <location filename="../dialogs.cpp" line="309"/>
         <source>Rotate image according to Exif orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>Bild gemäß EXIF-Orientierung drehen</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="348"/>
@@ -1249,12 +1249,12 @@
     <message>
         <location filename="../dialogs.cpp" line="384"/>
         <source>Rotate thumbnails according to Exif orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>Miniaturansichten gemäß EXIF-Orientierung drehen</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="479"/>
         <source>Keyboard shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Tastenkombinationen</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="514"/>
@@ -1323,7 +1323,7 @@
     </message>
     <message>
         <source>Rotate according to Exif orientation</source>
-        <translation type="vanished">Gemäß EXIF-Orientierung drehen</translation>
+        <translation>Gemäß EXIF-Orientierung drehen</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="313"/>
@@ -1377,11 +1377,11 @@
     </message>
     <message>
         <source>Keyboard Shortcuts:</source>
-        <translation type="vanished">Tastenkombinationen:</translation>
+        <translation>Tastenkombinationen:</translation>
     </message>
     <message>
         <source>Keyboard and Mouse</source>
-        <translation type="vanished">Tastatur und Maus</translation>
+        <translation>Tastatur und Maus</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="522"/>
