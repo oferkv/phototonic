@@ -324,167 +324,172 @@
 <context>
     <name>Phototonic</name>
     <message>
-        <location filename="../mainwindow.cpp" line="43"/>
+        <location filename="../mainwindow.cpp" line="1770"/>
         <source>Docks and Toolbars</source>
         <translation>Panely a nástrojové pruhy</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="125"/>
+        <location filename="../mainwindow.cpp" line="121"/>
         <source>Image Info</source>
         <translation>Informace o obrázku</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="204"/>
-        <location filename="../mainwindow.cpp" line="205"/>
+        <location filename="../mainwindow.cpp" line="199"/>
+        <location filename="../mainwindow.cpp" line="200"/>
         <source>Zoom</source>
         <translation>Zvětšení</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="216"/>
-        <location filename="../mainwindow.cpp" line="217"/>
+        <location filename="../mainwindow.cpp" line="211"/>
+        <location filename="../mainwindow.cpp" line="212"/>
         <source>Transform</source>
         <translation>Proměna</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="228"/>
-        <location filename="../mainwindow.cpp" line="229"/>
+        <location filename="../mainwindow.cpp" line="223"/>
+        <location filename="../mainwindow.cpp" line="224"/>
         <source>Mirroring</source>
         <translation>Zrcadlení</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="270"/>
+        <location filename="../mainwindow.cpp" line="265"/>
         <source>Top</source>
         <translation>Nahoře</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="274"/>
+        <location filename="../mainwindow.cpp" line="269"/>
         <source>Bottom</source>
         <translation>Dole</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="278"/>
+        <location filename="../mainwindow.cpp" line="273"/>
         <source>Close Image</source>
         <translation>Zavřít obrázek</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="281"/>
+        <location filename="../mainwindow.cpp" line="276"/>
         <source>Full Screen</source>
         <translation>Na celou obrazovku</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="285"/>
+        <location filename="../mainwindow.cpp" line="280"/>
         <source>Preferences</source>
         <translation>Nastavení</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="289"/>
+        <location filename="../mainwindow.cpp" line="284"/>
         <source>Exit</source>
         <translation>Ukončit</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="292"/>
+        <location filename="../mainwindow.cpp" line="287"/>
         <source>Enlarge Thumbnails</source>
         <translation>Zvětšit náhledy</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="298"/>
+        <location filename="../mainwindow.cpp" line="293"/>
         <source>Shrink Thumbnails</source>
         <translation>Zmenšit náhledy</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="304"/>
+        <location filename="../mainwindow.cpp" line="299"/>
         <source>Cut</source>
         <translation>Vyjmout</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="309"/>
+        <location filename="../mainwindow.cpp" line="304"/>
         <source>Copy</source>
         <translation>Kopírovat</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="314"/>
+        <location filename="../mainwindow.cpp" line="309"/>
         <source>Copy or Move to...</source>
         <translation>Kopírovat nebo přesunout do...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="317"/>
+        <location filename="../mainwindow.cpp" line="312"/>
         <source>Delete</source>
         <translation>Smazat</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="321"/>
+        <location filename="../mainwindow.cpp" line="316"/>
         <source>Save</source>
         <translation>Uložit</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="324"/>
+        <location filename="../mainwindow.cpp" line="319"/>
         <source>Save As</source>
         <translation>Uložit jako</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="325"/>
+        <location filename="../mainwindow.cpp" line="320"/>
         <source>Copy Image</source>
         <translation>Kopírovat obrázek</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="326"/>
+        <location filename="../mainwindow.cpp" line="321"/>
         <source>Paste Image</source>
         <translation>Vložit obrázek</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="328"/>
+        <location filename="../mainwindow.cpp" line="323"/>
         <source>Rename</source>
         <translation>Přejmenovat</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="331"/>
+        <location filename="../mainwindow.cpp" line="326"/>
         <source>Select All</source>
         <translation>Vybrat vše</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="334"/>
+        <location filename="../mainwindow.cpp" line="329"/>
         <location filename="../mainwindow.cpp" line="859"/>
         <source>About</source>
         <translation>Vlastnosti</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="339"/>
+        <location filename="../mainwindow.cpp" line="334"/>
         <source>Name</source>
         <translation>Název</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="340"/>
+        <location filename="../mainwindow.cpp" line="335"/>
         <source>Time</source>
         <translation>Čas</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="341"/>
+        <location filename="../mainwindow.cpp" line="336"/>
         <source>Size</source>
         <translation>Velikost</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="342"/>
+        <location filename="../mainwindow.cpp" line="337"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="343"/>
+        <location filename="../mainwindow.cpp" line="338"/>
         <source>Reverse</source>
         <translation>Obrácený</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="365"/>
+        <location filename="../mainwindow.cpp" line="360"/>
         <source>Show Hidden Files</source>
         <translation>Ukázat skryté soubory</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="370"/>
+        <location filename="../mainwindow.cpp" line="365"/>
         <source>Show Labels</source>
         <translation>Ukázat štítky</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="375"/>
+        <location filename="../mainwindow.cpp" line="370"/>
         <source>Small Icons</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="375"/>
+        <source>Hide Docks Title Bar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -549,7 +554,7 @@
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="432"/>
-        <location filename="../mainwindow.cpp" line="2084"/>
+        <location filename="../mainwindow.cpp" line="2145"/>
         <source>Slide Show</source>
         <translation>Promítání</translation>
     </message>
@@ -827,95 +832,95 @@
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="888"/>
-        <location filename="../mainwindow.cpp" line="2476"/>
+        <location filename="../mainwindow.cpp" line="2541"/>
         <source>Invalid selection</source>
         <translation>Neplatný výběr</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1062"/>
-        <location filename="../mainwindow.cpp" line="1305"/>
-        <location filename="../mainwindow.cpp" line="1321"/>
-        <location filename="../mainwindow.cpp" line="1414"/>
-        <location filename="../mainwindow.cpp" line="1471"/>
-        <location filename="../mainwindow.cpp" line="1507"/>
-        <location filename="../mainwindow.cpp" line="2069"/>
-        <location filename="../mainwindow.cpp" line="2282"/>
-        <location filename="../mainwindow.cpp" line="2289"/>
-        <location filename="../mainwindow.cpp" line="2309"/>
-        <location filename="../mainwindow.cpp" line="2400"/>
-        <location filename="../mainwindow.cpp" line="2443"/>
-        <location filename="../mainwindow.cpp" line="2454"/>
-        <location filename="../mainwindow.cpp" line="2497"/>
-        <location filename="../mainwindow.cpp" line="2518"/>
-        <location filename="../mainwindow.cpp" line="2552"/>
-        <location filename="../mainwindow.cpp" line="2586"/>
-        <location filename="../mainwindow.cpp" line="2597"/>
+        <location filename="../mainwindow.cpp" line="1063"/>
+        <location filename="../mainwindow.cpp" line="1306"/>
+        <location filename="../mainwindow.cpp" line="1322"/>
+        <location filename="../mainwindow.cpp" line="1415"/>
+        <location filename="../mainwindow.cpp" line="1472"/>
+        <location filename="../mainwindow.cpp" line="1508"/>
+        <location filename="../mainwindow.cpp" line="2130"/>
+        <location filename="../mainwindow.cpp" line="2346"/>
+        <location filename="../mainwindow.cpp" line="2353"/>
+        <location filename="../mainwindow.cpp" line="2373"/>
+        <location filename="../mainwindow.cpp" line="2464"/>
+        <location filename="../mainwindow.cpp" line="2508"/>
+        <location filename="../mainwindow.cpp" line="2519"/>
+        <location filename="../mainwindow.cpp" line="2562"/>
+        <location filename="../mainwindow.cpp" line="2583"/>
+        <location filename="../mainwindow.cpp" line="2617"/>
+        <location filename="../mainwindow.cpp" line="2651"/>
+        <location filename="../mainwindow.cpp" line="2662"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1062"/>
+        <location filename="../mainwindow.cpp" line="1063"/>
         <source>Failed to copy or move image</source>
         <translation>Nepodařilo se kopírovat nebo přesunout obrázek</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1305"/>
+        <location filename="../mainwindow.cpp" line="1306"/>
         <source>Can not copy or move to </source>
         <translation>Nelze kopírovat nebo přesunout obrázky</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1321"/>
+        <location filename="../mainwindow.cpp" line="1322"/>
         <source>Can not cut and paste in the same folder</source>
         <translation>Nelze vyjmout a vložit do téže složky</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1337"/>
-        <location filename="../mainwindow.cpp" line="2319"/>
+        <location filename="../mainwindow.cpp" line="1338"/>
+        <location filename="../mainwindow.cpp" line="2383"/>
         <source>Copied </source>
         <translation>Zkopírováno </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1337"/>
-        <location filename="../mainwindow.cpp" line="2319"/>
+        <location filename="../mainwindow.cpp" line="1338"/>
+        <location filename="../mainwindow.cpp" line="2383"/>
         <source>Moved </source>
         <translation>Přesunuto </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1338"/>
-        <location filename="../mainwindow.cpp" line="1476"/>
-        <location filename="../mainwindow.cpp" line="2319"/>
+        <location filename="../mainwindow.cpp" line="1339"/>
+        <location filename="../mainwindow.cpp" line="1477"/>
+        <location filename="../mainwindow.cpp" line="2383"/>
         <source> images</source>
         <translation> obrázků</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1394"/>
+        <location filename="../mainwindow.cpp" line="1395"/>
         <source>Delete image</source>
         <translation>Smazat obrázek</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1393"/>
-        <location filename="../mainwindow.cpp" line="2529"/>
+        <location filename="../mainwindow.cpp" line="1394"/>
+        <location filename="../mainwindow.cpp" line="2594"/>
         <source>Permanently delete </source>
         <translation>Smazat trvale </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1414"/>
-        <location filename="../mainwindow.cpp" line="1471"/>
+        <location filename="../mainwindow.cpp" line="1415"/>
+        <location filename="../mainwindow.cpp" line="1472"/>
         <source>Failed to delete image</source>
         <translation>Nepodařilo se smazat obrázek</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1438"/>
+        <location filename="../mainwindow.cpp" line="1439"/>
         <source>No selection</source>
         <translation>Žádný výběr</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1444"/>
+        <location filename="../mainwindow.cpp" line="1445"/>
         <source>Delete images</source>
         <translation>Smazat obrázky</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1443"/>
+        <location filename="../mainwindow.cpp" line="1444"/>
         <source>Permanently delete selected images?</source>
         <translation>Trvale smazat vybrané obrázky?</translation>
     </message>
@@ -930,192 +935,197 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1398"/>
-        <location filename="../mainwindow.cpp" line="1448"/>
-        <location filename="../mainwindow.cpp" line="2537"/>
+        <location filename="../mainwindow.cpp" line="1399"/>
+        <location filename="../mainwindow.cpp" line="1449"/>
+        <location filename="../mainwindow.cpp" line="2602"/>
         <source>Yes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1399"/>
-        <location filename="../mainwindow.cpp" line="1449"/>
-        <location filename="../mainwindow.cpp" line="2538"/>
+        <location filename="../mainwindow.cpp" line="1400"/>
+        <location filename="../mainwindow.cpp" line="1450"/>
+        <location filename="../mainwindow.cpp" line="2603"/>
         <source>Cancel</source>
         <translation type="unfinished">Zrušit</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1476"/>
+        <location filename="../mainwindow.cpp" line="1477"/>
         <source>Deleted </source>
         <translation>Smazáno </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1507"/>
+        <location filename="../mainwindow.cpp" line="1508"/>
         <source>Invalid Path: </source>
         <translation>Neplatná cesta: </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1985"/>
+        <location filename="../mainwindow.cpp" line="1760"/>
+        <source>Preview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="2038"/>
         <source>No images</source>
         <translation>Žádné obrázky</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2069"/>
+        <location filename="../mainwindow.cpp" line="2130"/>
         <source>Failed to open file </source>
         <translation>Nepodařilo se otevřít obrázek</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2069"/>
+        <location filename="../mainwindow.cpp" line="2130"/>
         <source>, file not found</source>
         <translation>, soubor nebyl nalezen</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2085"/>
+        <location filename="../mainwindow.cpp" line="2146"/>
         <source>Slide show stopped</source>
         <translation>Promítání zastaveno</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2111"/>
+        <location filename="../mainwindow.cpp" line="2172"/>
         <source>Stop Slide Show</source>
         <translation>Zastavit promítání</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2112"/>
+        <location filename="../mainwindow.cpp" line="2173"/>
         <source>Slide show started</source>
         <translation>Promítání spuštěno</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2282"/>
+        <location filename="../mainwindow.cpp" line="2346"/>
         <source>Can not move or copy images to this folder</source>
         <translation>Nelze přesunout nebo kopírovat obrázky do této složky</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2289"/>
+        <location filename="../mainwindow.cpp" line="2353"/>
         <source>Destination folder is same as source</source>
         <translation>Cílová složka je stejná jako zdroj</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2298"/>
+        <location filename="../mainwindow.cpp" line="2362"/>
         <source>Move </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2298"/>
+        <location filename="../mainwindow.cpp" line="2362"/>
         <source> to </source>
         <translation type="unfinished"> do </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2299"/>
+        <location filename="../mainwindow.cpp" line="2363"/>
         <source>Move folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2309"/>
+        <location filename="../mainwindow.cpp" line="2373"/>
         <source>Failed to move folder</source>
         <translation>Nepodařilo se přesunout složku</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2311"/>
+        <location filename="../mainwindow.cpp" line="2375"/>
         <source>Folder moved</source>
         <translation>Složka přesunuta</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2400"/>
+        <location filename="../mainwindow.cpp" line="2464"/>
         <source>Failed to open folder: </source>
         <translation>Nepodařilo se otevřít složku: </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2430"/>
+        <location filename="../mainwindow.cpp" line="2495"/>
         <source>Rename </source>
         <translation>Přejmenovat </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2432"/>
+        <location filename="../mainwindow.cpp" line="2497"/>
         <source>New name:</source>
         <translation>Nový název:</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2443"/>
-        <location filename="../mainwindow.cpp" line="2586"/>
+        <location filename="../mainwindow.cpp" line="2508"/>
+        <location filename="../mainwindow.cpp" line="2651"/>
         <source>Invalid name entered</source>
         <translation>Zadán neplatný název</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2454"/>
+        <location filename="../mainwindow.cpp" line="2519"/>
         <source>Failed to rename folder</source>
         <translation>Nepodařilo se přejmenovat složku</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2482"/>
+        <location filename="../mainwindow.cpp" line="2547"/>
         <source>Rename Image</source>
         <translation>Přejmenovat obrázek</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2484"/>
+        <location filename="../mainwindow.cpp" line="2549"/>
         <source>Enter a new name for </source>
         <translation>Zadat nový název pro </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2497"/>
+        <location filename="../mainwindow.cpp" line="2562"/>
         <source>No name entered</source>
         <translation>Nebyl zadán žádný název</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2518"/>
+        <location filename="../mainwindow.cpp" line="2583"/>
         <source>Failed to rename image</source>
         <translation>Nepodařilo se přejmenovat obrázek</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2529"/>
+        <location filename="../mainwindow.cpp" line="2594"/>
         <source> and all of its contents?</source>
         <translation> a veškerý jeho obsah?</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2533"/>
+        <location filename="../mainwindow.cpp" line="2598"/>
         <source>Delete folder</source>
         <translation>Smazat složku</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2552"/>
+        <location filename="../mainwindow.cpp" line="2617"/>
         <source>Failed to delete folder</source>
         <translation>Nepodařilo se smazat složku</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2556"/>
+        <location filename="../mainwindow.cpp" line="2621"/>
         <source>Removed </source>
         <translation>Odstraněno </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2574"/>
+        <location filename="../mainwindow.cpp" line="2639"/>
         <source>New Sub folder</source>
         <translation>Nová podsložka</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2575"/>
+        <location filename="../mainwindow.cpp" line="2640"/>
         <source>New folder name:</source>
         <translation>Nová název složky:</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2597"/>
+        <location filename="../mainwindow.cpp" line="2662"/>
         <source>Failed to create new folder</source>
         <translation>Nepodařilo se vytvořit novou složku</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2602"/>
+        <location filename="../mainwindow.cpp" line="2667"/>
         <source>Created </source>
         <translation>Vytvořeno </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2609"/>
+        <location filename="../mainwindow.cpp" line="2674"/>
         <source>Executing file manager...</source>
         <translation>Spustit správce souborů...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2649"/>
+        <location filename="../mainwindow.cpp" line="2714"/>
         <source>Warning</source>
         <translation>Varování</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2649"/>
+        <location filename="../mainwindow.cpp" line="2714"/>
         <source>Cannot perform action with temporary image</source>
         <translation>Činnost nelze s dočasným souborem provést</translation>
     </message>
@@ -1232,11 +1242,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="479"/>
-        <source>Keyboard shortcuts</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../dialogs.cpp" line="514"/>
         <source>Thumbnails</source>
         <translation>Náhledy</translation>
@@ -1331,6 +1336,11 @@
         <translation>Zadejte, prosím:</translation>
     </message>
     <message>
+        <location filename="../dialogs.cpp" line="479"/>
+        <source>Keyboard Shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../dialogs.cpp" line="510"/>
         <source>Viewer</source>
         <translation>Prohlížeč</translation>
@@ -1377,59 +1387,59 @@
 <context>
     <name>ThumbView</name>
     <message>
-        <location filename="../thumbview.cpp" line="222"/>
         <location filename="../thumbview.cpp" line="225"/>
-        <location filename="../thumbview.cpp" line="388"/>
+        <location filename="../thumbview.cpp" line="228"/>
+        <location filename="../thumbview.cpp" line="393"/>
         <source> images</source>
         <translation> obrázků</translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="224"/>
+        <location filename="../thumbview.cpp" line="227"/>
         <source>Selected </source>
         <translation>Vybráno</translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="224"/>
+        <location filename="../thumbview.cpp" line="227"/>
         <source> of </source>
         <translation> z </translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="238"/>
+        <location filename="../thumbview.cpp" line="243"/>
         <source>File name</source>
         <translation>Název souboru</translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="242"/>
+        <location filename="../thumbview.cpp" line="247"/>
         <source>Location</source>
         <translation>Umístění</translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="246"/>
+        <location filename="../thumbview.cpp" line="251"/>
         <source>Format</source>
         <translation>Formát</translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="250"/>
+        <location filename="../thumbview.cpp" line="255"/>
         <source>Resolution</source>
         <translation>Rozlišení</translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="256"/>
+        <location filename="../thumbview.cpp" line="261"/>
         <source>Megapixel</source>
         <translation>Megapixelů</translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="260"/>
+        <location filename="../thumbview.cpp" line="265"/>
         <source>Size</source>
         <translation>Velikost</translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="264"/>
+        <location filename="../thumbview.cpp" line="269"/>
         <source>Modified</source>
         <translation>Změněno</translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="392"/>
+        <location filename="../thumbview.cpp" line="397"/>
         <source>No images</source>
         <translation>Žádné obrázky</translation>
     </message>
