@@ -79,5 +79,6 @@ namespace GData
 	bool enableImageInfoFS;
 	bool showLabels;
 	bool smallIcons;
+	bool LockDocks;
 }
 

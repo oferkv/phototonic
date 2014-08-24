@@ -26,6 +26,7 @@
 Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 {
 	GData::appSettings = new QSettings("phototonic", "phototonic_103");
+	stackedWidget = new QStackedWidget;
 	readSettings();
 	createThumbView();
 	createActions();
@@ -34,15 +35,10 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	createStatusBar();
 	createFSTree();
 	createImageView();
+
 	updateExternalApps();
 	loadShortcuts();
-	addDockWidget(Qt::LeftDockWidgetArea, iiDock);
-	copyMoveToDialog = 0;
-
-	QAction *docksNToolbarsAct = viewMenu->insertMenu(refreshAction, QMainWindow::createPopupMenu());
-	docksNToolbarsAct->setText(tr("Docks and Toolbars"));
-	docksNToolbarsAct->menu()->addSeparator();
-	docksNToolbarsAct->menu()->addAction(actSmallIcons);
+	setupDocks();
 
 	connect(qApp, SIGNAL(focusChanged(QWidget*, QWidget*)), 
 				this, SLOT(updateActions(QWidget*, QWidget*)));
@@ -51,13 +47,13 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	restoreState(GData::appSettings->value("WindowState").toByteArray());
 	setWindowIcon(QIcon(":/images/phototonic.png"));
 
-	stackedWidget = new QStackedWidget;
 	stackedWidget->addWidget(thumbView);
 	stackedWidget->addWidget(imageView);
 	setCentralWidget(stackedWidget);
 
 	handleStartupArgs();
 
+	copyMoveToDialog = 0;
 	initComplete = true;
 	thumbViewBusy = false;
 	currentHistoryIdx = -1;
@@ -138,7 +134,6 @@ void Phototonic::addMenuSeparator(QWidget *widget)
 
 void Phototonic::createImageView()
 {
-	GData::backgroundColor = GData::appSettings->value("backgroundColor").value<QColor>();
 	imageView = new ImageView(this);
 	connect(saveAction, SIGNAL(triggered()), imageView, SLOT(saveImage()));
 	connect(saveAsAction, SIGNAL(triggered()), imageView, SLOT(saveImageAs()));
@@ -376,6 +371,11 @@ void Phototonic::createActions()
 	actSmallIcons->setCheckable(true);
 	actSmallIcons->setChecked(GData::smallIcons);
 	connect(actSmallIcons, SIGNAL(triggered()), this, SLOT(setToolbarIconSize()));
+
+	actLockDocks = new QAction(tr("Hide Docks Title Bar"), this);
+	actLockDocks->setCheckable(true);
+	actLockDocks->setChecked(GData::LockDocks);
+	connect(actLockDocks, SIGNAL(triggered()), this, SLOT(lockDocks()));
 
 	actClassic = new QAction(tr("Classic Thumbs"), this);
 	actCompact = new QAction(tr("Compact"), this);
@@ -840,7 +840,7 @@ void Phototonic::about()
 {
 	QString aboutString = "<h2>Phototonic v1.03</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
-		+ tr("<p>Git release") + " v1.03.09 (built " __DATE__ " " __TIME__ ")</p>"
+		+ tr("<p>Git release") + " v1.03.10 (built " __DATE__ " " __TIME__ ")</p>"
 		+ tr("Built with Qt ") + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
 		+ "<p><a href=\"https://github.com/oferkv/phototonic/issues\">" + tr("Bug reports") + "</a></p>"
@@ -962,6 +962,7 @@ void Phototonic::showSettings()
 	if (dialog->exec())
 	{
 		imageView->setPalette(QPalette(GData::backgroundColor));
+		thumbView->imagePreview->setPalette(QPalette(GData::backgroundColor));
 		thumbView->setThumbColors();
 		GData::imageZoomFactor = 1.0;
 
@@ -1625,6 +1626,7 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("enableImageInfoFS", (bool)GData::enableImageInfoFS);
 	GData::appSettings->setValue("showLabels", (bool)GData::showLabels);
 	GData::appSettings->setValue("smallIcons", (bool)GData::smallIcons);
+	GData::appSettings->setValue("LockDocks", (bool)GData::LockDocks);
 
 	/* Action shortcuts */
 	GData::appSettings->beginGroup("Shortcuts");
@@ -1695,11 +1697,14 @@ void Phototonic::readSettings()
 		GData::appSettings->setValue("viewToolBarVisible", (bool)true);
 		GData::appSettings->setValue("fsDockVisible", (bool)true);
 		GData::appSettings->setValue("iiDockVisible", (bool)true);
+		GData::appSettings->setValue("pvDockVisible", (bool)true);
 		GData::appSettings->setValue("enableImageInfoFS", (bool)false);
 		GData::appSettings->setValue("showLabels", (bool)true);
 		GData::appSettings->setValue("smallIcons", (bool)false);
+		GData::appSettings->setValue("LockDocks", (bool)true);
 	}
 
+	GData::backgroundColor = GData::appSettings->value("backgroundColor").value<QColor>();
 	GData::exitInsteadOfClose = GData::appSettings->value("exitInsteadOfClose").toBool();
 	GData::enableAnimations = GData::appSettings->value("enableAnimations").toBool();
 	GData::exifRotationEnabled = GData::appSettings->value("exifRotationEnabled").toBool();
@@ -1725,11 +1730,13 @@ void Phototonic::readSettings()
 	viewToolBarVisible = GData::appSettings->value("viewToolBarVisible").toBool();
 	fsDockVisible = GData::appSettings->value("fsDockVisible").toBool();
 	iiDockVisible = GData::appSettings->value("iiDockVisible").toBool();
+	pvDockVisible = GData::appSettings->value("pvDockVisible").toBool();
 	GData::startupDir = (GData::StartupDir)GData::appSettings->value("startupDir").toInt();
 	GData::specifiedStartDir = GData::appSettings->value("specifiedStartDir").toString();
 	GData::enableImageInfoFS = GData::appSettings->value("enableImageInfoFS").toBool();
 	GData::showLabels = GData::appSettings->value("showLabels").toBool();
 	GData::smallIcons = GData::appSettings->value("smallIcons").toBool();
+	GData::LockDocks = GData::appSettings->value("LockDocks").toBool();
 
 	GData::appSettings->beginGroup("ExternalApps");
 	QStringList extApps = GData::appSettings->childKeys();
@@ -1746,6 +1753,51 @@ void Phototonic::readSettings()
 		GData::copyMoveToPaths.insert(GData::appSettings->value(paths.at(i)).toString());
 	}
 	GData::appSettings->endGroup();
+}
+
+void Phototonic::setupDocks()
+{
+	pvDock = new QDockWidget(tr("Preview"), this);
+	pvDock->setObjectName("Preview");
+	pvDock->setWidget(thumbView->imagePreview);
+	connect(pvDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setPvDockVisibility()));	
+	connect(pvDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setPvDockVisibility()));	
+	addDockWidget(Qt::LeftDockWidgetArea, pvDock);
+
+	addDockWidget(Qt::LeftDockWidgetArea, iiDock);
+
+	QAction *docksNToolbarsAct = viewMenu->insertMenu(refreshAction, QMainWindow::createPopupMenu());
+	docksNToolbarsAct->setText(tr("Docks and Toolbars"));
+	docksNToolbarsAct->menu()->addSeparator();
+	docksNToolbarsAct->menu()->addAction(actSmallIcons);
+	docksNToolbarsAct->menu()->addAction(actLockDocks);
+
+	fsDockOrigWidget = fsDock->titleBarWidget();
+	iiDockOrigWidget = iiDock->titleBarWidget();
+	pvDockOrigWidget = pvDock->titleBarWidget();
+	fsDockEmptyWidget = new QWidget;
+	iiDockEmptyWidget = new QWidget;
+	pvDockEmptyWidget = new QWidget;
+	lockDocks();
+}
+
+void Phototonic::lockDocks()
+{
+	if (initComplete)
+		GData::LockDocks = actLockDocks->isChecked();
+
+	if (GData::LockDocks)
+	{
+		fsDock->setTitleBarWidget(fsDockEmptyWidget);
+		iiDock->setTitleBarWidget(iiDockEmptyWidget);
+		pvDock->setTitleBarWidget(pvDockEmptyWidget);
+	}
+	else
+	{
+		fsDock->setTitleBarWidget(fsDockOrigWidget);
+		iiDock->setTitleBarWidget(iiDockOrigWidget);
+		pvDock->setTitleBarWidget(pvDockOrigWidget);
+	}
 }
 
 void Phototonic::loadShortcuts()
@@ -1966,6 +2018,7 @@ void Phototonic::setThumbViewWidgetsVisible(bool visible)
 
 	fsDock->setVisible(visible? fsDockVisible : false);
 	iiDock->setVisible(visible? iiDockVisible : false);
+	pvDock->setVisible(visible? pvDockVisible : false);
 }
 
 void Phototonic::openOp()
@@ -2032,6 +2085,14 @@ void Phototonic::setIiDockVisibility()
 		return;
 
 	iiDockVisible = iiDock->isVisible();
+}
+
+void Phototonic::setPvDockVisibility()
+{
+	if (stackedWidget->currentIndex() == imageViewIdx)
+		return;
+
+	pvDockVisible = pvDock->isVisible();
 }
 
 void Phototonic::loadImageFile(QString imageFileName)
@@ -2405,6 +2466,7 @@ void Phototonic::reloadThumbsSlot()
 	}
 
 	thumbView->infoView->clear();
+	thumbView->imagePreview->clear();
 	pathBar->setText(thumbView->currentViewDir);
 	recordHistory(thumbView->currentViewDir);
 	if (currentHistoryIdx > 0)

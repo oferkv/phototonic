@@ -17,6 +17,7 @@
  */
 
 #include "thumbview.h"
+#include "preview.h"
 
 #define BAD_IMG_SZ	64
 
@@ -59,6 +60,7 @@ ThumbView::ThumbView(QWidget *parent) : QListView(parent)
 	qsrand((uint)time.msec());
 	mainWindow = parent;
 	infoView = new InfoView(this);
+	imagePreview = new ImagePreview(this);
 }
 
 void ThumbView::setThumbColors()
@@ -217,6 +219,7 @@ void ThumbView::handleSelectionChanged(const QItemSelection&)
 	QString imageFullPath;
 
 	infoView->clear();
+	imagePreview->clear();
 
 	if (!nSelected)
 		state = QString::number(thumbViewModel->rowCount()) + tr(" images");
@@ -230,6 +233,8 @@ void ThumbView::handleSelectionChanged(const QItemSelection&)
 		imageInfoReader.setFileName(imageFullPath);
 		QString key;
 		QString val;
+
+		imagePreview->load(imageFullPath);
 		
 		if (imageInfoReader.size().isValid())
 		{

@@ -135,7 +135,9 @@ private slots:
 	void setViewToolBarVisibility();
 	void setFsDockVisibility();
 	void setIiDockVisibility();
+	void setPvDockVisibility();
 	void enableImageView();
+	void lockDocks();
 
 private:
 	QString cliFileName;
@@ -221,6 +223,7 @@ private:
 	QAction *actShowHidden;
 	QAction *actShowLabels;
 	QAction *actSmallIcons;
+	QAction *actLockDocks;
 	
 	QAction *pasteAction;
 	QAction *createDirAction;
@@ -248,6 +251,7 @@ private:
 	QCompleter *pathComplete;
 	QLabel *stateLabel;
 	QDockWidget *fsDock;
+	QDockWidget *pvDock;
 	QFileSystemModel *fsModel;
 	FSTree *fsTree;
 	QStackedWidget *stackedWidget;
@@ -257,6 +261,12 @@ private:
 	QList<QString> pathHistory;
 	QTimer *SlideShowTimer;
 	CopyMoveToDialog *copyMoveToDialog;
+	QWidget *fsDockOrigWidget;
+	QWidget *iiDockOrigWidget;
+	QWidget *pvDockOrigWidget;
+	QWidget *fsDockEmptyWidget;
+	QWidget *iiDockEmptyWidget;
+	QWidget *pvDockEmptyWidget;
 
 	enum CentralWidgets
 	{
@@ -277,8 +287,10 @@ private:
 	bool viewToolBarVisible;
 	bool fsDockVisible;
 	bool iiDockVisible;
+	bool pvDockVisible;
 
 	void loadShortcuts();
+	void setupDocks();
 	void deleteViewerImage();
 	void updateCurrentImage(int currentRow);
 	void selectCurrentViewDir();

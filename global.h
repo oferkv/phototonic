@@ -97,6 +97,7 @@ namespace GData
 	extern bool enableImageInfoFS;
 	extern bool showLabels;
 	extern bool smallIcons;
+	extern bool LockDocks;
 }
 
 #endif // GLOBAL_H

@@ -16,11 +16,11 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <QGraphicsDropShadowEffect>
+#include <math.h>
+#include "global.h"
 #include "imageview.h"
 #include "thumbview.h"
-#include <math.h>
-#include <QGraphicsDropShadowEffect>
-#include "global.h"
 
 #define CLIPBOARD_IMAGE_NAME		"clipboard.png"
 #define ROUND(x) ((int) ((x) + 0.5))
