@@ -856,7 +856,7 @@ void Phototonic::about()
 		+ "<tr><td>Russian:</td><td>Ilya Alexandrovich (yast4ik@gmail.com)</td></tr></table>"
 		+ "<p>Phototonic is licensed under the GNU General Public License version 3</p>";
 
-	QMessageBox::about(this, tr("About") + "Phototonic", aboutString);
+	QMessageBox::about(this, tr("About") + " Phototonic", aboutString);
 }
 
 void Phototonic::cleanupSender()
