@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="de_DE">
+<TS version="2.0" language="de_DE">
 <context>
     <name>AppMgmtDialog</name>
     <message>
@@ -573,11 +573,11 @@
     </message>
     <message>
         <source>&lt;u&gt;Contributors&lt;/u&gt;:&lt;br&gt;</source>
-        <translation type="vanished">&lt;u&gt;Mitwirkende&lt;/u&gt;:&lt;br&gt;</translation>
+        <translation>&lt;u&gt;Mitwirkende&lt;/u&gt;:&lt;br&gt;</translation>
     </message>
     <message>
         <source>&lt;u&gt;Translators&lt;/u&gt;:&lt;br&gt;</source>
-        <translation type="vanished">&lt;u&gt;Übersetzer&lt;/u&gt;:&lt;br&gt;</translation>
+        <translation>&lt;u&gt;Übersetzer&lt;/u&gt;:&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2172"/>
@@ -947,7 +947,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="375"/>
         <source>Hide Docks Title Bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Dock-Titelleisten verbergen</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="848"/>
@@ -986,7 +986,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="1760"/>
         <source>Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorschau</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2038"/>
@@ -1263,7 +1263,7 @@
     </message>
     <message>
         <source>Keyboard shortcuts</source>
-        <translation type="vanished">Tastenkombinationen</translation>
+        <translation>Tastenkombinationen</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="514"/>
@@ -1332,7 +1332,7 @@
     </message>
     <message>
         <source>Rotate according to Exif orientation</source>
-        <translation type="vanished">Gemäß EXIF-Orientierung drehen</translation>
+        <translation>Gemäß EXIF-Orientierung drehen</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="313"/>
@@ -1362,7 +1362,7 @@
     <message>
         <location filename="../dialogs.cpp" line="479"/>
         <source>Keyboard Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Tastenkombinationen</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="510"/>
@@ -1391,11 +1391,11 @@
     </message>
     <message>
         <source>Keyboard Shortcuts:</source>
-        <translation type="vanished">Tastenkombinationen:</translation>
+        <translation>Tastenkombinationen:</translation>
     </message>
     <message>
         <source>Keyboard and Mouse</source>
-        <translation type="vanished">Tastatur und Maus</translation>
+        <translation>Tastatur und Maus</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="522"/>
