@@ -478,7 +478,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="375"/>
         <source>Hide Docks Title Bar</source>
-        <translation>Masquer la barre de titre du Docks</translation>
+        <translation>Masquer la barre de titre des Docks</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="380"/>
