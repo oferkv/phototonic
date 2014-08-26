@@ -319,7 +319,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="121"/>
         <source>Image Info</source>
-        <translation>Info Image</translation>
+        <translation>Information Image</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="199"/>
@@ -478,7 +478,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="375"/>
         <source>Hide Docks Title Bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Masquer la barre de titre du Docks</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="380"/>
@@ -941,7 +941,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="1760"/>
         <source>Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Prévisualisation</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2038"/>
