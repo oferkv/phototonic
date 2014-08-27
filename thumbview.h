@@ -54,6 +54,7 @@ public:
 	QList<QStandardItem*> *thumbList;
 	QStandardItemModel *thumbViewModel;
 	QString currentViewDir;
+	QString recentThumb;
 	QDir::SortFlags thumbsSortFlags;
 	int thumbSize;
 	int thumbWidth;

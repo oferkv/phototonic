@@ -271,6 +271,7 @@ void ThumbView::handleSelectionChanged(const QItemSelection&)
 			infoView->addEntry(key, val);
 			
 			updateExifInfo(imageFullPath);
+			recentThumb = imageFullPath;
 		}
 		else
 		{

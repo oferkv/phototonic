@@ -35,7 +35,6 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	createStatusBar();
 	createFSTree();
 	createImageView();
-
 	updateExternalApps();
 	loadShortcuts();
 	setupDocks();
@@ -58,10 +57,12 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	thumbViewBusy = false;
 	currentHistoryIdx = -1;
 	needHistoryRecord = true;
-	refreshThumbs(true);
 
+	refreshThumbs(true);
 	if (stackedWidget->currentIndex() == thumbViewIdx)
 		thumbView->setFocus(Qt::OtherFocusReason);
+	if (!cliImageLoaded)
+		QTimer::singleShot(100, this, SLOT(scrollToLastImage()));
 }
 
 void Phototonic::handleStartupArgs()
@@ -803,6 +804,10 @@ void Phototonic::refreshThumbs(bool scrollToTop)
 {
 	thumbView->setNeedScroll(scrollToTop);
 	QTimer::singleShot(0, this, SLOT(reloadThumbsSlot()));
+	if (scrollToTop)
+		QTimer::singleShot(100, this, SLOT(scrollToLastImage()));
+	else
+		QTimer::singleShot(100, this, SLOT(selectRecentThumb()));
 }
 
 void Phototonic::setClassicThumbs()
@@ -962,7 +967,7 @@ void Phototonic::showSettings()
 	if (dialog->exec())
 	{
 		imageView->setPalette(QPalette(GData::backgroundColor));
-		thumbView->imagePreview->setPalette(QPalette(GData::backgroundColor));
+		thumbView->imagePreview->setPalette(QPalette(GData::thumbsBackgroundColor));
 		thumbView->setThumbColors();
 		GData::imageZoomFactor = 1.0;
 
@@ -1619,6 +1624,7 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("viewToolBarVisible", (bool)viewToolBarVisible);
 	GData::appSettings->setValue("fsDockVisible", (bool)fsDockVisible);
 	GData::appSettings->setValue("iiDockVisible", (bool)iiDockVisible);
+	GData::appSettings->setValue("pvDockVisible", (bool)pvDockVisible);
 	GData::appSettings->setValue("startupDir", (int)GData::startupDir);
 	GData::appSettings->setValue("specifiedStartDir", GData::specifiedStartDir);
 	GData::appSettings->setValue("lastDir", GData::startupDir == GData::rememberLastDir?
@@ -2279,6 +2285,15 @@ void Phototonic::scrollToLastImage()
 	if (thumbView->thumbViewModel->rowCount() > 0) 
 	{
 		if (thumbView->setCurrentIndexByName(imageView->currentImageFullPath))
+			thumbView->selectCurrentIndex();
+	}
+}
+
+void Phototonic::selectRecentThumb()
+{
+	if (thumbView->thumbViewModel->rowCount() > 0) 
+	{
+		if (thumbView->setCurrentIndexByName(thumbView->recentThumb))
 			thumbView->selectCurrentIndex();
 	}
 }

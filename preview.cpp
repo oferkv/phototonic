@@ -47,7 +47,7 @@ ImagePreview::ImagePreview(QWidget *parent) : QWidget(parent)
 	mainVLayout->setContentsMargins(0, 0, 0, 0);
 	mainVLayout->addWidget(scrlArea);
 	this->setLayout(mainVLayout);
-	setPalette(QPalette(GData::backgroundColor));
+	setPalette(QPalette(GData::thumbsBackgroundColor));
 }
 
 void ImagePreview::resizeEvent(QResizeEvent *event)
@@ -68,6 +68,9 @@ void ImagePreview::resizeImage()
 
 void ImagePreview::load(QString &imagePath)
 {
+	if (!isVisible())
+		return;
+		
 	if (prevImage.load(imagePath))
 	{
 		if (GData::exifRotationEnabled)
