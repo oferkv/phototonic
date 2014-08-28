@@ -68,7 +68,7 @@ void ImagePreview::resizeImage()
 
 void ImagePreview::load(QString &imagePath)
 {
-	if (!isVisible())
+	if (!GData::pvDockVisible)
 		return;
 		
 	if (prevImage.load(imagePath))

@@ -1622,9 +1622,9 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("editToolBarVisible", (bool)editToolBarVisible);
 	GData::appSettings->setValue("goToolBarVisible", (bool)goToolBarVisible);
 	GData::appSettings->setValue("viewToolBarVisible", (bool)viewToolBarVisible);
-	GData::appSettings->setValue("fsDockVisible", (bool)fsDockVisible);
-	GData::appSettings->setValue("iiDockVisible", (bool)iiDockVisible);
-	GData::appSettings->setValue("pvDockVisible", (bool)pvDockVisible);
+	GData::appSettings->setValue("fsDockVisible", (bool)GData::fsDockVisible);
+	GData::appSettings->setValue("iiDockVisible", (bool)GData::iiDockVisible);
+	GData::appSettings->setValue("pvDockVisible", (bool)GData::pvDockVisible);
 	GData::appSettings->setValue("startupDir", (int)GData::startupDir);
 	GData::appSettings->setValue("specifiedStartDir", GData::specifiedStartDir);
 	GData::appSettings->setValue("lastDir", GData::startupDir == GData::rememberLastDir?
@@ -1734,9 +1734,9 @@ void Phototonic::readSettings()
 	editToolBarVisible = GData::appSettings->value("editToolBarVisible").toBool();
 	goToolBarVisible = GData::appSettings->value("goToolBarVisible").toBool();
 	viewToolBarVisible = GData::appSettings->value("viewToolBarVisible").toBool();
-	fsDockVisible = GData::appSettings->value("fsDockVisible").toBool();
-	iiDockVisible = GData::appSettings->value("iiDockVisible").toBool();
-	pvDockVisible = GData::appSettings->value("pvDockVisible").toBool();
+	GData::fsDockVisible = GData::appSettings->value("fsDockVisible").toBool();
+	GData::iiDockVisible = GData::appSettings->value("iiDockVisible").toBool();
+	GData::pvDockVisible = GData::appSettings->value("pvDockVisible").toBool();
 	GData::startupDir = (GData::StartupDir)GData::appSettings->value("startupDir").toInt();
 	GData::specifiedStartDir = GData::appSettings->value("specifiedStartDir").toString();
 	GData::enableImageInfoFS = GData::appSettings->value("enableImageInfoFS").toBool();
@@ -2022,9 +2022,9 @@ void Phototonic::setThumbViewWidgetsVisible(bool visible)
 	goToolBar->setVisible(visible? goToolBarVisible : false);
 	viewToolBar->setVisible(visible? viewToolBarVisible : false);
 
-	fsDock->setVisible(visible? fsDockVisible : false);
-	iiDock->setVisible(visible? iiDockVisible : false);
-	pvDock->setVisible(visible? pvDockVisible : false);
+	fsDock->setVisible(visible? GData::fsDockVisible : false);
+	iiDock->setVisible(visible? GData::iiDockVisible : false);
+	pvDock->setVisible(visible? GData::pvDockVisible : false);
 }
 
 void Phototonic::openOp()
@@ -2082,7 +2082,7 @@ void Phototonic::setFsDockVisibility()
 	if (stackedWidget->currentIndex() == imageViewIdx)
 		return;
 
-	fsDockVisible = fsDock->isVisible();
+	GData::fsDockVisible = fsDock->isVisible();
 }
 
 void Phototonic::setIiDockVisibility()
@@ -2090,7 +2090,7 @@ void Phototonic::setIiDockVisibility()
 	if (stackedWidget->currentIndex() == imageViewIdx)
 		return;
 
-	iiDockVisible = iiDock->isVisible();
+	GData::iiDockVisible = iiDock->isVisible();
 }
 
 void Phototonic::setPvDockVisibility()
@@ -2098,7 +2098,7 @@ void Phototonic::setPvDockVisibility()
 	if (stackedWidget->currentIndex() == imageViewIdx)
 		return;
 
-	pvDockVisible = pvDock->isVisible();
+	GData::pvDockVisible = pvDock->isVisible();
 }
 
 void Phototonic::loadImageFile(QString imageFileName)
@@ -2307,7 +2307,9 @@ void Phototonic::closeImage()
 	}
 
 	setThumbViewWidgetsVisible(true);
+	stackedWidget->setVisible(false);
 	stackedWidget->setCurrentIndex(thumbViewIdx);
+	stackedWidget->setVisible(true);
 
 	if (isFullScreen())
 	{
@@ -2334,7 +2336,6 @@ void Phototonic::closeImage()
 
 	if (!needThumbsRefresh)
 	{
-		QApplication::processEvents();
 		QTimer::singleShot(100, this, SLOT(scrollToLastImage()));
 	}
 }

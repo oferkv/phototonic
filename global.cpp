@@ -80,5 +80,8 @@ namespace GData
 	bool showLabels;
 	bool smallIcons;
 	bool LockDocks;
+	bool fsDockVisible;
+	bool iiDockVisible;
+	bool pvDockVisible;
 }
 

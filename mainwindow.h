@@ -286,9 +286,6 @@ private:
 	bool editToolBarVisible;
 	bool goToolBarVisible;
 	bool viewToolBarVisible;
-	bool fsDockVisible;
-	bool iiDockVisible;
-	bool pvDockVisible;
 
 	void loadShortcuts();
 	void setupDocks();

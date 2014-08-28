@@ -98,6 +98,9 @@ namespace GData
 	extern bool showLabels;
 	extern bool smallIcons;
 	extern bool LockDocks;
+	extern bool fsDockVisible;
+	extern bool iiDockVisible;
+	extern bool pvDockVisible;
 }
 
 #endif // GLOBAL_H
