@@ -36,6 +36,8 @@ public:
 	void load(QString &imagePath);
 	void clear();
 
+	QScrollArea *scrlArea;
+
 private:
 	QLabel *imageLabel;
 	QPixmap prevPixmap;

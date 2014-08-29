@@ -83,6 +83,7 @@ public:
 	}
 	void setThumbColors();
 	bool setCurrentIndexByName(QString &FileName);
+	bool setCurrentIndexByRow(int row);
 	void selectCurrentIndex();
 	int getNextRow();
 	int getPrevRow();

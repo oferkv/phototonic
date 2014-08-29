@@ -155,6 +155,19 @@ bool ThumbView::setCurrentIndexByName(QString &FileName)
  	return false;
 }
 
+bool ThumbView::setCurrentIndexByRow(int row)
+{
+	QModelIndex idx = thumbViewModel->indexFromItem(thumbViewModel->item(row));
+	if (idx.isValid())
+	{
+		currentIndex = idx;
+	 	setCurrentRow(idx.row());
+	 	return true;
+ 	}
+
+ 	return false;
+}
+
 void ThumbView::updateExifInfo(QString imageFullPath)
 {
 	Exiv2::Image::AutoPtr exifImage;

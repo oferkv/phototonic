@@ -17,7 +17,6 @@
  */
 
 #include "mainwindow.h"
-#include "thumbview.h"
 #include "global.h"
 
 #define THUMB_SIZE_MIN	50
@@ -804,10 +803,7 @@ void Phototonic::refreshThumbs(bool scrollToTop)
 {
 	thumbView->setNeedScroll(scrollToTop);
 	QTimer::singleShot(0, this, SLOT(reloadThumbsSlot()));
-	if (scrollToTop)
-		QTimer::singleShot(100, this, SLOT(scrollToLastImage()));
-	else
-		QTimer::singleShot(100, this, SLOT(selectRecentThumb()));
+	QTimer::singleShot(100, this, SLOT(selectRecentThumb()));
 }
 
 void Phototonic::setClassicThumbs()
@@ -845,7 +841,7 @@ void Phototonic::about()
 {
 	QString aboutString = "<h2>Phototonic v1.03</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
-		+ tr("<p>Git release") + " v1.03.10 (built " __DATE__ " " __TIME__ ")</p>"
+		+ tr("<p>Git release") + " v1.03.11 (built " __DATE__ " " __TIME__ ")</p>"
 		+ tr("Built with Qt ") + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
 		+ "<p><a href=\"https://github.com/oferkv/phototonic/issues\">" + tr("Bug reports") + "</a></p>"
@@ -1785,6 +1781,16 @@ void Phototonic::setupDocks()
 	iiDockEmptyWidget = new QWidget;
 	pvDockEmptyWidget = new QWidget;
 	lockDocks();
+
+	thumbView->imagePreview->addAction(openAction);
+	thumbView->imagePreview->addAction(openWithMenuAct);
+	thumbView->imagePreview->addAction(cutAction);
+	thumbView->imagePreview->addAction(copyAction);
+	thumbView->imagePreview->addAction(pasteAction);
+	thumbView->imagePreview->addAction(copyMoveAction);
+	thumbView->imagePreview->addAction(renameAction);
+	thumbView->imagePreview->addAction(deleteAction);
+	thumbView->imagePreview->setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
 void Phototonic::lockDocks()
@@ -1963,6 +1969,10 @@ void Phototonic::mouseDoubleClickEvent(QMouseEvent *event)
 				event->accept();
 			}
 		}
+		else if (QApplication::focusWidget() == thumbView->imagePreview->scrlArea)
+		{
+			openOp();
+		}
 	}
 }
 
@@ -1989,6 +1999,13 @@ void Phototonic::mousePressEvent(QMouseEvent *event)
 			imageView->setMouseMoveData(true, event->x(), event->y());
 			QApplication::setOverrideCursor(Qt::ClosedHandCursor);
 			event->accept();
+		}
+	}
+	else if (QApplication::focusWidget() == thumbView->imagePreview->scrlArea)
+	{
+		if (event->button() == Qt::MiddleButton)
+		{
+			openOp();
 		}
 	}
 }
@@ -2031,7 +2048,8 @@ void Phototonic::openOp()
 {
 	if (QApplication::focusWidget() == fsTree)
 		goSelectedDir(fsTree->getCurrentIndex());
-	else if (QApplication::focusWidget() == thumbView)
+	else if (QApplication::focusWidget() == thumbView
+				|| QApplication::focusWidget() == thumbView->imagePreview->scrlArea)
 	{
 		QModelIndex idx;
 		QModelIndexList indexesList = thumbView->selectionModel()->selectedIndexes();
@@ -2295,6 +2313,11 @@ void Phototonic::selectRecentThumb()
 	{
 		if (thumbView->setCurrentIndexByName(thumbView->recentThumb))
 			thumbView->selectCurrentIndex();
+		else
+		{
+			if (thumbView->setCurrentIndexByRow(0))
+				thumbView->selectCurrentIndex();
+		}
 	}
 }
 

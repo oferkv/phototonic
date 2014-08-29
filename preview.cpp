@@ -32,7 +32,7 @@ ImagePreview::ImagePreview(QWidget *parent) : QWidget(parent)
 	mainHLayout->setSpacing(0);
 	mainHLayout->addWidget(imageLabel);
 
-	QScrollArea *scrlArea = new QScrollArea;
+	scrlArea = new QScrollArea;
 	scrlArea->setContentsMargins(0, 0, 0, 0);
 	scrlArea->setAlignment(Qt::AlignCenter);
 	scrlArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
