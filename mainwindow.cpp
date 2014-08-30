@@ -185,6 +185,7 @@ void Phototonic::createImageView()
 	imageView->addAction(showClipboardAction);
 	imageView->addAction(copyMoveAction);
 	imageView->addAction(resizeAct);
+	imageView->addAction(openAction);
 
 	// Actions
 	addMenuSeparator(imageView->ImagePopUpMenu);
@@ -2046,8 +2047,17 @@ void Phototonic::setThumbViewWidgetsVisible(bool visible)
 
 void Phototonic::openOp()
 {
+	if (stackedWidget->currentIndex() == imageViewIdx)
+	{
+		closeImage();
+		return;
+	}
+	
 	if (QApplication::focusWidget() == fsTree)
+	{
 		goSelectedDir(fsTree->getCurrentIndex());
+		return;
+	}
 	else if (QApplication::focusWidget() == thumbView
 				|| QApplication::focusWidget() == thumbView->imagePreview->scrlArea)
 	{
@@ -2069,14 +2079,17 @@ void Phototonic::openOp()
 		}
 
 		loadImagefromThumb(idx);
+		return;
 	}
 	else if (QApplication::focusWidget() == filterBar)
 	{
 		setThumbsFilter();
+		return;
 	}
 	else if (QApplication::focusWidget() == pathBar)
 	{
 		goPathBarDir();
+		return;
 	}
 }
 
