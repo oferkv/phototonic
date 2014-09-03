@@ -2342,11 +2342,6 @@ void Phototonic::closeImage()
 		return;
 	}
 
-	setThumbViewWidgetsVisible(true);
-	stackedWidget->setVisible(false);
-	stackedWidget->setCurrentIndex(thumbViewIdx);
-	stackedWidget->setVisible(true);
-
 	if (isFullScreen())
 	{
 		showNormal();
@@ -2354,6 +2349,10 @@ void Phototonic::closeImage()
 			showMaximized();
 		imageView->setCursorHiding(false);
 	}
+
+	setThumbViewWidgetsVisible(true);
+	stackedWidget->setCurrentIndex(thumbViewIdx);
+
 	while (QApplication::overrideCursor())
 		QApplication::restoreOverrideCursor();
 
@@ -2367,13 +2366,13 @@ void Phototonic::closeImage()
 	}
 
 	thumbView->setFocus(Qt::OtherFocusReason);
-	thumbView->loadVisibleThumbs();
 	setThumbviewWindowTitle();
 
 	if (!needThumbsRefresh)
 	{
 		QTimer::singleShot(100, this, SLOT(scrollToLastImage()));
 	}
+	thumbView->loadVisibleThumbs();
 }
 
 void Phototonic::goBottom()
