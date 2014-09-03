@@ -367,6 +367,7 @@ void Phototonic::createActions()
 	actShowLabels->setCheckable(true);
 	actShowLabels->setChecked(GData::showLabels);
 	connect(actShowLabels, SIGNAL(triggered()), this, SLOT(showLabels()));
+	actShowLabels->setEnabled(GData::thumbsLayout != ThumbView::Squares)	;
 
 	actSmallIcons = new QAction(tr("Small Icons"), this);
 	actSmallIcons->setCheckable(true);
@@ -810,18 +811,21 @@ void Phototonic::refreshThumbs(bool scrollToTop)
 void Phototonic::setClassicThumbs()
 {
 	GData::thumbsLayout = ThumbView::Classic;
+	actShowLabels->setEnabled(true);
 	refreshThumbs(false);
 }
 
 void Phototonic::setCompactThumbs()
 {
 	GData::thumbsLayout = ThumbView::Compact;
+	actShowLabels->setEnabled(true);
 	refreshThumbs(false);
 }
 
 void Phototonic::setSquarishThumbs()
 {
 	GData::thumbsLayout = ThumbView::Squares;
+	actShowLabels->setEnabled(false);
 	refreshThumbs(false);
 }
 
@@ -2623,10 +2627,13 @@ void Phototonic::rename()
 	if (ok)
 	{
 		QModelIndexList indexesList = thumbView->selectionModel()->selectedIndexes();
-		thumbView->thumbViewModel->item(indexesList.first().row())->setData(newImageFullPath, 
-																			thumbView->FileNameRole);
-		thumbView->thumbViewModel->item(indexesList.first().row())->setData(newImageName,
-																			Qt::DisplayRole);
+		thumbView->thumbViewModel->item(
+					indexesList.first().row())->setData(newImageFullPath, thumbView->FileNameRole);
+
+		if (GData::thumbsLayout != ThumbView::Squares) {
+			thumbView->thumbViewModel->item(
+					indexesList.first().row())->setData(newImageName, Qt::DisplayRole);
+		}
 	}
 	else
 	{
