@@ -2718,7 +2718,6 @@ void Phototonic::createSubDirectory()
 
 	setStatus(tr("Created ") + newDirName);
 	fsTree->expand(selectedDirs[0]);
-	selectCurrentViewDir();
 }
 
 void Phototonic::manageDir()
