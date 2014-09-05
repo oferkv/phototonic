@@ -255,7 +255,7 @@ private:
 	QDockWidget *pvDock;
 	QFileSystemModel *fsModel;
 	FSTree *fsTree;
-	QStackedWidget *stackedWidget;
+	QVBoxLayout *mainLayout;
 	QDockWidget *iiDock;
 	ThumbView *thumbView;
 	ImageView *imageView;

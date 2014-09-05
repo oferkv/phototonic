@@ -149,6 +149,7 @@ bool ThumbView::setCurrentIndexByName(QString &FileName)
 	{
 	 	currentIndex = indexList[0];
 	 	setCurrentRow(currentIndex.row());
+		setRowHidden(currentIndex.row(), false);
 	 	return true;
  	}
 

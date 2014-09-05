@@ -25,7 +25,6 @@
 Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 {
 	GData::appSettings = new QSettings("phototonic", "phototonic_103");
-	stackedWidget = new QStackedWidget;
 	readSettings();
 	createThumbView();
 	createActions();
@@ -45,9 +44,15 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	restoreState(GData::appSettings->value("WindowState").toByteArray());
 	setWindowIcon(QIcon(":/images/phototonic.png"));
 
-	stackedWidget->addWidget(thumbView);
-	stackedWidget->addWidget(imageView);
-	setCentralWidget(stackedWidget);
+	mainLayout = new QVBoxLayout;
+	mainLayout->setContentsMargins(0, 0, 0, 0);
+	mainLayout->setSpacing(0);
+	mainLayout->addWidget(thumbView);
+	mainLayout->addWidget(imageView);
+	imageView->setVisible(false);
+	QWidget *centralWidget = new QWidget;
+	centralWidget->setLayout(mainLayout);
+	setCentralWidget(centralWidget);
 
 	handleStartupArgs();
 
@@ -58,7 +63,7 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	needHistoryRecord = true;
 
 	refreshThumbs(true);
-	if (stackedWidget->currentIndex() == thumbViewIdx)
+	if (GData::layoutMode == thumbViewIdx)
 		thumbView->setFocus(Qt::OtherFocusReason);
 	if (!cliImageLoaded)
 		QTimer::singleShot(100, this, SLOT(scrollToLastImage()));
@@ -99,7 +104,7 @@ void Phototonic::unsetBusy()
 
 bool Phototonic::event(QEvent *event)
 {
-	if (event->type() == QEvent::ActivationChange && stackedWidget->currentIndex() == thumbViewIdx)
+	if (event->type() == QEvent::ActivationChange && GData::layoutMode == thumbViewIdx)
 	{ 
 		thumbView->loadVisibleThumbs();
 	}
@@ -787,7 +792,7 @@ void Phototonic::sortThumbnains()
 
 void Phototonic::reload()
 {
-	if (stackedWidget->currentIndex() == imageViewIdx)
+	if (GData::layoutMode == imageViewIdx)
 	{
 		imageView->reload();
 	}
@@ -876,7 +881,7 @@ void Phototonic::runExternalApp()
 	QString selectedFileNames("");
 	execCommand = GData::externalApps[((QAction*) sender())->text()];
 
-	if (stackedWidget->currentIndex() == imageViewIdx)
+	if (GData::layoutMode == imageViewIdx)
 	{
 		if (imageView->isNewImage())
 		{
@@ -972,7 +977,7 @@ void Phototonic::showSettings()
 		thumbView->setThumbColors();
 		GData::imageZoomFactor = 1.0;
 
-		if (stackedWidget->currentIndex() == imageViewIdx)
+		if (GData::layoutMode == imageViewIdx)
 		{
 			imageView->reload();
 			needThumbsRefresh = true;
@@ -1039,7 +1044,7 @@ void Phototonic::copyMoveImages()
 	copyMoveToDialog = new CopyMoveToDialog(this, getSelectedPath());
 	if (copyMoveToDialog->exec())
 	{
-		if (stackedWidget->currentIndex() == thumbViewIdx)
+		if (GData::layoutMode == thumbViewIdx)
 		{
 			if (copyMoveToDialog->copyOp)
 				copyThumbs();
@@ -1434,7 +1439,7 @@ void Phototonic::deleteOp()
 		return;
 	}
 
-	if (stackedWidget->currentIndex() == imageViewIdx)
+	if (GData::layoutMode == imageViewIdx)
 	{
 		deleteViewerImage();
 		return;
@@ -1592,7 +1597,7 @@ void Phototonic::updateActions(QWidget*, QWidget *selectedWidget)
 
 void Phototonic::writeSettings()
 {
-	if (stackedWidget->currentIndex() == thumbViewIdx)
+	if (GData::layoutMode == thumbViewIdx)
 	{
 		GData::appSettings->setValue("Geometry", saveGeometry());
 		GData::appSettings->setValue("WindowState", saveState());
@@ -1960,7 +1965,7 @@ void Phototonic::mouseDoubleClickEvent(QMouseEvent *event)
 {
 	if (event->button() == Qt::LeftButton)
 	{
-		if (stackedWidget->currentIndex() == imageViewIdx)
+		if (GData::layoutMode == imageViewIdx)
 		{
 			if (GData::reverseMouseBehavior)
 			{
@@ -1983,7 +1988,7 @@ void Phototonic::mouseDoubleClickEvent(QMouseEvent *event)
 
 void Phototonic::mousePressEvent(QMouseEvent *event)
 {
-	if (stackedWidget->currentIndex() == imageViewIdx)
+	if (GData::layoutMode == imageViewIdx)
 	{
 		if (event->button() == Qt::MiddleButton)
 		{
@@ -2017,7 +2022,7 @@ void Phototonic::mousePressEvent(QMouseEvent *event)
 
 void Phototonic::mouseReleaseEvent(QMouseEvent *event)
 {
-	if (stackedWidget->currentIndex() == imageViewIdx)
+	if (GData::layoutMode == imageViewIdx)
 	{
 		if (event->button() == Qt::LeftButton)
 		{
@@ -2051,7 +2056,7 @@ void Phototonic::setThumbViewWidgetsVisible(bool visible)
 
 void Phototonic::openOp()
 {
-	if (stackedWidget->currentIndex() == imageViewIdx)
+	if (GData::layoutMode == imageViewIdx)
 	{
 		closeImage();
 		return;
@@ -2114,7 +2119,7 @@ void Phototonic::setViewToolBarVisibility()
 
 void Phototonic::setFsDockVisibility()
 {
-	if (stackedWidget->currentIndex() == imageViewIdx)
+	if (GData::layoutMode == imageViewIdx)
 		return;
 
 	GData::fsDockVisible = fsDock->isVisible();
@@ -2122,7 +2127,7 @@ void Phototonic::setFsDockVisibility()
 
 void Phototonic::setIiDockVisibility()
 {
-	if (stackedWidget->currentIndex() == imageViewIdx)
+	if (GData::layoutMode == imageViewIdx)
 		return;
 
 	GData::iiDockVisible = iiDock->isVisible();
@@ -2130,7 +2135,7 @@ void Phototonic::setIiDockVisibility()
 
 void Phototonic::setPvDockVisibility()
 {
-	if (stackedWidget->currentIndex() == imageViewIdx)
+	if (GData::layoutMode == imageViewIdx)
 		return;
 
 	GData::pvDockVisible = pvDock->isVisible();
@@ -2139,12 +2144,14 @@ void Phototonic::setPvDockVisibility()
 void Phototonic::loadImageFile(QString imageFileName)
 {
 	imageView->loadImage(imageFileName);
-	if (stackedWidget->currentIndex() == thumbViewIdx)
+	if (GData::layoutMode == thumbViewIdx)
 	{
 		GData::appSettings->setValue("Geometry", saveGeometry());
 		GData::appSettings->setValue("WindowState", saveState());
-	
-		stackedWidget->setCurrentIndex(imageViewIdx);
+
+		imageView->setVisible(true);
+		thumbView->setVisible(false);
+		GData::layoutMode = imageViewIdx;
 		setThumbViewWidgetsVisible(false);
 		if (GData::isFullScreen == true)
 		{
@@ -2195,7 +2202,7 @@ void Phototonic::slideShow()
 		if (thumbView->thumbViewModel->rowCount() <= 0)
 			return;
 	
-		if (stackedWidget->currentIndex() == thumbViewIdx)
+		if (GData::layoutMode == thumbViewIdx)
 		{
 			QModelIndexList indexesList = thumbView->selectionModel()->selectedIndexes();
 			if (indexesList.size() != 1)
@@ -2322,6 +2329,7 @@ void Phototonic::scrollToLastImage()
 		if (thumbView->setCurrentIndexByName(imageView->currentImageFullPath))
 			thumbView->selectCurrentIndex();
 	}
+	thumbView->setResizeMode(QListView::Adjust);
 }
 
 void Phototonic::selectRecentThumb()
@@ -2355,7 +2363,8 @@ void Phototonic::closeImage()
 	}
 
 	setThumbViewWidgetsVisible(true);
-	stackedWidget->setCurrentIndex(thumbViewIdx);
+	GData::layoutMode = thumbViewIdx;
+
 
 	while (QApplication::overrideCursor())
 		QApplication::restoreOverrideCursor();
@@ -2369,7 +2378,10 @@ void Phototonic::closeImage()
 		refreshThumbs(true);
 	}
 
-	thumbView->setFocus(Qt::OtherFocusReason);
+	thumbView->setResizeMode(QListView::Fixed);
+	thumbView->setVisible(true);
+	imageView->setVisible(false);
+
 	setThumbviewWindowTitle();
 
 	if (!needThumbsRefresh)
@@ -2377,6 +2389,13 @@ void Phototonic::closeImage()
 		QTimer::singleShot(100, this, SLOT(scrollToLastImage()));
 	}
 	thumbView->loadVisibleThumbs();
+
+	if (!cliFileName.isEmpty()) {
+		cliFileName = "";
+		restoreGeometry(GData::appSettings->value("Geometry").toByteArray());
+		restoreState(GData::appSettings->value("WindowState").toByteArray());
+	}
+	thumbView->setFocus(Qt::OtherFocusReason);
 }
 
 void Phototonic::goBottom()
@@ -2527,7 +2546,7 @@ void Phototonic::reloadThumbsSlot()
 	if (currentHistoryIdx > 0)
 		goBackAction->setEnabled(true);
 
-	if (stackedWidget->currentIndex() == thumbViewIdx)
+	if (GData::layoutMode == thumbViewIdx)
 	{
 		setThumbviewWindowTitle();
 	}
@@ -2746,7 +2765,7 @@ QString Phototonic::getSelectedPath()
 
 void Phototonic::wheelEvent(QWheelEvent *event)
 {
-	if (stackedWidget->currentIndex() == imageViewIdx)
+	if (GData::layoutMode == imageViewIdx)
 	{	
 		if (event->modifiers() == Qt::ControlModifier)
 		{

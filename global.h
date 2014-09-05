@@ -39,6 +39,7 @@ namespace GData
 	};
 	
 	extern QSettings *appSettings;
+	extern unsigned int layoutMode;
 	extern unsigned int zoomInFlags;
 	extern unsigned int zoomOutFlags;
 	extern QColor backgroundColor;

@@ -21,6 +21,7 @@
 namespace GData
 {
 	QSettings *appSettings;
+	unsigned int layoutMode;
 	unsigned int zoomInFlags;
 	unsigned int zoomOutFlags;
 	QColor backgroundColor;
