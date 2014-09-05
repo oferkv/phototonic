@@ -118,7 +118,7 @@ private slots:
 	void moveLeft();
 	void moveUp();
 	void moveDown();
-	void setThumbViewWidgetsVisible(bool visible);
+	void setDocksVisibility(bool visible);
 	void goTop();
 	void goBottom();
 	void setClassicThumbs();

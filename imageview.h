@@ -85,6 +85,7 @@ public:
 	void keyMoveEvent(int direction);
 	void popMessage(QString message);
 	static void rotateByExifRotation(QImage &image, const QString &imageFullPath);
+	void setInfo(QString infoString);
 
 public slots:
 	void monitorCursorState();

@@ -591,17 +591,14 @@ void ImageView::refresh()
 
 void ImageView::reload()
 {
-	if (GData::enableImageInfoFS)
-	{
+	if (GData::enableImageInfoFS) {
 		if (currentImageFullPath.isEmpty())
-			infoLabel->setText("Clipboard");
+			setInfo("Clipboard");
 		else
-			infoLabel->setText(QFileInfo(currentImageFullPath).fileName());
-		infoLabel->adjustSize();
+			setInfo(QFileInfo(currentImageFullPath).fileName());
 	}
 
-	if (!GData::keepTransform)
-	{
+	if (!GData::keepTransform) {
 		GData::cropLeft = 0;
 		GData::cropTop = 0;
 		GData::cropWidth = 0;
@@ -659,6 +656,12 @@ void ImageView::reload()
 	}
 
 	resizeImage();
+}
+
+void ImageView::setInfo(QString infoString)
+{
+	infoLabel->setText(infoString);
+	infoLabel->adjustSize();
 }
 
 void ImageView::loadImage(QString &imageFileName)
