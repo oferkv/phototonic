@@ -84,7 +84,6 @@ private slots:
 	void loadFirstImage();
 	void loadLastImage();
 	void loadRandomImage();
-	void scrollToLastImage();
 	void selectRecentThumb();
 	void selectAllThumbs();
 	void deleteOp();
@@ -317,6 +316,7 @@ private:
 	void showNewImageWarning(QWidget *parent);
 	void disableImageView();
 	bool removeDirOp(QString dirToDelete);
+	void closeImageCleanup();
 };
 
 #endif // MAINWINDOW_H

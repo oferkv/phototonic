@@ -66,7 +66,7 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	if (GData::layoutMode == thumbViewIdx)
 		thumbView->setFocus(Qt::OtherFocusReason);
 	if (!cliImageLoaded)
-		QTimer::singleShot(100, this, SLOT(scrollToLastImage()));
+		QTimer::singleShot(100, this, SLOT(selectRecentThumb()));
 }
 
 void Phototonic::handleStartupArgs()
@@ -733,13 +733,12 @@ void Phototonic::setfsModelFlags()
 
 void Phototonic::createFSTree()
 {
-	fsDock = new QDockWidget(tr("File System"), this);
-	fsDock->setObjectName("File System");
-
 	fsModel = new QFileSystemModel;
 	fsModel->setRootPath("");
 	setfsModelFlags();
 
+	fsDock = new QDockWidget(tr("File System"), this);
+	fsDock->setObjectName("File System");
 	fsTree = new FSTree(fsDock);
 	fsDock->setWidget(fsTree);
 	connect(fsDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setFsDockVisibility()));	
@@ -853,7 +852,7 @@ void Phototonic::about()
 {
 	QString aboutString = "<h2>Phototonic v1.03</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
-		+ tr("<p>Git release") + " v1.03.12 (built " __DATE__ " " __TIME__ ")</p>"
+		+ tr("<p>Git release") + " v1.03.13 (built " __DATE__ " " __TIME__ ")</p>"
 		+ tr("Built with Qt ") + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
 		+ "<p><a href=\"https://github.com/oferkv/phototonic/issues\">" + tr("Bug reports") + "</a></p>"
@@ -1777,7 +1776,6 @@ void Phototonic::setupDocks()
 	connect(pvDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setPvDockVisibility()));	
 	connect(pvDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setPvDockVisibility()));	
 	addDockWidget(Qt::LeftDockWidgetArea, pvDock);
-
 	addDockWidget(Qt::LeftDockWidgetArea, iiDock);
 
 	QAction *docksNToolbarsAct = viewMenu->insertMenu(refreshAction, QMainWindow::createPopupMenu());
@@ -1803,6 +1801,8 @@ void Phototonic::setupDocks()
 	thumbView->imagePreview->addAction(renameAction);
 	thumbView->imagePreview->addAction(deleteAction);
 	thumbView->imagePreview->setContextMenuPolicy(Qt::ActionsContextMenu);
+
+	setDockOptions(QMainWindow::AllowNestedDocks);
 }
 
 void Phototonic::lockDocks()
@@ -2051,6 +2051,12 @@ void Phototonic::setDocksVisibility(bool visible)
 	goToolBar->setVisible(visible? goToolBarVisible : false);
 	viewToolBar->setVisible(visible? viewToolBarVisible : false);
 
+	if (!visible) {
+		fsDock->setMaximumHeight(fsDock->height());
+		iiDock->setMaximumHeight(iiDock->height());
+		pvDock->setMaximumHeight(pvDock->height());
+	}
+
 	fsDock->setVisible(visible? GData::fsDockVisible : false);
 	iiDock->setVisible(visible? GData::iiDockVisible : false);
 	pvDock->setVisible(visible? GData::pvDockVisible : false);
@@ -2148,12 +2154,12 @@ void Phototonic::loadImageFile(QString imageFileName)
 	imageView->loadImage(imageFileName);
 	if (GData::layoutMode == thumbViewIdx)
 	{
+		GData::layoutMode = imageViewIdx;
 		GData::appSettings->setValue("Geometry", saveGeometry());
 		GData::appSettings->setValue("WindowState", saveState());
 
 		imageView->setVisible(true);
 		thumbView->setVisible(false);
-		GData::layoutMode = imageViewIdx;
 		setDocksVisibility(false);
 		if (GData::isFullScreen == true)
 		{
@@ -2324,14 +2330,28 @@ void Phototonic::loadRandomImage()
 	thumbView->setImageviewWindowTitle();
 }
 
-void Phototonic::scrollToLastImage()
+void Phototonic::closeImageCleanup()
 {
+	if (GData::layoutMode == imageViewIdx)
+		return;
+
 	if (thumbView->thumbViewModel->rowCount() > 0) 
 	{
 		if (thumbView->setCurrentIndexByName(imageView->currentImageFullPath))
 			thumbView->selectCurrentIndex();
 	}
+
 	thumbView->setResizeMode(QListView::Adjust);
+
+	fsDock->setMaximumHeight(QWIDGETSIZE_MAX);
+	iiDock->setMaximumHeight(QWIDGETSIZE_MAX);
+	pvDock->setMaximumHeight(QWIDGETSIZE_MAX);
+
+	if (!cliFileName.isEmpty()) {
+		cliFileName = "";
+		restoreGeometry(GData::appSettings->value("Geometry").toByteArray());
+		restoreState(GData::appSettings->value("WindowState").toByteArray());
+	}
 }
 
 void Phototonic::selectRecentThumb()
@@ -2377,6 +2397,9 @@ void Phototonic::closeImage()
 		refreshThumbs(true);
 	}
 
+	while (qApp->hasPendingEvents()) {
+		QApplication::processEvents();
+	}
 	thumbView->setResizeMode(QListView::Fixed);
 	thumbView->setVisible(true);
 	imageView->setVisible(false);
@@ -2384,15 +2407,9 @@ void Phototonic::closeImage()
 	setThumbviewWindowTitle();
 
 	if (!needThumbsRefresh)	{
-		QTimer::singleShot(100, this, SLOT(scrollToLastImage()));
+		closeImageCleanup();
 	}
 	thumbView->loadVisibleThumbs();
-
-	if (!cliFileName.isEmpty()) {
-		cliFileName = "";
-		restoreGeometry(GData::appSettings->value("Geometry").toByteArray());
-		restoreState(GData::appSettings->value("WindowState").toByteArray());
-	}
 	thumbView->setFocus(Qt::OtherFocusReason);
 }
 
@@ -2607,7 +2624,10 @@ void Phototonic::rename()
 	}
 
 	if (GData::layoutMode == imageViewIdx) {
-		scrollToLastImage();
+		if (thumbView->thumbViewModel->rowCount() > 0) {
+			if (thumbView->setCurrentIndexByName(imageView->currentImageFullPath))
+				thumbView->selectCurrentIndex();
+		}
 	}
 
 	QString selectedImageFileName = thumbView->getSingleSelectionFilename();
@@ -2640,9 +2660,15 @@ void Phototonic::rename()
 	newImageName += "." + QFileInfo(selectedImageFileName).suffix();
 	QString currnetFilePath = selectedImageFileName;
 	QFile currentFile(currnetFilePath);
-	QString newImageFullPath = thumbView->currentViewDir + QDir::separator() + newImageName;
-	ok = currentFile.rename(newImageFullPath);
 
+	QString newImageFullPath = thumbView->currentViewDir;
+	if (newImageFullPath.right(1) == QDir::separator()) {
+		newImageFullPath +=  newImageName;
+	} else {
+		newImageFullPath += QDir::separator() + newImageName;
+	}
+	
+	ok = currentFile.rename(newImageFullPath);
 	if (ok) {
 		QModelIndexList indexesList = thumbView->selectionModel()->selectedIndexes();
 		thumbView->thumbViewModel->item(
@@ -2654,10 +2680,11 @@ void Phototonic::rename()
 		}
 
 		if (GData::layoutMode == imageViewIdx) {
+			thumbView->setImageviewWindowTitle();
 			imageView->setInfo(newImageName);
+			imageView->currentImageFullPath = newImageFullPath;
 		}
-	}
-	else {
+	} else {
 		QMessageBox msgBox;
 		msgBox.critical(this, tr("Error"), tr("Failed to rename image"));
 	}
