@@ -67,6 +67,8 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 		thumbView->setFocus(Qt::OtherFocusReason);
 	if (!cliImageLoaded)
 		QTimer::singleShot(100, this, SLOT(selectRecentThumb()));
+	else 
+		QTimer::singleShot(100, this, SLOT(updateIndexByViewerImage()));
 }
 
 void Phototonic::handleStartupArgs()
@@ -852,7 +854,7 @@ void Phototonic::about()
 {
 	QString aboutString = "<h2>Phototonic v1.03</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
-		+ tr("<p>Git release") + " v1.03.13 (built " __DATE__ " " __TIME__ ")</p>"
+		+ tr("<p>Git release") + " v1.03.14 (built " __DATE__ " " __TIME__ ")</p>"
 		+ tr("Built with Qt ") + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
 		+ "<p><a href=\"https://github.com/oferkv/phototonic/issues\">" + tr("Bug reports") + "</a></p>"
@@ -2189,7 +2191,6 @@ void Phototonic::loadImagefromCli()
 	}
 
 	loadImageFile(cliFileName);
-	thumbView->setCurrentIndexByName(cliFileName);
 	setWindowTitle(cliFileName + " - Phototonic");
 }
 
@@ -2349,7 +2350,9 @@ void Phototonic::closeImageCleanup()
 
 	if (!cliFileName.isEmpty()) {
 		cliFileName = "";
-		restoreGeometry(GData::appSettings->value("Geometry").toByteArray());
+		if (!shouldMaximize) {
+			restoreGeometry(GData::appSettings->value("Geometry").toByteArray());
+		}
 		restoreState(GData::appSettings->value("WindowState").toByteArray());
 	}
 }
@@ -2365,6 +2368,14 @@ void Phototonic::selectRecentThumb()
 			if (thumbView->setCurrentIndexByRow(0))
 				thumbView->selectCurrentIndex();
 		}
+	}
+}
+
+void Phototonic::updateIndexByViewerImage()
+{
+	if (thumbView->thumbViewModel->rowCount() > 0) {
+		if (thumbView->setCurrentIndexByName(imageView->currentImageFullPath))
+			thumbView->selectCurrentIndex();
 	}
 }
 

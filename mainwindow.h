@@ -85,6 +85,7 @@ private slots:
 	void loadLastImage();
 	void loadRandomImage();
 	void selectRecentThumb();
+	void updateIndexByViewerImage();
 	void selectAllThumbs();
 	void deleteOp();
 	void cutThumbs();

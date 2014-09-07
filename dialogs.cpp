@@ -133,7 +133,7 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 		for (tn = GData::copyCutIdxList.size() - 1; tn >= 0 ; --tn)
 		{
 			sourceFile = thumbView->thumbViewModel->item(GData::copyCutIdxList[tn].row())->
-																data(thumbView->FileNameRole).toString();
+											data(thumbView->FileNameRole).toString();
 			fileInfo = QFileInfo(sourceFile);
 			currFile = fileInfo.fileName();
 			destFile = destDir + QDir::separator() + currFile;

@@ -467,7 +467,6 @@ void ThumbView::load()
 	thumbsRangeLast = -1;
 
 	initThumbs();
-
 	updateThumbsCount();
 	loadVisibleThumbs();
 
