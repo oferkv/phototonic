@@ -664,7 +664,7 @@ void ImageView::setInfo(QString infoString)
 	infoLabel->adjustSize();
 }
 
-void ImageView::loadImage(QString &imageFileName)
+void ImageView::loadImage(QString imageFileName)
 {
 	newImage = false;
 	tempDisableResize = false;
@@ -722,6 +722,26 @@ void ImageView::setCursorHiding(bool hide)
 	}
 }
 
+void ImageView::mousePressEvent(QMouseEvent *event)
+{
+	if (event->button() == Qt::LeftButton) {
+		setMouseMoveData(true, event->x(), event->y());
+		QApplication::setOverrideCursor(Qt::ClosedHandCursor);
+		event->accept();
+	}
+	QWidget::mousePressEvent(event);
+}
+
+void ImageView::mouseReleaseEvent(QMouseEvent *event)
+{
+	if (event->button() == Qt::LeftButton)
+	{
+		setMouseMoveData(false, 0, 0);
+		while (QApplication::overrideCursor())
+			QApplication::restoreOverrideCursor();
+	}
+}
+
 void ImageView::setMouseMoveData(bool lockMove, int lMouseX, int lMouseY)
 {
 	moveImageLocked = lockMove;
@@ -739,23 +759,23 @@ void ImageView::mouseMoveEvent(QMouseEvent *event)
 		int newY = layoutY + (event->pos().y() - mouseY);
 		bool needToMove = false;
 
-		if (imageLabel->size().width() > mainWindow->size().width())
+		if (imageLabel->size().width() > size().width())
 		{
 			if (newX > 0)
 				newX = 0;
-			else if (newX < (mainWindow->size().width() - imageLabel->size().width()))
-				newX = (mainWindow->size().width() - imageLabel->size().width());
+			else if (newX < (size().width() - imageLabel->size().width()))
+				newX = (size().width() - imageLabel->size().width());
 			needToMove = true;
 		}
 		else
 			newX = layoutX;
 
-		if (imageLabel->size().height() > mainWindow->size().height())
+		if (imageLabel->size().height() > size().height())
 		{
 			if (newY > 0)
 				newY = 0;
-			else if (newY < (mainWindow->size().height() - imageLabel->size().height()))
-				newY = (mainWindow->size().height() - imageLabel->size().height());
+			else if (newY < (size().height() - imageLabel->size().height()))
+				newY = (size().height() - imageLabel->size().height());
 			needToMove = true;
 		}
 		else
@@ -788,23 +808,23 @@ void ImageView::keyMoveEvent(int direction)
 			break;
 	}
 
-	if (imageLabel->size().width() > mainWindow->size().width())
+	if (imageLabel->size().width() > size().width())
 	{
 		if (newX > 0)
 			newX = 0;
-		else if (newX < (mainWindow->size().width() - imageLabel->size().width()))
-			newX = (mainWindow->size().width() - imageLabel->size().width());
+		else if (newX < (size().width() - imageLabel->size().width()))
+			newX = (size().width() - imageLabel->size().width());
 		needToMove = true;
 	}
 	else
 		newX = layoutX;
 
-	if (imageLabel->size().height() > mainWindow->size().height())
+	if (imageLabel->size().height() > size().height())
 	{
 		if (newY > 0)
 			newY = 0;
-		else if (newY < (mainWindow->size().height() - imageLabel->size().height()))
-			newY = (mainWindow->size().height() - imageLabel->size().height());
+		else if (newY < (size().height() - imageLabel->size().height()))
+			newY = (size().height() - imageLabel->size().height());
 		needToMove = true;
 	}
 	else

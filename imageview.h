@@ -44,6 +44,7 @@ public:
 	int mirrorLayout;
 	QString currentImageFullPath;
 	QMenu *ImagePopUpMenu;
+	QScrollArea *scrlArea;
 
 	enum ZoomMethods
 	{
@@ -71,10 +72,9 @@ public:
 		MoveRight
 	};
 
-    ImageView(QWidget *parent = 0);
-	void loadImage(QString &imageFileName);
+	ImageView(QWidget *parent = 0);
+	void loadImage(QString imageFileName);
 	void resizeImage();
-	void setMouseMoveData(bool lockMove, int lMouseX, int lMouseY);
 	void setCursorHiding(bool hide);
 	void refresh();
 	void refreshColors();
@@ -95,14 +95,15 @@ public slots:
 	void pasteImage();
 
 protected:
-    void resizeEvent(QResizeEvent *event);
-    void showEvent(QShowEvent *event);
+	void resizeEvent(QResizeEvent *event);
+	void showEvent(QShowEvent *event);
 	void mouseMoveEvent(QMouseEvent *event);
 	void contextMenuEvent(QContextMenuEvent *event);
+	void mousePressEvent(QMouseEvent *event);
+	void mouseReleaseEvent(QMouseEvent *event);
 
 private:
 	QWidget *mainWindow;
-	QScrollArea *scrlArea;
 	QImageReader imageReader;
 	QLabel *imageLabel;
 	QPixmap displayPixmap;
@@ -123,6 +124,7 @@ private:
 	int preCroppedHeight;
 	QLabel *infoLabel;
 
+	void setMouseMoveData(bool lockMove, int lMouseX, int lMouseY);
 	void centerImage(QSize &imgSize);
 	void transform();
 	void mirror();

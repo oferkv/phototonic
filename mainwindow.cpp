@@ -48,8 +48,6 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	mainLayout->setContentsMargins(0, 0, 0, 0);
 	mainLayout->setSpacing(0);
 	mainLayout->addWidget(thumbView);
-	mainLayout->addWidget(imageView);
-	imageView->setVisible(false);
 	QWidget *centralWidget = new QWidget;
 	centralWidget->setLayout(mainLayout);
 	setCentralWidget(centralWidget);
@@ -106,8 +104,8 @@ void Phototonic::unsetBusy()
 
 bool Phototonic::event(QEvent *event)
 {
-	if (event->type() == QEvent::ActivationChange && GData::layoutMode == thumbViewIdx)
-	{ 
+	if (event->type() == QEvent::ActivationChange ||
+			(GData::layoutMode == thumbViewIdx && event->type() == QEvent::MouseButtonRelease)) { 
 		thumbView->loadVisibleThumbs();
 	}
 	
@@ -563,6 +561,8 @@ void Phototonic::createActions()
 
 	invertSelectionAct = new QAction(tr("Invert Selection"), this);
 	connect(invertSelectionAct, SIGNAL(triggered()), thumbView, SLOT(invertSelection()));
+
+	setViewerKeyEventsEnabled(false);
 }
 
 void Phototonic::createMenus()
@@ -854,7 +854,7 @@ void Phototonic::about()
 {
 	QString aboutString = "<h2>Phototonic v1.03</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
-		+ tr("<p>Git release") + " v1.03.14 (built " __DATE__ " " __TIME__ ")</p>"
+		+ tr("<p>Git release") + " v1.03.15 (built " __DATE__ " " __TIME__ ")</p>"
 		+ tr("Built with Qt ") + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
 		+ "<p><a href=\"https://github.com/oferkv/phototonic/issues\">" + tr("Bug reports") + "</a></p>"
@@ -876,6 +876,12 @@ void Phototonic::about()
 void Phototonic::cleanupSender()
 {
 	delete QObject::sender();
+}
+
+void Phototonic::externalAppError()
+{
+	QMessageBox msgBox;
+	msgBox.critical(this, tr("Error"), tr("Failed to start external application"));
 }
 
 void Phototonic::runExternalApp()
@@ -916,8 +922,8 @@ void Phototonic::runExternalApp()
 	}
 
 	QProcess *externalProcess = new QProcess();
-	connect(externalProcess, SIGNAL(finished(int, QProcess::ExitStatus)),
-						this, SLOT(cleanupSender()));
+	connect(externalProcess, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(cleanupSender()));
+	connect(externalProcess, SIGNAL(error(QProcess::ProcessError)), this, SLOT(externalAppError()));
 	externalProcess->start(execCommand);
 }
 
@@ -976,7 +982,6 @@ void Phototonic::showSettings()
 	if (dialog->exec())
 	{
 		imageView->setPalette(QPalette(GData::backgroundColor));
-		thumbView->imagePreview->setPalette(QPalette(GData::thumbsBackgroundColor));
 		thumbView->setThumbColors();
 		GData::imageZoomFactor = 1.0;
 
@@ -1375,7 +1380,7 @@ void Phototonic::updateCurrentImage(int currentRow)
 
 	if (thumbView->getNextRow() < 0 && currentRow > 0)
 	{
-		loadImageFile(thumbView->thumbViewModel->item(currentRow - 1)->data(thumbView->FileNameRole).toString());
+		imageView->loadImage(thumbView->thumbViewModel->item(currentRow - 1)->data(thumbView->FileNameRole).toString());
 	}
 	else
 	{
@@ -1385,7 +1390,7 @@ void Phototonic::updateCurrentImage(int currentRow)
 			refreshThumbs(true);
 			return;
 		}
-		loadImageFile(thumbView->thumbViewModel->item(currentRow)->data(thumbView->FileNameRole).toString());
+		imageView->loadImage(thumbView->thumbViewModel->item(currentRow)->data(thumbView->FileNameRole).toString());
 	}
 		
 	GData::wrapImageList = wrapImageListTmp;
@@ -1772,9 +1777,16 @@ void Phototonic::readSettings()
 
 void Phototonic::setupDocks()
 {
-	pvDock = new QDockWidget(tr("Preview"), this);
-	pvDock->setObjectName("Preview");
-	pvDock->setWidget(thumbView->imagePreview);
+	pvDock = new QDockWidget(tr("Viewer"), this);
+	pvDock->setObjectName("Viewer");
+
+	imageViewContainer = new QVBoxLayout;
+	imageViewContainer->setContentsMargins(0, 0, 0, 0);
+	imageViewContainer->addWidget(imageView);
+	QWidget *imageViewContainerWidget = new QWidget;
+	imageViewContainerWidget->setLayout(imageViewContainer);
+	
+	pvDock->setWidget(imageViewContainerWidget);
 	connect(pvDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setPvDockVisibility()));	
 	connect(pvDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setPvDockVisibility()));	
 	addDockWidget(Qt::LeftDockWidgetArea, pvDock);
@@ -1793,16 +1805,6 @@ void Phototonic::setupDocks()
 	iiDockEmptyWidget = new QWidget;
 	pvDockEmptyWidget = new QWidget;
 	lockDocks();
-
-	thumbView->imagePreview->addAction(openAction);
-	thumbView->imagePreview->addAction(openWithMenuAct);
-	thumbView->imagePreview->addAction(cutAction);
-	thumbView->imagePreview->addAction(copyAction);
-	thumbView->imagePreview->addAction(pasteAction);
-	thumbView->imagePreview->addAction(copyMoveAction);
-	thumbView->imagePreview->addAction(renameAction);
-	thumbView->imagePreview->addAction(deleteAction);
-	thumbView->imagePreview->setContextMenuPolicy(Qt::ActionsContextMenu);
 
 	setDockOptions(QMainWindow::AllowNestedDocks);
 }
@@ -1983,64 +1985,37 @@ void Phototonic::mouseDoubleClickEvent(QMouseEvent *event)
 				event->accept();
 			}
 		}
-		else if (QApplication::focusWidget() == thumbView->imagePreview->scrlArea)
-		{
-			openOp();
-		}
 	}
 }
 
 void Phototonic::mousePressEvent(QMouseEvent *event)
 {
-	if (GData::layoutMode == imageViewIdx)
-	{
-		if (event->button() == Qt::MiddleButton)
-		{
-			if (GData::reverseMouseBehavior && closeImageAct->isEnabled())
-			{
+	if (GData::layoutMode == imageViewIdx) {
+		if (event->button() == Qt::MiddleButton) {
+			if (GData::reverseMouseBehavior && closeImageAct->isEnabled()) {
 				closeImage();
 				event->accept();
-			}
-			else
-			{
+			} else {
 				fullScreenAct->setChecked(!(fullScreenAct->isChecked()));
 				toggleFullScreen();
 				event->accept();
 			}
 		}
-		else if (event->button() == Qt::LeftButton)
-		{
-			imageView->setMouseMoveData(true, event->x(), event->y());
-			QApplication::setOverrideCursor(Qt::ClosedHandCursor);
-			event->accept();
+	} else {
+		if (QApplication::focusWidget() == imageView->scrlArea) {
+			if (event->button() == Qt::MiddleButton) {
+				openOp();
+			}
 		}
-	}
-	else if (QApplication::focusWidget() == thumbView->imagePreview->scrlArea)
-	{
-		if (event->button() == Qt::MiddleButton)
-		{
-			openOp();
-		}
-	}
-}
-
-void Phototonic::mouseReleaseEvent(QMouseEvent *event)
-{
-	if (GData::layoutMode == imageViewIdx)
-	{
-		if (event->button() == Qt::LeftButton)
-		{
-			imageView->setMouseMoveData(false, 0, 0);
-			while (QApplication::overrideCursor())
-				QApplication::restoreOverrideCursor();
-		}
-		
 	}
 }
 
 void Phototonic::newImage()
 {
-	loadImageFile("");
+	if (GData::layoutMode == thumbViewIdx)
+		showViewer();
+
+	imageView->loadImage("");
 }
 
 void Phototonic::setDocksVisibility(bool visible)
@@ -2057,6 +2032,9 @@ void Phototonic::setDocksVisibility(bool visible)
 		fsDock->setMaximumHeight(fsDock->height());
 		iiDock->setMaximumHeight(iiDock->height());
 		pvDock->setMaximumHeight(pvDock->height());
+		fsDock->setMaximumWidth(fsDock->width());
+		iiDock->setMaximumWidth(iiDock->width());
+		pvDock->setMaximumWidth(pvDock->width());
 	}
 
 	fsDock->setVisible(visible? GData::fsDockVisible : false);
@@ -2077,8 +2055,8 @@ void Phototonic::openOp()
 		goSelectedDir(fsTree->getCurrentIndex());
 		return;
 	}
-	else if (QApplication::focusWidget() == thumbView
-				|| QApplication::focusWidget() == thumbView->imagePreview->scrlArea)
+	else if (QApplication::focusWidget() == thumbView 
+				|| QApplication::focusWidget() == imageView->scrlArea)
 	{
 		QModelIndex idx;
 		QModelIndexList indexesList = thumbView->selectionModel()->selectedIndexes();
@@ -2151,15 +2129,17 @@ void Phototonic::setPvDockVisibility()
 	GData::pvDockVisible = pvDock->isVisible();
 }
 
-void Phototonic::loadImageFile(QString imageFileName)
+void Phototonic::showViewer()
 {
-	imageView->loadImage(imageFileName);
 	if (GData::layoutMode == thumbViewIdx)
 	{
 		GData::layoutMode = imageViewIdx;
+		setViewerKeyEventsEnabled(true);
 		GData::appSettings->setValue("Geometry", saveGeometry());
 		GData::appSettings->setValue("WindowState", saveState());
 
+		imageViewContainer->removeWidget(imageView);
+		mainLayout->addWidget(imageView);
 		imageView->setVisible(true);
 		thumbView->setVisible(false);
 		setDocksVisibility(false);
@@ -2169,14 +2149,32 @@ void Phototonic::loadImageFile(QString imageFileName)
 			showFullScreen();
 			imageView->setCursorHiding(true);
 		}
+		imageView->adjustSize();
 	}
 }
 
 void Phototonic::loadImagefromThumb(const QModelIndex &idx)
 {
 	thumbView->setCurrentRow(idx.row());
-	loadImageFile(thumbView->thumbViewModel->item(idx.row())->data(thumbView->FileNameRole).toString());
+	showViewer();
+	imageView->loadImage(thumbView->thumbViewModel->item(idx.row())->data(thumbView->FileNameRole).toString());
 	thumbView->setImageviewWindowTitle();
+}
+
+void Phototonic::updateViewerImageBySelection(const QItemSelection&)
+{
+	if (!pvDock->isVisible() || GData::layoutMode == imageViewIdx)
+		return;
+			
+	QModelIndexList indexesList = thumbView->selectionModel()->selectedIndexes();
+	if (indexesList.size() == 1) {
+		QString ImagePath = thumbView->thumbViewModel->item(indexesList.first().row())->data
+																(thumbView->FileNameRole).toString();
+		imageView->loadImage(ImagePath);
+	} else {
+		QString ImagePath(":/images/no_image.png");
+		imageView->loadImage(ImagePath);
+	}
 }
 
 void Phototonic::loadImagefromCli()
@@ -2190,7 +2188,8 @@ void Phototonic::loadImagefromCli()
 		return;
 	}
 
-	loadImageFile(cliFileName);
+	showViewer();
+	imageView->loadImage(cliFileName);
 	setWindowTitle(cliFileName + " - Phototonic");
 }
 
@@ -2218,6 +2217,8 @@ void Phototonic::slideShow()
 				thumbView->setCurrentRow(0);
 			else
 				thumbView->setCurrentRow(indexesList.first().row());
+
+			showViewer();
 		}
 	
 		GData::slideShowActive = true;
@@ -2245,7 +2246,7 @@ void Phototonic::slideShowHandler()
 		else
 		{
 			int currentRow = thumbView->getCurrentRow();
-			loadImageFile(thumbView->thumbViewModel->item(currentRow)->data(thumbView->FileNameRole).toString());
+			imageView->loadImage(thumbView->thumbViewModel->item(currentRow)->data(thumbView->FileNameRole).toString());
 			thumbView->setImageviewWindowTitle();
 
 			if (thumbView->getNextRow() > 0)
@@ -2259,6 +2260,12 @@ void Phototonic::slideShowHandler()
 			}
 		}
 	}
+}
+
+void Phototonic::selectThumbByRow(int row)
+{
+	thumbView->setCurrentIndexByRow(row);
+	thumbView->selectCurrentIndex();
 }
 
 void Phototonic::loadNextImage()
@@ -2275,9 +2282,12 @@ void Phototonic::loadNextImage()
 			return;
 	}
 
-	loadImageFile(thumbView->thumbViewModel->item(nextRow)->data(thumbView->FileNameRole).toString());
+	imageView->loadImage(thumbView->thumbViewModel->item(nextRow)->data(thumbView->FileNameRole).toString());
 	thumbView->setCurrentRow(nextRow);
 	thumbView->setImageviewWindowTitle();
+
+	if (GData::layoutMode == thumbViewIdx)
+		selectThumbByRow(nextRow);
 }
 
 void Phototonic::loadPrevImage()
@@ -2294,9 +2304,12 @@ void Phototonic::loadPrevImage()
 			return;
 	}
 	
-	loadImageFile(thumbView->thumbViewModel->item(prevRow)->data(thumbView->FileNameRole).toString());
+	imageView->loadImage(thumbView->thumbViewModel->item(prevRow)->data(thumbView->FileNameRole).toString());
 	thumbView->setCurrentRow(prevRow);
 	thumbView->setImageviewWindowTitle();
+
+	if (GData::layoutMode == thumbViewIdx)
+		selectThumbByRow(prevRow);
 }
 
 void Phototonic::loadFirstImage()
@@ -2304,9 +2317,12 @@ void Phototonic::loadFirstImage()
 	if (thumbView->thumbViewModel->rowCount() <= 0)
 		return;
 
-	loadImageFile(thumbView->thumbViewModel->item(0)->data(thumbView->FileNameRole).toString());
+	imageView->loadImage(thumbView->thumbViewModel->item(0)->data(thumbView->FileNameRole).toString());
 	thumbView->setCurrentRow(0);
 	thumbView->setImageviewWindowTitle();
+
+	if (GData::layoutMode == thumbViewIdx)
+		selectThumbByRow(0);
 }
 
 void Phototonic::loadLastImage()
@@ -2315,9 +2331,12 @@ void Phototonic::loadLastImage()
 		return;
 
 	int lastRow = thumbView->getLastRow();
-	loadImageFile(thumbView->thumbViewModel->item(lastRow)->data(thumbView->FileNameRole).toString());
+	imageView->loadImage(thumbView->thumbViewModel->item(lastRow)->data(thumbView->FileNameRole).toString());
 	thumbView->setCurrentRow(lastRow);
 	thumbView->setImageviewWindowTitle();
+
+	if (GData::layoutMode == thumbViewIdx)
+		selectThumbByRow(lastRow);
 }
 
 void Phototonic::loadRandomImage()
@@ -2326,9 +2345,12 @@ void Phototonic::loadRandomImage()
 		return;
 
 	int randomRow = thumbView->getRandomRow();
-	loadImageFile(thumbView->thumbViewModel->item(randomRow)->data(thumbView->FileNameRole).toString());
+	imageView->loadImage(thumbView->thumbViewModel->item(randomRow)->data(thumbView->FileNameRole).toString());
 	thumbView->setCurrentRow(randomRow);
 	thumbView->setImageviewWindowTitle();
+
+	if (GData::layoutMode == thumbViewIdx)
+		selectThumbByRow(randomRow);
 }
 
 void Phototonic::closeImageCleanup()
@@ -2347,6 +2369,9 @@ void Phototonic::closeImageCleanup()
 	fsDock->setMaximumHeight(QWIDGETSIZE_MAX);
 	iiDock->setMaximumHeight(QWIDGETSIZE_MAX);
 	pvDock->setMaximumHeight(QWIDGETSIZE_MAX);
+	fsDock->setMaximumWidth(QWIDGETSIZE_MAX);
+	iiDock->setMaximumWidth(QWIDGETSIZE_MAX);
+	pvDock->setMaximumWidth(QWIDGETSIZE_MAX);
 
 	if (!cliFileName.isEmpty()) {
 		cliFileName = "";
@@ -2369,6 +2394,14 @@ void Phototonic::selectRecentThumb()
 				thumbView->selectCurrentIndex();
 		}
 	}
+}
+
+void Phototonic::setViewerKeyEventsEnabled(bool enabled)
+{
+	moveLeftAct->setEnabled(enabled);
+	moveRightAct->setEnabled(enabled);
+	moveUpAct->setEnabled(enabled);
+	moveDownAct->setEnabled(enabled);
 }
 
 void Phototonic::updateIndexByViewerImage()
@@ -2394,6 +2427,8 @@ void Phototonic::closeImage()
 	}
 
 	GData::layoutMode = thumbViewIdx;
+	mainLayout->removeWidget(imageView);
+	imageViewContainer->addWidget(imageView);
 	setDocksVisibility(true);
 	while (QApplication::overrideCursor()) {
 		QApplication::restoreOverrideCursor();
@@ -2411,9 +2446,9 @@ void Phototonic::closeImage()
 	while (qApp->hasPendingEvents()) {
 		QApplication::processEvents();
 	}
+
 	thumbView->setResizeMode(QListView::Fixed);
 	thumbView->setVisible(true);
-	imageView->setVisible(false);
 
 	setThumbviewWindowTitle();
 
@@ -2566,7 +2601,6 @@ void Phototonic::reloadThumbsSlot()
 	}
 
 	thumbView->infoView->clear();
-	thumbView->imagePreview->clear();
 	pathBar->setText(thumbView->currentViewDir);
 	recordHistory(thumbView->currentViewDir);
 	if (currentHistoryIdx > 0)
@@ -2805,7 +2839,8 @@ QString Phototonic::getSelectedPath()
 
 void Phototonic::wheelEvent(QWheelEvent *event)
 {
-	if (GData::layoutMode == imageViewIdx)
+	if (GData::layoutMode == imageViewIdx
+			|| QApplication::focusWidget() == imageView->scrlArea)
 	{	
 		if (event->modifiers() == Qt::ControlModifier)
 		{

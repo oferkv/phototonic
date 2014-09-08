@@ -36,15 +36,15 @@ protected:
 	void mouseDoubleClickEvent(QMouseEvent *event);
 	void closeEvent(QCloseEvent *event);
 	void mousePressEvent(QMouseEvent *event);
-	void mouseReleaseEvent(QMouseEvent *event);
 
 public slots:
 	bool event(QEvent *event);
 	void unsetBusy();
 	void setStatus(QString state);
 	void dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvDirPath);
-	void loadImageFile(QString imageFileName);
+	void showViewer();
 	void loadImagefromThumb(const QModelIndex &idx);
+	void updateViewerImageBySelection(const QItemSelection& selection);
 	void loadImagefromCli();
 	void closeImage();
 
@@ -85,6 +85,7 @@ private slots:
 	void loadLastImage();
 	void loadRandomImage();
 	void selectRecentThumb();
+	void setViewerKeyEventsEnabled(bool enabled);
 	void updateIndexByViewerImage();
 	void selectAllThumbs();
 	void deleteOp();
@@ -131,6 +132,7 @@ private slots:
 	void updateExternalApps();
 	void runExternalApp();
 	void cleanupSender();
+	void externalAppError();
 	void setEditToolBarVisibility();
 	void setGoToolBarVisibility();
 	void setViewToolBarVisibility();
@@ -268,6 +270,7 @@ private:
 	QWidget *fsDockEmptyWidget;
 	QWidget *iiDockEmptyWidget;
 	QWidget *pvDockEmptyWidget;
+	QVBoxLayout *imageViewContainer;
 
 	enum CentralWidgets
 	{
@@ -318,6 +321,7 @@ private:
 	void disableImageView();
 	bool removeDirOp(QString dirToDelete);
 	void closeImageCleanup();
+	void selectThumbByRow(int row);
 };
 
 #endif // MAINWINDOW_H
