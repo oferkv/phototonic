@@ -67,9 +67,6 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 		QTimer::singleShot(100, this, SLOT(selectRecentThumb()));
 	else 
 		QTimer::singleShot(100, this, SLOT(updateIndexByViewerImage()));
-
-	setTabOrder(thumbView, imageView);
-	setTabOrder(imageView, thumbView);
 }
 
 void Phototonic::handleStartupArgs()
@@ -1598,21 +1595,24 @@ void Phototonic::changeActionsBySelection(const QItemSelection&, const QItemSele
 
 void Phototonic::updateActions(QWidget*, QWidget *selectedWidget)
 {
-	if (selectedWidget == fsTree)
-		setCopyCutActions(false);
-	else if (selectedWidget == thumbView) {
+	if (selectedWidget == thumbView) {
 		setCopyCutActions(thumbView->selectionModel()->selectedIndexes().size());
-		setViewerKeyEventsEnabled(false);
 	} else {
-		if (selectedWidget == imageView->scrlArea)
-			setViewerKeyEventsEnabled(true);
+		setCopyCutActions(false);
+	}
+
+	if (selectedWidget == imageView->scrlArea && GData::layoutMode == imageViewIdx) {
+		setViewerKeyEventsEnabled(true);
+		fullScreenAct->setEnabled(true);
+	} else {
+		setViewerKeyEventsEnabled(false);
+		fullScreenAct->setEnabled(false);
 	}
 }
 
 void Phototonic::writeSettings()
 {
-	if (GData::layoutMode == thumbViewIdx)
-	{
+	if (GData::layoutMode == thumbViewIdx) {
 		GData::appSettings->setValue("Geometry", saveGeometry());
 		GData::appSettings->setValue("WindowState", saveState());
 	}
@@ -1795,7 +1795,7 @@ void Phototonic::setupDocks()
 	pvDock->setWidget(imageViewContainerWidget);
 	connect(pvDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setPvDockVisibility()));	
 	connect(pvDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setPvDockVisibility()));	
-	addDockWidget(Qt::LeftDockWidgetArea, pvDock);
+	addDockWidget(Qt::RightDockWidgetArea, pvDock);
 	addDockWidget(Qt::LeftDockWidgetArea, iiDock);
 
 	QAction *docksNToolbarsAct = viewMenu->insertMenu(refreshAction, QMainWindow::createPopupMenu());
@@ -1975,10 +1975,8 @@ void Phototonic::setStatus(QString state)
 
 void Phototonic::mouseDoubleClickEvent(QMouseEvent *event)
 {
-	if (event->button() == Qt::LeftButton)
-	{
-		if (GData::layoutMode == imageViewIdx)
-		{
+	if (event->button() == Qt::LeftButton) {
+		if (GData::layoutMode == imageViewIdx) {
 			if (GData::reverseMouseBehavior)
 			{
 				fullScreenAct->setChecked(!(fullScreenAct->isChecked()));
@@ -1989,6 +1987,10 @@ void Phototonic::mouseDoubleClickEvent(QMouseEvent *event)
 			{
 				closeImage();
 				event->accept();
+			}
+		} else {
+			if (QApplication::focusWidget() == imageView->scrlArea) {
+				openOp();
 			}
 		}
 	}
@@ -2009,7 +2011,7 @@ void Phototonic::mousePressEvent(QMouseEvent *event)
 		}
 	} else {
 		if (QApplication::focusWidget() == imageView->scrlArea) {
-			if (event->button() == Qt::MiddleButton) {
+			if (event->button() == Qt::MiddleButton && GData::reverseMouseBehavior) {
 				openOp();
 			}
 		}
@@ -2176,6 +2178,7 @@ void Phototonic::updateViewerImageBySelection(const QItemSelection&)
 		QString ImagePath = thumbView->thumbViewModel->item(indexesList.first().row())->data
 																(thumbView->FileNameRole).toString();
 		imageView->loadImage(ImagePath);
+		thumbView->setCurrentRow(indexesList.first().row());
 	} else {
 		QString ImagePath(":/images/no_image.png");
 		imageView->loadImage(ImagePath);

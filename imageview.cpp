@@ -722,6 +722,13 @@ void ImageView::setCursorHiding(bool hide)
 	}
 }
 
+void ImageView::mouseDoubleClickEvent(QMouseEvent *event)
+{
+	QWidget::mouseDoubleClickEvent(event);
+	while (QApplication::overrideCursor())
+		QApplication::restoreOverrideCursor();
+}
+
 void ImageView::mousePressEvent(QMouseEvent *event)
 {
 	if (event->button() == Qt::LeftButton) {

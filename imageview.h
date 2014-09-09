@@ -99,6 +99,7 @@ protected:
 	void showEvent(QShowEvent *event);
 	void mouseMoveEvent(QMouseEvent *event);
 	void contextMenuEvent(QContextMenuEvent *event);
+	void mouseDoubleClickEvent(QMouseEvent *event);
 	void mousePressEvent(QMouseEvent *event);
 	void mouseReleaseEvent(QMouseEvent *event);
 
