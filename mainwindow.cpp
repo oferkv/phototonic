@@ -67,6 +67,9 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 		QTimer::singleShot(100, this, SLOT(selectRecentThumb()));
 	else 
 		QTimer::singleShot(100, this, SLOT(updateIndexByViewerImage()));
+
+	setTabOrder(thumbView, imageView);
+	setTabOrder(imageView, thumbView);
 }
 
 void Phototonic::handleStartupArgs()
@@ -561,8 +564,6 @@ void Phototonic::createActions()
 
 	invertSelectionAct = new QAction(tr("Invert Selection"), this);
 	connect(invertSelectionAct, SIGNAL(triggered()), thumbView, SLOT(invertSelection()));
-
-	setViewerKeyEventsEnabled(false);
 }
 
 void Phototonic::createMenus()
@@ -1599,8 +1600,13 @@ void Phototonic::updateActions(QWidget*, QWidget *selectedWidget)
 {
 	if (selectedWidget == fsTree)
 		setCopyCutActions(false);
-	else if (selectedWidget == thumbView)
+	else if (selectedWidget == thumbView) {
 		setCopyCutActions(thumbView->selectionModel()->selectedIndexes().size());
+		setViewerKeyEventsEnabled(false);
+	} else {
+		if (selectedWidget == imageView->scrlArea)
+			setViewerKeyEventsEnabled(true);
+	}
 }
 
 void Phototonic::writeSettings()
@@ -2134,7 +2140,6 @@ void Phototonic::showViewer()
 	if (GData::layoutMode == thumbViewIdx)
 	{
 		GData::layoutMode = imageViewIdx;
-		setViewerKeyEventsEnabled(true);
 		GData::appSettings->setValue("Geometry", saveGeometry());
 		GData::appSettings->setValue("WindowState", saveState());
 
@@ -2358,14 +2363,6 @@ void Phototonic::closeImageCleanup()
 	if (GData::layoutMode == imageViewIdx)
 		return;
 
-	if (thumbView->thumbViewModel->rowCount() > 0) 
-	{
-		if (thumbView->setCurrentIndexByName(imageView->currentImageFullPath))
-			thumbView->selectCurrentIndex();
-	}
-
-	thumbView->setResizeMode(QListView::Adjust);
-
 	fsDock->setMaximumHeight(QWIDGETSIZE_MAX);
 	iiDock->setMaximumHeight(QWIDGETSIZE_MAX);
 	pvDock->setMaximumHeight(QWIDGETSIZE_MAX);
@@ -2380,6 +2377,14 @@ void Phototonic::closeImageCleanup()
 		}
 		restoreState(GData::appSettings->value("WindowState").toByteArray());
 	}
+
+	if (thumbView->thumbViewModel->rowCount() > 0) 
+	{
+		if (thumbView->setCurrentIndexByName(imageView->currentImageFullPath))
+			thumbView->selectCurrentIndex();
+	}
+	thumbView->setResizeMode(QListView::Adjust);
+	thumbView->loadVisibleThumbs();
 }
 
 void Phototonic::selectRecentThumb()
@@ -2455,7 +2460,7 @@ void Phototonic::closeImage()
 	if (!needThumbsRefresh)	{
 		closeImageCleanup();
 	}
-	thumbView->loadVisibleThumbs();
+
 	thumbView->setFocus(Qt::OtherFocusReason);
 }
 

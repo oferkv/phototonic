@@ -30,6 +30,7 @@ InfoView::InfoView(QWidget *parent) : QTableView(parent)
 
 	setEditTriggers(QAbstractItemView::NoEditTriggers);
 	setSelectionBehavior(QAbstractItemView::SelectRows);
+	setTabKeyNavigation(false);
 
 	infoModel = new QStandardItemModel(this);
 	setModel(infoModel);
