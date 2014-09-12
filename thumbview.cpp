@@ -393,13 +393,17 @@ bool ThumbView::isThumbVisible(QModelIndex idx)
 
 void ThumbView::updateThumbsCount()
 {
+	QString state ;
+	
 	if (thumbViewModel->rowCount() > 0)
 	{
-		QString state = (QString::number(thumbViewModel->rowCount()) + tr(" images"));
-		emit setStatus(state);
+		state = (QString::number(thumbViewModel->rowCount()) + tr(" images"));
 	}
-	else
-		emit setStatus(tr("No images"));
+	else {
+		state = QString::number(thumbViewModel->rowCount()) + tr(" images");
+	}
+
+	emit setStatus(state);
 }
 
 void ThumbView::updateThumbsSelection()
@@ -408,7 +412,7 @@ void ThumbView::updateThumbsSelection()
 	int nSelected = selectionModel()->selectedIndexes().size();
 
 	if (!nSelected)
-		state = tr("No images");
+		state = QString::number(thumbViewModel->rowCount()) + tr(" images");
 	else if (nSelected >= 1)
 		state = QString(tr("Selected ") + QString::number(nSelected) + tr(" of ")
 							+ QString::number(thumbViewModel->rowCount()) + tr(" images"));
@@ -706,12 +710,11 @@ void ThumbView::mousePressEvent(QMouseEvent *event)
 
 void ThumbView::invertSelection()
 {
-	QModelIndex idx;
-
-	for (int currThumb = 0; currThumb < thumbViewModel->rowCount(); ++currThumb) {
-		idx = thumbViewModel->index(currThumb, 0);
-		selectionModel()->select(idx, QItemSelectionModel::Toggle);
-	}
+	QItemSelection toggleSelection;
+	QModelIndex firstIndex = thumbViewModel->index(0, 0);
+	QModelIndex lastIndex = thumbViewModel->index(thumbViewModel->rowCount() - 1, 0);
+	toggleSelection.select(firstIndex, lastIndex);
+	selectionModel()->select(toggleSelection, QItemSelectionModel::Toggle);
 }
 
 FSTree::FSTree(QWidget *parent) : QTreeView(parent)

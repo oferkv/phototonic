@@ -575,7 +575,7 @@ void Phototonic::createMenus()
 	editMenu->addAction(deleteAction);
 	editMenu->addSeparator();
 	editMenu->addAction(selectAllAction);
-//	editMenu->addAction(invertSelectionAct);
+	editMenu->addAction(invertSelectionAct);
 	editMenu->addSeparator();
 	editMenu->addAction(settingsAction);
 
@@ -632,7 +632,7 @@ void Phototonic::createMenus()
 	thumbView->addAction(deleteAction);
 	addMenuSeparator(thumbView);
 	thumbView->addAction(selectAllAction);
-//	thumbView->addAction(invertSelectionAct);
+	thumbView->addAction(invertSelectionAct);
 	thumbView->setContextMenuPolicy(Qt::ActionsContextMenu);
 	menuBar()->setVisible(true);
 }
@@ -851,7 +851,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.20</h2>"
+	QString aboutString = "<h2>Phototonic v1.21</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ tr("Built with Qt ") + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -2639,6 +2639,9 @@ void Phototonic::reloadThumbsSlot()
 	}
 
 	thumbView->infoView->clear();
+	QString ImagePath(":/images/no_image.png");
+	imageView->loadImage(ImagePath);
+
 	pathBar->setText(thumbView->currentViewDir);
 	recordHistory(thumbView->currentViewDir);
 	if (currentHistoryIdx > 0)
