@@ -227,18 +227,11 @@ void ThumbView::updateExifInfo(QString imageFullPath)
 void ThumbView::handleSelectionChanged(const QItemSelection&)
 {
 	QString info;
-	QString state;
 	QModelIndexList indexesList = selectionModel()->selectedIndexes();
 	int nSelected = indexesList.size();
 	QString imageFullPath;
 
 	infoView->clear();
-
-	if (!nSelected)
-		state = QString::number(thumbViewModel->rowCount()) + tr(" images");
-	else if (nSelected >= 1)
-		state = QString(tr("Selected ") + QString::number(nSelected) + tr(" of ")
-							+ QString::number(thumbViewModel->rowCount()) + tr(" images"));
 
 	if (nSelected == 1)
 	{
@@ -292,8 +285,7 @@ void ThumbView::handleSelectionChanged(const QItemSelection&)
 			infoView->addEntry(key, val);
 		}
 	}
-
-	emit setStatus(state);
+	updateThumbsSelection();
 }
 
 void ThumbView::startDrag(Qt::DropActions)
@@ -345,8 +337,9 @@ Start:
 			last = thumbViewModel->rowCount() - 1;
 	}
 
-	if (thumbsRangeFirst == first && thumbsRangeLast == last)
+	if (thumbsRangeFirst == first && thumbsRangeLast == last) {
 		return;
+	}
 
 	thumbsRangeFirst = first;
 	thumbsRangeLast = last;
@@ -409,6 +402,19 @@ void ThumbView::updateThumbsCount()
 		emit setStatus(tr("No images"));
 }
 
+void ThumbView::updateThumbsSelection()
+{
+	QString state;
+	int nSelected = selectionModel()->selectedIndexes().size();
+
+	if (!nSelected)
+		state = tr("No images");
+	else if (nSelected >= 1)
+		state = QString(tr("Selected ") + QString::number(nSelected) + tr(" of ")
+							+ QString::number(thumbViewModel->rowCount()) + tr(" images"));
+	emit setStatus(state);
+}
+
 void ThumbView::load()
 {
 	float thumbAspect = 1.33;
@@ -469,6 +475,7 @@ void ThumbView::load()
 
 	if (GData::includeSubFolders)
 	{
+		emit showBusy(true);
 		QDirIterator iterator(currentViewDir, QDirIterator::Subdirectories);
 		while (iterator.hasNext())
 		{
@@ -487,11 +494,12 @@ void ThumbView::load()
 			}
 			QApplication::processEvents();
 		}
+		updateThumbsSelection();
 	}
 
 finish:
-	thumbLoaderActive = false;
-	emit unsetBusy();
+	busy = false;
+	emit showBusy(false);
 	return;
 }
 
@@ -540,8 +548,7 @@ void ThumbView::loadThumbsRange()
 	static QImage thumb;
 	int currThumb;
 
-	if (inProgress)
-	{	
+	if (inProgress) {	
 		abortOp = true;
 		QTimer::singleShot(0, this, SLOT(loadThumbsRange()));
 		return;
@@ -701,9 +708,8 @@ void ThumbView::invertSelection()
 {
 	QModelIndex idx;
 
-	for (int currThumb = 0; currThumb < thumbViewModel->rowCount(); ++currThumb)
-	{
-		idx = thumbViewModel->indexFromItem(thumbViewModel->item(currThumb));
+	for (int currThumb = 0; currThumb < thumbViewModel->rowCount(); ++currThumb) {
+		idx = thumbViewModel->index(currThumb, 0);
 		selectionModel()->select(idx, QItemSelectionModel::Toggle);
 	}
 }

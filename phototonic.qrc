@@ -36,6 +36,7 @@
 		<file>images/clear.png</file>
 		<file>images/play.png</file>
 		<file>images/stop.png</file>
+		<file>images/busy.gif</file>
 		<file>translations/phototonic_pl.qm</file>
 		<file>translations/phototonic_de.qm</file>
 		<file>translations/phototonic_ru.qm</file>

@@ -39,7 +39,6 @@ protected:
 
 public slots:
 	bool event(QEvent *event);
-	void unsetBusy();
 	void setStatus(QString state);
 	void dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvDirPath);
 	void showViewer();
@@ -47,6 +46,7 @@ public slots:
 	void updateViewerImageBySelection(const QItemSelection& selection);
 	void loadImagefromCli();
 	void hideViewer();
+	void showBusyStatus(bool busy);
 
 private slots:
 	void about();
@@ -273,8 +273,7 @@ private:
 	QVBoxLayout *imageViewContainer;
 	bool interfaceDisabled;
 
-	enum CentralWidgets
-	{
+	enum CentralWidgets	{
 		thumbViewIdx = 0,
 		imageViewIdx
 	};
@@ -290,6 +289,9 @@ private:
 	bool editToolBarVisible;
 	bool goToolBarVisible;
 	bool viewToolBarVisible;
+
+	QMovie *busyMovie;
+	QLabel *busyLabel;
 
 	void loadShortcuts();
 	void setupDocks();
@@ -310,10 +312,6 @@ private:
 	void readSettings();
 	void recordHistory(QString dir);
 	bool isValidPath(QString &path);
-	bool isBusy()
-	{
-		return thumbViewBusy;
-	}
 	QString getSelectedPath();
 	void setCopyCutActions(bool setEnabled);
 	void wheelEvent(QWheelEvent *event);	

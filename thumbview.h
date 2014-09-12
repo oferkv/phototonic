@@ -58,6 +58,7 @@ public:
 	int thumbWidth;
 	int thumbHeight;
 	QString filterStr;
+	bool busy;
 
 	enum UserRoles
 	{
@@ -109,7 +110,6 @@ private:
 	
 	bool abortOp;
 	int newIndex;
-	bool thumbLoaderActive;
 	bool isNeedScroll;
 	int currentRow;
 	bool scrolledForward;
@@ -121,11 +121,12 @@ private:
 	int getLastVisibleThumb();
 	bool isThumbVisible(QModelIndex idx);
 	void updateThumbsCount();
+	void updateThumbsSelection();
 	void updateExifInfo(QString imageFullPath);
 
 signals:
-	void unsetBusy();
 	void setStatus(QString state);
+	void showBusy(bool busy);
 
 public slots:
 	void loadVisibleThumbs(int value = 0);

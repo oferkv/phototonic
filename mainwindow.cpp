@@ -56,7 +56,7 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 
 	copyMoveToDialog = 0;
 	initComplete = true;
-	thumbViewBusy = false;
+	thumbView->busy = false;
 	currentHistoryIdx = -1;
 	needHistoryRecord = true;
 	interfaceDisabled = false;
@@ -98,11 +98,6 @@ void Phototonic::handleStartupArgs()
 	selectCurrentViewDir();
 }
 
-void Phototonic::unsetBusy()
-{	
-	thumbViewBusy = false;
-}
-
 bool Phototonic::event(QEvent *event)
 {
 	if (event->type() == QEvent::ActivationChange ||
@@ -119,8 +114,8 @@ void Phototonic::createThumbView()
 	thumbView->thumbsSortFlags = (QDir::SortFlags)GData::appSettings->value("thumbsSortFlags").toInt();
 	thumbView->thumbsSortFlags |= QDir::IgnoreCase;
 
-	connect(thumbView, SIGNAL(unsetBusy()), this, SLOT(unsetBusy()));
 	connect(thumbView, SIGNAL(setStatus(QString)), this, SLOT(setStatus(QString)));
+	connect(thumbView, SIGNAL(showBusy(bool)), this, SLOT(showBusyStatus(bool)));
 	connect(thumbView->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), 
 				this, SLOT(changeActionsBySelection(QItemSelection, QItemSelection)));
 
@@ -580,7 +575,7 @@ void Phototonic::createMenus()
 	editMenu->addAction(deleteAction);
 	editMenu->addSeparator();
 	editMenu->addAction(selectAllAction);
-	editMenu->addAction(invertSelectionAct);
+//	editMenu->addAction(invertSelectionAct);
 	editMenu->addSeparator();
 	editMenu->addAction(settingsAction);
 
@@ -637,7 +632,7 @@ void Phototonic::createMenus()
 	thumbView->addAction(deleteAction);
 	addMenuSeparator(thumbView);
 	thumbView->addAction(selectAllAction);
-	thumbView->addAction(invertSelectionAct);
+//	thumbView->addAction(invertSelectionAct);
 	thumbView->setContextMenuPolicy(Qt::ActionsContextMenu);
 	menuBar()->setVisible(true);
 }
@@ -721,6 +716,14 @@ void Phototonic::createStatusBar()
 {
 	stateLabel = new QLabel(tr("Initializing..."));
 	statusBar()->addWidget(stateLabel);
+
+	busyMovie = new QMovie(":/images/busy.gif");
+	busyLabel = new QLabel(this);
+	busyLabel->setMovie(busyMovie);
+	statusBar()->addWidget(busyLabel);
+	busyLabel->setVisible(false);
+
+	statusBar()->setStyleSheet("QStatusBar::item { border: 0px solid black }; ");
 }
 
 void Phototonic::setfsModelFlags()
@@ -848,7 +851,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.19</h2>"
+	QString aboutString = "<h2>Phototonic v1.20</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ tr("Built with Qt ") + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -2171,6 +2174,25 @@ void Phototonic::showViewer()
 	}
 }
 
+void Phototonic::showBusyStatus(bool busy)
+{
+	static int busyStatus = 0;
+
+	if (busy)
+		++busyStatus;
+	else
+		--busyStatus;
+
+	if (busyStatus > 0) {
+		busyMovie->start();
+		busyLabel->setVisible(true);
+	} else {
+		busyLabel->setVisible(false);
+		busyMovie->stop();
+		busyStatus = 0;
+	}
+}
+
 void Phototonic::loadImagefromThumb(const QModelIndex &idx)
 {
 	thumbView->setCurrentRow(idx.row());
@@ -2409,6 +2431,8 @@ void Phototonic::hideViewer()
 		return;
 	}
 
+	showBusyStatus(true);
+
 	if (isFullScreen())	{
 		showNormal();
 		if (shouldMaximize)
@@ -2432,7 +2456,6 @@ void Phototonic::hideViewer()
 	if (GData::slideShowActive) {
 		slideShow();
 	}
-
 
 	thumbView->setResizeMode(QListView::Fixed);
 	thumbView->setVisible(true);
@@ -2471,6 +2494,7 @@ void Phototonic::hideViewer()
 	}
 
 	thumbView->setFocus(Qt::OtherFocusReason);
+	showBusyStatus(false);
 }
 
 void Phototonic::goBottom()
@@ -2554,7 +2578,7 @@ void Phototonic::checkDirState(const QModelIndex &, int, int)
 		return;
 	}
 
-	if (thumbViewBusy)
+	if (thumbView->busy)
 	{
 		thumbView->abort();
 	}
@@ -2592,7 +2616,7 @@ void Phototonic::recordHistory(QString dir)
 
 void Phototonic::reloadThumbsSlot()
 {
-	if (thumbViewBusy || !initComplete)
+	if (thumbView->busy || !initComplete)
 	{	
 		thumbView->abort();
 		QTimer::singleShot(0, this, SLOT(reloadThumbsSlot()));
@@ -2625,7 +2649,7 @@ void Phototonic::reloadThumbsSlot()
 		setThumbviewWindowTitle();
 	}
 
-	thumbViewBusy = true;
+	thumbView->busy = true;
 	thumbView->load();
 }
 
