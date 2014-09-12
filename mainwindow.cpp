@@ -2639,8 +2639,8 @@ void Phototonic::reloadThumbsSlot()
 	}
 
 	thumbView->infoView->clear();
-	QString ImagePath(":/images/no_image.png");
-	imageView->loadImage(ImagePath);
+/*	QString ImagePath(":/images/no_image.png");
+	imageView->loadImage(ImagePath);*/
 
 	pathBar->setText(thumbView->currentViewDir);
 	recordHistory(thumbView->currentViewDir);
