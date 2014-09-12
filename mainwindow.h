@@ -139,8 +139,8 @@ private slots:
 	void setFsDockVisibility();
 	void setIiDockVisibility();
 	void setPvDockVisibility();
-	void enableImageView();
 	void lockDocks();
+	void enableInterface();
 
 private:
 	QString cliFileName;
@@ -271,6 +271,7 @@ private:
 	QWidget *iiDockEmptyWidget;
 	QWidget *pvDockEmptyWidget;
 	QVBoxLayout *imageViewContainer;
+	bool interfaceDisabled;
 
 	enum CentralWidgets
 	{
@@ -318,10 +319,10 @@ private:
 	void wheelEvent(QWheelEvent *event);	
 	void copyOrCutThumbs(bool copy);
 	void showNewImageWarning(QWidget *parent);
-	void disableImageView();
 	bool removeDirOp(QString dirToDelete);
 	void closeImageCleanup();
 	void selectThumbByRow(int row);
+	void setInterfaceEnabled(bool enable);
 };
 
 #endif // MAINWINDOW_H

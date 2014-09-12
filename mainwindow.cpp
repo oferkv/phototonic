@@ -59,6 +59,7 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	thumbViewBusy = false;
 	currentHistoryIdx = -1;
 	needHistoryRecord = true;
+	interfaceDisabled = false;
 
 	refreshThumbs(true);
 	if (GData::layoutMode == thumbViewIdx)
@@ -174,7 +175,6 @@ void Phototonic::createImageView()
 	imageView->addAction(closeImageAct);
 	imageView->addAction(fullScreenAct);
 	imageView->addAction(settingsAction);
-	imageView->addAction(exitAction);
 	imageView->addAction(mirrorDisabledAct);
 	imageView->addAction(mirrorDualAct);
 	imageView->addAction(mirrorTripleAct);
@@ -261,7 +261,6 @@ void Phototonic::createImageView()
 
 	addMenuSeparator(imageView->ImagePopUpMenu);
 	imageView->ImagePopUpMenu->addAction(settingsAction);
-	imageView->ImagePopUpMenu->addAction(exitAction);
 
 	imageView->setContextMenuPolicy(Qt::DefaultContextMenu);
 	GData::isFullScreen = GData::appSettings->value("isFullScreen").toBool();
@@ -793,12 +792,11 @@ void Phototonic::sortThumbnains()
 
 void Phototonic::reload()
 {
-	if (GData::layoutMode == imageViewIdx)
-	{
+	if (GData::layoutMode == thumbViewIdx) {
+		refreshThumbs(false);
+	} else {
 		imageView->reload();
 	}
-	else
-		refreshThumbs(false);
 }
 
 void Phototonic::setIncludeSubFolders()
@@ -1185,13 +1183,13 @@ void Phototonic::cropImage()
 		slideShow();
 
 	CropDialog *cropDialog = new CropDialog(this, imageView);
-	connect(cropDialog, SIGNAL(accepted()), this, SLOT(enableImageView()));
-	connect(cropDialog, SIGNAL(rejected()), this, SLOT(enableImageView()));
+	connect(cropDialog, SIGNAL(accepted()), this, SLOT(enableInterface()));
+	connect(cropDialog, SIGNAL(rejected()), this, SLOT(enableInterface()));
 	connect(cropDialog, SIGNAL(accepted()), this, SLOT(cleanupSender()));
 	connect(cropDialog, SIGNAL(rejected()), this, SLOT(cleanupSender()));
 
 	cropDialog->show();
-	disableImageView();
+	setInterfaceEnabled(false);
 }
 
 void Phototonic::scaleImage()
@@ -1200,13 +1198,13 @@ void Phototonic::scaleImage()
 		slideShow();
 
 	ResizeDialog *resizeDialog = new ResizeDialog(this, imageView);
-	connect(resizeDialog, SIGNAL(accepted()), this, SLOT(enableImageView()));
-	connect(resizeDialog, SIGNAL(rejected()), this, SLOT(enableImageView()));
+	connect(resizeDialog, SIGNAL(accepted()), this, SLOT(enableInterface()));
+	connect(resizeDialog, SIGNAL(rejected()), this, SLOT(enableInterface()));
 	connect(resizeDialog, SIGNAL(accepted()), this, SLOT(cleanupSender()));
 	connect(resizeDialog, SIGNAL(rejected()), this, SLOT(cleanupSender()));
 
 	resizeDialog->show();
-	disableImageView();
+	setInterfaceEnabled(false);
 }
 
 void Phototonic::freeRotateLeft()
@@ -1231,13 +1229,13 @@ void Phototonic::showColorsDialog()
 		slideShow();
 
 	ColorsDialog *colorsDialog = new ColorsDialog(this, imageView);
-	connect(colorsDialog, SIGNAL(accepted()), this, SLOT(enableImageView()));
-	connect(colorsDialog, SIGNAL(rejected()), this, SLOT(enableImageView()));
+	connect(colorsDialog, SIGNAL(accepted()), this, SLOT(enableInterface()));
+	connect(colorsDialog, SIGNAL(rejected()), this, SLOT(enableInterface()));
 	connect(colorsDialog, SIGNAL(accepted()), this, SLOT(cleanupSender()));
 	connect(colorsDialog, SIGNAL(rejected()), this, SLOT(cleanupSender()));
 
 	colorsDialog->show();
-	disableImageView();
+	setInterfaceEnabled(false);
 }
 
 void Phototonic::flipHoriz()
@@ -1601,12 +1599,22 @@ void Phototonic::updateActions(QWidget*, QWidget *selectedWidget)
 		setCopyCutActions(false);
 	}
 
-	if (selectedWidget == imageView->scrlArea && GData::layoutMode == imageViewIdx) {
+	if (GData::layoutMode == imageViewIdx && !interfaceDisabled) {
 		setViewerKeyEventsEnabled(true);
 		fullScreenAct->setEnabled(true);
+		closeImageAct->setEnabled(true);
+
 	} else {
-		setViewerKeyEventsEnabled(false);
-		fullScreenAct->setEnabled(false);
+		if (selectedWidget == imageView->scrlArea) {
+			setViewerKeyEventsEnabled(true);
+			fullScreenAct->setEnabled(false);
+			closeImageAct->setEnabled(false);
+		} else {
+			setViewerKeyEventsEnabled(false);
+			fullScreenAct->setEnabled(false);
+			closeImageAct->setEnabled(false);
+		}
+
 	}
 }
 
@@ -1975,6 +1983,9 @@ void Phototonic::setStatus(QString state)
 
 void Phototonic::mouseDoubleClickEvent(QMouseEvent *event)
 {
+	if (interfaceDisabled)
+		return;
+
 	if (event->button() == Qt::LeftButton) {
 		if (GData::layoutMode == imageViewIdx) {
 			if (GData::reverseMouseBehavior)
@@ -1998,6 +2009,9 @@ void Phototonic::mouseDoubleClickEvent(QMouseEvent *event)
 
 void Phototonic::mousePressEvent(QMouseEvent *event)
 {
+	if (interfaceDisabled)
+		return;
+
 	if (GData::layoutMode == imageViewIdx) {
 		if (event->button() == Qt::MiddleButton) {
 			if (GData::reverseMouseBehavior && closeImageAct->isEnabled()) {
@@ -2894,35 +2908,37 @@ bool Phototonic::removeDirOp(QString dirToDelete)
 	return ok;
 }
 
-void Phototonic::disableImageView()
+void Phototonic::enableInterface()
 {
-	colorsAct->setEnabled(false);
-	cropAct->setEnabled(false);
-	resizeAct->setEnabled(false);
-	closeImageAct->setEnabled(false);
-	nextImageAction->setEnabled(false);
-	prevImageAction->setEnabled(false);
-	firstImageAction->setEnabled(false);
-	lastImageAction->setEnabled(false);
-	randomImageAction->setEnabled(false);
-	slideShowAction->setEnabled(false);
-	copyMoveAction->setEnabled(false);
-	deleteAction->setEnabled(false);
+	setInterfaceEnabled(true);
 }
 
-void Phototonic::enableImageView()
+void Phototonic::setInterfaceEnabled(bool enable)
 {
-	colorsAct->setEnabled(true);
-	cropAct->setEnabled(true);
-	resizeAct->setEnabled(true);
-	closeImageAct->setEnabled(true);
-	nextImageAction->setEnabled(true);
-	prevImageAction->setEnabled(true);
-	firstImageAction->setEnabled(true);
-	lastImageAction->setEnabled(true);
-	randomImageAction->setEnabled(true);
-	slideShowAction->setEnabled(true);
-	copyMoveAction->setEnabled(true);
-	deleteAction->setEnabled(true);
+	// actions 
+	colorsAct->setEnabled(enable);
+	renameAction->setEnabled(enable);
+	cropAct->setEnabled(enable);
+	resizeAct->setEnabled(enable);
+	closeImageAct->setEnabled(enable);
+	nextImageAction->setEnabled(enable);
+	prevImageAction->setEnabled(enable);
+	firstImageAction->setEnabled(enable);
+	lastImageAction->setEnabled(enable);
+	randomImageAction->setEnabled(enable);
+	slideShowAction->setEnabled(enable);
+	copyMoveAction->setEnabled(enable);
+	deleteAction->setEnabled(enable);
+	settingsAction->setEnabled(enable);
+	openAction->setEnabled(enable);
+
+	// other
+	thumbView->setEnabled(enable);
+	fsTree->setEnabled(enable);
+	menuBar()->setEnabled(enable);
+	editToolBar->setEnabled(enable);
+	goToolBar->setEnabled(enable);
+	viewToolBar->setEnabled(enable);
+	interfaceDisabled = !enable;	
 }
 
