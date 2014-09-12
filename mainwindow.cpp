@@ -2181,7 +2181,7 @@ void Phototonic::loadImagefromThumb(const QModelIndex &idx)
 
 void Phototonic::updateViewerImageBySelection(const QItemSelection&)
 {
-	if (!pvDock->isVisible() && GData::layoutMode == thumbViewIdx)
+	if (!pvDock->isVisible() || GData::layoutMode == imageViewIdx)
 		return;
 			
 	QModelIndexList indexesList = thumbView->selectionModel()->selectedIndexes();
