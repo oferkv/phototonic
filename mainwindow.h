@@ -46,7 +46,7 @@ public slots:
 	void loadImagefromThumb(const QModelIndex &idx);
 	void updateViewerImageBySelection(const QItemSelection& selection);
 	void loadImagefromCli();
-	void closeImage();
+	void hideViewer();
 
 private slots:
 	void about();
@@ -257,7 +257,7 @@ private:
 	QDockWidget *pvDock;
 	QFileSystemModel *fsModel;
 	FSTree *fsTree;
-	QVBoxLayout *mainLayout;
+	QHBoxLayout *mainLayout;
 	QDockWidget *iiDock;
 	ThumbView *thumbView;
 	ImageView *imageView;
@@ -320,7 +320,6 @@ private:
 	void copyOrCutThumbs(bool copy);
 	void showNewImageWarning(QWidget *parent);
 	bool removeDirOp(QString dirToDelete);
-	void closeImageCleanup();
 	void selectThumbByRow(int row);
 	void setInterfaceEnabled(bool enable);
 };

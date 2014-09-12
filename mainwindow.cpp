@@ -44,7 +44,7 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	restoreState(GData::appSettings->value("WindowState").toByteArray());
 	setWindowIcon(QIcon(":/images/phototonic.png"));
 
-	mainLayout = new QVBoxLayout;
+	mainLayout = new QHBoxLayout;
 	mainLayout->setContentsMargins(0, 0, 0, 0);
 	mainLayout->setSpacing(0);
 	mainLayout->addWidget(thumbView);
@@ -278,7 +278,7 @@ void Phototonic::createActions()
 	connect(thumbsGoBottomAct, SIGNAL(triggered()), this, SLOT(goBottom()));
 
 	closeImageAct = new QAction(tr("Close Image"), this);
-	connect(closeImageAct, SIGNAL(triggered()), this, SLOT(closeImage()));
+	connect(closeImageAct, SIGNAL(triggered()), this, SLOT(hideViewer()));
 
 	fullScreenAct = new QAction(tr("Full Screen"), this);
 	fullScreenAct->setCheckable(true);
@@ -848,9 +848,8 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.03</h2>"
+	QString aboutString = "<h2>Phototonic v1.19</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
-		+ tr("<p>Git release") + " v1.03.15 (built " __DATE__ " " __TIME__ ")</p>"
 		+ tr("Built with Qt ") + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
 		+ "<p><a href=\"https://github.com/oferkv/phototonic/issues\">" + tr("Bug reports") + "</a></p>"
@@ -1382,7 +1381,7 @@ void Phototonic::updateCurrentImage(int currentRow)
 	{
 		if (thumbView->thumbViewModel->rowCount() == 0)
 		{
-			closeImage();
+			hideViewer();
 			refreshThumbs(true);
 			return;
 		}
@@ -1996,7 +1995,7 @@ void Phototonic::mouseDoubleClickEvent(QMouseEvent *event)
 			}
 			else if (closeImageAct->isEnabled())
 			{
-				closeImage();
+				hideViewer();
 				event->accept();
 			}
 		} else {
@@ -2015,7 +2014,7 @@ void Phototonic::mousePressEvent(QMouseEvent *event)
 	if (GData::layoutMode == imageViewIdx) {
 		if (event->button() == Qt::MiddleButton) {
 			if (GData::reverseMouseBehavior && closeImageAct->isEnabled()) {
-				closeImage();
+				hideViewer();
 				event->accept();
 			} else {
 				fullScreenAct->setChecked(!(fullScreenAct->isChecked()));
@@ -2068,7 +2067,7 @@ void Phototonic::openOp()
 {
 	if (GData::layoutMode == imageViewIdx)
 	{
-		closeImage();
+		hideViewer();
 		return;
 	}
 	
@@ -2153,8 +2152,7 @@ void Phototonic::setPvDockVisibility()
 
 void Phototonic::showViewer()
 {
-	if (GData::layoutMode == thumbViewIdx)
-	{
+	if (GData::layoutMode == thumbViewIdx) {
 		GData::layoutMode = imageViewIdx;
 		GData::appSettings->setValue("Geometry", saveGeometry());
 		GData::appSettings->setValue("WindowState", saveState());
@@ -2164,8 +2162,7 @@ void Phototonic::showViewer()
 		imageView->setVisible(true);
 		thumbView->setVisible(false);
 		setDocksVisibility(false);
-		if (GData::isFullScreen == true)
-		{
+		if (GData::isFullScreen == true) {
 			shouldMaximize = isMaximized();
 			showFullScreen();
 			imageView->setCursorHiding(true);
@@ -2184,7 +2181,7 @@ void Phototonic::loadImagefromThumb(const QModelIndex &idx)
 
 void Phototonic::updateViewerImageBySelection(const QItemSelection&)
 {
-	if (!pvDock->isVisible() || GData::layoutMode == imageViewIdx)
+	if (!pvDock->isVisible() && GData::layoutMode == thumbViewIdx)
 		return;
 			
 	QModelIndexList indexesList = thumbView->selectionModel()->selectedIndexes();
@@ -2375,35 +2372,6 @@ void Phototonic::loadRandomImage()
 		selectThumbByRow(randomRow);
 }
 
-void Phototonic::closeImageCleanup()
-{
-	if (GData::layoutMode == imageViewIdx)
-		return;
-
-	fsDock->setMaximumHeight(QWIDGETSIZE_MAX);
-	iiDock->setMaximumHeight(QWIDGETSIZE_MAX);
-	pvDock->setMaximumHeight(QWIDGETSIZE_MAX);
-	fsDock->setMaximumWidth(QWIDGETSIZE_MAX);
-	iiDock->setMaximumWidth(QWIDGETSIZE_MAX);
-	pvDock->setMaximumWidth(QWIDGETSIZE_MAX);
-
-	if (!cliFileName.isEmpty()) {
-		cliFileName = "";
-		if (!shouldMaximize) {
-			restoreGeometry(GData::appSettings->value("Geometry").toByteArray());
-		}
-		restoreState(GData::appSettings->value("WindowState").toByteArray());
-	}
-
-	if (thumbView->thumbViewModel->rowCount() > 0) 
-	{
-		if (thumbView->setCurrentIndexByName(imageView->currentImageFullPath))
-			thumbView->selectCurrentIndex();
-	}
-	thumbView->setResizeMode(QListView::Adjust);
-	thumbView->loadVisibleThumbs();
-}
-
 void Phototonic::selectRecentThumb()
 {
 	if (thumbView->thumbViewModel->rowCount() > 0) 
@@ -2434,7 +2402,7 @@ void Phototonic::updateIndexByViewerImage()
 	}
 }
 
-void Phototonic::closeImage()
+void Phototonic::hideViewer()
 {
 	if (cliImageLoaded && GData::exitInsteadOfClose) {
 		close();
@@ -2448,8 +2416,13 @@ void Phototonic::closeImage()
 		imageView->setCursorHiding(false);
 	}
 
+	while (qApp->hasPendingEvents()) {
+		QApplication::processEvents();
+	}
+
 	GData::layoutMode = thumbViewIdx;
 	mainLayout->removeWidget(imageView);
+	
 	imageViewContainer->addWidget(imageView);
 	setDocksVisibility(true);
 	while (QApplication::overrideCursor()) {
@@ -2460,22 +2433,41 @@ void Phototonic::closeImage()
 		slideShow();
 	}
 
-	if (needThumbsRefresh) {
-		needThumbsRefresh = false;
-		refreshThumbs(true);
-	}
-
-	while (qApp->hasPendingEvents()) {
-		QApplication::processEvents();
-	}
 
 	thumbView->setResizeMode(QListView::Fixed);
 	thumbView->setVisible(true);
-
 	setThumbviewWindowTitle();
 
-	if (!needThumbsRefresh)	{
-		closeImageCleanup();
+	if (needThumbsRefresh) {
+		needThumbsRefresh = false;
+		refreshThumbs(true);
+	} else {
+		while (qApp->hasPendingEvents()) {
+			QApplication::processEvents();
+		}
+
+		fsDock->setMaximumHeight(QWIDGETSIZE_MAX);
+		iiDock->setMaximumHeight(QWIDGETSIZE_MAX);
+		pvDock->setMaximumHeight(QWIDGETSIZE_MAX);
+		fsDock->setMaximumWidth(QWIDGETSIZE_MAX);
+		iiDock->setMaximumWidth(QWIDGETSIZE_MAX);
+		pvDock->setMaximumWidth(QWIDGETSIZE_MAX);
+
+		if (!cliFileName.isEmpty()) {
+			cliFileName = "";
+			if (!shouldMaximize) {
+				restoreGeometry(GData::appSettings->value("Geometry").toByteArray());
+			}
+			restoreState(GData::appSettings->value("WindowState").toByteArray());
+		}
+
+		if (thumbView->thumbViewModel->rowCount() > 0) 
+		{
+			if (thumbView->setCurrentIndexByName(imageView->currentImageFullPath))
+				thumbView->selectCurrentIndex();
+		}
+		thumbView->setResizeMode(QListView::Adjust);
+		thumbView->loadVisibleThumbs();
 	}
 
 	thumbView->setFocus(Qt::OtherFocusReason);
