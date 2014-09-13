@@ -65,7 +65,6 @@ private slots:
 	void openOp();
 	void newImage();
 	void deleteDir();
-	void manageDir();
 	void createSubDirectory();
 	void checkDirState(const QModelIndex &, int, int);
 	void goSelectedDir(const QModelIndex &currDir);
@@ -230,7 +229,6 @@ private:
 	
 	QAction *pasteAction;
 	QAction *createDirAction;
-	QAction *manageDirAction;
 
 	QAction *goBackAction;
 	QAction *goFrwdAction;

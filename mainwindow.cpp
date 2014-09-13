@@ -411,9 +411,6 @@ void Phototonic::createActions()
 	connect(createDirAction, SIGNAL(triggered()), this, SLOT(createSubDirectory()));
 	createDirAction->setIcon(QIcon::fromTheme("folder-new", QIcon(":/images/new_folder.png")));
 	
-	manageDirAction = new QAction(tr("Manage"), this);
-	connect(manageDirAction, SIGNAL(triggered()), this, SLOT(manageDir()));
-
 	goBackAction = new QAction(tr("Back"), this);
 	goBackAction->setIcon(QIcon::fromTheme("go-previous", QIcon(":/images/back.png")));
 	connect(goBackAction, SIGNAL(triggered()), this, SLOT(goBack()));
@@ -755,7 +752,7 @@ void Phototonic::createFSTree()
 	addMenuSeparator(fsTree);
 	fsTree->addAction(pasteAction);
 	addMenuSeparator(fsTree);
-	fsTree->addAction(manageDirAction);
+	fsTree->addAction(openWithMenuAct);
 	fsTree->setContextMenuPolicy(Qt::ActionsContextMenu);
 
 	fsTree->setModel(fsModel);
@@ -853,7 +850,7 @@ void Phototonic::about()
 {
 	QString aboutString = "<h2>Phototonic v1.03</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
-		+ tr("<p>Git release") + " v1.03.20 (built " __DATE__ " " __TIME__ ")</p>"
+		+ tr("<p>Git release") + " v1.03.21 (built " __DATE__ " " __TIME__ ")</p>"
 		+ tr("Built with Qt ") + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
 		+ "<p><a href=\"https://github.com/oferkv/phototonic/issues\">" + tr("Bug reports") + "</a></p>"
@@ -889,32 +886,33 @@ void Phototonic::runExternalApp()
 	QString selectedFileNames("");
 	execCommand = GData::externalApps[((QAction*) sender())->text()];
 
-	if (GData::layoutMode == imageViewIdx)
-	{
-		if (imageView->isNewImage())
-		{
+	if (GData::layoutMode == imageViewIdx) {
+		if (imageView->isNewImage()) 	{
 			showNewImageWarning(this);
 			return;
 		}
 
 		execCommand += " \"" + imageView->currentImageFullPath + "\"";
-	}
-	else
-	{
-		QModelIndexList selectedIdxList = thumbView->selectionModel()->selectedIndexes();
-		if (selectedIdxList.size() < 1)
-		{
-			setStatus(tr("Invalid selection"));
-			return;
-		}
+	} else {
+		if (QApplication::focusWidget() == fsTree) {
+			selectedFileNames += " \"" + getSelectedPath() + "\"";
+		} else {
 
-		selectedFileNames += " ";
-		for (int tn = selectedIdxList.size() - 1; tn >= 0 ; --tn)
-		{
-			selectedFileNames += "\"" +
-				thumbView->thumbViewModel->item(selectedIdxList[tn].row())->data(thumbView->FileNameRole).toString();
-			if (tn) 
-				selectedFileNames += "\" ";
+			QModelIndexList selectedIdxList = thumbView->selectionModel()->selectedIndexes();
+			if (selectedIdxList.size() < 1)
+			{
+				setStatus(tr("Invalid selection"));
+				return;
+			}
+
+			selectedFileNames += " ";
+			for (int tn = selectedIdxList.size() - 1; tn >= 0 ; --tn)
+			{
+				selectedFileNames += "\"" +
+					thumbView->thumbViewModel->item(selectedIdxList[tn].row())->data(thumbView->FileNameRole).toString();
+				if (tn) 
+					selectedFileNames += "\" ";
+			}
 		}
 		
 		execCommand += selectedFileNames;
@@ -2861,12 +2859,6 @@ void Phototonic::createSubDirectory()
 
 	setStatus(tr("Created ") + newDirName);
 	fsTree->expand(selectedDirs[0]);
-}
-
-void Phototonic::manageDir()
-{
-	setStatus(tr("Executing file manager..."));
-	QDesktopServices::openUrl(QUrl("file:///" + getSelectedPath()));
 }
 
 QString Phototonic::getSelectedPath()
