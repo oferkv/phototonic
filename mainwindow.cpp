@@ -850,7 +850,7 @@ void Phototonic::about()
 {
 	QString aboutString = "<h2>Phototonic v1.03</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
-		+ tr("<p>Git release") + " v1.03.21 (built " __DATE__ " " __TIME__ ")</p>"
+		+ tr("<p>Git release") + " v1.03.22 (built " __DATE__ " " __TIME__ ")</p>"
 		+ tr("Built with Qt ") + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
 		+ "<p><a href=\"https://github.com/oferkv/phototonic/issues\">" + tr("Bug reports") + "</a></p>"
@@ -974,6 +974,7 @@ void Phototonic::showSettings()
 {
 	if (GData::slideShowActive)
 		slideShow();
+	imageView->setCursorHiding(false);
 	
 	SettingsDialog *dialog = new SettingsDialog(this);
 	if (dialog->exec())
@@ -981,6 +982,7 @@ void Phototonic::showSettings()
 		imageView->setPalette(QPalette(GData::backgroundColor));
 		thumbView->setThumbColors();
 		GData::imageZoomFactor = 1.0;
+		imageView->infoLabel->setVisible(GData::enableImageInfoFS && isFullScreen());
 
 		if (GData::layoutMode == imageViewIdx)
 		{
@@ -991,6 +993,8 @@ void Phototonic::showSettings()
 			refreshThumbs(false);
 	}
 
+	if (isFullScreen())
+		imageView->setCursorHiding(true);
 	delete dialog;
 }
 
@@ -1002,6 +1006,7 @@ void Phototonic::toggleFullScreen()
 		showFullScreen();
 		GData::isFullScreen = true;
 		imageView->setCursorHiding(true);
+		imageView->infoLabel->setVisible(GData::enableImageInfoFS);
 	}
 	else
 	{
@@ -1010,6 +1015,7 @@ void Phototonic::toggleFullScreen()
 			showMaximized();
 		imageView->setCursorHiding(false);
 		GData::isFullScreen = false;
+		imageView->infoLabel->setVisible(false);
 	}
 }
 
@@ -2168,6 +2174,7 @@ void Phototonic::showViewer()
 			shouldMaximize = isMaximized();
 			showFullScreen();
 			imageView->setCursorHiding(true);
+			imageView->infoLabel->setVisible(GData::enableImageInfoFS);
 		}
 		imageView->adjustSize();
 	}
@@ -2239,7 +2246,7 @@ void Phototonic::slideShow()
 	{
 		GData::slideShowActive = false;
 		slideShowAction->setText(tr("Slide Show"));
-		imageView->popMessage(tr("Slide show stopped"));
+		imageView->setFeedback(tr("Slide show stopped"));
 
 		SlideShowTimer->stop();
 		delete SlideShowTimer;
@@ -2268,7 +2275,7 @@ void Phototonic::slideShow()
 		SlideShowTimer->start(GData::slideShowDelay * 1000);
 
 		slideShowAction->setText(tr("Stop Slide Show"));
-		imageView->popMessage(tr("Slide show started"));
+		imageView->setFeedback(tr("Slide show started"));
 		slideShowAction->setIcon(QIcon::fromTheme("media-playback-stop", QIcon(":/images/stop.png")));
 
 		slideShowHandler();
@@ -2437,6 +2444,7 @@ void Phototonic::hideViewer()
 		if (shouldMaximize)
 			showMaximized();
 		imageView->setCursorHiding(false);
+		imageView->infoLabel->setVisible(false);
 	}
 
 	while (qApp->hasPendingEvents()) {
@@ -2460,35 +2468,36 @@ void Phototonic::hideViewer()
 	thumbView->setVisible(true);
 	setThumbviewWindowTitle();
 
+	while (qApp->hasPendingEvents()) {
+		QApplication::processEvents();
+	}
+
+	fsDock->setMaximumHeight(QWIDGETSIZE_MAX);
+	iiDock->setMaximumHeight(QWIDGETSIZE_MAX);
+	pvDock->setMaximumHeight(QWIDGETSIZE_MAX);
+	fsDock->setMaximumWidth(QWIDGETSIZE_MAX);
+	iiDock->setMaximumWidth(QWIDGETSIZE_MAX);
+	pvDock->setMaximumWidth(QWIDGETSIZE_MAX);
+
+	if (!cliFileName.isEmpty()) {
+		cliFileName = "";
+		if (!shouldMaximize) {
+			restoreGeometry(GData::appSettings->value("Geometry").toByteArray());
+		}
+		restoreState(GData::appSettings->value("WindowState").toByteArray());
+	}
+
+	if (thumbView->thumbViewModel->rowCount() > 0) 
+	{
+		if (thumbView->setCurrentIndexByName(imageView->currentImageFullPath))
+			thumbView->selectCurrentIndex();
+	}
+	thumbView->setResizeMode(QListView::Adjust);
+
 	if (needThumbsRefresh) {
 		needThumbsRefresh = false;
 		refreshThumbs(true);
 	} else {
-		while (qApp->hasPendingEvents()) {
-			QApplication::processEvents();
-		}
-
-		fsDock->setMaximumHeight(QWIDGETSIZE_MAX);
-		iiDock->setMaximumHeight(QWIDGETSIZE_MAX);
-		pvDock->setMaximumHeight(QWIDGETSIZE_MAX);
-		fsDock->setMaximumWidth(QWIDGETSIZE_MAX);
-		iiDock->setMaximumWidth(QWIDGETSIZE_MAX);
-		pvDock->setMaximumWidth(QWIDGETSIZE_MAX);
-
-		if (!cliFileName.isEmpty()) {
-			cliFileName = "";
-			if (!shouldMaximize) {
-				restoreGeometry(GData::appSettings->value("Geometry").toByteArray());
-			}
-			restoreState(GData::appSettings->value("WindowState").toByteArray());
-		}
-
-		if (thumbView->thumbViewModel->rowCount() > 0) 
-		{
-			if (thumbView->setCurrentIndexByName(imageView->currentImageFullPath))
-				thumbView->selectCurrentIndex();
-		}
-		thumbView->setResizeMode(QListView::Adjust);
 		thumbView->loadVisibleThumbs();
 	}
 
@@ -2711,6 +2720,12 @@ void Phototonic::rename()
 	}
 
 	if (GData::layoutMode == imageViewIdx) {
+
+		if (imageView->isNewImage()) 	{
+			showNewImageWarning(this);
+			return;
+		}
+	
 		if (thumbView->thumbViewModel->rowCount() > 0) {
 			if (thumbView->setCurrentIndexByName(imageView->currentImageFullPath))
 				thumbView->selectCurrentIndex();
@@ -2953,6 +2968,13 @@ void Phototonic::setInterfaceEnabled(bool enable)
 	editToolBar->setEnabled(enable);
 	goToolBar->setEnabled(enable);
 	viewToolBar->setEnabled(enable);
-	interfaceDisabled = !enable;	
+	interfaceDisabled = !enable;
+
+	if (enable) {
+		if (isFullScreen())
+			imageView->setCursorHiding(true);
+	} else {
+		imageView->setCursorHiding(false);
+	}
 }
 

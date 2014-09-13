@@ -45,6 +45,7 @@ public:
 	QString currentImageFullPath;
 	QMenu *ImagePopUpMenu;
 	QScrollArea *scrlArea;
+	QLabel *infoLabel;
 
 	enum ZoomMethods
 	{
@@ -83,9 +84,9 @@ public:
 	int getImageHeightPreCropped();
 	bool isNewImage();
 	void keyMoveEvent(int direction);
-	void popMessage(QString message);
 	static void rotateByExifRotation(QImage &image, const QString &imageFullPath);
 	void setInfo(QString infoString);
+	void setFeedback(QString feedbackString);
 
 public slots:
 	void monitorCursorState();
@@ -93,6 +94,9 @@ public slots:
 	void saveImageAs();
 	void copyImage();
 	void pasteImage();
+
+private slots:
+	void unsetFeedback();
 
 protected:
 	void resizeEvent(QResizeEvent *event);
@@ -123,7 +127,7 @@ private:
 	bool isAnimation;
 	int preCroppedWidth;
 	int preCroppedHeight;
-	QLabel *infoLabel;
+	QLabel *feedbackLabel;
 
 	void setMouseMoveData(bool lockMove, int lMouseX, int lMouseY);
 	void centerImage(QSize &imgSize);

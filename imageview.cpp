@@ -62,14 +62,22 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	this->setLayout(mainVLayout);
 
 	infoLabel = new QLabel(this);
-	infoLabel->setHidden(true);
-    infoLabel->setMargin(3);
+	infoLabel->setVisible(false);
+	infoLabel->setMargin(3);
 	infoLabel->move(10, 10);
 	infoLabel->setStyleSheet("QLabel { background-color : black; color : white; border-radius: 3px} ");
 
-	QGraphicsOpacityEffect *effect = new QGraphicsOpacityEffect;
-	effect->	setOpacity(0.5);
-    infoLabel->setGraphicsEffect(effect);
+	feedbackLabel = new QLabel(this);
+	feedbackLabel->setVisible(false);
+	feedbackLabel->setMargin(3);
+	feedbackLabel->setStyleSheet("QLabel { background-color : black; color : white; border-radius: 3px} ");
+
+	QGraphicsOpacityEffect *infoEffect = new QGraphicsOpacityEffect;
+	infoEffect->	setOpacity(0.5);
+	infoLabel->setGraphicsEffect(infoEffect);
+	QGraphicsOpacityEffect *feedbackEffect = new QGraphicsOpacityEffect;
+	feedbackEffect->setOpacity(0.5);
+	feedbackLabel->setGraphicsEffect(feedbackEffect);
 	
 	mouseMovementTimer = new QTimer(this);
 	connect(mouseMovementTimer, SIGNAL(timeout()), this, SLOT(monitorCursorState()));
@@ -664,6 +672,24 @@ void ImageView::setInfo(QString infoString)
 	infoLabel->adjustSize();
 }
 
+void ImageView::unsetFeedback()
+{
+	feedbackLabel->setText("");
+	feedbackLabel->setVisible(false);
+}
+
+void ImageView::setFeedback(QString feedbackString)
+{
+	feedbackLabel->setText(feedbackString);
+	feedbackLabel->setVisible(true);
+
+	int margin = infoLabel->isVisible()? (infoLabel->height() + 15) : 10;
+	feedbackLabel->move(10, margin);
+	
+	feedbackLabel->adjustSize();
+	QTimer::singleShot(3000, this, SLOT(unsetFeedback()));
+}
+
 void ImageView::loadImage(QString imageFileName)
 {
 	newImage = false;
@@ -701,24 +727,14 @@ void ImageView::monitorCursorState()
 
 void ImageView::setCursorHiding(bool hide)
 {
-	if (hide)
-	{
+	if (hide) {
 		mouseMovementTimer->start(500);
-
-		if (GData::enableImageInfoFS)
-			infoLabel->show();
-	}
-	else
-	{
+	} else {
 		mouseMovementTimer->stop();
-		if (cursorIsHidden) 
-		{
+		if (cursorIsHidden) {
 			QApplication::restoreOverrideCursor();
 			cursorIsHidden = false;
 		}
-
-		if (GData::enableImageInfoFS)
-			infoLabel->hide();
 	}
 }
 
@@ -874,7 +890,7 @@ void ImageView::saveImage()
 		return;
 	}
 
-	popMessage(tr("Saving..."));
+	setFeedback(tr("Saving..."));
 
 	try
 	{
@@ -909,7 +925,7 @@ void ImageView::saveImage()
 	}
 
 	reload();
-	popMessage(tr("Image saved"));
+	setFeedback(tr("Image saved"));
 }
 
 void ImageView::saveImageAs()
@@ -957,7 +973,7 @@ void ImageView::saveImageAs()
 				}
 			}
 		
-			popMessage(tr("Image saved"));
+			setFeedback(tr("Image saved"));
 		}
 	}
 }
@@ -1000,11 +1016,5 @@ void ImageView::pasteImage()
 		origImage = QApplication::clipboard()->image();
 		refresh();
 	}
-}
-
-void ImageView::popMessage(QString message)
-{
-	QToolTip::showText(QPoint((mainWindow->pos().x() + 10), (mainWindow->pos().y() + 10)), message, 
-						this, QRect(), 2000);
 }
 
