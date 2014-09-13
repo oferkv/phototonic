@@ -851,8 +851,9 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.21</h2>"
+	QString aboutString = "<h2>Phototonic v1.03</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
+		+ tr("<p>Git release") + " v1.03.20 (built " __DATE__ " " __TIME__ ")</p>"
 		+ tr("Built with Qt ") + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
 		+ "<p><a href=\"https://github.com/oferkv/phototonic/issues\">" + tr("Bug reports") + "</a></p>"
@@ -2639,8 +2640,10 @@ void Phototonic::reloadThumbsSlot()
 	}
 
 	thumbView->infoView->clear();
-/*	QString ImagePath(":/images/no_image.png");
-	imageView->loadImage(ImagePath);*/
+	if (GData::layoutMode == thumbViewIdx && pvDock->isVisible()) {
+		QString ImagePath(":/images/no_image.png");
+		imageView->loadImage(ImagePath);
+	}
 
 	pathBar->setText(thumbView->currentViewDir);
 	recordHistory(thumbView->currentViewDir);
