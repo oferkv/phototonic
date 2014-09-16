@@ -848,9 +848,8 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.03</h2>"
+	QString aboutString = "<h2>Phototonic v1.4.0</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
-		+ tr("<p>Git release") + " v1.03.22 (built " __DATE__ " " __TIME__ ")</p>"
 		+ tr("Built with Qt ") + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
 		+ "<p><a href=\"https://github.com/oferkv/phototonic/issues\">" + tr("Bug reports") + "</a></p>"

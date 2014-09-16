@@ -782,9 +782,8 @@
         <translation>&lt;p&gt;Visionneuse et organisatrice d&apos;image&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="853"/>
         <source>&lt;p&gt;Git release</source>
-        <translation>&lt;p&gt;Révision Git</translation>
+        <translation type="vanished">&lt;p&gt;Révision Git</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="854"/>
