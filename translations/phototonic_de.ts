@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="de_DE">
+<TS version="2.0" language="de_DE">
 <context>
     <name>AppMgmtDialog</name>
     <message>
@@ -381,12 +381,12 @@
     <message>
         <location filename="../mainwindow.cpp" line="880"/>
         <source>Failed to start external application</source>
-        <translation type="unfinished"></translation>
+        <translation>Externe Anwendung konnte nicht gestartet werden</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1801"/>
         <source>Viewer</source>
-        <translation type="unfinished">Betrachter</translation>
+        <translation>Betrachter</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1817"/>
@@ -517,7 +517,7 @@
     </message>
     <message>
         <source>Manage</source>
-        <translation type="vanished">Verwalten</translation>
+        <translation>Verwalten</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="414"/>
@@ -582,11 +582,11 @@
     </message>
     <message>
         <source>&lt;u&gt;Contributors&lt;/u&gt;:&lt;br&gt;</source>
-        <translation type="vanished">&lt;u&gt;Mitwirkende&lt;/u&gt;:&lt;br&gt;</translation>
+        <translation>&lt;u&gt;Mitwirkende&lt;/u&gt;:&lt;br&gt;</translation>
     </message>
     <message>
         <source>&lt;u&gt;Translators&lt;/u&gt;:&lt;br&gt;</source>
-        <translation type="vanished">&lt;u&gt;Übersetzer&lt;/u&gt;:&lt;br&gt;</translation>
+        <translation>&lt;u&gt;Übersetzer&lt;/u&gt;:&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2277"/>
@@ -851,7 +851,7 @@
     </message>
     <message>
         <source>&lt;p&gt;Git release</source>
-        <translation type="vanished">&lt;p&gt;Git-Version</translation>
+        <translation>&lt;p&gt;Git-Version</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="854"/>
@@ -994,7 +994,7 @@
     </message>
     <message>
         <source>Preview</source>
-        <translation type="vanished">Vorschau</translation>
+        <translation>Vorschau</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2098"/>
@@ -1144,7 +1144,7 @@
     </message>
     <message>
         <source>Executing file manager...</source>
-        <translation type="vanished">Datei-Manager ausführen...</translation>
+        <translation>Datei-Manager ausführen...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2916"/>
@@ -1270,7 +1270,7 @@
     </message>
     <message>
         <source>Keyboard shortcuts</source>
-        <translation type="vanished">Tastenkombinationen</translation>
+        <translation>Tastenkombinationen</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="514"/>
@@ -1339,7 +1339,7 @@
     </message>
     <message>
         <source>Rotate according to Exif orientation</source>
-        <translation type="vanished">Gemäß EXIF-Orientierung drehen</translation>
+        <translation>Gemäß EXIF-Orientierung drehen</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="313"/>
@@ -1398,11 +1398,11 @@
     </message>
     <message>
         <source>Keyboard Shortcuts:</source>
-        <translation type="vanished">Tastenkombinationen:</translation>
+        <translation>Tastenkombinationen:</translation>
     </message>
     <message>
         <source>Keyboard and Mouse</source>
-        <translation type="vanished">Tastatur und Maus</translation>
+        <translation>Tastatur und Maus</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="522"/>
@@ -1472,7 +1472,7 @@
     </message>
     <message>
         <source>No images</source>
-        <translation type="vanished">Keine Bilder</translation>
+        <translation>Keine Bilder</translation>
     </message>
 </context>
 </TS>
