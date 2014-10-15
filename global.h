@@ -84,6 +84,7 @@ namespace GData
 	extern bool exifThumbRotationEnabled;
 	extern bool includeSubFolders;
 	extern bool showHiddenFiles;
+	extern bool imageToolbarFullScreen;
 	extern QMap<QString, QString> externalApps;
 	extern QSet<QString> copyMoveToPaths;
 	extern bool reverseMouseBehavior;
@@ -102,6 +103,7 @@ namespace GData
 	extern bool fsDockVisible;
 	extern bool iiDockVisible;
 	extern bool pvDockVisible;
+	extern bool ivDockVisible;
 }
 
 #endif // GLOBAL_H

@@ -187,6 +187,7 @@ void Phototonic::createImageView()
 	imageView->addAction(copyMoveAction);
 	imageView->addAction(resizeAct);
 	imageView->addAction(openAction);
+	imageView->addAction(exitAction);
 
 	// Actions
 	addMenuSeparator(imageView->ImagePopUpMenu);
@@ -247,12 +248,18 @@ void Phototonic::createImageView()
 	imageView->ImagePopUpMenu->addAction(openWithMenuAct);
 
 	addMenuSeparator(imageView->ImagePopUpMenu);
+	viewSubMenu = new QMenu(tr("View"));
+	viewSubMenuAct = new QAction(tr("View"), this);
+	viewSubMenuAct->setMenu(viewSubMenu);
+	imageView->ImagePopUpMenu->addAction(viewSubMenuAct);
+	viewSubMenu->addAction(fullScreenAct);
+	viewSubMenu->addAction(showClipboardAction);
+	viewSubMenu->addAction(actShowViewerToolbars);
+	viewSubMenu->addAction(refreshAction);
 	imageView->ImagePopUpMenu->addAction(copyImageAction);
 	imageView->ImagePopUpMenu->addAction(pasteImageAction);
-	imageView->ImagePopUpMenu->addAction(fullScreenAct);
-	imageView->ImagePopUpMenu->addAction(refreshAction);
-	imageView->ImagePopUpMenu->addAction(showClipboardAction);
 	imageView->ImagePopUpMenu->addAction(closeImageAct);
+	imageView->ImagePopUpMenu->addAction(exitAction);
 
 	addMenuSeparator(imageView->ImagePopUpMenu);
 	imageView->ImagePopUpMenu->addAction(settingsAction);
@@ -319,8 +326,10 @@ void Phototonic::createActions()
 	saveAction->setIcon(QIcon::fromTheme("document-save", QIcon(":/images/save.png")));
 
 	saveAsAction = new QAction(tr("Save As"), this);
-	copyImageAction = new QAction(tr("Copy Image"), this);
-	pasteImageAction = new QAction(tr("Paste Image"), this);
+	saveAsAction->setIcon(QIcon::fromTheme("document-save-as", QIcon(":/images/save_as.png")));
+	
+	copyImageAction = new QAction(tr("Copy Image Data"), this);
+	pasteImageAction = new QAction(tr("Paste Image Data"), this);
 
 	renameAction = new QAction(tr("Rename"), this);
 	connect(renameAction, SIGNAL(triggered()), this, SLOT(rename()));
@@ -379,6 +388,11 @@ void Phototonic::createActions()
 	actLockDocks->setCheckable(true);
 	actLockDocks->setChecked(GData::LockDocks);
 	connect(actLockDocks, SIGNAL(triggered()), this, SLOT(lockDocks()));
+
+	actShowViewerToolbars = new QAction(tr("Show Toolbar"), this);
+	actShowViewerToolbars->setCheckable(true);
+	actShowViewerToolbars->setChecked(GData::imageToolbarFullScreen);
+	connect(actShowViewerToolbars, SIGNAL(triggered()), this, SLOT(toggleImageToolbar()));
 
 	actClassic = new QAction(tr("Classic Thumbs"), this);
 	actCompact = new QAction(tr("Compact"), this);
@@ -456,8 +470,8 @@ void Phototonic::createActions()
 	openAction->setIcon(QIcon::fromTheme("document-open", QIcon(":/images/open.png")));
 	connect(openAction, SIGNAL(triggered()), this, SLOT(openOp()));
 
-	showClipboardAction = new QAction(tr("Show Clipboard"), this);
-	showClipboardAction->setIcon(QIcon::fromTheme("window-new", QIcon(":/images/new.png")));
+	showClipboardAction = new QAction(tr("Load Clipboard"), this);
+	showClipboardAction->setIcon(QIcon::fromTheme("insert-image", QIcon(":/images/new.png")));
 	connect(showClipboardAction, SIGNAL(triggered()), this, SLOT(newImage()));
 
 	openWithSubMenu = new QMenu(tr("Open With"));
@@ -475,7 +489,7 @@ void Phototonic::createActions()
 	zoomInAct->setIcon(QIcon::fromTheme("zoom-in", QIcon(":/images/zoom_out.png")));
 
 	resetZoomAct = new QAction(tr("Reset Zoom"), this);
-	resetZoomAct->setIcon(QIcon::fromTheme("zoom-fit-best"));
+	resetZoomAct->setIcon(QIcon::fromTheme("zoom-fit-best", QIcon(":/images/zoom.png")));
 	connect(resetZoomAct, SIGNAL(triggered()), this, SLOT(resetZoom()));
 
 	origZoomAct = new QAction(tr("Original Size"), this);
@@ -503,10 +517,11 @@ void Phototonic::createActions()
 	connect(flipVAct, SIGNAL(triggered()), this, SLOT(flipVert()));
 
 	cropAct = new QAction(tr("Cropping"), this);
+	cropAct->setIcon(QIcon(":/images/crop.png"));
 	connect(cropAct, SIGNAL(triggered()), this, SLOT(cropImage()));
 
 	resizeAct = new QAction(tr("Scale Image"), this);
-	resizeAct->setIcon(QIcon::fromTheme("transform-scale"));
+	resizeAct->setIcon(QIcon::fromTheme("transform-scale", QIcon(":/images/scale.png")));
 	connect(resizeAct, SIGNAL(triggered()), this, SLOT(scaleImage()));
 
 	freeRotateLeftAct = new QAction(tr("Rotate 1 degree CCW"), this);
@@ -693,6 +708,33 @@ void Phototonic::createToolBars()
 	viewToolBar->addAction(settingsAction);
 	connect(viewToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setViewToolBarVisibility()));	
 
+	/* image */
+	imageToolBar = addToolBar(tr("Image"));
+	imageToolBar->setObjectName("Image");
+	imageToolBar->addAction(prevImageAction);
+	imageToolBar->addAction(nextImageAction);
+	imageToolBar->addAction(firstImageAction);
+	imageToolBar->addAction(lastImageAction);
+	imageToolBar->addAction(slideShowAction);
+	imageToolBar->addSeparator();
+	imageToolBar->addAction(saveAction);
+	imageToolBar->addAction(saveAsAction);
+	imageToolBar->addAction(deleteAction);
+	imageToolBar->addSeparator();
+	imageToolBar->addAction(zoomInAct);
+	imageToolBar->addAction(zoomOutAct);
+	imageToolBar->addAction(resetZoomAct);
+	imageToolBar->addAction(origZoomAct);
+	imageToolBar->addSeparator();
+	imageToolBar->addAction(rotateRightAct);
+	imageToolBar->addAction(rotateLeftAct);
+	imageToolBar->addAction(flipHAct);
+	imageToolBar->addAction(flipVAct);
+	imageToolBar->addAction(cropAct);
+	imageToolBar->addAction(colorsAct);
+	imageToolBar->addAction(resizeAct);
+	connect(imageToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setImageToolBarVisibility()));
+
 	setToolbarIconSize();
 }
 
@@ -707,6 +749,7 @@ void Phototonic::setToolbarIconSize()
 	editToolBar->setIconSize(iconQSize);
 	goToolBar->setIconSize(iconQSize);
 	viewToolBar->setIconSize(iconQSize);
+	imageToolBar->setIconSize(iconQSize);
 }
 
 void Phototonic::createStatusBar()
@@ -840,6 +883,12 @@ void Phototonic::showHiddenFiles()
 	refreshThumbs(false);
 }
 
+void Phototonic::toggleImageToolbar()
+{
+	imageToolBar->setVisible(actShowViewerToolbars->isChecked());
+	GData::imageToolbarFullScreen = actShowViewerToolbars->isChecked();
+}
+
 void Phototonic::showLabels()
 {
 	GData::showLabels = actShowLabels->isChecked();
@@ -848,9 +897,9 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.4.2</h2>"
+	QString aboutString = "<h2>Phototonic v1.4.4</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
-		+ tr("Built with Qt ") + QT_VERSION_STR
+		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
 		+ "<p><a href=\"https://github.com/oferkv/phototonic/issues\">" + tr("Bug reports") + "</a></p>"
 		+ "<p>Copyright &copy; 2013-2014 Ofer Kashayov (oferkv@live.com)</p>"
@@ -1656,6 +1705,7 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("editToolBarVisible", (bool)editToolBarVisible);
 	GData::appSettings->setValue("goToolBarVisible", (bool)goToolBarVisible);
 	GData::appSettings->setValue("viewToolBarVisible", (bool)viewToolBarVisible);
+	GData::appSettings->setValue("imageToolBarVisible", (bool)imageToolBarVisible);
 	GData::appSettings->setValue("fsDockVisible", (bool)GData::fsDockVisible);
 	GData::appSettings->setValue("iiDockVisible", (bool)GData::iiDockVisible);
 	GData::appSettings->setValue("pvDockVisible", (bool)GData::pvDockVisible);
@@ -1667,6 +1717,7 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("showLabels", (bool)GData::showLabels);
 	GData::appSettings->setValue("smallIcons", (bool)GData::smallIcons);
 	GData::appSettings->setValue("LockDocks", (bool)GData::LockDocks);
+	GData::appSettings->setValue("imageToolbarFullScreen", (bool)GData::imageToolbarFullScreen);
 
 	/* Action shortcuts */
 	GData::appSettings->beginGroup("Shortcuts");
@@ -1735,6 +1786,7 @@ void Phototonic::readSettings()
 		GData::appSettings->setValue("editToolBarVisible", (bool)true);
 		GData::appSettings->setValue("goToolBarVisible", (bool)true);
 		GData::appSettings->setValue("viewToolBarVisible", (bool)true);
+		GData::appSettings->setValue("imageToolBarVisible", (bool)true);
 		GData::appSettings->setValue("fsDockVisible", (bool)true);
 		GData::appSettings->setValue("iiDockVisible", (bool)true);
 		GData::appSettings->setValue("pvDockVisible", (bool)true);
@@ -1742,6 +1794,7 @@ void Phototonic::readSettings()
 		GData::appSettings->setValue("showLabels", (bool)true);
 		GData::appSettings->setValue("smallIcons", (bool)false);
 		GData::appSettings->setValue("LockDocks", (bool)true);
+		GData::appSettings->setValue("imageToolbarFullScreen", (bool)false);
 	}
 
 	GData::backgroundColor = GData::appSettings->value("backgroundColor").value<QColor>();
@@ -1768,6 +1821,7 @@ void Phototonic::readSettings()
 	editToolBarVisible = GData::appSettings->value("editToolBarVisible").toBool();
 	goToolBarVisible = GData::appSettings->value("goToolBarVisible").toBool();
 	viewToolBarVisible = GData::appSettings->value("viewToolBarVisible").toBool();
+	imageToolBarVisible = GData::appSettings->value("imageToolBarVisible").toBool();
 	GData::fsDockVisible = GData::appSettings->value("fsDockVisible").toBool();
 	GData::iiDockVisible = GData::appSettings->value("iiDockVisible").toBool();
 	GData::pvDockVisible = GData::appSettings->value("pvDockVisible").toBool();
@@ -1777,6 +1831,7 @@ void Phototonic::readSettings()
 	GData::showLabels = GData::appSettings->value("showLabels").toBool();
 	GData::smallIcons = GData::appSettings->value("smallIcons").toBool();
 	GData::LockDocks = GData::appSettings->value("LockDocks").toBool();
+	GData::imageToolbarFullScreen = GData::appSettings->value("imageToolbarFullScreen").toBool();
 
 	GData::appSettings->beginGroup("ExternalApps");
 	QStringList extApps = GData::appSettings->childKeys();
@@ -2055,6 +2110,7 @@ void Phototonic::setDocksVisibility(bool visible)
 	editToolBar->setVisible(visible? editToolBarVisible : false);
 	goToolBar->setVisible(visible? goToolBarVisible : false);
 	viewToolBar->setVisible(visible? viewToolBarVisible : false);
+	imageToolBar->setVisible(visible? imageToolBarVisible : GData::imageToolbarFullScreen);
 
 	if (!visible) {
 		fsDock->setMaximumHeight(fsDock->height());
@@ -2068,6 +2124,8 @@ void Phototonic::setDocksVisibility(bool visible)
 	fsDock->setVisible(visible? GData::fsDockVisible : false);
 	iiDock->setVisible(visible? GData::iiDockVisible : false);
 	pvDock->setVisible(visible? GData::pvDockVisible : false);
+
+	setContextMenuPolicy(Qt::PreventContextMenu);
 }
 
 void Phototonic::openOp()
@@ -2131,6 +2189,11 @@ void Phototonic::setGoToolBarVisibility()
 void Phototonic::setViewToolBarVisibility()
 {
 	viewToolBarVisible = viewToolBar->isVisible();
+}
+
+void Phototonic::setImageToolBarVisibility()
+{
+	imageToolBarVisible = imageToolBar->isVisible();
 }
 
 void Phototonic::setFsDockVisibility()
@@ -2502,6 +2565,7 @@ void Phototonic::hideViewer()
 
 	thumbView->setFocus(Qt::OtherFocusReason);
 	showBusyStatus(false);
+	setContextMenuPolicy(Qt::DefaultContextMenu);
 }
 
 void Phototonic::goBottom()

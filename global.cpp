@@ -66,6 +66,7 @@ namespace GData
 	bool exifThumbRotationEnabled;
 	bool includeSubFolders;
 	bool showHiddenFiles;
+	bool imageToolbarFullScreen;
 	QMap<QString, QString> externalApps;
 	QSet<QString> copyMoveToPaths;
 	bool reverseMouseBehavior;
@@ -84,5 +85,6 @@ namespace GData
 	bool fsDockVisible;
 	bool iiDockVisible;
 	bool pvDockVisible;
+	bool ivDockVisible;
 }
 

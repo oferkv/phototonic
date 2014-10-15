@@ -125,6 +125,7 @@ private slots:
 	void setCompactThumbs();
 	void setSquarishThumbs();
 	void showHiddenFiles();
+	void toggleImageToolbar();
 	void showLabels();
 	void setToolbarIconSize();
 	void chooseExternalApp();
@@ -135,6 +136,7 @@ private slots:
 	void setEditToolBarVisibility();
 	void setGoToolBarVisibility();
 	void setViewToolBarVisibility();
+	void setImageToolBarVisibility();
 	void setFsDockVisibility();
 	void setIiDockVisibility();
 	void setPvDockVisibility();
@@ -152,6 +154,7 @@ private:
 	QMenu *helpMenu;
 	QMenu *zoomSubMenu;
 	QMenu *transformSubMenu;
+	QMenu *viewSubMenu;
 	QMenu *imageFileSubMenu;
 	QMenu *MirroringSubMenu;
 	QMenu *openWithSubMenu;
@@ -159,6 +162,7 @@ private:
 	QToolBar *viewToolBar;
 	QToolBar *editToolBar;
 	QToolBar *goToolBar;
+	QToolBar *imageToolBar;
 
 	QAction *exitAction;
 	QAction *cutAction;
@@ -197,6 +201,7 @@ private:
 	QAction *keepZoomAct;
 	QAction *keepTransformAct;
 	QAction *transformSubMenuAct;
+	QAction *viewSubMenuAct;
 	QAction *rotateLeftAct;
 	QAction *rotateRightAct;
 	QAction *flipHAct;
@@ -226,6 +231,7 @@ private:
 	QAction *actShowLabels;
 	QAction *actSmallIcons;
 	QAction *actLockDocks;
+	QAction *actShowViewerToolbars;
 	
 	QAction *pasteAction;
 	QAction *createDirAction;
@@ -287,6 +293,7 @@ private:
 	bool editToolBarVisible;
 	bool goToolBarVisible;
 	bool viewToolBarVisible;
+	bool imageToolBarVisible;
 
 	QMovie *busyMovie;
 	QLabel *busyLabel;

@@ -37,13 +37,12 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	imageLabel->setScaledContents(true);
 	isAnimation = false;
 	anim = 0;
-
 	setPalette(QPalette(GData::backgroundColor));
 
-	QHBoxLayout *mainHLayout = new QHBoxLayout();
-	mainHLayout->setContentsMargins(0, 0, 0, 0);
-	mainHLayout->setSpacing(0);
-	mainHLayout->addWidget(imageLabel);
+	QVBoxLayout *mainVLayout = new QVBoxLayout();
+	mainVLayout->setContentsMargins(0, 0, 0, 0);
+	mainVLayout->setSpacing(0);
+	mainVLayout->addWidget(imageLabel);
 
 	scrlArea = new QScrollArea;
 	scrlArea->setContentsMargins(0, 0, 0, 0);
@@ -53,13 +52,14 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	scrlArea->verticalScrollBar()->blockSignals(true);
 	scrlArea->horizontalScrollBar()->blockSignals(true);
 	scrlArea->setFrameStyle(0);
-	scrlArea->setLayout(mainHLayout);
+	scrlArea->setLayout(mainVLayout);
 	scrlArea->setWidgetResizable(true);
 
-	QVBoxLayout *mainVLayout = new QVBoxLayout;
-	mainVLayout->setContentsMargins(0, 0, 0, 0);
-	mainVLayout->addWidget(scrlArea);
-	this->setLayout(mainVLayout);
+	QVBoxLayout *scrollLayout = new QVBoxLayout;
+	scrollLayout->setContentsMargins(0, 0, 0, 0);
+	scrollLayout->setSpacing(0);
+	scrollLayout->addWidget(scrlArea);
+	this->setLayout(scrollLayout);
 
 	infoLabel = new QLabel(this);
 	infoLabel->setVisible(false);
