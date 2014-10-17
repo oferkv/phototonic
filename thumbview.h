@@ -129,7 +129,7 @@ signals:
 	void showBusy(bool busy);
 
 public slots:
-	void loadVisibleThumbs(int value = 0);
+	void loadVisibleThumbs(int scrollBarValue = 0);
 	void handleSelectionChanged(const QItemSelection& selection);
 	void invertSelection();
 

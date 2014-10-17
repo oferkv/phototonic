@@ -310,11 +310,16 @@ void ThumbView::abort()
 void ThumbView::loadVisibleThumbs(int scrollBarValue)
 {
 	static int lastScrollBarValue = 0;
-	scrolledForward = (scrollBarValue >= lastScrollBarValue);
+
+	if (GData::thumbsLayout == Compact) {
+		scrolledForward = true;
+	} else {
+		scrolledForward = (scrollBarValue >= lastScrollBarValue);
+	}
+
 	lastScrollBarValue = scrollBarValue;
 
 Start:
-
 	int first = getFirstVisibleThumb();
 	int last = getLastVisibleThumb();
 	if (abortOp || first < 0 || last < 0) 
