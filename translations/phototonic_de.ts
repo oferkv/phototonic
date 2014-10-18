@@ -381,27 +381,27 @@
     <message>
         <location filename="../mainwindow.cpp" line="331"/>
         <source>Copy Image Data</source>
-        <translation type="unfinished"></translation>
+        <translation>Bild-Daten kopieren</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="332"/>
         <source>Paste Image Data</source>
-        <translation type="unfinished"></translation>
+        <translation>Bild-Daten einfügen</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="392"/>
         <source>Show Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeugleiste anzeigen</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="473"/>
         <source>Load Clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Zwischenablage laden</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="712"/>
         <source>Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Bild</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="928"/>
