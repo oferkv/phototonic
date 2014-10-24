@@ -733,6 +733,7 @@ void Phototonic::createToolBars()
 	imageToolBar->addAction(cropAct);
 	imageToolBar->addAction(colorsAct);
 	imageToolBar->addAction(resizeAct);
+	imageToolBar->setVisible(false);
 	connect(imageToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setImageToolBarVisibility()));
 
 	setToolbarIconSize();
@@ -897,7 +898,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.4.5</h2>"
+	QString aboutString = "<h2>Phototonic v1.4.8</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -1757,8 +1758,7 @@ void Phototonic::readSettings()
 	initComplete = false;
 	needThumbsRefresh = false;
 
-	if (!GData::appSettings->contains("thumbsZoomVal"))
-	{
+	if (!GData::appSettings->contains("thumbsZoomVal")) {
 		resize(800, 600);
 		GData::appSettings->setValue("thumbsSortFlags", (int)0);
 		GData::appSettings->setValue("thumbsZoomVal", (int)150);
@@ -1786,10 +1786,10 @@ void Phototonic::readSettings()
 		GData::appSettings->setValue("editToolBarVisible", (bool)true);
 		GData::appSettings->setValue("goToolBarVisible", (bool)true);
 		GData::appSettings->setValue("viewToolBarVisible", (bool)true);
-		GData::appSettings->setValue("imageToolBarVisible", (bool)true);
+		GData::appSettings->setValue("imageToolBarVisible", (bool)false);
 		GData::appSettings->setValue("fsDockVisible", (bool)true);
 		GData::appSettings->setValue("iiDockVisible", (bool)true);
-		GData::appSettings->setValue("pvDockVisible", (bool)true);
+		GData::appSettings->setValue("pvDockVisible", (bool)false);
 		GData::appSettings->setValue("enableImageInfoFS", (bool)false);
 		GData::appSettings->setValue("showLabels", (bool)true);
 		GData::appSettings->setValue("smallIcons", (bool)false);
@@ -1862,6 +1862,7 @@ void Phototonic::setupDocks()
 	imageViewContainerWidget->setLayout(imageViewContainer);
 	
 	pvDock->setWidget(imageViewContainerWidget);
+	pvDock->setVisible(false);
 	connect(pvDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setPvDockVisibility()));	
 	connect(pvDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setPvDockVisibility()));	
 	addDockWidget(Qt::RightDockWidgetArea, pvDock);
@@ -2642,8 +2643,7 @@ void Phototonic::selectCurrentViewDir()
 
 void Phototonic::checkDirState(const QModelIndex &, int, int)
 {
-	if (!initComplete)
-	{
+	if (!initComplete) {
 		return;
 	}
 
