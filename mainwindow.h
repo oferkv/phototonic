@@ -64,10 +64,13 @@ private slots:
 	void rename();
 	void openOp();
 	void newImage();
+	void addNewBookmark();
+	void removeBookmark();
 	void deleteDir();
 	void createSubDirectory();
 	void checkDirState(const QModelIndex &, int, int);
 	void goSelectedDir(const QModelIndex &currDir);
+	void bookmarkClicked(QTreeWidgetItem *item, int col);
 	void goPathBarDir();
 	void setThumbsFilter();
 	void clearThumbsFilter();
@@ -138,6 +141,7 @@ private slots:
 	void setViewToolBarVisibility();
 	void setImageToolBarVisibility();
 	void setFsDockVisibility();
+	void setBmDockVisibility();
 	void setIiDockVisibility();
 	void setPvDockVisibility();
 	void lockDocks();
@@ -176,6 +180,8 @@ private:
 	QAction *copyImageAction;
 	QAction *pasteImageAction;
 	QAction *showClipboardAction;
+	QAction *addBookmarkAction;
+	QAction *removeBookmarkAction;
 
 	QActionGroup *sortTypesGroup;
 	QActionGroup *thumbLayoutsGroup;
@@ -258,9 +264,10 @@ private:
 	QCompleter *pathComplete;
 	QLabel *stateLabel;
 	QDockWidget *fsDock;
+	QDockWidget *bmDock;
 	QDockWidget *pvDock;
-	QFileSystemModel *fsModel;
 	FSTree *fsTree;
+	BookMarks *bookmarks;
 	QHBoxLayout *mainLayout;
 	QDockWidget *iiDock;
 	ThumbView *thumbView;
@@ -269,9 +276,11 @@ private:
 	QTimer *SlideShowTimer;
 	CopyMoveToDialog *copyMoveToDialog;
 	QWidget *fsDockOrigWidget;
+	QWidget *bmDockOrigWidget;
 	QWidget *iiDockOrigWidget;
 	QWidget *pvDockOrigWidget;
 	QWidget *fsDockEmptyWidget;
+	QWidget *bmDockEmptyWidget;
 	QWidget *iiDockEmptyWidget;
 	QWidget *pvDockEmptyWidget;
 	QVBoxLayout *imageViewContainer;
@@ -313,6 +322,7 @@ private:
 	void createStatusBar();
 	void setfsModelFlags();
 	void createFSTree();
+	void createBookmarks();
 	void writeSettings();
 	void readSettings();
 	void recordHistory(QString dir);

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2013 Ofer Kashayov <oferkv@live.com>
+ *  Copyright (C) 2013-2014 Ofer Kashayov <oferkv@live.com>
  *  This file is part of Phototonic Image Viewer.
  *
  *  Phototonic is free software: you can redistribute it and/or modify
@@ -720,50 +720,5 @@ void ThumbView::invertSelection()
 	QModelIndex lastIndex = thumbViewModel->index(thumbViewModel->rowCount() - 1, 0);
 	toggleSelection.select(firstIndex, lastIndex);
 	selectionModel()->select(toggleSelection, QItemSelectionModel::Toggle);
-}
-
-FSTree::FSTree(QWidget *parent) : QTreeView(parent)
-{
-	setAcceptDrops(true);
-	setDragEnabled(true);
-	setDragDropMode(QAbstractItemView::InternalMove);
-
-	connect(this, SIGNAL(expanded(const QModelIndex &)),
-								this, SLOT(resizeTreeColumn(const QModelIndex &)));
-	connect(this, SIGNAL(collapsed(const QModelIndex &)),
-								this, SLOT(resizeTreeColumn(const QModelIndex &)));
-}
-
-QModelIndex FSTree::getCurrentIndex()
-{
-	return selectedIndexes().first();
-}
-
-void FSTree::resizeTreeColumn(const QModelIndex &)
-{
-	resizeColumnToContents(0);
-}
-
-void FSTree::dragEnterEvent(QDragEnterEvent *event)
-{
-	QModelIndexList selectedDirs = selectionModel()->selectedRows();
-	dndOrigSelection = selectedDirs[0];
-	event->acceptProposedAction();
-}
-
-void FSTree::dragMoveEvent(QDragMoveEvent *event)
-{
-	setCurrentIndex(indexAt(event->pos()));
-}
-
-void FSTree::dropEvent(QDropEvent *event)
-{
-	if (event->source())
-	{
-		QString fstreeStr="FSTree";
-		bool dirOp = (event->source()->metaObject()->className() == fstreeStr);
-		emit dropOp(event->keyboardModifiers(), dirOp, event->mimeData()->urls().at(0).toLocalFile());
-		setCurrentIndex(dndOrigSelection);
-	}
 }
 

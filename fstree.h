@@ -16,30 +16,36 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef INFOVIEW_H
-#define INFOVIEW_H
-
 #include <QtWidgets>
+#include "global.h"
 
-class InfoView : public QTableView
+#ifndef FSTREE_H
+#define FSTREE_H
+
+class FSTree : public QTreeView
 {
 	Q_OBJECT
 
 public:
-	InfoView(QWidget *parent);
-	void clear();
-	void addEntry(QString &key, QString &value);
+	FSTree(QWidget *parent);
+	QFileSystemModel *fsModel;
+	QModelIndex getCurrentIndex();
+	void setModelFlags();
 
-public slots:
-	void showInfoViewMenu(QPoint pt);
-	void copyEntry();
+protected:
+	void dragEnterEvent(QDragEnterEvent *event);
+	void dragMoveEvent(QDragMoveEvent *event);
+	void dropEvent(QDropEvent *event);
+
+signals:
+	void dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvDirPath);
 
 private:
-	QStandardItemModel *infoModel;
-	QModelIndex selectedEntry;
-	QMenu *infoMenu;
-	QAction *copyAction;
+	QModelIndex dndOrigSelection;
 
+private slots:
+	void resizeTreeColumn(const QModelIndex &);
 };
 
-#endif // INFOVIEW_H
+#endif // FSTREE_H
+

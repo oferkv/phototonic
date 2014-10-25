@@ -1323,21 +1323,20 @@ CopyMoveToDialog::CopyMoveToDialog(QWidget *parent, QString thumbsPath) : QDialo
 	setLayout(mainVbox);
 
 	// Load paths list
-	QString key, val;
-	QSetIterator<QString> it(GData::copyMoveToPaths);
+	QSetIterator<QString> it(GData::bookmarkPaths);
 	while (it.hasNext())
 	{
-		QStandardItem *item = new QStandardItem(it.next());
+		QStandardItem *item = new QStandardItem(QIcon(":/images/bookmarks.png"), it.next());
 		pathsTableModel->insertRow(pathsTableModel->rowCount(), item);
 	}
 }
 
 void CopyMoveToDialog::savePaths()
 {
-	GData::copyMoveToPaths.clear();
+	GData::bookmarkPaths.clear();
     for (int i = 0; i < pathsTableModel->rowCount(); ++i)
     {
-    	GData::copyMoveToPaths.insert
+    	GData::bookmarkPaths.insert
     						(pathsTableModel->itemFromIndex(pathsTableModel->index(i, 0))->text());
    	}
 }
@@ -1380,7 +1379,7 @@ void CopyMoveToDialog::add()
 	if (dirName.isEmpty())
 		return;
 		
-	QStandardItem *item = new QStandardItem(dirName);
+	QStandardItem *item = new QStandardItem(QIcon(":/images/bookmarks.png"), dirName);
 	pathsTableModel->insertRow(pathsTableModel->rowCount(), item);
 
 	pathsTable->selectionModel()->clearSelection();

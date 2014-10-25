@@ -86,7 +86,7 @@ namespace GData
 	extern bool showHiddenFiles;
 	extern bool imageToolbarFullScreen;
 	extern QMap<QString, QString> externalApps;
-	extern QSet<QString> copyMoveToPaths;
+	extern QSet<QString> bookmarkPaths;
 	extern bool reverseMouseBehavior;
 	extern QModelIndexList copyCutIdxList;
 	extern bool copyOp;
@@ -101,6 +101,7 @@ namespace GData
 	extern bool smallIcons;
 	extern bool LockDocks;
 	extern bool fsDockVisible;
+	extern bool bmDockVisible;
 	extern bool iiDockVisible;
 	extern bool pvDockVisible;
 	extern bool ivDockVisible;

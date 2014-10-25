@@ -16,30 +16,26 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef INFOVIEW_H
-#define INFOVIEW_H
+#ifndef BOOKMARKS_H
+#define BOOKMARKS_H
 
 #include <QtWidgets>
+#include "global.h"
 
-class InfoView : public QTableView
+class BookMarks : public QTreeWidget
 {
 	Q_OBJECT
 
 public:
-	InfoView(QWidget *parent);
-	void clear();
-	void addEntry(QString &key, QString &value);
-
-public slots:
-	void showInfoViewMenu(QPoint pt);
-	void copyEntry();
+	BookMarks(QWidget *parent);
+	void reloadBookmarks();
 
 private:
-	QStandardItemModel *infoModel;
-	QModelIndex selectedEntry;
-	QMenu *infoMenu;
-	QAction *copyAction;
+	QModelIndex dndOrigSelection;
 
+private slots:
+	void resizeTreeColumn(const QModelIndex &);
 };
 
-#endif // INFOVIEW_H
+#endif // BOOKMARKS_H
+

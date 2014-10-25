@@ -19,25 +19,11 @@
 #ifndef THUMBVIEW_H
 #define THUMBVIEW_H
 
-#include <QListView>
-#include <QDir>
-#include <QDebug>
-#include <QStandardItem>
-#include <QTreeView>
-#include <QImageReader>
-#include <QMainWindow>
-#include <QWidget>
-#include <QDrag>
-#include <QApplication>
-#include <QScrollBar>
-#include <QMimeData>
-#include <QDragEnterEvent>
-#include <QDateTime>
-#include <QItemDelegate>
-#include <QDirIterator>
+#include <QtWidgets>
 #include <exiv2/exiv2.hpp>
-#include <QTimer>
 #include "global.h"
+#include "fstree.h"
+#include "bookmarks.h"
 #include "infoview.h"
 #include "imageview.h"
 
@@ -135,29 +121,6 @@ public slots:
 
 private slots:
 	void loadThumbsRange();
-};
-
-class FSTree : public QTreeView
-{
-	Q_OBJECT
-
-public:
-	FSTree(QWidget *parent);
-	QModelIndex getCurrentIndex();
-
-protected:
-	void dragEnterEvent(QDragEnterEvent *event);
-	void dragMoveEvent(QDragMoveEvent *event);
-	void dropEvent(QDropEvent *event);
-
-signals:
-	void dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvDirPath);
-
-private:
-	QModelIndex dndOrigSelection;
-
-private slots:
-	void resizeTreeColumn(const QModelIndex &);
 };
 
 #endif // THUMBVIEW_H

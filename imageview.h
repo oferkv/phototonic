@@ -19,21 +19,7 @@
 #ifndef IMAGEVIEW_H
 #define IMAGEVIEW_H
 
-#include <QApplication>
-#include <QLabel>
-#include <QGridLayout>
-#include <QScrollArea>
-#include <QImageReader>
-#include <QScrollBar>
-#include <QMouseEvent>
-#include <QFileDialog>
-#include <QTimer>
-#include <QMessageBox>
-#include <QMenu>
-#include <QPainter>
-#include <QClipboard>
-#include <QMovie>
-#include <QToolTip>
+#include <QtWidgets>
 
 class ImageView : public QWidget
 {

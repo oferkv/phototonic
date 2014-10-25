@@ -32,6 +32,7 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	createToolBars();
 	createStatusBar();
 	createFSTree();
+	createBookmarks();
 	createImageView();
 	updateExternalApps();
 	loadShortcuts();
@@ -480,6 +481,14 @@ void Phototonic::createActions()
 	chooseAppAct = new QAction(tr("Manage External Applications"), this);
 	connect(chooseAppAct, SIGNAL(triggered()), this, SLOT(chooseExternalApp()));
 
+	addBookmarkAction = new QAction(tr("Add Bookmark"), this);
+	addBookmarkAction->setIcon(QIcon(":/images/new_bookmark.png"));
+	connect(addBookmarkAction, SIGNAL(triggered()), this, SLOT(addNewBookmark()));
+
+	removeBookmarkAction = new QAction(tr("Remove Bookmark"), this);
+	removeBookmarkAction->setIcon(QIcon::fromTheme("edit-delete", QIcon(":/images/delete.png")));
+	connect(removeBookmarkAction, SIGNAL(triggered()), this, SLOT(removeBookmark()));
+
 	zoomOutAct = new QAction(tr("Zoom Out"), this);
 	connect(zoomOutAct, SIGNAL(triggered()), this, SLOT(zoomOut()));
 	zoomOutAct->setIcon(QIcon::fromTheme("zoom-out", QIcon(":/images/zoom_out.png")));
@@ -575,6 +584,7 @@ void Phototonic::createMenus()
 	fileMenu->addAction(subFoldersAction);
 	fileMenu->addAction(createDirAction);
 	fileMenu->addAction(showClipboardAction);
+	fileMenu->addAction(addBookmarkAction);
 	fileMenu->addSeparator();
 	fileMenu->addAction(exitAction);
 
@@ -767,21 +777,11 @@ void Phototonic::createStatusBar()
 	statusBar()->setStyleSheet("QStatusBar::item { border: 0px solid black }; ");
 }
 
-void Phototonic::setfsModelFlags()
-{
-	fsModel->setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
-	if (GData::showHiddenFiles)
-		fsModel->setFilter(fsModel->filter() | QDir::Hidden);
-}
-
 void Phototonic::createFSTree()
 {
-	fsModel = new QFileSystemModel;
-	fsModel->setRootPath("");
-	setfsModelFlags();
-
 	fsDock = new QDockWidget(tr("File System"), this);
 	fsDock->setObjectName("File System");
+
 	fsTree = new FSTree(fsDock);
 	fsDock->setWidget(fsTree);
 	connect(fsDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setFsDockVisibility()));	
@@ -797,22 +797,37 @@ void Phototonic::createFSTree()
 	fsTree->addAction(pasteAction);
 	addMenuSeparator(fsTree);
 	fsTree->addAction(openWithMenuAct);
+	fsTree->addAction(addBookmarkAction);
 	fsTree->setContextMenuPolicy(Qt::ActionsContextMenu);
 
-	fsTree->setModel(fsModel);
-	for (int i = 1; i <= 3; ++i)
-		fsTree->hideColumn(i);
-	fsTree->setHeaderHidden(true);
 	connect(fsTree, SIGNAL(clicked(const QModelIndex&)),
 				this, SLOT(goSelectedDir(const QModelIndex &)));
 
-	connect(fsModel, SIGNAL(rowsRemoved(const QModelIndex &, int, int)),
+	connect(fsTree->fsModel, SIGNAL(rowsRemoved(const QModelIndex &, int, int)),
 				this, SLOT(checkDirState(const QModelIndex &, int, int)));
 
 	connect(fsTree, SIGNAL(dropOp(Qt::KeyboardModifiers, bool, QString)),
 				this, SLOT(dropOp(Qt::KeyboardModifiers, bool, QString)));
 
-	fsTree->setCurrentIndex(fsModel->index(QDir::currentPath()));
+	fsTree->setCurrentIndex(fsTree->fsModel->index(QDir::currentPath()));
+}
+
+void Phototonic::createBookmarks()
+{
+	bmDock = new QDockWidget(tr("Bookmarks"), this);
+	bmDock->setObjectName("Bookmarks");
+	bookmarks = new BookMarks(bmDock);
+	bmDock->setWidget(bookmarks);
+	bmDock->setVisible(false);
+	
+	connect(bmDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setBmDockVisibility()));	
+	connect(bmDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setBmDockVisibility()));	
+	connect(bookmarks, SIGNAL(itemClicked(QTreeWidgetItem *, int)),
+					this, SLOT(bookmarkClicked(QTreeWidgetItem *, int)));
+	addDockWidget(Qt::LeftDockWidgetArea, bmDock);
+
+	bookmarks->addAction(removeBookmarkAction);
+	bookmarks->setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
 void Phototonic::sortThumbnains()
@@ -880,7 +895,7 @@ void Phototonic::setSquarishThumbs()
 void Phototonic::showHiddenFiles()
 {
 	GData::showHiddenFiles = actShowHidden->isChecked();
-	setfsModelFlags();
+	fsTree->setModelFlags();
 	refreshThumbs(false);
 }
 
@@ -898,7 +913,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.4.8</h2>"
+	QString aboutString = "<h2>Phototonic v1.4.9</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -1144,7 +1159,8 @@ void Phototonic::copyMoveImages()
 			}
 		}
 	}
-	
+
+	bookmarks->reloadBookmarks();
 	delete(copyMoveToDialog);
 	copyMoveToDialog = 0;
 }
@@ -1555,7 +1571,7 @@ void Phototonic::deleteOp()
 void Phototonic::goTo(QString path)
 {
 	thumbView->setNeedScroll(true);
-	fsTree->setCurrentIndex(fsModel->index(path));
+	fsTree->setCurrentIndex(fsTree->fsModel->index(path));
 	thumbView->currentViewDir = path;
 	refreshThumbs(true);
 }
@@ -1582,8 +1598,13 @@ void Phototonic::goPathBarDir()
 	}
 	
 	thumbView->currentViewDir = pathBar->text();
-	selectCurrentViewDir();
 	refreshThumbs(true);
+	selectCurrentViewDir();
+}
+
+void Phototonic::bookmarkClicked(QTreeWidgetItem *item, int col)
+{
+	goTo(item->toolTip(col));
 }
 
 void Phototonic::setThumbsFilter()
@@ -1745,7 +1766,7 @@ void Phototonic::writeSettings()
 	int idx = 0;
 	GData::appSettings->beginGroup("CopyMoveToPaths");
 	GData::appSettings->remove("");
-	QSetIterator<QString> pathsIter(GData::copyMoveToPaths);
+	QSetIterator<QString> pathsIter(GData::bookmarkPaths);
 	while (pathsIter.hasNext())
 	{
 		GData::appSettings->setValue("path" + ++idx, pathsIter.next());
@@ -1788,6 +1809,7 @@ void Phototonic::readSettings()
 		GData::appSettings->setValue("viewToolBarVisible", (bool)true);
 		GData::appSettings->setValue("imageToolBarVisible", (bool)false);
 		GData::appSettings->setValue("fsDockVisible", (bool)true);
+		GData::appSettings->setValue("bmDockVisible", (bool)false);
 		GData::appSettings->setValue("iiDockVisible", (bool)true);
 		GData::appSettings->setValue("pvDockVisible", (bool)false);
 		GData::appSettings->setValue("enableImageInfoFS", (bool)false);
@@ -1823,6 +1845,7 @@ void Phototonic::readSettings()
 	viewToolBarVisible = GData::appSettings->value("viewToolBarVisible").toBool();
 	imageToolBarVisible = GData::appSettings->value("imageToolBarVisible").toBool();
 	GData::fsDockVisible = GData::appSettings->value("fsDockVisible").toBool();
+	GData::bmDockVisible = GData::appSettings->value("bmDockVisible").toBool();
 	GData::iiDockVisible = GData::appSettings->value("iiDockVisible").toBool();
 	GData::pvDockVisible = GData::appSettings->value("pvDockVisible").toBool();
 	GData::startupDir = (GData::StartupDir)GData::appSettings->value("startupDir").toInt();
@@ -1845,7 +1868,7 @@ void Phototonic::readSettings()
 	QStringList paths = GData::appSettings->childKeys();
 	for (int i = 0; i < paths.size(); ++i)
 	{
-		GData::copyMoveToPaths.insert(GData::appSettings->value(paths.at(i)).toString());
+		GData::bookmarkPaths.insert(GData::appSettings->value(paths.at(i)).toString());
 	}
 	GData::appSettings->endGroup();
 }
@@ -1875,9 +1898,11 @@ void Phototonic::setupDocks()
 	docksNToolbarsAct->menu()->addAction(actLockDocks);
 
 	fsDockOrigWidget = fsDock->titleBarWidget();
+	bmDockOrigWidget = bmDock->titleBarWidget();
 	iiDockOrigWidget = iiDock->titleBarWidget();
 	pvDockOrigWidget = pvDock->titleBarWidget();
 	fsDockEmptyWidget = new QWidget;
+	bmDockEmptyWidget = new QWidget;
 	iiDockEmptyWidget = new QWidget;
 	pvDockEmptyWidget = new QWidget;
 	lockDocks();
@@ -1890,15 +1915,14 @@ void Phototonic::lockDocks()
 	if (initComplete)
 		GData::LockDocks = actLockDocks->isChecked();
 
-	if (GData::LockDocks)
-	{
+	if (GData::LockDocks) {
 		fsDock->setTitleBarWidget(fsDockEmptyWidget);
+		bmDock->setTitleBarWidget(bmDockEmptyWidget);
 		iiDock->setTitleBarWidget(iiDockEmptyWidget);
 		pvDock->setTitleBarWidget(pvDockEmptyWidget);
-	}
-	else
-	{
+	} else {
 		fsDock->setTitleBarWidget(fsDockOrigWidget);
+		bmDock->setTitleBarWidget(bmDockOrigWidget);
 		iiDock->setTitleBarWidget(iiDockOrigWidget);
 		pvDock->setTitleBarWidget(pvDockOrigWidget);
 	}
@@ -2115,14 +2139,17 @@ void Phototonic::setDocksVisibility(bool visible)
 
 	if (!visible) {
 		fsDock->setMaximumHeight(fsDock->height());
+		bmDock->setMaximumHeight(bmDock->height());
 		iiDock->setMaximumHeight(iiDock->height());
 		pvDock->setMaximumHeight(pvDock->height());
 		fsDock->setMaximumWidth(fsDock->width());
+		bmDock->setMaximumWidth(bmDock->width());
 		iiDock->setMaximumWidth(iiDock->width());
 		pvDock->setMaximumWidth(pvDock->width());
 	}
 
 	fsDock->setVisible(visible? GData::fsDockVisible : false);
+	bmDock->setVisible(visible? GData::fsDockVisible : false);
 	iiDock->setVisible(visible? GData::iiDockVisible : false);
 	pvDock->setVisible(visible? GData::pvDockVisible : false);
 
@@ -2203,6 +2230,14 @@ void Phototonic::setFsDockVisibility()
 		return;
 
 	GData::fsDockVisible = fsDock->isVisible();
+}
+
+void Phototonic::setBmDockVisibility()
+{
+	if (GData::layoutMode == imageViewIdx)
+		return;
+
+	GData::bmDockVisible = bmDock->isVisible();
 }
 
 void Phototonic::setIiDockVisibility()
@@ -2535,9 +2570,11 @@ void Phototonic::hideViewer()
 	setThumbviewWindowTitle();
 
 	fsDock->setMaximumHeight(QWIDGETSIZE_MAX);
+	bmDock->setMaximumHeight(QWIDGETSIZE_MAX);
 	iiDock->setMaximumHeight(QWIDGETSIZE_MAX);
 	pvDock->setMaximumHeight(QWIDGETSIZE_MAX);
 	fsDock->setMaximumWidth(QWIDGETSIZE_MAX);
+	bmDock->setMaximumWidth(QWIDGETSIZE_MAX);
 	iiDock->setMaximumWidth(QWIDGETSIZE_MAX);
 	pvDock->setMaximumWidth(QWIDGETSIZE_MAX);
 
@@ -2633,7 +2670,7 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvD
 
 void Phototonic::selectCurrentViewDir()
 {
-	QModelIndex idx = fsModel->index(thumbView->currentViewDir); 
+	QModelIndex idx = fsTree->fsModel->index(thumbView->currentViewDir); 
 	if (idx.isValid())
 	{
 		fsTree->expand(idx);
@@ -2735,7 +2772,7 @@ void Phototonic::setThumbviewWindowTitle()
 void Phototonic::renameDir()
 {
 	QModelIndexList selectedDirs = fsTree->selectionModel()->selectedRows();
-	QFileInfo dirInfo = QFileInfo(fsModel->filePath(selectedDirs[0]));
+	QFileInfo dirInfo = QFileInfo(fsTree->fsModel->filePath(selectedDirs[0]));
 
 	bool ok;
 	QString title = tr("Rename ") + dirInfo.completeBaseName();
@@ -2768,7 +2805,7 @@ void Phototonic::renameDir()
 	}
 
 	if (thumbView->currentViewDir == dirInfo.absoluteFilePath()) 
-		fsTree->setCurrentIndex(fsModel->index(newFullPathName));
+		fsTree->setCurrentIndex(fsTree->fsModel->index(newFullPathName));
 	else
 		selectCurrentViewDir();
 }
@@ -2857,7 +2894,7 @@ void Phototonic::deleteDir()
 {
 	bool ok = true;
 	QModelIndexList selectedDirs = fsTree->selectionModel()->selectedRows();
-	QString deletePath = fsModel->filePath(selectedDirs[0]);
+	QString deletePath = fsTree->fsModel->filePath(selectedDirs[0]);
 	QModelIndex idxAbove = fsTree->indexAbove(selectedDirs[0]);
 	QFileInfo dirInfo = QFileInfo(deletePath);
 	QString question = tr("Permanently delete ") + dirInfo.completeBaseName() + tr(" and all of its contents?");
@@ -2902,7 +2939,7 @@ void Phototonic::deleteDir()
 void Phototonic::createSubDirectory()
 {
 	QModelIndexList selectedDirs = fsTree->selectionModel()->selectedRows();
-	QFileInfo dirInfo = QFileInfo(fsModel->filePath(selectedDirs[0]));
+	QFileInfo dirInfo = QFileInfo(fsTree->fsModel->filePath(selectedDirs[0]));
 
 	bool ok;
 	QString newDirName = QInputDialog::getText(this, tr("New Sub folder"), 
@@ -2942,7 +2979,7 @@ QString Phototonic::getSelectedPath()
 	QModelIndexList selectedDirs = fsTree->selectionModel()->selectedRows();
 	if (selectedDirs.size() && selectedDirs[0].isValid())
 	{
-		QFileInfo dirInfo = QFileInfo(fsModel->filePath(selectedDirs[0]));
+		QFileInfo dirInfo = QFileInfo(fsTree->fsModel->filePath(selectedDirs[0]));
 		return dirInfo.absoluteFilePath();
 	}
 	else
@@ -3037,5 +3074,17 @@ void Phototonic::setInterfaceEnabled(bool enable)
 	} else {
 		imageView->setCursorHiding(false);
 	}
+}
+
+void Phototonic::addNewBookmark()
+{
+	GData::bookmarkPaths.insert(getSelectedPath());
+	bookmarks->reloadBookmarks();
+}
+
+void Phototonic::removeBookmark()
+{
+	GData::bookmarkPaths.remove(getSelectedPath());
+	bookmarks->reloadBookmarks();
 }
 

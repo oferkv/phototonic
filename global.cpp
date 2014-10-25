@@ -68,7 +68,7 @@ namespace GData
 	bool showHiddenFiles;
 	bool imageToolbarFullScreen;
 	QMap<QString, QString> externalApps;
-	QSet<QString> copyMoveToPaths;
+	QSet<QString> bookmarkPaths;
 	bool reverseMouseBehavior;
 	QModelIndexList copyCutIdxList;
 	bool copyOp;
@@ -83,6 +83,7 @@ namespace GData
 	bool smallIcons;
 	bool LockDocks;
 	bool fsDockVisible;
+	bool bmDockVisible;
 	bool iiDockVisible;
 	bool pvDockVisible;
 	bool ivDockVisible;
