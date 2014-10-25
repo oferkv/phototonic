@@ -487,7 +487,6 @@ void Phototonic::createActions()
 
 	removeBookmarkAction = new QAction(tr("Remove Bookmark"), this);
 	removeBookmarkAction->setIcon(QIcon::fromTheme("edit-delete", QIcon(":/images/delete.png")));
-	connect(removeBookmarkAction, SIGNAL(triggered()), this, SLOT(removeBookmark()));
 
 	zoomOutAct = new QAction(tr("Zoom Out"), this);
 	connect(zoomOutAct, SIGNAL(triggered()), this, SLOT(zoomOut()));
@@ -824,6 +823,7 @@ void Phototonic::createBookmarks()
 	connect(bmDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setBmDockVisibility()));	
 	connect(bookmarks, SIGNAL(itemClicked(QTreeWidgetItem *, int)),
 					this, SLOT(bookmarkClicked(QTreeWidgetItem *, int)));
+	connect(removeBookmarkAction, SIGNAL(triggered()), bookmarks, SLOT(removeBookmark()));
 	addDockWidget(Qt::LeftDockWidgetArea, bmDock);
 
 	bookmarks->addAction(removeBookmarkAction);
@@ -913,7 +913,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.4.10</h2>"
+	QString aboutString = "<h2>Phototonic v1.4.11</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -3085,12 +3085,6 @@ void Phototonic::setInterfaceEnabled(bool enable)
 void Phototonic::addNewBookmark()
 {
 	GData::bookmarkPaths.insert(getSelectedPath());
-	bookmarks->reloadBookmarks();
-}
-
-void Phototonic::removeBookmark()
-{
-	GData::bookmarkPaths.remove(getSelectedPath());
 	bookmarks->reloadBookmarks();
 }
 

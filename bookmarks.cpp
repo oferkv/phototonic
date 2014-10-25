@@ -49,3 +49,11 @@ void BookMarks::resizeTreeColumn(const QModelIndex &)
 	resizeColumnToContents(0);
 }
 
+void BookMarks::removeBookmark()
+{
+	if (selectedItems().size() == 1) {
+		GData::bookmarkPaths.remove(selectedItems().at(0)->toolTip(0));
+		reloadBookmarks();
+	}
+}
+

@@ -67,7 +67,6 @@ private slots:
 	void openOp();
 	void newImage();
 	void addNewBookmark();
-	void removeBookmark();
 	void deleteDir();
 	void createSubDirectory();
 	void checkDirState(const QModelIndex &, int, int);

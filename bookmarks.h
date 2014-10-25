@@ -30,6 +30,9 @@ public:
 	BookMarks(QWidget *parent);
 	void reloadBookmarks();
 
+public slots:
+	void removeBookmark();
+
 private:
 	QModelIndex dndOrigSelection;
 
