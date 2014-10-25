@@ -30,6 +30,8 @@ class Phototonic : public QMainWindow
 
 public:
 	Phototonic(QWidget *parent = 0);
+	QMenu *createPopupMenu();
+	
 	int copyCutCount;
 
 protected:

@@ -913,7 +913,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.4.9</h2>"
+	QString aboutString = "<h2>Phototonic v1.4.10</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -1891,11 +1891,8 @@ void Phototonic::setupDocks()
 	addDockWidget(Qt::RightDockWidgetArea, pvDock);
 	addDockWidget(Qt::LeftDockWidgetArea, iiDock);
 
-	QAction *docksNToolbarsAct = viewMenu->insertMenu(refreshAction, QMainWindow::createPopupMenu());
+	QAction *docksNToolbarsAct = viewMenu->insertMenu(refreshAction, createPopupMenu());
 	docksNToolbarsAct->setText(tr("Docks and Toolbars"));
-	docksNToolbarsAct->menu()->addSeparator();
-	docksNToolbarsAct->menu()->addAction(actSmallIcons);
-	docksNToolbarsAct->menu()->addAction(actLockDocks);
 
 	fsDockOrigWidget = fsDock->titleBarWidget();
 	bmDockOrigWidget = bmDock->titleBarWidget();
@@ -1926,6 +1923,15 @@ void Phototonic::lockDocks()
 		iiDock->setTitleBarWidget(iiDockOrigWidget);
 		pvDock->setTitleBarWidget(pvDockOrigWidget);
 	}
+}
+
+QMenu *Phototonic::createPopupMenu()
+{
+	QMenu *testMenu = QMainWindow::createPopupMenu();
+	testMenu->addSeparator();
+	testMenu->addAction(actSmallIcons);
+	testMenu->addAction(actLockDocks);
+	return testMenu;
 }
 
 void Phototonic::loadShortcuts()
