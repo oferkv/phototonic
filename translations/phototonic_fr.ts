@@ -481,7 +481,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="392"/>
         <source>Show Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher la barre d&apos;outils</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="397"/>
@@ -848,22 +848,22 @@
     <message>
         <location filename="../mainwindow.cpp" line="331"/>
         <source>Copy Image Data</source>
-        <translation type="unfinished"></translation>
+        <translation>Copier le contenu de l&apos;image</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="332"/>
         <source>Paste Image Data</source>
-        <translation type="unfinished"></translation>
+        <translation>Coller le contenu de l&apos;image</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="473"/>
         <source>Load Clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Charger le presse-papier</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="712"/>
         <source>Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Image</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="929"/>
