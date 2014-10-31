@@ -817,7 +817,6 @@ void Phototonic::createBookmarks()
 	bmDock->setObjectName("Bookmarks");
 	bookmarks = new BookMarks(bmDock);
 	bmDock->setWidget(bookmarks);
-	bmDock->setVisible(false);
 	
 	connect(bmDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setBmDockVisibility()));	
 	connect(bmDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setBmDockVisibility()));	
@@ -915,7 +914,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.4.16</h2>"
+	QString aboutString = "<h2>Phototonic v1.4.17</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -1811,14 +1810,15 @@ void Phototonic::readSettings()
 		GData::appSettings->setValue("viewToolBarVisible", (bool)true);
 		GData::appSettings->setValue("imageToolBarVisible", (bool)false);
 		GData::appSettings->setValue("fsDockVisible", (bool)true);
-		GData::appSettings->setValue("bmDockVisible", (bool)false);
+		GData::appSettings->setValue("bmDockVisible", (bool)true);
 		GData::appSettings->setValue("iiDockVisible", (bool)true);
-		GData::appSettings->setValue("pvDockVisible", (bool)false);
+		GData::appSettings->setValue("pvDockVisible", (bool)true);
 		GData::appSettings->setValue("enableImageInfoFS", (bool)false);
 		GData::appSettings->setValue("showLabels", (bool)true);
 		GData::appSettings->setValue("smallIcons", (bool)false);
 		GData::appSettings->setValue("LockDocks", (bool)true);
 		GData::appSettings->setValue("imageToolbarFullScreen", (bool)false);
+		GData::bookmarkPaths.insert(QDir::homePath());
 	}
 
 	GData::backgroundColor = GData::appSettings->value("backgroundColor").value<QColor>();
@@ -1887,11 +1887,10 @@ void Phototonic::setupDocks()
 	imageViewContainerWidget->setLayout(imageViewContainer);
 	
 	pvDock->setWidget(imageViewContainerWidget);
-	pvDock->setVisible(false);
 	connect(pvDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setPvDockVisibility()));	
 	connect(pvDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setPvDockVisibility()));	
 	addDockWidget(Qt::RightDockWidgetArea, pvDock);
-	addDockWidget(Qt::LeftDockWidgetArea, iiDock);
+	addDockWidget(Qt::RightDockWidgetArea, iiDock);
 
 	QAction *docksNToolbarsAct = viewMenu->insertMenu(refreshAction, createPopupMenu());
 	docksNToolbarsAct->setText(tr("Docks and Toolbars"));
@@ -2634,8 +2633,12 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvD
 	} else if (QObject::sender() == bookmarks) {
 		if (bookmarks->currentItem()) {
 			destDir = bookmarks->currentItem()->toolTip(0);
+		} else {
+			addBookmark(cpMvDirPath);
+			return;
 		}
 	} else {
+		// Unknown sender
 		return;		
 	}
 	
@@ -3090,7 +3093,12 @@ void Phototonic::setInterfaceEnabled(bool enable)
 
 void Phototonic::addNewBookmark()
 {
-	GData::bookmarkPaths.insert(getSelectedPath());
+	addBookmark(getSelectedPath());
+}
+
+void Phototonic::addBookmark(QString path)
+{
+	GData::bookmarkPaths.insert(path);
 	bookmarks->reloadBookmarks();
 }
 

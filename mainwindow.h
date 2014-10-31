@@ -336,6 +336,7 @@ private:
 	bool removeDirOp(QString dirToDelete);
 	void selectThumbByRow(int row);
 	void setInterfaceEnabled(bool enable);
+	void addBookmark(QString path);
 };
 
 #endif // MAINWINDOW_H
