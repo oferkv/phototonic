@@ -914,7 +914,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.4.18</h2>"
+	QString aboutString = "<h2>Phototonic v1.4.19</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -2135,15 +2135,6 @@ void Phototonic::newImage()
 
 void Phototonic::setDocksVisibility(bool visible)
 {
-	menuBar()->setVisible(visible);
-	menuBar()->setDisabled(!visible);
-	statusBar()->setVisible(visible);
-
-	editToolBar->setVisible(visible? editToolBarVisible : false);
-	goToolBar->setVisible(visible? goToolBarVisible : false);
-	viewToolBar->setVisible(visible? viewToolBarVisible : false);
-	imageToolBar->setVisible(visible? imageToolBarVisible : GData::imageToolbarFullScreen);
-
 	if (!visible) {
 		fsDock->setMaximumHeight(fsDock->height());
 		bmDock->setMaximumHeight(bmDock->height());
@@ -2159,6 +2150,15 @@ void Phototonic::setDocksVisibility(bool visible)
 	bmDock->setVisible(visible? GData::fsDockVisible : false);
 	iiDock->setVisible(visible? GData::iiDockVisible : false);
 	pvDock->setVisible(visible? GData::pvDockVisible : false);
+
+	menuBar()->setVisible(visible);
+	menuBar()->setDisabled(!visible);
+	statusBar()->setVisible(visible);
+
+	editToolBar->setVisible(visible? editToolBarVisible : false);
+	goToolBar->setVisible(visible? goToolBarVisible : false);
+	viewToolBar->setVisible(visible? viewToolBarVisible : false);
+	imageToolBar->setVisible(visible? imageToolBarVisible : GData::imageToolbarFullScreen);
 
 	setContextMenuPolicy(Qt::PreventContextMenu);
 }
