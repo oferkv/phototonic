@@ -699,6 +699,7 @@ void ImageView::loadImage(QString imageFileName)
 	if (!GData::keepZoomFactor)
 		GData::imageZoomFactor = 1.0;
 
+	QApplication::processEvents();
 	reload();
 }
 
