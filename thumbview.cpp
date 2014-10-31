@@ -463,9 +463,14 @@ void ThumbView::load()
 		thumbsDir->setFilter(thumbsDir->filter() | QDir::Hidden);
 	
 	thumbsDir->setPath(currentViewDir);
-	thumbsDir->setSorting(thumbsSortFlags);
-	thumbViewModel->clear();
 
+	QDir::SortFlags tempThumbsSortFlags = thumbsSortFlags;
+	if (tempThumbsSortFlags & QDir::Size || tempThumbsSortFlags & QDir::Time) {
+		tempThumbsSortFlags ^= QDir::Reversed;
+	}
+	thumbsDir->setSorting(tempThumbsSortFlags);
+
+	thumbViewModel->clear();
 	setSpacing(GData::thumbSpacing);
 
 	if (isNeedScroll)
