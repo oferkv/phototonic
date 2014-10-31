@@ -824,6 +824,8 @@ void Phototonic::createBookmarks()
 	connect(bookmarks, SIGNAL(itemClicked(QTreeWidgetItem *, int)),
 					this, SLOT(bookmarkClicked(QTreeWidgetItem *, int)));
 	connect(removeBookmarkAction, SIGNAL(triggered()), bookmarks, SLOT(removeBookmark()));
+	connect(bookmarks, SIGNAL(dropOp(Qt::KeyboardModifiers, bool, QString)),
+				this, SLOT(dropOp(Qt::KeyboardModifiers, bool, QString)));
 	addDockWidget(Qt::LeftDockWidgetArea, bmDock);
 
 	bookmarks->addAction(removeBookmarkAction);
@@ -913,7 +915,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.4.11</h2>"
+	QString aboutString = "<h2>Phototonic v1.4.14</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -2625,23 +2627,30 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvD
 	QApplication::restoreOverrideCursor();
 	GData::copyOp = (keyMods == Qt::ControlModifier);
 	QMessageBox msgBox;
+	QString destDir;
 
-	QString destDir = getSelectedPath();
-	if (!isValidPath(destDir))
-	{
+	if (QObject::sender() == fsTree) {
+		destDir = getSelectedPath();
+	} else if (QObject::sender() == bookmarks) {
+		if (bookmarks->currentItem()) {
+			destDir = bookmarks->currentItem()->toolTip(0);
+		}
+	} else {
+		return;		
+	}
+	
+	if (!isValidPath(destDir)) {
 		msgBox.critical(this, tr("Error"), tr("Can not move or copy images to this folder"));
 		selectCurrentViewDir();
 		return;
 	}
 	
-	if (destDir == 	thumbView->currentViewDir)
-	{
+	if (destDir == 	thumbView->currentViewDir) {
 		msgBox.critical(this, tr("Error"), tr("Destination folder is same as source"));
 		return;
 	}
 
-	if (dirOp)
-	{
+	if (dirOp) {
 		QString dirOnly = 
 			cpMvDirPath.right(cpMvDirPath.size() - cpMvDirPath.lastIndexOf(QDir::separator()) - 1);
 
@@ -2649,24 +2658,21 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvD
 		int ret = QMessageBox::question(this, tr("Move folder"), question,
 							QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
 
-		if (ret == QMessageBox::Yes)
-		{
+		if (ret == QMessageBox::Yes) {
 			QFile dir(cpMvDirPath);
 			bool ok = dir.rename(destDir + QDir::separator() + dirOnly);
-			if (!ok)
-			{
+			if (!ok) {
 				QMessageBox msgBox;
 				msgBox.critical(this, tr("Error"), tr("Failed to move folder"));
 			}
 			setStatus(tr("Folder moved"));
 		}
-	}
-	else
-	{
+	} else {
 		CpMvDialog *cpMvdialog = new CpMvDialog(this);
 		GData::copyCutIdxList = thumbView->selectionModel()->selectedIndexes();
 		cpMvdialog->exec(thumbView, destDir, false);
-		QString state = QString((GData::copyOp? tr("Copied ") : tr("Moved ")) + QString::number(cpMvdialog->nfiles) + tr(" images"));
+		QString state = QString((GData::copyOp? tr("Copied ") : tr("Moved ")) +
+												QString::number(cpMvdialog->nfiles) + tr(" images"));
 		setStatus(state);
 		delete(cpMvdialog);
 	}

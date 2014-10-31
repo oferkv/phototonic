@@ -38,6 +38,14 @@ private:
 
 private slots:
 	void resizeTreeColumn(const QModelIndex &);
+
+protected:
+	void dragEnterEvent(QDragEnterEvent *event);
+	void dragMoveEvent(QDragMoveEvent *event);
+	void dropEvent(QDropEvent *event);
+
+signals:
+	void dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvDirPath);
 };
 
 #endif // BOOKMARKS_H

@@ -20,6 +20,10 @@
 
 BookMarks::BookMarks(QWidget *parent) : QTreeWidget(parent)
 {
+	setAcceptDrops(true);
+	setDragEnabled(false);
+	setDragDropMode(QAbstractItemView::DropOnly);
+
 	connect(this, SIGNAL(expanded(const QModelIndex &)),
 								this, SLOT(resizeTreeColumn(const QModelIndex &)));
 	connect(this, SIGNAL(collapsed(const QModelIndex &)),
@@ -54,6 +58,30 @@ void BookMarks::removeBookmark()
 	if (selectedItems().size() == 1) {
 		GData::bookmarkPaths.remove(selectedItems().at(0)->toolTip(0));
 		reloadBookmarks();
+	}
+}
+
+void BookMarks::dragEnterEvent(QDragEnterEvent *event)
+{
+	QModelIndexList selectedDirs = selectionModel()->selectedRows();
+
+	if (selectedDirs.size() > 0) {
+		dndOrigSelection = selectedDirs[0];
+	}
+	event->acceptProposedAction();
+}
+
+void BookMarks::dragMoveEvent(QDragMoveEvent *event)
+{
+	setCurrentIndex(indexAt(event->pos()));
+}
+
+void BookMarks::dropEvent(QDropEvent *event)
+{
+	if (event->source()) {
+		QString fstreeStr("FSTree");
+		bool dirOp = (event->source()->metaObject()->className() == fstreeStr);
+		emit dropOp(event->keyboardModifiers(), dirOp, event->mimeData()->urls().at(0).toLocalFile());
 	}
 }
 

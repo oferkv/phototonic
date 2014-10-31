@@ -54,8 +54,10 @@ void FSTree::resizeTreeColumn(const QModelIndex &)
 void FSTree::dragEnterEvent(QDragEnterEvent *event)
 {
 	QModelIndexList selectedDirs = selectionModel()->selectedRows();
-	dndOrigSelection = selectedDirs[0];
-	event->acceptProposedAction();
+	if (selectedDirs.size() > 0) {
+		dndOrigSelection = selectedDirs[0];
+		event->acceptProposedAction();
+	}
 }
 
 void FSTree::dragMoveEvent(QDragMoveEvent *event)

@@ -291,8 +291,7 @@ void ThumbView::handleSelectionChanged(const QItemSelection&)
 void ThumbView::startDrag(Qt::DropActions)
 {
 	QModelIndexList indexesList = selectionModel()->selectedIndexes();
-	if (indexesList.isEmpty())
-	{
+	if (indexesList.isEmpty()) {
 		return;
 	}
 
