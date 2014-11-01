@@ -175,23 +175,18 @@ void ThumbView::updateExifInfo(QString imageFullPath)
 	QString key;
 	QString val;
 
-	try
-	{
+	try	{
 		exifImage = Exiv2::ImageFactory::open(imageFullPath.toStdString());
+		exifImage->readMetadata();
 	}
-	catch (Exiv2::Error &error)
-	{
+	catch (Exiv2::Error &error) {
 		return;
 	}
 
-	exifImage->readMetadata();
 	Exiv2::ExifData &exifData = exifImage->exifData();
-
-	if (!exifData.empty())
-	{
+	if (!exifData.empty()) {
 		Exiv2::ExifData::const_iterator end = exifData.end();
-		for (Exiv2::ExifData::const_iterator md = exifData.begin(); md != end; ++md)
-		{
+		for (Exiv2::ExifData::const_iterator md = exifData.begin(); md != end; ++md) 	{
 			// qDebug() << Exiv2::toString(md->key()).c_str() << " " << Exiv2::toString(md->value()).c_str();
 			key = QString::fromUtf8(md->tagName().c_str());
 			val = QString::fromUtf8(md->print().c_str());
@@ -200,11 +195,9 @@ void ThumbView::updateExifInfo(QString imageFullPath)
 	}
 
 	Exiv2::IptcData &iptcData = exifImage->iptcData();
-	if (!iptcData.empty())
-	{
+	if (!iptcData.empty()) {
 		Exiv2::IptcData::iterator end = iptcData.end();
-		for (Exiv2::IptcData::iterator md = iptcData.begin(); md != end; ++md)
-		{
+		for (Exiv2::IptcData::iterator md = iptcData.begin(); md != end; ++md) {
 			key = QString::fromUtf8(md->tagName().c_str());
 			val = QString::fromUtf8(md->print().c_str());
 	   		infoView->addEntry(key, val);
@@ -212,11 +205,9 @@ void ThumbView::updateExifInfo(QString imageFullPath)
 	}
 
 	Exiv2::XmpData &xmpData = exifImage->xmpData();
-	if (!xmpData.empty())
-	{
+	if (!xmpData.empty()) {
 		Exiv2::XmpData::iterator end = xmpData.end();
-		for (Exiv2::XmpData::iterator md = xmpData.begin(); md != end; ++md)
-		{
+		for (Exiv2::XmpData::iterator md = xmpData.begin(); md != end; ++md) {
 			key = QString::fromUtf8(md->tagName().c_str());
 			val = QString::fromUtf8(md->print().c_str());
 			infoView->addEntry(key, val);
@@ -399,11 +390,9 @@ void ThumbView::updateThumbsCount()
 {
 	QString state ;
 	
-	if (thumbViewModel->rowCount() > 0)
-	{
+	if (thumbViewModel->rowCount() > 0) {
 		state = (QString::number(thumbViewModel->rowCount()) + tr(" images"));
-	}
-	else {
+	} else {
 		state = QString::number(thumbViewModel->rowCount()) + tr(" images");
 	}
 
@@ -423,7 +412,7 @@ void ThumbView::updateThumbsSelection()
 	emit setStatus(state);
 }
 
-void ThumbView::load()
+void ThumbView::loadPrepare()
 {
 	float thumbAspect = 1.33;
 	if (GData::thumbsLayout == Compact)
@@ -459,8 +448,9 @@ void ThumbView::load()
 					<< textFilter + "*.JPE";
 	thumbsDir->setNameFilters(*fileFilters);
 	thumbsDir->setFilter(QDir::Files);
-	if (GData::showHiddenFiles)
+	if (GData::showHiddenFiles) {
 		thumbsDir->setFilter(thumbsDir->filter() | QDir::Hidden);
+	}
 	
 	thumbsDir->setPath(currentViewDir);
 
@@ -473,41 +463,75 @@ void ThumbView::load()
 	thumbViewModel->clear();
 	setSpacing(GData::thumbSpacing);
 
-	if (isNeedScroll)
+	if (isNeedScroll) {
 		scrollToTop();
+	}
 
 	abortOp = false;
 	newIndex = 0;
 
 	thumbsRangeFirst = -1;
 	thumbsRangeLast = -1;
+}
 
+void ThumbView::load()
+{
+	loadPrepare();
 	initThumbs();
 	updateThumbsCount();
 	loadVisibleThumbs();
 
-	if (GData::includeSubFolders)
-	{
+	if (GData::includeSubFolders) {
 		emit showBusy(true);
 		QDirIterator iterator(currentViewDir, QDirIterator::Subdirectories);
-		while (iterator.hasNext())
-		{
+		while (iterator.hasNext()) {
 			iterator.next();
-			if (iterator.fileInfo().isDir() && iterator.fileName() != "." && iterator.fileName() != "..")
-			{
+			if (iterator.fileInfo().isDir() && iterator.fileName() != "." && iterator.fileName() != "..") {
 				thumbsDir->setPath(iterator.filePath());
+
 				initThumbs();
 				updateThumbsCount();
 				loadVisibleThumbs();
 
-				if (abortOp)
-				{
+				if (abortOp) {
 					goto finish;
 				}
 			}
 			QApplication::processEvents();
 		}
 		updateThumbsSelection();
+	}
+
+finish:
+	busy = false;
+	emit showBusy(false);
+	return;
+}
+
+void ThumbView::loadDuplicates()
+{
+	loadPrepare();
+
+	emit showBusy(true);
+	emit setStatus(tr("Searching duplicate images..."));
+
+	dupImageHashes.clear();
+	findDupes(true);
+
+	if (GData::includeSubFolders) {
+		QDirIterator iterator(currentViewDir, QDirIterator::Subdirectories);
+		while (iterator.hasNext()) {
+			iterator.next();
+			if (iterator.fileInfo().isDir() && iterator.fileName() != "." && iterator.fileName() != "..") {
+				thumbsDir->setPath(iterator.filePath());
+
+				findDupes(false);
+				if (abortOp) {
+					goto finish;
+				}
+			}
+			QApplication::processEvents();
+		}
 	}
 
 finish:
@@ -550,6 +574,67 @@ void ThumbView::initThumbs()
 		thumbViewModel->appendRow(thumbIitem);
 	}
 }
+
+void ThumbView::updateFoundDupesState(int duplicates, int filesScanned, int originalImages)
+{
+	QString state;
+	state = tr("Scanned ") + QString::number(filesScanned) + tr(" images, displaying ")
+				+ QString::number(originalImages + duplicates) + tr(" images (") 
+				+ QString::number(originalImages) + tr(" originals and ")
+				+ QString::number(duplicates) + tr(" duplicates)");
+	emit setStatus(state);
+}
+
+void ThumbView::findDupes(bool resetCounters)
+{
+	thumbFileInfoList = thumbsDir->entryInfoList();
+	static int originalImages;
+	static int foundDups;
+	static int totalFiles;
+	if (resetCounters) {
+		originalImages = totalFiles = foundDups = 0;
+	}
+
+	for (int currThumb = 0; currThumb < thumbFileInfoList.size(); ++currThumb) {
+		thumbFileInfo = thumbFileInfoList.at(currThumb);
+	    QCryptographicHash md5gen(QCryptographicHash::Md5);
+	    QString currentFilePath = thumbFileInfo.filePath();
+
+	    QFile file(currentFilePath);
+		if (!file.open(QIODevice::ReadOnly)) {
+		    continue;
+		}
+		totalFiles++;
+
+	    md5gen.addData(file.readAll());
+	    file.close();
+		QString md5 = md5gen.result().toHex();
+
+		if (dupImageHashes.contains(md5)) {
+			if (dupImageHashes[md5].duplicates < 1) {
+				addThumb(dupImageHashes[md5].filePath);
+				originalImages++;
+			}
+
+			foundDups++;
+			dupImageHashes[md5].duplicates++;
+			addThumb(currentFilePath);
+		} else {
+			DuplicateImage dupImage;
+			dupImage.filePath = currentFilePath; 
+			dupImage.duplicates = 0; 
+			dupImageHashes.insert(md5, dupImage);
+		}
+
+		
+		QApplication::processEvents();
+		updateFoundDupesState(foundDups, totalFiles, originalImages);
+		
+		if (abortOp) {
+			break;
+		}
+	}
+	updateFoundDupesState(foundDups, totalFiles, originalImages);}
 
 void ThumbView::loadThumbsRange()
 {

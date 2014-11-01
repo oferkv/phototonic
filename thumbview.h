@@ -27,6 +27,12 @@
 #include "infoview.h"
 #include "imageview.h"
 
+struct DuplicateImage
+{
+	QString filePath;
+	int duplicates;
+};
+
 class ThumbView : public QListView
 {
 	Q_OBJECT
@@ -61,7 +67,9 @@ public:
 	};
 
 	ThumbView(QWidget *parent);
+	void loadPrepare();
 	void load();
+	void loadDuplicates();
 	void setNeedScroll(bool needScroll)
 	{
 		isNeedScroll = needScroll;
@@ -93,6 +101,7 @@ private:
 	QModelIndex currentIndex;
 	QImageReader imageInfoReader;
 	QWidget *mainWindow;
+	QMap<QString, DuplicateImage> dupImageHashes;
 	
 	bool abortOp;
 	int newIndex;
@@ -103,6 +112,8 @@ private:
 	int thumbsRangeLast;
 
 	void initThumbs();
+	void findDupes(bool resetCounters);
+	void updateFoundDupesState(int duplicates, int filesScanned, int originalImages);
 	int getFirstVisibleThumb();
 	int getLastVisibleThumb();
 	bool isThumbVisible(QModelIndex idx);

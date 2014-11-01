@@ -250,27 +250,22 @@ void ImageView::rotateByExifRotation(QImage &image, const QString &imageFullPath
 	QTransform trans;
 	Exiv2::Image::AutoPtr exifImage;
 
-	try
-	{
+	try {
 		exifImage = Exiv2::ImageFactory::open(imageFullPath.toStdString());
+		exifImage->readMetadata();
 	}
-	catch (Exiv2::Error &error)
-	{
+	catch (Exiv2::Error &error) {
 		return;
 	}
 
-	exifImage->readMetadata();
 	Exiv2::ExifData &exifData = exifImage->exifData();
 	long orientation = 1;
 
-	if (!exifData.empty())
-	{
-		try
-		{
+	if (!exifData.empty()) {
+		try {
 			orientation = exifData["Exif.Image.Orientation"].value().toLong();
 		}
-		catch (Exiv2::Error &error)
-		{
+		catch (Exiv2::Error &error) {
 			return;
 		}
 	}

@@ -62,6 +62,7 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	needHistoryRecord = true;
 	interfaceDisabled = false;
 
+	doFindDuplicates = false;
 	refreshThumbs(true);
 	if (GData::layoutMode == thumbViewIdx)
 		thumbView->setFocus(Qt::OtherFocusReason);
@@ -542,6 +543,9 @@ void Phototonic::createActions()
 	connect(colorsAct, SIGNAL(triggered()), this, SLOT(showColorsDialog()));
 	colorsAct->setIcon(QIcon(":/images/colors.png"));
 
+	findDupesAction = new QAction(tr("Find Duplicate Images"), this);
+	connect(findDupesAction, SIGNAL(triggered()), this, SLOT(findDuplicateImages()));
+
 	mirrorDisabledAct = new QAction(tr("Disable"), this);
 	mirrorDualAct = new QAction(tr("Dual"), this);
 	mirrorTripleAct = new QAction(tr("Triple"), this);
@@ -637,6 +641,9 @@ void Phototonic::createMenus()
 	viewMenu->addAction(actShowHidden);
 	viewMenu->addSeparator();
 	viewMenu->addAction(refreshAction);
+
+	toolsMenu = menuBar()->addMenu(tr("&Tools"));
+	toolsMenu->addAction(findDupesAction);
 
 	menuBar()->addSeparator();
 	helpMenu = menuBar()->addMenu(tr("&Help"));
@@ -914,7 +921,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.4.19</h2>"
+	QString aboutString = "<h2>Phototonic v1.4.20</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -2776,7 +2783,13 @@ void Phototonic::reloadThumbsSlot()
 	}
 
 	thumbView->busy = true;
-	thumbView->load();
+
+	if (doFindDuplicates) {
+		thumbView->loadDuplicates();
+		doFindDuplicates = false;
+	} else {
+		thumbView->load();
+	}
 }
 
 void Phototonic::setThumbviewWindowTitle()
@@ -3100,5 +3113,11 @@ void Phototonic::addBookmark(QString path)
 {
 	GData::bookmarkPaths.insert(path);
 	bookmarks->reloadBookmarks();
+}
+
+void Phototonic::findDuplicateImages()
+{
+	doFindDuplicates = true;
+	refreshThumbs(true);	
 }
 

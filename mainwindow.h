@@ -112,6 +112,7 @@ private slots:
 	void freeRotateLeft();
 	void freeRotateRight();
 	void showColorsDialog();
+	void findDuplicateImages();
 	void setMirrorDisabled();
 	void setMirrorDual();
 	void setMirrorTriple();
@@ -156,6 +157,7 @@ private:
 	QMenu *goMenu;
 	QMenu *sortMenu;
 	QMenu *viewMenu;
+	QMenu *toolsMenu;
 	QMenu *helpMenu;
 	QMenu *zoomSubMenu;
 	QMenu *transformSubMenu;
@@ -255,6 +257,7 @@ private:
 	QAction *lastImageAction;
 	QAction *randomImageAction;
 	QAction *openAction;
+	QAction *findDupesAction;
 
 	QAction *openWithMenuAct;
 	QAction *chooseAppAct;
@@ -286,6 +289,7 @@ private:
 	QWidget *pvDockEmptyWidget;
 	QVBoxLayout *imageViewContainer;
 	bool interfaceDisabled;
+	bool doFindDuplicates;
 
 	enum CentralWidgets	{
 		thumbViewIdx = 0,
