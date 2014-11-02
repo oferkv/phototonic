@@ -406,7 +406,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="816"/>
         <source>Bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Lesezeichen</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="946"/>
@@ -639,12 +639,12 @@
     <message>
         <location filename="../mainwindow.cpp" line="484"/>
         <source>Add Bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation>Lesezeichen hinzufügen</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="488"/>
         <source>Remove Bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation>Lesezeichen entfernen</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="491"/>
