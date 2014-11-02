@@ -578,10 +578,10 @@ void ThumbView::initThumbs()
 void ThumbView::updateFoundDupesState(int duplicates, int filesScanned, int originalImages)
 {
 	QString state;
-	state = tr("Scanned ") + QString::number(filesScanned) + tr(" images, displaying ")
-				+ QString::number(originalImages + duplicates) + tr(" images (") 
-				+ QString::number(originalImages) + tr(" originals and ")
-				+ QString::number(duplicates) + tr(" duplicates)");
+	state = tr("Scanned ") + tr("%n images, displaying ", "", filesScanned)
+				+  tr("%n images (", "", originalImages + duplicates) 
+				+  tr("%n originals and ", "", originalImages)
+				+  tr("%n duplicates)", "", duplicates);
 	emit setStatus(state);
 }
 

@@ -233,46 +233,46 @@
 <context>
     <name>ImageView</name>
     <message>
-        <location filename="../imageview.cpp" line="630"/>
+        <location filename="../imageview.cpp" line="625"/>
         <source>Clipboard</source>
         <translation>Буфер обмена</translation>
     </message>
     <message>
-        <location filename="../imageview.cpp" line="893"/>
+        <location filename="../imageview.cpp" line="889"/>
         <source>Saving...</source>
         <translation>Сохранение...</translation>
     </message>
     <message>
-        <location filename="../imageview.cpp" line="910"/>
-        <location filename="../imageview.cpp" line="923"/>
-        <location filename="../imageview.cpp" line="958"/>
+        <location filename="../imageview.cpp" line="906"/>
+        <location filename="../imageview.cpp" line="919"/>
+        <location filename="../imageview.cpp" line="954"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../imageview.cpp" line="910"/>
-        <location filename="../imageview.cpp" line="958"/>
+        <location filename="../imageview.cpp" line="906"/>
+        <location filename="../imageview.cpp" line="954"/>
         <source>Failed to save image</source>
         <translation>Не удалось сохранить изображение</translation>
     </message>
     <message>
-        <location filename="../imageview.cpp" line="923"/>
+        <location filename="../imageview.cpp" line="919"/>
         <source>Failed to save Exif metadata</source>
         <translation>Не удалось сохранить метаданные Exif</translation>
     </message>
     <message>
-        <location filename="../imageview.cpp" line="928"/>
-        <location filename="../imageview.cpp" line="976"/>
+        <location filename="../imageview.cpp" line="924"/>
+        <location filename="../imageview.cpp" line="972"/>
         <source>Image saved</source>
         <translation>Изображение сохранено</translation>
     </message>
     <message>
-        <location filename="../imageview.cpp" line="938"/>
+        <location filename="../imageview.cpp" line="934"/>
         <source>Save image as</source>
         <translation>Сохранить изображение как</translation>
     </message>
     <message>
-        <location filename="../imageview.cpp" line="940"/>
+        <location filename="../imageview.cpp" line="936"/>
         <source>Image Files</source>
         <translation>Файлы изображений</translation>
     </message>
@@ -314,821 +314,815 @@
 <context>
     <name>Phototonic</name>
     <message>
-        <location filename="../mainwindow.cpp" line="123"/>
+        <location filename="../mainwindow.cpp" line="124"/>
         <source>Image Info</source>
         <translation>Информация о изображении</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="203"/>
         <location filename="../mainwindow.cpp" line="204"/>
+        <location filename="../mainwindow.cpp" line="205"/>
         <source>Zoom</source>
         <translation>Зум</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="215"/>
         <location filename="../mainwindow.cpp" line="216"/>
+        <location filename="../mainwindow.cpp" line="217"/>
         <source>Transform</source>
         <translation>Преобразовать</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="275"/>
+        <location filename="../mainwindow.cpp" line="276"/>
         <source>Top</source>
         <translation>Вверх</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="279"/>
+        <location filename="../mainwindow.cpp" line="280"/>
         <source>Bottom</source>
         <translation>Вниз</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="283"/>
+        <location filename="../mainwindow.cpp" line="284"/>
         <source>Close Image</source>
         <translation>Закрыть изображение</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="286"/>
+        <location filename="../mainwindow.cpp" line="287"/>
         <source>Full Screen</source>
         <translation>Во весь экран</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="290"/>
+        <location filename="../mainwindow.cpp" line="291"/>
         <source>Preferences</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="294"/>
+        <location filename="../mainwindow.cpp" line="295"/>
         <source>Exit</source>
         <translation>Выйти</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="297"/>
+        <location filename="../mainwindow.cpp" line="298"/>
         <source>Enlarge Thumbnails</source>
         <translation>Увеличить эскизы</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="303"/>
+        <location filename="../mainwindow.cpp" line="304"/>
         <source>Shrink Thumbnails</source>
         <translation>Уменьшить эскизы</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="309"/>
+        <location filename="../mainwindow.cpp" line="310"/>
         <source>Cut</source>
         <translation>Вырезать</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="314"/>
+        <location filename="../mainwindow.cpp" line="315"/>
         <source>Copy</source>
         <translation>Копировать</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1897"/>
+        <location filename="../mainwindow.cpp" line="1903"/>
         <source>Docks and Toolbars</source>
         <translation>Доки и панели инструментов</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="227"/>
         <location filename="../mainwindow.cpp" line="228"/>
+        <location filename="../mainwindow.cpp" line="229"/>
         <source>Mirroring</source>
         <translation>Зеркалирование</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="322"/>
+        <location filename="../mainwindow.cpp" line="323"/>
         <source>Delete</source>
         <translation>Удалить</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="326"/>
+        <location filename="../mainwindow.cpp" line="327"/>
         <source>Save</source>
         <translation>Сохранить</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="329"/>
+        <location filename="../mainwindow.cpp" line="330"/>
         <source>Save As</source>
         <translation>Сохранить как</translation>
     </message>
     <message>
-        <source>Copy Image</source>
-        <translation type="vanished">Копировать изображение</translation>
-    </message>
-    <message>
-        <source>Paste Image</source>
-        <translation type="vanished">Вставить изображение</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="335"/>
+        <location filename="../mainwindow.cpp" line="336"/>
         <source>Rename</source>
         <translation>Переименовать</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="338"/>
+        <location filename="../mainwindow.cpp" line="339"/>
         <source>Select All</source>
         <translation>Выбрать всё</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="341"/>
-        <location filename="../mainwindow.cpp" line="935"/>
+        <location filename="../mainwindow.cpp" line="342"/>
+        <location filename="../mainwindow.cpp" line="941"/>
         <source>About</source>
         <translation>О программе</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="346"/>
+        <location filename="../mainwindow.cpp" line="347"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="347"/>
+        <location filename="../mainwindow.cpp" line="348"/>
         <source>Time</source>
         <translation>Время</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="348"/>
+        <location filename="../mainwindow.cpp" line="349"/>
         <source>Size</source>
         <translation>Размер</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="349"/>
+        <location filename="../mainwindow.cpp" line="350"/>
         <source>Type</source>
         <translation>Тип</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="350"/>
+        <location filename="../mainwindow.cpp" line="351"/>
         <source>Reverse</source>
         <translation>Обратный порядок</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="372"/>
+        <location filename="../mainwindow.cpp" line="373"/>
         <source>Show Hidden Files</source>
         <translation>Показать скрытые файлы</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="377"/>
+        <location filename="../mainwindow.cpp" line="378"/>
         <source>Show Labels</source>
         <translation>Показать метки</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="383"/>
+        <location filename="../mainwindow.cpp" line="384"/>
         <source>Small Icons</source>
         <translation>Маленькие значки</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="388"/>
+        <location filename="../mainwindow.cpp" line="389"/>
         <source>Hide Docks Title Bar</source>
         <translation>Спрятать заголовки доков</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="398"/>
+        <location filename="../mainwindow.cpp" line="399"/>
         <source>Classic Thumbs</source>
         <translation>Классические эскизы</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="399"/>
+        <location filename="../mainwindow.cpp" line="400"/>
         <source>Compact</source>
         <translation>Компактный вид</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="400"/>
+        <location filename="../mainwindow.cpp" line="401"/>
         <source>Squarish</source>
         <translation>Прямоугольниками</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="411"/>
+        <location filename="../mainwindow.cpp" line="412"/>
         <source>Reload</source>
         <translation>Обновить</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="415"/>
+        <location filename="../mainwindow.cpp" line="416"/>
         <source>Include Sub-folders</source>
         <translation>Включая подпапки</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="420"/>
+        <location filename="../mainwindow.cpp" line="421"/>
         <source>Paste Here</source>
         <translation>Вставить здесь</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="425"/>
+        <location filename="../mainwindow.cpp" line="426"/>
         <source>New Folder</source>
         <translation>Новая папка</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="429"/>
+        <location filename="../mainwindow.cpp" line="430"/>
         <source>Back</source>
         <translation>Назад</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="434"/>
+        <location filename="../mainwindow.cpp" line="435"/>
         <source>Forward</source>
         <translation>Вперёд</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="439"/>
+        <location filename="../mainwindow.cpp" line="440"/>
         <source>Up</source>
         <translation>Вверх</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="443"/>
+        <location filename="../mainwindow.cpp" line="444"/>
         <source>Home</source>
         <translation>Домой</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="447"/>
-        <location filename="../mainwindow.cpp" line="2354"/>
+        <location filename="../mainwindow.cpp" line="448"/>
+        <location filename="../mainwindow.cpp" line="2360"/>
         <source>Slide Show</source>
         <translation>Слайд-шоу</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="451"/>
+        <location filename="../mainwindow.cpp" line="452"/>
         <source>Next</source>
         <translation>Следующее</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="455"/>
+        <location filename="../mainwindow.cpp" line="456"/>
         <source>Previous</source>
         <translation>Предыдущее</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="459"/>
+        <location filename="../mainwindow.cpp" line="460"/>
         <source>First</source>
         <translation>Первое</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="463"/>
+        <location filename="../mainwindow.cpp" line="464"/>
         <source>Last</source>
         <translation>Последнее</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="467"/>
+        <location filename="../mainwindow.cpp" line="468"/>
         <source>Random</source>
         <translation>Случайное</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="470"/>
+        <location filename="../mainwindow.cpp" line="471"/>
         <source>Open</source>
         <translation>Открыть</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="531"/>
+        <location filename="../mainwindow.cpp" line="532"/>
         <source>Scale Image</source>
         <translation>Масштабировать изображение</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="924"/>
+        <location filename="../mainwindow.cpp" line="930"/>
         <source>Contributors / Code:</source>
         <translation>Участники / код:</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="926"/>
+        <location filename="../mainwindow.cpp" line="932"/>
         <source>Contributors / Translations:</source>
         <translation>Участники / переводчики:</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1488"/>
-        <location filename="../mainwindow.cpp" line="1538"/>
-        <location filename="../mainwindow.cpp" line="2920"/>
+        <location filename="../mainwindow.cpp" line="1494"/>
+        <location filename="../mainwindow.cpp" line="1544"/>
+        <location filename="../mainwindow.cpp" line="2936"/>
         <source>Yes</source>
         <translation>Да</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1489"/>
-        <location filename="../mainwindow.cpp" line="1539"/>
-        <location filename="../mainwindow.cpp" line="2921"/>
+        <location filename="../mainwindow.cpp" line="1495"/>
+        <location filename="../mainwindow.cpp" line="1545"/>
+        <location filename="../mainwindow.cpp" line="2937"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2383"/>
+        <location filename="../mainwindow.cpp" line="2389"/>
         <source>Stop Slide Show</source>
         <translation>Остановит слайд-шоу</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="478"/>
         <location filename="../mainwindow.cpp" line="479"/>
+        <location filename="../mainwindow.cpp" line="480"/>
         <source>Open With</source>
         <translation>Открыть с помощью</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="481"/>
+        <location filename="../mainwindow.cpp" line="482"/>
         <source>Manage External Applications</source>
         <translation>Управление внешними приложениями</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="491"/>
+        <location filename="../mainwindow.cpp" line="492"/>
         <source>Zoom Out</source>
         <translation>Отдалить</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="495"/>
+        <location filename="../mainwindow.cpp" line="496"/>
         <source>Zoom In</source>
         <translation>Приблизить</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="499"/>
+        <location filename="../mainwindow.cpp" line="500"/>
         <source>Reset Zoom</source>
         <translation>Сбросить масштаб</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="503"/>
+        <location filename="../mainwindow.cpp" line="504"/>
         <source>Original Size</source>
         <translation>Исходный размер</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="507"/>
+        <location filename="../mainwindow.cpp" line="508"/>
         <source>Keep Zoom</source>
         <translation>Сохранить масштаб</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="511"/>
+        <location filename="../mainwindow.cpp" line="512"/>
         <source>Rotate 90 degree CCW</source>
         <translation>Повернуть на 90° против часовой стрелки</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="515"/>
+        <location filename="../mainwindow.cpp" line="516"/>
         <source>Rotate 90 degree CW</source>
         <translation>Повернуть на 90° по часовой стрелке</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="519"/>
+        <location filename="../mainwindow.cpp" line="520"/>
         <source>Flip Horizontally</source>
         <translation>Отразить по горизонтали</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="523"/>
+        <location filename="../mainwindow.cpp" line="524"/>
         <source>Flip Vertically</source>
         <translation>Отразить по вертикали</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="527"/>
+        <location filename="../mainwindow.cpp" line="528"/>
         <source>Cropping</source>
         <translation>Обрезка</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="535"/>
+        <location filename="../mainwindow.cpp" line="536"/>
         <source>Rotate 1 degree CCW</source>
         <translation>Повернуть на 1° против часовой стрелки</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="538"/>
+        <location filename="../mainwindow.cpp" line="539"/>
         <source>Rotate 1 degree CW</source>
         <translation>Повернуть на 1° по часовой стрелке</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="541"/>
+        <location filename="../mainwindow.cpp" line="542"/>
         <source>Colors</source>
         <translation>Цвета</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="545"/>
+        <location filename="../mainwindow.cpp" line="549"/>
         <source>Disable</source>
         <translation>Запретить</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="546"/>
+        <location filename="../mainwindow.cpp" line="550"/>
         <source>Dual</source>
         <translation>Дважды</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="547"/>
+        <location filename="../mainwindow.cpp" line="551"/>
         <source>Triple</source>
         <translation>Трижды</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="548"/>
+        <location filename="../mainwindow.cpp" line="552"/>
         <source>Dual Vertical</source>
         <translation>Дважды по вертикали</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="549"/>
+        <location filename="../mainwindow.cpp" line="553"/>
         <source>Quad</source>
         <translation>Четырежды</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="563"/>
+        <location filename="../mainwindow.cpp" line="567"/>
         <source>Keep Transformations</source>
         <translation>Оставлять преобразования</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="567"/>
+        <location filename="../mainwindow.cpp" line="571"/>
         <source>Move Left</source>
         <translation>Сдвинуть влево</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="569"/>
+        <location filename="../mainwindow.cpp" line="573"/>
         <source>Move Right</source>
         <translation>Сдвинуть вправо</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="571"/>
+        <location filename="../mainwindow.cpp" line="575"/>
         <source>Move Up</source>
         <translation>Сдвинуть вверх</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="573"/>
+        <location filename="../mainwindow.cpp" line="577"/>
         <source>Move Down</source>
         <translation>Сдвинуть вниз</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="576"/>
+        <location filename="../mainwindow.cpp" line="580"/>
         <source>Invert Selection</source>
         <translation>Инвертировать выделение</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="664"/>
+        <location filename="../mainwindow.cpp" line="671"/>
         <source>Edit</source>
         <translation>Правка</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="252"/>
         <location filename="../mainwindow.cpp" line="253"/>
-        <location filename="../mainwindow.cpp" line="697"/>
+        <location filename="../mainwindow.cpp" line="254"/>
+        <location filename="../mainwindow.cpp" line="704"/>
         <source>View</source>
         <translation>Вид</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="618"/>
+        <location filename="../mainwindow.cpp" line="622"/>
         <source>Sort By</source>
         <translation>Упорядочить по</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="674"/>
+        <location filename="../mainwindow.cpp" line="681"/>
         <source>Navigation</source>
         <translation>Навигация</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="704"/>
+        <location filename="../mainwindow.cpp" line="711"/>
         <source>Filter</source>
         <translation>Фильтр</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="767"/>
+        <location filename="../mainwindow.cpp" line="774"/>
         <source>Initializing...</source>
         <translation>Инициализация...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="781"/>
+        <location filename="../mainwindow.cpp" line="788"/>
         <source>File System</source>
         <translation>Файловая система</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="919"/>
+        <location filename="../mainwindow.cpp" line="925"/>
         <source>&lt;p&gt;Image viewer and organizer&lt;/p&gt;</source>
         <translation>&lt;p&gt;Просмотрщик и органайзер изображений&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="921"/>
+        <location filename="../mainwindow.cpp" line="927"/>
         <source>Home page</source>
         <translation>Домашняя страница</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="922"/>
+        <location filename="../mainwindow.cpp" line="928"/>
         <source>Bug reports</source>
         <translation>Сообщения об ошибках</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="319"/>
+        <location filename="../mainwindow.cpp" line="320"/>
         <source>Copy or Move to...</source>
         <translation>Копировать или переместить в...</translation>
     </message>
     <message>
-        <source>Show Clipboard</source>
-        <translation type="vanished">Показать буфер обмена</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="582"/>
+        <location filename="../mainwindow.cpp" line="586"/>
         <source>&amp;File</source>
         <translation>&amp;Файл</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="590"/>
+        <location filename="../mainwindow.cpp" line="594"/>
         <source>&amp;Edit</source>
         <translation>&amp;Правка</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="603"/>
+        <location filename="../mainwindow.cpp" line="607"/>
         <source>&amp;Go</source>
         <translation>&amp;Переход</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="612"/>
+        <location filename="../mainwindow.cpp" line="616"/>
         <source>&amp;View</source>
         <translation>&amp;Вид</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="642"/>
+        <location filename="../mainwindow.cpp" line="649"/>
         <source>&amp;Help</source>
         <translation>&amp;Справка</translation>
     </message>
     <message>
-        <source>Built with Qt </source>
-        <translation type="vanished">Собрано с помощью Qt </translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="970"/>
-        <location filename="../mainwindow.cpp" line="2847"/>
+        <location filename="../mainwindow.cpp" line="976"/>
+        <location filename="../mainwindow.cpp" line="2863"/>
         <source>Invalid selection</source>
         <translation>Неправильное выделение</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="946"/>
-        <location filename="../mainwindow.cpp" line="1151"/>
-        <location filename="../mainwindow.cpp" line="1395"/>
-        <location filename="../mainwindow.cpp" line="1411"/>
-        <location filename="../mainwindow.cpp" line="1504"/>
-        <location filename="../mainwindow.cpp" line="1561"/>
-        <location filename="../mainwindow.cpp" line="1597"/>
-        <location filename="../mainwindow.cpp" line="2339"/>
-        <location filename="../mainwindow.cpp" line="2643"/>
-        <location filename="../mainwindow.cpp" line="2649"/>
-        <location filename="../mainwindow.cpp" line="2666"/>
-        <location filename="../mainwindow.cpp" line="2755"/>
-        <location filename="../mainwindow.cpp" line="2803"/>
-        <location filename="../mainwindow.cpp" line="2814"/>
-        <location filename="../mainwindow.cpp" line="2868"/>
-        <location filename="../mainwindow.cpp" line="2901"/>
-        <location filename="../mainwindow.cpp" line="2935"/>
-        <location filename="../mainwindow.cpp" line="2969"/>
-        <location filename="../mainwindow.cpp" line="2980"/>
+        <location filename="../mainwindow.cpp" line="952"/>
+        <location filename="../mainwindow.cpp" line="1157"/>
+        <location filename="../mainwindow.cpp" line="1401"/>
+        <location filename="../mainwindow.cpp" line="1417"/>
+        <location filename="../mainwindow.cpp" line="1510"/>
+        <location filename="../mainwindow.cpp" line="1567"/>
+        <location filename="../mainwindow.cpp" line="1603"/>
+        <location filename="../mainwindow.cpp" line="2345"/>
+        <location filename="../mainwindow.cpp" line="2653"/>
+        <location filename="../mainwindow.cpp" line="2659"/>
+        <location filename="../mainwindow.cpp" line="2676"/>
+        <location filename="../mainwindow.cpp" line="2765"/>
+        <location filename="../mainwindow.cpp" line="2819"/>
+        <location filename="../mainwindow.cpp" line="2830"/>
+        <location filename="../mainwindow.cpp" line="2884"/>
+        <location filename="../mainwindow.cpp" line="2917"/>
+        <location filename="../mainwindow.cpp" line="2951"/>
+        <location filename="../mainwindow.cpp" line="2985"/>
+        <location filename="../mainwindow.cpp" line="2996"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1151"/>
+        <location filename="../mainwindow.cpp" line="1157"/>
         <source>Failed to copy or move image</source>
         <translation>Не удалось копировать или переместить изображение</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1395"/>
+        <location filename="../mainwindow.cpp" line="1401"/>
         <source>Can not copy or move to </source>
         <translation>Невозможно копировать или переместить в </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1411"/>
+        <location filename="../mainwindow.cpp" line="1417"/>
         <source>Can not cut and paste in the same folder</source>
         <translation>Невозможно вырезать и вставить в одну и ту же папку</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1427"/>
-        <location filename="../mainwindow.cpp" line="2674"/>
+        <location filename="../mainwindow.cpp" line="1433"/>
+        <location filename="../mainwindow.cpp" line="2684"/>
         <source>Copied </source>
         <translation>Скопировано </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1427"/>
-        <location filename="../mainwindow.cpp" line="2674"/>
+        <location filename="../mainwindow.cpp" line="1433"/>
+        <location filename="../mainwindow.cpp" line="2684"/>
         <source>Moved </source>
         <translation>Перемещено </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1428"/>
-        <location filename="../mainwindow.cpp" line="1566"/>
-        <location filename="../mainwindow.cpp" line="2675"/>
+        <location filename="../mainwindow.cpp" line="1434"/>
+        <location filename="../mainwindow.cpp" line="1572"/>
+        <location filename="../mainwindow.cpp" line="2685"/>
         <source> images</source>
         <translation> изображений</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1484"/>
+        <location filename="../mainwindow.cpp" line="1490"/>
         <source>Delete image</source>
         <translation>Удалить изображение</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1483"/>
-        <location filename="../mainwindow.cpp" line="2912"/>
+        <location filename="../mainwindow.cpp" line="1489"/>
+        <location filename="../mainwindow.cpp" line="2928"/>
         <source>Permanently delete </source>
         <translation>Навсегда удалить </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1504"/>
-        <location filename="../mainwindow.cpp" line="1561"/>
+        <location filename="../mainwindow.cpp" line="1510"/>
+        <location filename="../mainwindow.cpp" line="1567"/>
         <source>Failed to delete image</source>
         <translation>Не удалось удалить изображение</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1528"/>
+        <location filename="../mainwindow.cpp" line="1534"/>
         <source>No selection</source>
         <translation>Нет выделения</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1534"/>
+        <location filename="../mainwindow.cpp" line="1540"/>
         <source>Delete images</source>
         <translation>Удалить изображения</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1533"/>
+        <location filename="../mainwindow.cpp" line="1539"/>
         <source>Permanently delete selected images?</source>
         <translation>Навсегда удалить выделенные изображения?</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="332"/>
-        <source>Copy Image Data</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="333"/>
+        <source>Copy Image Data</source>
+        <translation>Копировать изображение в буфер</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="334"/>
         <source>Paste Image Data</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставить изображение из буфера</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="393"/>
+        <location filename="../mainwindow.cpp" line="394"/>
         <source>Show Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать панель инструментов</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="474"/>
+        <location filename="../mainwindow.cpp" line="475"/>
         <source>Load Clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставить изображение из буфера</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="484"/>
+        <location filename="../mainwindow.cpp" line="485"/>
         <source>Add Bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить закладку</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="488"/>
+        <location filename="../mainwindow.cpp" line="489"/>
         <source>Remove Bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить закладку</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="721"/>
+        <location filename="../mainwindow.cpp" line="546"/>
+        <source>Find Duplicate Images</source>
+        <translation>Найти повторяющиеся изображения</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="645"/>
+        <source>&amp;Tools</source>
+        <translation>&amp;Инструменты</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="728"/>
         <source>Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Изображение</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="816"/>
+        <location filename="../mainwindow.cpp" line="823"/>
         <source>Bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Закладки</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="946"/>
+        <location filename="../mainwindow.cpp" line="952"/>
         <source>Failed to start external application</source>
         <translation>Не удалось запустить внешнее приложение</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1566"/>
+        <location filename="../mainwindow.cpp" line="1572"/>
         <source>Deleted </source>
         <translation>Удалено</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1597"/>
+        <location filename="../mainwindow.cpp" line="1603"/>
         <source>Invalid Path: </source>
         <translation>Неправильный путь: </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1880"/>
+        <location filename="../mainwindow.cpp" line="1887"/>
         <source>Viewer</source>
         <translation>Просмотрщик</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2191"/>
+        <location filename="../mainwindow.cpp" line="2197"/>
         <source>No images</source>
         <translation>Нет изображений</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2339"/>
+        <location filename="../mainwindow.cpp" line="2345"/>
         <source>Failed to open file </source>
         <translation>Не удалось открыть файл </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2339"/>
+        <location filename="../mainwindow.cpp" line="2345"/>
         <source>, file not found</source>
         <translation>, файл не найден</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2355"/>
+        <location filename="../mainwindow.cpp" line="2361"/>
         <source>Slide show stopped</source>
         <translation>Слайд-шоу остановлено</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2384"/>
+        <location filename="../mainwindow.cpp" line="2390"/>
         <source>Slide show started</source>
         <translation>Началось слайд-шоу</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2643"/>
+        <location filename="../mainwindow.cpp" line="2653"/>
         <source>Can not move or copy images to this folder</source>
         <translation>Невозможно переместить или копировать изображения в эту папку</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2649"/>
+        <location filename="../mainwindow.cpp" line="2659"/>
         <source>Destination folder is same as source</source>
         <translation>Папка назначения совпадает с исходной</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2657"/>
+        <location filename="../mainwindow.cpp" line="2667"/>
         <source>Move </source>
         <translation>Переместить </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2657"/>
+        <location filename="../mainwindow.cpp" line="2667"/>
         <source> to </source>
         <translation> в </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2658"/>
+        <location filename="../mainwindow.cpp" line="2668"/>
         <source>Move folder</source>
         <translation>Переместить папку</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2666"/>
+        <location filename="../mainwindow.cpp" line="2676"/>
         <source>Failed to move folder</source>
         <translation>Не удалось переместить папку</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2668"/>
+        <location filename="../mainwindow.cpp" line="2678"/>
         <source>Folder moved</source>
         <translation>Папка перемещена</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2755"/>
+        <location filename="../mainwindow.cpp" line="2765"/>
         <source>Failed to open folder: </source>
         <translation>Не удалось открыть папку: </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2790"/>
+        <location filename="../mainwindow.cpp" line="2806"/>
         <source>Rename </source>
         <translation>Переименовать </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2792"/>
+        <location filename="../mainwindow.cpp" line="2808"/>
         <source>New name:</source>
         <translation>Новое имя:</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2803"/>
-        <location filename="../mainwindow.cpp" line="2969"/>
+        <location filename="../mainwindow.cpp" line="2819"/>
+        <location filename="../mainwindow.cpp" line="2985"/>
         <source>Invalid name entered</source>
         <translation>Введено неправильное имя</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2814"/>
+        <location filename="../mainwindow.cpp" line="2830"/>
         <source>Failed to rename folder</source>
         <translation>Не удалось переименовать папку</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2853"/>
+        <location filename="../mainwindow.cpp" line="2869"/>
         <source>Rename Image</source>
         <translation>Переименовать изображение</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2855"/>
+        <location filename="../mainwindow.cpp" line="2871"/>
         <source>Enter a new name for </source>
         <translation>Введите новое имя для </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2868"/>
+        <location filename="../mainwindow.cpp" line="2884"/>
         <source>No name entered</source>
         <translation>Имя не было введено</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2901"/>
+        <location filename="../mainwindow.cpp" line="2917"/>
         <source>Failed to rename image</source>
         <translation>Не удалось переименовать изображение</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2912"/>
+        <location filename="../mainwindow.cpp" line="2928"/>
         <source> and all of its contents?</source>
         <translation> и всё её содержиое?</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2916"/>
+        <location filename="../mainwindow.cpp" line="2932"/>
         <source>Delete folder</source>
         <translation>Удалить папку</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2935"/>
+        <location filename="../mainwindow.cpp" line="2951"/>
         <source>Failed to delete folder</source>
         <translation>Не удалось удалить папку</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2939"/>
+        <location filename="../mainwindow.cpp" line="2955"/>
         <source>Removed </source>
         <translation>Удалена </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2957"/>
+        <location filename="../mainwindow.cpp" line="2973"/>
         <source>New Sub folder</source>
         <translation>Новая подпапка</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2958"/>
+        <location filename="../mainwindow.cpp" line="2974"/>
         <source>New folder name:</source>
         <translation>Имя новой папки:</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2980"/>
+        <location filename="../mainwindow.cpp" line="2996"/>
         <source>Failed to create new folder</source>
         <translation>Не удалось создать новую папку</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2985"/>
+        <location filename="../mainwindow.cpp" line="3001"/>
         <source>Created </source>
         <translation>Создана </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="3026"/>
+        <location filename="../mainwindow.cpp" line="3042"/>
         <source>Warning</source>
         <translation>Внимание</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="3026"/>
+        <location filename="../mainwindow.cpp" line="3042"/>
         <source>Cannot perform action with temporary image</source>
         <translation>Невозможно выполнить действие с временным изображением</translation>
     </message>
@@ -1378,57 +1372,103 @@
 <context>
     <name>ThumbView</name>
     <message>
-        <location filename="../thumbview.cpp" line="404"/>
-        <location filename="../thumbview.cpp" line="407"/>
-        <location filename="../thumbview.cpp" line="419"/>
-        <location filename="../thumbview.cpp" line="422"/>
+        <location filename="../thumbview.cpp" line="394"/>
+        <location filename="../thumbview.cpp" line="396"/>
+        <location filename="../thumbview.cpp" line="408"/>
+        <location filename="../thumbview.cpp" line="411"/>
         <source> images</source>
         <translation> изображений</translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="421"/>
+        <location filename="../thumbview.cpp" line="410"/>
         <source>Selected </source>
         <translation>Выбрано </translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="421"/>
+        <location filename="../thumbview.cpp" line="410"/>
         <source> of </source>
         <translation> из </translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="247"/>
+        <location filename="../thumbview.cpp" line="238"/>
         <source>File name</source>
         <translation>Имя файла</translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="251"/>
+        <location filename="../thumbview.cpp" line="242"/>
         <source>Location</source>
         <translation>Местоположение</translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="255"/>
+        <location filename="../thumbview.cpp" line="246"/>
         <source>Format</source>
         <translation>Формат</translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="259"/>
+        <location filename="../thumbview.cpp" line="250"/>
         <source>Resolution</source>
         <translation>Разрешение</translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="265"/>
+        <location filename="../thumbview.cpp" line="256"/>
         <source>Megapixel</source>
         <translation>Мегапикселей</translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="269"/>
+        <location filename="../thumbview.cpp" line="260"/>
         <source>Size</source>
         <translation>Размер</translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="273"/>
+        <location filename="../thumbview.cpp" line="264"/>
         <source>Modified</source>
         <translation>Изменён</translation>
+    </message>
+    <message>
+        <location filename="../thumbview.cpp" line="516"/>
+        <source>Searching duplicate images...</source>
+        <translation>Поиск копий изображений...</translation>
+    </message>
+    <message>
+        <location filename="../thumbview.cpp" line="581"/>
+        <source>Scanned </source>
+        <translation>Просмотрено </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../thumbview.cpp" line="581"/>
+        <source>%n images, displaying </source>
+        <translation>
+            <numerusform>%n изображение, показано </numerusform>
+            <numerusform>%n изображения, показано </numerusform>
+            <numerusform>%n изображений, показано </numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../thumbview.cpp" line="582"/>
+        <source>%n images (</source>
+        <translation>
+            <numerusform>%n изображение (</numerusform>
+            <numerusform>%n изображения (</numerusform>
+            <numerusform>%n изображений (</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../thumbview.cpp" line="583"/>
+        <source>%n originals and </source>
+        <translation>
+            <numerusform>%n оригинал и </numerusform>
+            <numerusform>%n оригинала и </numerusform>
+            <numerusform>%n оригиналов и </numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../thumbview.cpp" line="584"/>
+        <source>%n duplicates)</source>
+        <translation>
+            <numerusform>%n копия)</numerusform>
+            <numerusform>%n копии)</numerusform>
+            <numerusform>%n копий)</numerusform>
+        </translation>
     </message>
 </context>
 </TS>
