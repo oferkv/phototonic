@@ -579,6 +579,11 @@ void Phototonic::createActions()
 
 	invertSelectionAct = new QAction(tr("Invert Selection"), this);
 	connect(invertSelectionAct, SIGNAL(triggered()), thumbView, SLOT(invertSelection()));
+
+	filterImagesFocusAct = new QAction(tr("Filter by Name"), this);
+	connect(filterImagesFocusAct, SIGNAL(triggered()), this, SLOT(filterImagesFocus()));
+	setPathFocusAct = new QAction(tr("Set Path"), this);
+	connect(setPathFocusAct, SIGNAL(triggered()), this, SLOT(setPathFocus()));
 }
 
 void Phototonic::createMenus()
@@ -601,6 +606,8 @@ void Phototonic::createMenus()
 	editMenu->addSeparator();
 	editMenu->addAction(selectAllAction);
 	editMenu->addAction(invertSelectionAct);
+	addAction(filterImagesFocusAct);
+	addAction(setPathFocusAct);
 	editMenu->addSeparator();
 	editMenu->addAction(settingsAction);
 
@@ -921,7 +928,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.4.27</h2>"
+	QString aboutString = "<h2>Phototonic v1.4.28</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -940,6 +947,30 @@ void Phototonic::about()
 		+ "<p>Phototonic is licensed under the GNU General Public License version 3</p>";
 
 	QMessageBox::about(this, tr("About") + " Phototonic", aboutString);
+}
+
+void Phototonic::filterImagesFocus()
+{
+	if (GData::layoutMode == thumbViewIdx)
+	{
+		if (!viewToolBar->isVisible())
+			viewToolBar->setVisible(true);
+		setViewToolBarVisibility();
+		filterBar->setFocus(Qt::OtherFocusReason);
+		filterBar->selectAll();
+	}
+}
+
+void Phototonic::setPathFocus()
+{
+	if (GData::layoutMode == thumbViewIdx)
+	{
+		if (!goToolBar->isVisible())
+			goToolBar->setVisible(true);
+		setGoToolBarVisibility();
+		pathBar->setFocus(Qt::OtherFocusReason);
+		pathBar->selectAll();
+	}
 }
 
 void Phototonic::cleanupSender()
@@ -2000,6 +2031,8 @@ void Phototonic::loadShortcuts()
 	GData::actionKeys[copyMoveAction->text()] = copyMoveAction;
 	GData::actionKeys[goUpAction->text()] = goUpAction;
 	GData::actionKeys[resizeAct->text()] = resizeAct;
+	GData::actionKeys[filterImagesFocusAct->text()] = filterImagesFocusAct;
+	GData::actionKeys[setPathFocusAct->text()] = setPathFocusAct;
 	
 	GData::appSettings->beginGroup("Shortcuts");
 	QStringList groupKeys = GData::appSettings->childKeys();
@@ -2061,8 +2094,10 @@ void Phototonic::loadShortcuts()
 		moveUpAct->setShortcut(QKeySequence("Up"));
 		moveLeftAct->setShortcut(QKeySequence("Left"));
 		moveRightAct->setShortcut(QKeySequence("Right"));
-		copyMoveAction->setShortcut(QKeySequence("M"));
-		resizeAct->setShortcut(QKeySequence("Ctrl+L"));
+		copyMoveAction->setShortcut(QKeySequence("Ctrl+M"));
+		resizeAct->setShortcut(QKeySequence("Ctrl+I"));
+		filterImagesFocusAct->setShortcut(QKeySequence("Ctrl+F"));
+		setPathFocusAct->setShortcut(QKeySequence("Ctrl+L"));
 	}
 		
 	GData::appSettings->endGroup();

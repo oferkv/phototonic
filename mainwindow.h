@@ -148,6 +148,8 @@ private slots:
 	void setPvDockVisibility();
 	void lockDocks();
 	void enableInterface();
+	void filterImagesFocus();
+	void setPathFocus();
 
 private:
 	QString cliFileName;
@@ -258,6 +260,8 @@ private:
 	QAction *randomImageAction;
 	QAction *openAction;
 	QAction *findDupesAction;
+	QAction *filterImagesFocusAct;
+	QAction *setPathFocusAct;
 
 	QAction *openWithMenuAct;
 	QAction *chooseAppAct;
