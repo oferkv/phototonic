@@ -634,7 +634,8 @@ void ThumbView::findDupes(bool resetCounters)
 			break;
 		}
 	}
-	updateFoundDupesState(foundDups, totalFiles, originalImages);}
+	updateFoundDupesState(foundDups, totalFiles, originalImages);
+}
 
 void ThumbView::loadThumbsRange()
 {
