@@ -401,7 +401,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="645"/>
         <source>&amp;Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Werkzeuge</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="728"/>
@@ -719,7 +719,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="546"/>
         <source>Find Duplicate Images</source>
-        <translation type="unfinished"></translation>
+        <translation>Suche Duplikate</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="549"/>
@@ -1521,43 +1521,43 @@
     <message>
         <location filename="../thumbview.cpp" line="516"/>
         <source>Searching duplicate images...</source>
-        <translation type="unfinished"></translation>
+        <translation>Suche Duplikate...</translation>
     </message>
     <message>
         <location filename="../thumbview.cpp" line="581"/>
         <source>Scanned </source>
-        <translation type="unfinished"></translation>
+        <translation>Geprüft </translation>
     </message>
     <message numerus="yes">
         <location filename="../thumbview.cpp" line="581"/>
         <source>%n images, displaying </source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n Bild, angezeigt </numerusform>
+            <numerusform>%n Bilder, angezeigt </numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../thumbview.cpp" line="582"/>
         <source>%n images (</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n Bild (</numerusform>
+            <numerusform>%n Bilder (</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../thumbview.cpp" line="583"/>
         <source>%n originals and </source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n Original und </numerusform>
+            <numerusform>%n Originale und </numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../thumbview.cpp" line="584"/>
         <source>%n duplicates)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n Duplikat)</numerusform>
+            <numerusform>%n Duplikate)</numerusform>
         </translation>
     </message>
     <message>
