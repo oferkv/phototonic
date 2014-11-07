@@ -55,7 +55,6 @@ private slots:
 	void sortThumbnains();
 	void reload();
 	void setIncludeSubFolders();
-	void refreshThumbs(bool noScroll);
 	void showSettings();
 	void toggleFullScreen();
 	void updateActions(QWidget *old, QWidget *now);
@@ -88,13 +87,11 @@ private slots:
 	void loadLastImage();
 	void loadRandomImage();
 	void selectRecentThumb();
-	void setViewerKeyEventsEnabled(bool enabled);
 	void updateIndexByViewerImage();
 	void selectAllThumbs();
 	void deleteOp();
 	void cutThumbs();
 	void copyThumbs();
-	void copyMoveImages();
 	void pasteThumbs();
 	void thumbsZoomIn();
 	void thumbsZoomOut();
@@ -152,6 +149,9 @@ private slots:
 	void cleanupColorsDialog();
 	void filterImagesFocus();
 	void setPathFocus();
+	void copyImagesTo();
+	void moveImagesTo();
+
 
 private:
 	QString cliFileName;
@@ -178,7 +178,8 @@ private:
 	QAction *exitAction;
 	QAction *cutAction;
 	QAction *copyAction;
-	QAction *copyMoveAction;
+	QAction *copyToAction;
+	QAction *moveToAction;
 	QAction *deleteAction;
 	QAction *saveAction;
 	QAction *saveAsAction;
@@ -321,6 +322,7 @@ private:
 	ResizeDialog *resizeDialog;
 	ColorsDialog *colorsDialog;
 
+	void refreshThumbs(bool noScroll);
 	void loadShortcuts();
 	void setupDocks();
 	void deleteViewerImage();
@@ -350,6 +352,8 @@ private:
 	void selectThumbByRow(int row);
 	void setInterfaceEnabled(bool enable);
 	void addBookmark(QString path);
+	void copyMoveImages(bool move);
+	void setViewerKeyEventsEnabled(bool enabled);
 };
 
 #endif // MAINWINDOW_H

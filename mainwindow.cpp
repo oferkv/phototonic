@@ -186,7 +186,8 @@ void Phototonic::createImageView()
 	imageView->addAction(moveUpAct);
 	imageView->addAction(moveDownAct);
 	imageView->addAction(showClipboardAction);
-	imageView->addAction(copyMoveAction);
+	imageView->addAction(copyToAction);
+	imageView->addAction(moveToAction);
 	imageView->addAction(resizeAct);
 	imageView->addAction(openAction);
 	imageView->addAction(exitAction);
@@ -243,7 +244,8 @@ void Phototonic::createImageView()
 	imageView->ImagePopUpMenu->addAction(mirrorSubMenuAct);
 
 	addMenuSeparator(imageView->ImagePopUpMenu);
-	imageView->ImagePopUpMenu->addAction(copyMoveAction);
+	imageView->ImagePopUpMenu->addAction(copyToAction);
+	imageView->ImagePopUpMenu->addAction(moveToAction);
 	imageView->ImagePopUpMenu->addAction(saveAction);
 	imageView->ImagePopUpMenu->addAction(saveAsAction);
 	imageView->ImagePopUpMenu->addAction(renameAction);
@@ -318,8 +320,11 @@ void Phototonic::createActions()
 	connect(copyAction, SIGNAL(triggered()), this, SLOT(copyThumbs()));
 	copyAction->setEnabled(false);
 
-	copyMoveAction = new QAction(tr("Copy or Move to..."), this);
-	connect(copyMoveAction, SIGNAL(triggered()), this, SLOT(copyMoveImages()));
+	copyToAction = new QAction(tr("Copy to..."), this);
+	connect(copyToAction, SIGNAL(triggered()), this, SLOT(copyImagesTo()));
+
+	moveToAction = new QAction(tr("Move to..."), this);
+	connect(moveToAction, SIGNAL(triggered()), this, SLOT(moveImagesTo()));
 	
 	deleteAction = new QAction(tr("Delete"), this);
 	deleteAction->setIcon(QIcon::fromTheme("edit-delete", QIcon(":/images/delete.png")));
@@ -600,7 +605,8 @@ void Phototonic::createMenus()
 	editMenu = menuBar()->addMenu(tr("&Edit"));
 	editMenu->addAction(cutAction);
 	editMenu->addAction(copyAction);
-	editMenu->addAction(copyMoveAction);
+	editMenu->addAction(copyToAction);
+	editMenu->addAction(moveToAction);
 	editMenu->addAction(pasteAction);
 	editMenu->addAction(renameAction);
 	editMenu->addAction(deleteAction);
@@ -663,7 +669,9 @@ void Phototonic::createMenus()
 	thumbView->addAction(cutAction);
 	thumbView->addAction(copyAction);
 	thumbView->addAction(pasteAction);
-	thumbView->addAction(copyMoveAction);
+	addMenuSeparator(thumbView);
+	thumbView->addAction(copyToAction);
+	thumbView->addAction(moveToAction);
 	thumbView->addAction(renameAction);
 	thumbView->addAction(deleteAction);
 	addMenuSeparator(thumbView);
@@ -929,7 +937,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.4.34</h2>"
+	QString aboutString = "<h2>Phototonic v1.4.35</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -1155,24 +1163,29 @@ void Phototonic::copyThumbs()
 	copyOrCutThumbs(true);
 }
 
-void Phototonic::copyMoveImages()
+void Phototonic::copyImagesTo()
 {
-	copyMoveToDialog = new CopyMoveToDialog(this, getSelectedPath());
-	if (copyMoveToDialog->exec())
-	{
-		if (GData::layoutMode == thumbViewIdx)
-		{
+	copyMoveImages(false);
+}
+
+void Phototonic::moveImagesTo()
+{
+	copyMoveImages(true);
+}
+
+void Phototonic::copyMoveImages(bool move)
+{
+	copyMoveToDialog = new CopyMoveToDialog(this, getSelectedPath(), move);
+	if (copyMoveToDialog->exec()) {
+		if (GData::layoutMode == thumbViewIdx) {
 			if (copyMoveToDialog->copyOp)
 				copyThumbs();
 			else
 				cutThumbs();
 
 			pasteThumbs();
-		}
-		else
-		{
-			if (imageView->isNewImage())
-			{
+		} else {
+			if (imageView->isNewImage()) 	{
 				showNewImageWarning(this);
 				return;
 			}
@@ -1184,15 +1197,11 @@ void Phototonic::copyMoveImages()
 			int res = cpMvFile(copyMoveToDialog->copyOp, fileName, imageView->currentImageFullPath,
 				 									destFile, copyMoveToDialog->selectedPath);
 
-			if (!res)
-			{
+			if (!res) {
 				QMessageBox msgBox;
 				msgBox.critical(this, tr("Error"), tr("Failed to copy or move image"));
-			}
-			else
-			{
-				if (!copyMoveToDialog->copyOp)
-				{
+			} else {
+				if (!copyMoveToDialog->copyOp) {
 					int currentRow = thumbView->getCurrentRow();
 					thumbView->thumbViewModel->removeRow(currentRow);
 					updateCurrentImage(currentRow);
@@ -1461,9 +1470,9 @@ void Phototonic::pasteThumbs()
 			thumbView->addThumb(GData::copyCutFileList[tn]);
 		}
 	}
-	
+
 	QString state = QString((GData::copyOp? tr("Copied ") : tr("Moved ")) + 
-								QString::number(dialog->nfiles) + tr(" images"));
+								QString::number(dialog->nfiles) + tr(" image(s)"));
 	setStatus(state);
 	delete(dialog);
 	selectCurrentViewDir();
@@ -1488,7 +1497,8 @@ void Phototonic::updateCurrentImage(int currentRow)
 
 	if (thumbView->getNextRow() < 0 && currentRow > 0)
 	{
-		imageView->loadImage(thumbView->thumbViewModel->item(currentRow - 1)->data(thumbView->FileNameRole).toString());
+		imageView->loadImage(thumbView->thumbViewModel->item(currentRow - 1)->
+											data(thumbView->FileNameRole).toString());
 	}
 	else
 	{
@@ -1498,7 +1508,8 @@ void Phototonic::updateCurrentImage(int currentRow)
 			refreshThumbs(true);
 			return;
 		}
-		imageView->loadImage(thumbView->thumbViewModel->item(currentRow)->data(thumbView->FileNameRole).toString());
+		imageView->loadImage(thumbView->thumbViewModel->item(currentRow)->
+											data(thumbView->FileNameRole).toString());
 	}
 		
 	GData::wrapImageList = wrapImageListTmp;
@@ -1601,7 +1612,7 @@ void Phototonic::deleteOp()
 			}
 		}
 		
-		QString state = QString(tr("Deleted ") + QString::number(nfiles) + tr(" images"));
+		QString state = QString(tr("Deleted ") + QString::number(nfiles) + tr(" image(s)"));
 		setStatus(state);
 
 		thumbView->loadVisibleThumbs();
@@ -2028,7 +2039,8 @@ void Phototonic::loadShortcuts()
 	GData::actionKeys[moveUpAct->text()] = moveUpAct;
 	GData::actionKeys[moveRightAct->text()] = moveRightAct;
 	GData::actionKeys[moveLeftAct->text()] = moveLeftAct;
-	GData::actionKeys[copyMoveAction->text()] = copyMoveAction;
+	GData::actionKeys[copyToAction->text()] = copyToAction;
+	GData::actionKeys[moveToAction->text()] = moveToAction;
 	GData::actionKeys[goUpAction->text()] = goUpAction;
 	GData::actionKeys[resizeAct->text()] = resizeAct;
 	GData::actionKeys[filterImagesFocusAct->text()] = filterImagesFocusAct;
@@ -2094,7 +2106,8 @@ void Phototonic::loadShortcuts()
 		moveUpAct->setShortcut(QKeySequence("Up"));
 		moveLeftAct->setShortcut(QKeySequence("Left"));
 		moveRightAct->setShortcut(QKeySequence("Right"));
-		copyMoveAction->setShortcut(QKeySequence("Ctrl+M"));
+		copyToAction->setShortcut(QKeySequence("Ctrl+Y"));
+		moveToAction->setShortcut(QKeySequence("Ctrl+M"));
 		resizeAct->setShortcut(QKeySequence("Ctrl+I"));
 		filterImagesFocusAct->setShortcut(QKeySequence("Ctrl+F"));
 		setPathFocusAct->setShortcut(QKeySequence("Ctrl+L"));
@@ -2718,7 +2731,7 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvD
 		GData::copyCutIdxList = thumbView->selectionModel()->selectedIndexes();
 		cpMvdialog->exec(thumbView, destDir, false);
 		QString state = QString((GData::copyOp? tr("Copied ") : tr("Moved ")) +
-												QString::number(cpMvdialog->nfiles) + tr(" images"));
+												QString::number(cpMvdialog->nfiles) + tr(" image(s)"));
 		setStatus(state);
 		delete(cpMvdialog);
 	}
@@ -3132,7 +3145,8 @@ void Phototonic::setInterfaceEnabled(bool enable)
 	lastImageAction->setEnabled(enable);
 	randomImageAction->setEnabled(enable);
 	slideShowAction->setEnabled(enable);
-	copyMoveAction->setEnabled(enable);
+	copyToAction->setEnabled(enable);
+	moveToAction->setEnabled(enable);
 	deleteAction->setEnabled(enable);
 	settingsAction->setEnabled(enable);
 	openAction->setEnabled(enable);

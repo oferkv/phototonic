@@ -218,22 +218,23 @@ class CopyMoveToDialog : public QDialog
     Q_OBJECT
 
 public:
-    CopyMoveToDialog(QWidget *parent, QString thumbsPath);
+    CopyMoveToDialog(QWidget *parent, QString thumbsPath, bool move);
 	QString selectedPath;
 	bool copyOp;
 
 private slots:
-	void copy();
-	void move();
-	void copyOrMove(bool copy);
+	void copyOrMove();
 	void justClose();
 	void add();
 	void remove();
+	void selection(const QItemSelection&, const QItemSelection&);
+	void pathDoubleClick(const QModelIndex &idx);
 
 private:
 	QTableView *pathsTable;
 	QStandardItemModel *pathsTableModel;
 	QString currentPath;
+	QLabel *destinationLab;
 
 	void savePaths();
 };

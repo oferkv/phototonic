@@ -97,12 +97,12 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 	QFileInfo fileInfo;
 	QString currFile;
 	QString destFile;
+	int tn;
 
 	show();
 
 	if (pasteInCurrDir)
 	{
-		int tn = 0;
 		for (tn = 0; tn < GData::copyCutFileList.size(); ++tn)
 		{
 			sourceFile = GData::copyCutFileList[tn];
@@ -129,7 +129,6 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 	else
 	{
 		QList<int> rowList;
-		int tn = 0;
 		for (tn = GData::copyCutIdxList.size() - 1; tn >= 0 ; --tn)
 		{
 			sourceFile = thumbView->thumbViewModel->item(GData::copyCutIdxList[tn].row())->
@@ -160,6 +159,7 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 		}
 	}
 
+	nfiles = GData::copyCutIdxList.size();
 	close();	
 }
 
@@ -1042,7 +1042,6 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	hueSatLay->addWidget(channelsLab,		5, 0, 1, 1);
 
 	QGroupBox *hueSatGroup = new QGroupBox(tr("Hue and Saturation"));
-	hueSatGroup->setLayout(hueSatLay);
 	QGridLayout *channelsLay = new QGridLayout;
 
 	channelsLay->addLayout(channelsHbox,		5, 1, 1, 1);
@@ -1262,9 +1261,17 @@ void AppMgmtDialog::remove()
 	}
 }
 
-CopyMoveToDialog::CopyMoveToDialog(QWidget *parent, QString thumbsPath) : QDialog(parent)
+CopyMoveToDialog::CopyMoveToDialog(QWidget *parent, QString thumbsPath, bool move) : QDialog(parent)
 {
-	setWindowTitle(tr("Copy or Move Images to..."));
+	copyOp = !move;
+	if (move) {
+		setWindowTitle(tr("Move to..."));
+		setWindowIcon(QIcon::fromTheme("go-next"));
+	} else {
+		setWindowTitle(tr("Copy to..."));
+		setWindowIcon(QIcon::fromTheme("edit-copy"));
+	}
+
 	resize(350, 250);
 	currentPath = thumbsPath;
 
@@ -1279,87 +1286,96 @@ CopyMoveToDialog::CopyMoveToDialog(QWidget *parent, QString thumbsPath) : QDialo
 	pathsTable->verticalHeader()->setVisible(false);
 	pathsTable->horizontalHeader()->setVisible(false);
 	pathsTable->verticalHeader()->setDefaultSectionSize(pathsTable->verticalHeader()->
-																				minimumSectionSize());
+																	minimumSectionSize());
 	pathsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	pathsTable->	setShowGrid(false);
 
+	connect(pathsTable->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), 
+				this, SLOT(selection(QItemSelection, QItemSelection)));
+   	connect(pathsTable, SIGNAL(doubleClicked(const QModelIndex &)), 
+				this, SLOT(pathDoubleClick(const QModelIndex &)));
+
 	QHBoxLayout *addRemoveHbox = new QHBoxLayout;
-    QPushButton *addButton = new QPushButton(tr("Add"));
-   	addButton->setIcon(QIcon::fromTheme("list-add"));
+    QPushButton *addButton = new QPushButton(tr("Browse..."));
 	connect(addButton, SIGNAL(clicked()), this, SLOT(add()));
-	addRemoveHbox->addWidget(addButton, 0, Qt::AlignRight);
     QPushButton *removeButton = new QPushButton(tr("Remove"));
-   	removeButton->setIcon(QIcon::fromTheme("list-remove"));
 	connect(removeButton, SIGNAL(clicked()), this, SLOT(remove()));
-	addRemoveHbox->addWidget(removeButton, 0, Qt::AlignRight);
+	addRemoveHbox->addWidget(removeButton, 0, Qt::AlignLeft);
 	addRemoveHbox->addStretch(1);	
+	addRemoveHbox->addWidget(addButton, 0, Qt::AlignRight);
 
 	QHBoxLayout *buttonsHbox = new QHBoxLayout;
-    QPushButton *closeButton = new QPushButton(tr("Close"));
-	closeButton->setIcon(QIcon::fromTheme("dialog-ok"));
-    closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-	connect(closeButton, SIGNAL(clicked()), this, SLOT(justClose()));
-    QPushButton *copyButton = new QPushButton(tr("Copy"));
-   	copyButton->setIcon(QIcon::fromTheme("edit-copy"));
-    copyButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-	connect(copyButton, SIGNAL(clicked()), this, SLOT(copy()));
-    QPushButton *moveButton = new QPushButton(tr("Move"));
-   	moveButton->setIcon(QIcon::fromTheme("go-next"));
-    moveButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-	connect(moveButton, SIGNAL(clicked()), this, SLOT(move()));
+    QPushButton *cancelButton = new QPushButton(tr("Cancel"));
+	cancelButton->setIcon(QIcon::fromTheme("dialog-cancel"));
+    cancelButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+	connect(cancelButton, SIGNAL(clicked()), this, SLOT(justClose()));
+
+    QPushButton *okButton = new QPushButton(tr("OK"));
+   	okButton->setIcon(QIcon::fromTheme("dialog-ok"));
+    okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+
+	connect(okButton, SIGNAL(clicked()), this, SLOT(copyOrMove()));
+
 	buttonsHbox->addStretch(1);	
-	buttonsHbox->addWidget(closeButton, 0, Qt::AlignRight);
-	buttonsHbox->addWidget(copyButton, 0, Qt::AlignRight);
-	buttonsHbox->addWidget(moveButton, 0, Qt::AlignRight);
-	
+	buttonsHbox->addWidget(cancelButton, 0, Qt::AlignRight);
+	buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);
+
+	destinationLab = new QLabel(tr("Destination: "));
+	QFrame *line = new QFrame(this);
+	line->setObjectName(QString::fromUtf8("line"));
+	line->setFrameShape(QFrame::HLine);
+	line->setFrameShadow(QFrame::Sunken);
+
 	QVBoxLayout *mainVbox = new QVBoxLayout;
 	mainVbox->addWidget(pathsTable);
 	mainVbox->addLayout(addRemoveHbox);
+	mainVbox->addWidget(line);	
+	mainVbox->addWidget(destinationLab);	
 	mainVbox->addLayout(buttonsHbox);
 	setLayout(mainVbox);
 
 	// Load paths list
 	QSetIterator<QString> it(GData::bookmarkPaths);
-	while (it.hasNext())
-	{
+	while (it.hasNext()) {
 		QStandardItem *item = new QStandardItem(QIcon(":/images/bookmarks.png"), it.next());
 		pathsTableModel->insertRow(pathsTableModel->rowCount(), item);
 	}
+	pathsTableModel->sort(0);
+}
+
+void CopyMoveToDialog::selection(const QItemSelection&, const QItemSelection&)
+{
+	if (pathsTable->selectionModel()->selectedRows().size() > 0) {
+		destinationLab->setText(tr("Destination: ") +
+			pathsTableModel->item(pathsTable->selectionModel()->selectedRows().at(0).row())->text());
+	}
+}
+
+void CopyMoveToDialog::pathDoubleClick(const QModelIndex &)
+{
+	copyOrMove();
 }
 
 void CopyMoveToDialog::savePaths()
 {
 	GData::bookmarkPaths.clear();
-    for (int i = 0; i < pathsTableModel->rowCount(); ++i)
-    {
+    for (int i = 0; i < pathsTableModel->rowCount(); ++i) {
     	GData::bookmarkPaths.insert
     						(pathsTableModel->itemFromIndex(pathsTableModel->index(i, 0))->text());
    	}
 }
 
-void CopyMoveToDialog::copyOrMove(bool copy)
+void CopyMoveToDialog::copyOrMove()
 {
 	savePaths();
-	copyOp = copy;
 
 	QModelIndexList indexesList;
-	if((indexesList = pathsTable->selectionModel()->selectedIndexes()).size())
-	{
+	if((indexesList = pathsTable->selectionModel()->selectedIndexes()).size()) {
 		selectedPath = pathsTableModel->itemFromIndex(indexesList.first())->text();
 		accept();
-	}
-	else
+	} else {
 		reject();
-}
-
-void CopyMoveToDialog::copy()
-{
-	copyOrMove(true);
-}
-
-void CopyMoveToDialog::move()
-{
-	copyOrMove(false);
+	}
 }
 
 void CopyMoveToDialog::justClose()
@@ -1380,14 +1396,13 @@ void CopyMoveToDialog::add()
 
 	pathsTable->selectionModel()->clearSelection();
 	pathsTable->selectionModel()->select(pathsTableModel->index(pathsTableModel->rowCount() - 1, 0),
-																			QItemSelectionModel::Select);
+															QItemSelectionModel::Select);
 }
 
 void CopyMoveToDialog::remove()
 {
 	QModelIndexList indexesList;
-	if((indexesList = pathsTable->selectionModel()->selectedIndexes()).size())
-	{
+	if((indexesList = pathsTable->selectionModel()->selectedIndexes()).size()) {
 		pathsTableModel->removeRow(indexesList.first().row());
 	}
 }
