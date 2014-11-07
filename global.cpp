@@ -51,13 +51,12 @@ namespace GData
 	bool slideShowRandom;
 	bool slideShowActive;
 	QMap<QString, QAction *> actionKeys;
-	bool hueSatEnabled;
-	bool brightContrastEnabled;
 	int hueVal;
 	int saturationVal;
 	int lightnessVal;
 	int contrastVal;
 	int brightVal;
+	bool colorsActive;
 	bool colorizeEnabled;
 	bool hueRedChannel;
 	bool hueGreenChannel;

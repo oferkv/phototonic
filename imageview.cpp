@@ -90,12 +90,10 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	GData::hueVal = 0;
 	GData::saturationVal = 100;
 	GData::lightnessVal = 100;
-	GData::hueSatEnabled = false;
 	GData::hueRedChannel = true;
 	GData::hueGreenChannel = true;
 	GData::hueBlueChannel = true;
 
-	GData::brightContrastEnabled = false;
 	GData::contrastVal = CONTRAST_MID;
 	GData::brightVal = BRIGHTNESS_MID;
 
@@ -506,66 +504,53 @@ void ImageView::colorize()
 	if (displayImage.format() == QImage::Format_Indexed8)
 		displayImage = displayImage.convertToFormat(QImage::Format_RGB32);
 
-	if (GData::brightContrastEnabled)
-	{
-		int i;
-		float contrast = ((float)GData::contrastVal / 100.0);
-		float brightness = ((float)GData::brightVal / 100.0);
-		
-		for(i = 0; i < 256; ++i)
-		{
-			if (i < (int)(128.0f + 128.0f * tan(contrast)) && i > (int)(128.0f - 128.0f * tan(contrast)))
-				contrastTransform[i] = (i - 128) / tan(contrast) + 128;
-			else if (i >= (int)(128.0f + 128.0f * tan(contrast)))
-				contrastTransform[i] = 255;
-			else
-				contrastTransform[i] = 0;
-		}
-
-		for (i = 0; i < 256; ++i)
-		{
-			brightTransform[i] = MIN(255,(int)((255.0 * pow(i / 255.0, 1.0 / brightness)) + 0.5));
-		}
+	int i;
+	float contrast = ((float)GData::contrastVal / 100.0);
+	float brightness = ((float)GData::brightVal / 100.0);
+	
+	for(i = 0; i < 256; ++i) {
+		if (i < (int)(128.0f + 128.0f * tan(contrast)) && i > (int)(128.0f - 128.0f * tan(contrast)))
+			contrastTransform[i] = (i - 128) / tan(contrast) + 128;
+		else if (i >= (int)(128.0f + 128.0f * tan(contrast)))
+			contrastTransform[i] = 255;
+		else
+			contrastTransform[i] = 0;
 	}
 
-	for(y = 0; y < displayImage.height(); ++y)
-	{
+	for (i = 0; i < 256; ++i) {
+		brightTransform[i] = MIN(255,(int)((255.0 * pow(i / 255.0, 1.0 / brightness)) + 0.5));
+	}
+
+	for(y = 0; y < displayImage.height(); ++y) {
 		line = (QRgb *)displayImage.scanLine(y);
  
-		for(x = 0; x < displayImage.width(); ++x)
-		{
+		for(x = 0; x < displayImage.width(); ++x) {
 			r = qRed(line[x]);
 			g = qGreen(line[x]);
 			b = qBlue(line[x]);
 
-			if (GData::brightContrastEnabled)
-			{
-				r = bound0_255(contrastTransform[r]);
-				g = bound0_255(contrastTransform[g]);
-				b = bound0_255(contrastTransform[b]);
-				r = bound0_255(brightTransform[r]);
-				g = bound0_255(brightTransform[g]);
-				b = bound0_255(brightTransform[b]);
-			}
+			r = bound0_255(contrastTransform[r]);
+			g = bound0_255(contrastTransform[g]);
+			b = bound0_255(contrastTransform[b]);
+			r = bound0_255(brightTransform[r]);
+			g = bound0_255(brightTransform[g]);
+			b = bound0_255(brightTransform[b]);
 
-			if (GData::hueSatEnabled)
-			{
-				rgbToHsl(r, g, b, &h, &s, &l);
-									
-				if (GData::colorizeEnabled)
-					h = GData::hueVal;
-				else
-					h += GData::hueVal;
+			rgbToHsl(r, g, b, &h, &s, &l);
+								
+			if (GData::colorizeEnabled)
+				h = GData::hueVal;
+			else
+				h += GData::hueVal;
 
-				s = bound0_255(((s * GData::saturationVal) / 100));
-				l = bound0_255(((l * GData::lightnessVal) / 100));
+			s = bound0_255(((s * GData::saturationVal) / 100));
+			l = bound0_255(((l * GData::lightnessVal) / 100));
 
-				hslToRgb(h, s, l, &hr, &hg, &hb);
+			hslToRgb(h, s, l, &hr, &hg, &hb);
 
-				r = GData::hueRedChannel? hr : qRed(line[x]);
-				g = GData::hueGreenChannel? hg : qGreen(line[x]);
-				b = GData::hueBlueChannel? hb: qBlue(line[x]);
-			}
+			r = GData::hueRedChannel? hr : qRed(line[x]);
+			g = GData::hueGreenChannel? hg : qGreen(line[x]);
+			b = GData::hueBlueChannel? hb: qBlue(line[x]);
 
 			line[x] = qRgb(r, g, b);
 		}
@@ -583,7 +568,7 @@ void ImageView::refresh()
 	else
 		displayImage = origImage;
 	transform();
-	if (GData::brightContrastEnabled || GData::hueSatEnabled)
+	if (GData::colorsActive || GData::keepTransform)
 		colorize();
 	if (mirrorLayout)
 		mirror();
@@ -645,7 +630,7 @@ void ImageView::reload()
 			origImage.load(currentImageFullPath);
 			displayImage = origImage;
 			transform();
-			if (GData::brightContrastEnabled || GData::hueSatEnabled)
+			if (GData::colorsActive || GData::keepTransform)
 				colorize();
 			if (mirrorLayout)
 				mirror();

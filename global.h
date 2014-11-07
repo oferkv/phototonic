@@ -76,6 +76,7 @@ namespace GData
 	extern int lightnessVal;
 	extern int contrastVal;
 	extern int brightVal;
+	extern bool colorsActive;
 	extern bool colorizeEnabled;
 	extern bool hueRedChannel;
 	extern bool hueGreenChannel;

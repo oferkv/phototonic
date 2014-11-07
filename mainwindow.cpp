@@ -213,10 +213,23 @@ void Phototonic::createImageView()
 	addMenuSeparator(zoomSubMenu);
 	zoomSubMenu->addAction(keepZoomAct);
 
+	MirroringSubMenu = new QMenu(tr("Mirroring"));
+	mirrorSubMenuAct = new QAction(tr("Mirroring"), this);
+	mirrorSubMenuAct->setMenu(MirroringSubMenu);
+	mirroringGroup = new QActionGroup(this);
+	mirroringGroup->addAction(mirrorDisabledAct);
+	mirroringGroup->addAction(mirrorDualAct);
+	mirroringGroup->addAction(mirrorTripleAct);
+	mirroringGroup->addAction(mirrorVDualAct);
+	mirroringGroup->addAction(mirrorQuadAct);
+	MirroringSubMenu->addActions(mirroringGroup->actions());
+
 	transformSubMenu = new QMenu(tr("Transform"));
 	transformSubMenuAct = new QAction(tr("Transform"), this);
 	transformSubMenuAct->setMenu(transformSubMenu);
+	imageView->ImagePopUpMenu->addAction(resizeAct);
 	imageView->ImagePopUpMenu->addAction(transformSubMenuAct);
+	transformSubMenu->addAction(colorsAct);
 	transformSubMenu->addAction(rotateRightAct);
 	transformSubMenu->addAction(rotateLeftAct);
 	transformSubMenu->addAction(freeRotateRightAct);
@@ -225,21 +238,9 @@ void Phototonic::createImageView()
 	transformSubMenu->addAction(flipVAct);
 	transformSubMenu->addAction(cropAct);
 
-	MirroringSubMenu = new QMenu(tr("Mirroring"));
-	mirrorSubMenuAct = new QAction(tr("Mirroring"), this);
-	mirrorSubMenuAct->setMenu(MirroringSubMenu);
-	imageView->ImagePopUpMenu->addAction(mirrorSubMenuAct);
-	mirroringGroup = new QActionGroup(this);
-	mirroringGroup->addAction(mirrorDisabledAct);
-	mirroringGroup->addAction(mirrorDualAct);
-	mirroringGroup->addAction(mirrorTripleAct);
-	mirroringGroup->addAction(mirrorVDualAct);
-	mirroringGroup->addAction(mirrorQuadAct);
-	MirroringSubMenu->addActions(mirroringGroup->actions());
 	addMenuSeparator(transformSubMenu);
 	transformSubMenu->addAction(keepTransformAct);
-	imageView->ImagePopUpMenu->addAction(colorsAct);
-	imageView->ImagePopUpMenu->addAction(resizeAct);
+	imageView->ImagePopUpMenu->addAction(mirrorSubMenuAct);
 
 	addMenuSeparator(imageView->ImagePopUpMenu);
 	imageView->ImagePopUpMenu->addAction(copyMoveAction);
@@ -564,7 +565,7 @@ void Phototonic::createActions()
 	connect(mirrorQuadAct, SIGNAL(triggered()), this, SLOT(setMirrorQuad()));
 	mirrorDisabledAct->setChecked(true); 
 
-	keepTransformAct = new QAction(tr("Keep Transformations"), this);
+	keepTransformAct = new QAction(tr("Lock Transformations"), this);
 	keepTransformAct->setCheckable(true);
 	connect(keepTransformAct, SIGNAL(triggered()), this, SLOT(keepTransformClicked()));
 
@@ -749,13 +750,13 @@ void Phototonic::createToolBars()
 	imageToolBar->addAction(resetZoomAct);
 	imageToolBar->addAction(origZoomAct);
 	imageToolBar->addSeparator();
+	imageToolBar->addAction(resizeAct);
 	imageToolBar->addAction(rotateRightAct);
 	imageToolBar->addAction(rotateLeftAct);
 	imageToolBar->addAction(flipHAct);
 	imageToolBar->addAction(flipVAct);
 	imageToolBar->addAction(cropAct);
 	imageToolBar->addAction(colorsAct);
-	imageToolBar->addAction(resizeAct);
 	imageToolBar->setVisible(false);
 	connect(imageToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setImageToolBarVisibility()));
 
@@ -928,7 +929,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.4.33</h2>"
+	QString aboutString = "<h2>Phototonic v1.4.34</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -3113,6 +3114,7 @@ void Phototonic::cleanupScaleDialog()
 void Phototonic::cleanupColorsDialog()
 {
 	delete colorsDialog;
+	GData::colorsActive = false;
 	setInterfaceEnabled(true);
 }
 
@@ -3138,6 +3140,7 @@ void Phototonic::setInterfaceEnabled(bool enable)
 	// other
 	thumbView->setEnabled(enable);
 	fsTree->setEnabled(enable);
+	bookmarks->setEnabled(enable);
 	menuBar()->setEnabled(enable);
 	editToolBar->setEnabled(enable);
 	goToolBar->setEnabled(enable);

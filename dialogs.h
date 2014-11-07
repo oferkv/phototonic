@@ -171,8 +171,6 @@ public:
 public slots:
 	void ok();
 	void reset();
-	void enableHueSat(int state);
-	void enableBrightContrast(int state);
 	void enableColorize(int state);
 	void setRedChannel();
 	void setGreenChannel();
@@ -181,7 +179,6 @@ public slots:
 
 private:
 	ImageView *imageView;
-	QCheckBox *hueSatEnabledCb;
 	QSlider *hueSlide;
 	QCheckBox *colorizeCb;
 	QSlider *saturationSlide;
@@ -190,7 +187,6 @@ private:
 	QCheckBox *greenB;
 	QCheckBox *blueB;
 
-	QCheckBox *brightContrastEnabledCb;
 	QSlider *brightSlide;
 	QSlider *contrastSlide;
 };
