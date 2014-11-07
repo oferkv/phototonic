@@ -147,7 +147,9 @@ private slots:
 	void setIiDockVisibility();
 	void setPvDockVisibility();
 	void lockDocks();
-	void enableInterface();
+	void cleanupCropDialog();
+	void cleanupScaleDialog();
+	void cleanupColorsDialog();
 	void filterImagesFocus();
 	void setPathFocus();
 
@@ -315,6 +317,9 @@ private:
 
 	QMovie *busyMovie;
 	QLabel *busyLabel;
+	CropDialog *cropDialog;
+	ResizeDialog *resizeDialog;
+	ColorsDialog *colorsDialog;
 
 	void loadShortcuts();
 	void setupDocks();

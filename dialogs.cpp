@@ -633,7 +633,7 @@ void SettingsDialog::pickStartupDir()
 CropDialog::CropDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
 {
 	setWindowTitle(tr("Cropping"));
-	resize(400, 400);
+	resize(350, 350);
 	if (GData::dialogLastX)
 		move(GData::dialogLastX, GData::dialogLastY);
 	imageView = imageView_;
@@ -694,13 +694,13 @@ CropDialog::CropDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
 	rightBox->addStretch(1);	
 
 	mainGbox->addWidget(topSlide, 2, 1, 5, 1);
-	mainGbox->addLayout(topBox, 4, 2, 1, 1);
+	mainGbox->addLayout(leftBox, 4, 2, 1, 1);
 	mainGbox->addWidget(bottomSlide, 2, 7, 5, 1);
-	mainGbox->addLayout(bottomBox, 4, 6, 1, 1);
+	mainGbox->addLayout(rightBox, 4, 6, 1, 1);
 	mainGbox->addWidget(leftSlide, 1, 2, 1, 5);
-	mainGbox->addLayout(leftBox, 2, 4, 1, 1);
+	mainGbox->addLayout(topBox, 2, 4, 1, 1);
 	mainGbox->addWidget(rightSlide, 7, 2, 1, 5);
-	mainGbox->addLayout(rightBox, 6, 4, 1, 1);
+	mainGbox->addLayout(bottomBox, 6, 4, 1, 1);
 
 	QVBoxLayout *mainVbox = new QVBoxLayout;
 	mainVbox->addLayout(mainGbox);
@@ -759,7 +759,7 @@ ResizeDialog::ResizeDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 {
 	setWindowTitle(tr("Scale Image"));
 	setWindowIcon(QIcon::fromTheme("transform-scale", QIcon(":/images/phototonic.png")));
-	resize(300, 200);
+	newWidth = newHeight = 0;
 
 	if (GData::dialogLastX)
 		move(GData::dialogLastX, GData::dialogLastY);
@@ -936,9 +936,11 @@ void ResizeDialog::adjustSizes()
 
 void ResizeDialog::ok()
 {
-	GData::scaledWidth = newWidth;
-	GData::scaledHeight = newHeight; 
-	imageView->refresh();
+	if (newWidth || newHeight) {
+		GData::scaledWidth = newWidth;
+		GData::scaledHeight = newHeight; 
+		imageView->refresh();
+	}
 	accept();
 }
 

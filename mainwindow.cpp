@@ -691,6 +691,7 @@ void Phototonic::createToolBars()
 	goToolBar->addAction(goFrwdAction);
 	goToolBar->addAction(goUpAction);
 	goToolBar->addAction(goHomeAction);
+	goToolBar->addAction(refreshAction);
 
 	/* path bar */
 	pathBar = new QLineEdit;
@@ -703,7 +704,6 @@ void Phototonic::createToolBars()
 	pathBar->setMaximumWidth(300);
 	connect(pathBar, SIGNAL(returnPressed()), this, SLOT(goPathBarDir()));
 	goToolBar->addWidget(pathBar);
-	goToolBar->addAction(refreshAction);
 	goToolBar->addAction(subFoldersAction);
 	connect(goToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setGoToolBarVisibility()));
 
@@ -928,7 +928,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.4.28</h2>"
+	QString aboutString = "<h2>Phototonic v1.4.29</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -1294,11 +1294,9 @@ void Phototonic::cropImage()
 	if (GData::slideShowActive)
 		slideShow();
 
-	CropDialog *cropDialog = new CropDialog(this, imageView);
-	connect(cropDialog, SIGNAL(accepted()), this, SLOT(enableInterface()));
-	connect(cropDialog, SIGNAL(rejected()), this, SLOT(enableInterface()));
-	connect(cropDialog, SIGNAL(accepted()), this, SLOT(cleanupSender()));
-	connect(cropDialog, SIGNAL(rejected()), this, SLOT(cleanupSender()));
+	cropDialog = new CropDialog(this, imageView);
+	connect(cropDialog, SIGNAL(accepted()), this, SLOT(cleanupCropDialog()));
+	connect(cropDialog, SIGNAL(rejected()), this, SLOT(cleanupCropDialog()));
 
 	cropDialog->show();
 	setInterfaceEnabled(false);
@@ -1309,11 +1307,14 @@ void Phototonic::scaleImage()
 	if (GData::slideShowActive)
 		slideShow();
 
-	ResizeDialog *resizeDialog = new ResizeDialog(this, imageView);
-	connect(resizeDialog, SIGNAL(accepted()), this, SLOT(enableInterface()));
-	connect(resizeDialog, SIGNAL(rejected()), this, SLOT(enableInterface()));
-	connect(resizeDialog, SIGNAL(accepted()), this, SLOT(cleanupSender()));
-	connect(resizeDialog, SIGNAL(rejected()), this, SLOT(cleanupSender()));
+	if (GData::layoutMode == thumbViewIdx && thumbView->selectionModel()->selectedIndexes().size() < 1) {
+		setStatus(tr("No selection"));
+		return;
+	}
+
+	resizeDialog = new ResizeDialog(this, imageView);
+	connect(resizeDialog, SIGNAL(accepted()), this, SLOT(cleanupScaleDialog()));
+	connect(resizeDialog, SIGNAL(rejected()), this, SLOT(cleanupScaleDialog()));
 
 	resizeDialog->show();
 	setInterfaceEnabled(false);
@@ -1340,11 +1341,9 @@ void Phototonic::showColorsDialog()
 	if (GData::slideShowActive)
 		slideShow();
 
-	ColorsDialog *colorsDialog = new ColorsDialog(this, imageView);
-	connect(colorsDialog, SIGNAL(accepted()), this, SLOT(enableInterface()));
-	connect(colorsDialog, SIGNAL(rejected()), this, SLOT(enableInterface()));
-	connect(colorsDialog, SIGNAL(accepted()), this, SLOT(cleanupSender()));
-	connect(colorsDialog, SIGNAL(rejected()), this, SLOT(cleanupSender()));
+	colorsDialog = new ColorsDialog(this, imageView);
+	connect(colorsDialog, SIGNAL(accepted()), this, SLOT(cleanupColorsDialog()));
+	connect(colorsDialog, SIGNAL(rejected()), this, SLOT(cleanupColorsDialog()));
 
 	colorsDialog->show();
 	setInterfaceEnabled(false);
@@ -3099,8 +3098,21 @@ bool Phototonic::removeDirOp(QString dirToDelete)
 	return ok;
 }
 
-void Phototonic::enableInterface()
+void Phototonic::cleanupCropDialog()
 {
+	delete cropDialog;
+	setInterfaceEnabled(true);
+}
+
+void Phototonic::cleanupScaleDialog()
+{
+	delete resizeDialog;
+	setInterfaceEnabled(true);
+}
+
+void Phototonic::cleanupColorsDialog()
+{
+	delete colorsDialog;
 	setInterfaceEnabled(true);
 }
 
