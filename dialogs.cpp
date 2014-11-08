@@ -978,11 +978,7 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 {
 	setWindowTitle(tr("Colors"));
 	setWindowIcon(QIcon(":/images/colors.png"));
-	resize(300, 300);
-	GData::colorsActive = true;
-	
-	if (GData::dialogLastX)
-		move(GData::dialogLastX, GData::dialogLastY);
+	resize(350, 300);
 	imageView = imageView_;
 
 	QHBoxLayout *buttonsHbox = new QHBoxLayout;
@@ -1004,8 +1000,8 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 
 	hueSlide = new QSlider(Qt::Horizontal);
 	hueSlide->setTickPosition(QSlider::TicksAbove);
-	hueSlide->setTickInterval(64);
-	hueSlide->setRange(0, 255);
+	hueSlide->setTickInterval(25);
+	hueSlide->setRange(-100, 100);
 	hueSlide->setTracking(false);
 	hueSlide->setValue(GData::hueVal);
 	connect(hueSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
@@ -1016,16 +1012,16 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 
 	saturationSlide = new QSlider(Qt::Horizontal);
 	saturationSlide->setTickPosition(QSlider::TicksAbove);
-	saturationSlide->setTickInterval(100);
-	saturationSlide->setRange(0, 500);
+	saturationSlide->setTickInterval(25);
+	saturationSlide->setRange(-100, 100);
 	saturationSlide->setTracking(false);
 	saturationSlide->setValue(GData::saturationVal);
 	connect(saturationSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
 
 	lightnessSlide = new QSlider(Qt::Horizontal);
 	lightnessSlide->setTickPosition(QSlider::TicksAbove);
-	lightnessSlide->setTickInterval(100);
-	lightnessSlide->setRange(0, 500);
+	lightnessSlide->setTickInterval(25);
+	lightnessSlide->setRange(-100, 100);
 	lightnessSlide->setTracking(false);
 	lightnessSlide->setValue(GData::lightnessVal);
 	connect(lightnessSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
@@ -1071,16 +1067,16 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 
 	brightSlide = new QSlider(Qt::Horizontal);
 	brightSlide->setTickPosition(QSlider::TicksAbove);
-	brightSlide->setTickInterval(100);
-	brightSlide->setRange(0, 400);
+	brightSlide->setTickInterval(25);
+	brightSlide->setRange(-100, 100);
 	brightSlide->setTracking(false);
 	brightSlide->setValue(GData::brightVal);
 	connect(brightSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
 
 	contrastSlide = new QSlider(Qt::Horizontal);
 	contrastSlide->setTickPosition(QSlider::TicksAbove);
-	contrastSlide->setTickInterval(39);
-	contrastSlide->setRange(0, 157);
+	contrastSlide->setTickInterval(25);
+	contrastSlide->setRange(-100, 100);
 	contrastSlide->setTracking(false);
 	contrastSlide->setValue(GData::contrastVal);
 	contrastSlide->setInvertedAppearance(true);
@@ -1108,11 +1104,27 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 
 void ColorsDialog::applyColors(int)
 {
-	GData::hueVal = hueSlide->value();
-	GData::saturationVal = saturationSlide->value();
-	GData::lightnessVal = lightnessSlide->value();
-	GData::contrastVal = contrastSlide->value();
-	GData::brightVal = brightSlide->value();
+	if (brightSlide->value() >= 0)
+		GData::brightVal = (brightSlide->value() * 500 / 100) + 100;
+	else
+		GData::brightVal = brightSlide->value() + 100;
+
+	if (contrastSlide->value() >= 0)
+		GData::contrastVal = (contrastSlide->value() * 79 / 100) + 78;
+	else
+		GData::contrastVal = contrastSlide->value() + 79;
+
+	GData::hueVal = hueSlide->value() * 127 / 100;
+
+	if (saturationSlide->value() >= 0)
+		GData::saturationVal = (saturationSlide->value() * 500 / 100) + 100;
+	else
+		GData::saturationVal = saturationSlide->value() + 100;
+
+	if (lightnessSlide->value() >= 0)
+		GData::lightnessVal = (lightnessSlide->value() * 200 / 100) + 100;
+	else
+		GData::lightnessVal = lightnessSlide->value() + 100;
 
 	imageView->refresh();
 }
@@ -1128,8 +1140,8 @@ void ColorsDialog::reset()
 {
 	hueSlide->setValue(0);
 	colorizeCb->setChecked(false);
-	saturationSlide->setValue(100);
-	lightnessSlide->setValue(100);
+	saturationSlide->setValue(0);
+	lightnessSlide->setValue(0);
 	redB->setChecked(true);
 	greenB->setChecked(true);
 	blueB->setChecked(true);
@@ -1137,8 +1149,8 @@ void ColorsDialog::reset()
 	GData::hueGreenChannel = true;
 	GData::hueBlueChannel = true;
 
-	contrastSlide->setValue(CONTRAST_MID);
-	brightSlide->setValue(BRIGHTNESS_MID);
+	contrastSlide->setValue(0);
+	brightSlide->setValue(0);
 	
 	imageView->refresh();
 }

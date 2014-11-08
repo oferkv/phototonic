@@ -56,6 +56,7 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	handleStartupArgs();
 
 	copyMoveToDialog = 0;
+	colorsDialog = 0;
 	initComplete = true;
 	thumbView->busy = false;
 	currentHistoryIdx = -1;
@@ -937,7 +938,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.4.36</h2>"
+	QString aboutString = "<h2>Phototonic v1.4.37</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -1351,11 +1352,15 @@ void Phototonic::showColorsDialog()
 	if (GData::slideShowActive)
 		slideShow();
 
-	colorsDialog = new ColorsDialog(this, imageView);
-	connect(colorsDialog, SIGNAL(accepted()), this, SLOT(cleanupColorsDialog()));
-	connect(colorsDialog, SIGNAL(rejected()), this, SLOT(cleanupColorsDialog()));
+	if (!colorsDialog) {
+		colorsDialog = new ColorsDialog(this, imageView);
+		connect(colorsDialog, SIGNAL(accepted()), this, SLOT(cleanupColorsDialog()));
+		connect(colorsDialog, SIGNAL(rejected()), this, SLOT(cleanupColorsDialog()));
+	}
 
+	GData::colorsActive = true;
 	colorsDialog->show();
+	colorsDialog->applyColors(0);
 	setInterfaceEnabled(false);
 }
 
@@ -3128,7 +3133,6 @@ void Phototonic::cleanupScaleDialog()
 
 void Phototonic::cleanupColorsDialog()
 {
-	delete colorsDialog;
 	GData::colorsActive = false;
 	setInterfaceEnabled(true);
 }

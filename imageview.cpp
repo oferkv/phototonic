@@ -88,14 +88,14 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	GData::cropHeight = 0;
 
 	GData::hueVal = 0;
-	GData::saturationVal = 100;
-	GData::lightnessVal = 100;
+	GData::saturationVal = 0;
+	GData::lightnessVal = 0;
 	GData::hueRedChannel = true;
 	GData::hueGreenChannel = true;
 	GData::hueBlueChannel = true;
 
-	GData::contrastVal = CONTRAST_MID;
-	GData::brightVal = BRIGHTNESS_MID;
+	GData::contrastVal = 0;
+	GData::brightVal = 0;
 
 	GData::dialogLastX = 0;
 	GData::dialogLastY = 0;

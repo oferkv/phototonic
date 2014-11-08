@@ -26,9 +26,6 @@
 #include <QAction>
 #include <QSet>
 
-#define		CONTRAST_MID		78
-#define		BRIGHTNESS_MID	100
-
 namespace GData
 {
 	enum StartupDir
