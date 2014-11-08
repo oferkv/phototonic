@@ -74,6 +74,7 @@ private slots:
 	void pickThumbsColor();
 	void pickThumbsTextColor();
 	void pickStartupDir();
+	void pickBgImage();
 	void setActionKeyText(const QString &text);
 
 public slots:
@@ -106,6 +107,7 @@ private:
 	KeyGrabLineEdit *keyLine;
 	QRadioButton *startupDirRadios[3];
 	QLineEdit *startupDirEdit;
+	QLineEdit *thumbsBackImageEdit;
 
 	void setButtonBgColor(QColor &color, QToolButton *button);
 };

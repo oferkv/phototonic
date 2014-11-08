@@ -106,6 +106,7 @@ namespace GData
 	extern bool iiDockVisible;
 	extern bool pvDockVisible;
 	extern bool ivDockVisible;
+	extern QString thumbsBackImage;
 }
 
 #endif // GLOBAL_H

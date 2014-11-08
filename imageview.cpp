@@ -918,7 +918,7 @@ void ImageView::saveImageAs()
 	QString fileName = QFileDialog::getSaveFileName(this,
 		tr("Save image as"),
 		currentImageFullPath,
-		tr("Image Files") + " (*.jpg *.jpeg *.jpe *.png *.bmp *.tiff *.tif *.ppm *.xbm *.xpm)");
+		tr("Images") + " (*.jpg *.jpeg *.jpe *.png *.bmp *.tiff *.tif *.ppm *.xbm *.xpm)");
 		
 	if (!fileName.isEmpty())
 	{

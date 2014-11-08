@@ -67,8 +67,17 @@ void ThumbView::setThumbColors()
 {
 	QPalette scrollBarOrigPal = verticalScrollBar()->palette();
 	QPalette thumbViewOrigPal = palette();
-	thumbViewOrigPal.setColor(QPalette::Base, GData::thumbsBackgroundColor);
 	thumbViewOrigPal.setColor(QPalette::Text, GData::thumbsTextColor);
+
+	QString bgColor = "background: rgb(%1, %2, %3); ";
+	bgColor = bgColor.arg(GData::thumbsBackgroundColor.red())
+						.arg(GData::thumbsBackgroundColor.green())
+						.arg(GData::thumbsBackgroundColor.blue());
+
+	QString ss = "QTextEdit, QListView { " + bgColor + "background-image: url("
+					+ GData::thumbsBackImage
+					+ "); background-attachment: fixed; }";
+   	setStyleSheet(ss);
 	setPalette(thumbViewOrigPal);
 	verticalScrollBar()->setPalette(scrollBarOrigPal);
 }

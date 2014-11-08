@@ -86,5 +86,6 @@ namespace GData
 	bool iiDockVisible;
 	bool pvDockVisible;
 	bool ivDockVisible;
+	QString thumbsBackImage;
 }
 

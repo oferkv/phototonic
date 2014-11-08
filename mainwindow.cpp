@@ -937,7 +937,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.4.35</h2>"
+	QString aboutString = "<h2>Phototonic v1.4.36</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -1455,7 +1455,7 @@ void Phototonic::pasteThumbs()
 			if (fileInfo.absolutePath() == destDir)
 			{
 				QMessageBox msgBox;
-				msgBox.critical(this, tr("Error"), tr("Can not cut and paste in the same folder"));
+				msgBox.critical(this, tr("Error"), tr("Can not copy or move to the same folder"));
 				return;
 			}
 		}
@@ -1784,6 +1784,7 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("pvDockVisible", (bool)GData::pvDockVisible);
 	GData::appSettings->setValue("startupDir", (int)GData::startupDir);
 	GData::appSettings->setValue("specifiedStartDir", GData::specifiedStartDir);
+	GData::appSettings->setValue("thumbsBackImage", GData::thumbsBackImage);
 	GData::appSettings->setValue("lastDir", GData::startupDir == GData::rememberLastDir?
 																		thumbView->currentViewDir: "");
 	GData::appSettings->setValue("enableImageInfoFS", (bool)GData::enableImageInfoFS);
@@ -1902,6 +1903,7 @@ void Phototonic::readSettings()
 	GData::pvDockVisible = GData::appSettings->value("pvDockVisible").toBool();
 	GData::startupDir = (GData::StartupDir)GData::appSettings->value("startupDir").toInt();
 	GData::specifiedStartDir = GData::appSettings->value("specifiedStartDir").toString();
+	GData::thumbsBackImage = GData::appSettings->value("thumbsBackImage").toString();
 	GData::enableImageInfoFS = GData::appSettings->value("enableImageInfoFS").toBool();
 	GData::showLabels = GData::appSettings->value("showLabels").toBool();
 	GData::smallIcons = GData::appSettings->value("smallIcons").toBool();

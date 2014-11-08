@@ -331,7 +331,6 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	viewerOptsBox->addWidget(exitCliCb);
 	viewerOptsBox->addStretch(1);
 
-	// Thumbnail Options
 	// thumbView background color
 	QLabel *bgThumbTxtLab = new QLabel(tr("Background color: "));
 	colThumbButton = new QToolButton();
@@ -355,6 +354,24 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	setButtonBgColor(GData::thumbsTextColor, colThumbTextButton);
 	colThumbTextButton->setAutoFillBackground(true);
 	thumbTextColor = GData::thumbsTextColor;
+
+	// thumbview background image
+	QLabel *thumbsBackImageLab = new QLabel(tr("Background image: "));
+	thumbsBackImageEdit = new QLineEdit;
+	thumbsBackImageEdit->setClearButtonEnabled(true);
+
+	QToolButton *chooseThumbsBackImageButton = new QToolButton();
+	chooseThumbsBackImageButton->setIcon(QIcon::fromTheme("document-open", QIcon(":/images/open.png")));
+	chooseThumbsBackImageButton->setFixedSize(26, 26);
+	chooseThumbsBackImageButton->setIconSize(QSize(16, 16));
+	connect(chooseThumbsBackImageButton, SIGNAL(clicked()), this, SLOT(pickBgImage()));
+	
+	QHBoxLayout *thumbsBackImageEditBox = new QHBoxLayout;
+	thumbsBackImageEditBox->addWidget(thumbsBackImageLab);
+	thumbsBackImageEditBox->addWidget(thumbsBackImageEdit);
+	thumbsBackImageEditBox->addWidget(chooseThumbsBackImageButton);
+	thumbsBackImageEditBox->addStretch(1);
+	thumbsBackImageEdit->setText(GData::thumbsBackImage);
 
 	// Thumbnail spacing
 	QLabel *thumbSpacingLab = new QLabel(tr("Add space between thumbnails: "));
@@ -387,6 +404,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	// Thumbnail options
 	QVBoxLayout *thumbsOptsBox = new QVBoxLayout;
 	thumbsOptsBox->addLayout(bgThumbColBox);
+	thumbsOptsBox->addLayout(thumbsBackImageEditBox);
 	thumbsOptsBox->addLayout(thumbSpacingHbox);
 	thumbsOptsBox->addWidget(enableThumbExifCb);
 	thumbsOptsBox->addLayout(thumbPagesHbox);
@@ -531,20 +549,16 @@ void SettingsDialog::saveSettings()
 {
 	int i;
 
-	for (i = 0; i < nZoomRadios; ++i)
-	{
-		if (fitLargeRadios[i]->isChecked())
-		{
+	for (i = 0; i < nZoomRadios; ++i) {
+		if (fitLargeRadios[i]->isChecked()) {
 			GData::zoomOutFlags = i;
 			GData::appSettings->setValue("zoomOutFlags", (int)GData::zoomOutFlags);
 			break;
 		}
 	}
 
-	for (i = 0; i < nZoomRadios; ++i)
-	{
-		if (fitSmallRadios[i]->isChecked())
-		{
+	for (i = 0; i < nZoomRadios; ++i) {
+		if (fitSmallRadios[i]->isChecked()) {
 			GData::zoomInFlags = i;
 			GData::appSettings->setValue("zoomInFlags", (int)GData::zoomInFlags);
 			break;
@@ -554,6 +568,7 @@ void SettingsDialog::saveSettings()
 	GData::backgroundColor = bgColor;
 	GData::thumbsBackgroundColor = thumbBgColor;
 	GData::thumbsTextColor = thumbTextColor;
+	GData::thumbsBackImage = thumbsBackImageEdit->text();
 	GData::thumbSpacing = thumbSpacingSpin->value();
 	GData::thumbPagesReadahead = thumbPagesSpin->value();
 	GData::exitInsteadOfClose = exitCliCb->isChecked();
@@ -572,8 +587,7 @@ void SettingsDialog::saveSettings()
 		GData::startupDir = GData::defaultDir;
 	else if (startupDirRadios[1]->isChecked())
 		GData::startupDir = GData::rememberLastDir;
-	else 
-	{
+	else {
 		GData::startupDir = GData::specifiedDir;
 		GData::specifiedStartDir = startupDirEdit->text();
 	}
@@ -589,8 +603,7 @@ void SettingsDialog::abort()
 void SettingsDialog::pickColor()
 {
 	QColor userColor = QColorDialog::getColor(GData::backgroundColor, this);
-    if (userColor.isValid())
-    {	
+    if (userColor.isValid()) {	
 		setButtonBgColor(userColor, backgroundColorButton);
         bgColor = userColor;
     }
@@ -606,8 +619,7 @@ void SettingsDialog::setButtonBgColor(QColor &color, QToolButton *button)
 void SettingsDialog::pickThumbsColor()
 {
 	QColor userColor = QColorDialog::getColor(GData::thumbsBackgroundColor, this);
-	if (userColor.isValid())
-	{	
+	if (userColor.isValid()) {	
 		setButtonBgColor(userColor, colThumbButton);
 		thumbBgColor = userColor;
 	}
@@ -616,8 +628,7 @@ void SettingsDialog::pickThumbsColor()
 void SettingsDialog::pickThumbsTextColor()
 {
 	QColor userColor = QColorDialog::getColor(GData::thumbsTextColor, this);
-	if (userColor.isValid())
-	{	
+	if (userColor.isValid()) {	
 		setButtonBgColor(userColor, colThumbTextButton);
 		thumbTextColor = userColor;
 	}
@@ -628,6 +639,13 @@ void SettingsDialog::pickStartupDir()
 	QString dirName = QFileDialog::getExistingDirectory(this, tr("Choose Startup Folder"), "",
 									QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 	startupDirEdit->setText(dirName);
+}
+
+void SettingsDialog::pickBgImage()
+{
+	QString dirName = QFileDialog::getOpenFileName(this, tr("Open File"), "",
+                   tr("Images") + " (*.jpg *.jpeg *.jpe *.png *.bmp *.tiff *.tif *.ppm *.xbm *.xpm)");
+	thumbsBackImageEdit->setText(dirName);
 }
 
 CropDialog::CropDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
@@ -983,7 +1001,6 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	QLabel *hueLab = new QLabel(tr("Hue"));
 	QLabel *satLab = new QLabel(tr("Saturation"));
 	QLabel *lightLab = new QLabel(tr("Lightness"));
-	QLabel *channelsLab = new QLabel(tr("Channels"));
 
 	hueSlide = new QSlider(Qt::Horizontal);
 	hueSlide->setTickPosition(QSlider::TicksAbove);
@@ -1039,11 +1056,11 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	hueSatLay->addWidget(saturationSlide,	3, 1, 1, 1);
 	hueSatLay->addWidget(lightLab, 			4, 0, 1, 1);
 	hueSatLay->addWidget(lightnessSlide,		4, 1, 1, 1);
-	hueSatLay->addWidget(channelsLab,		5, 0, 1, 1);
 
 	QGroupBox *hueSatGroup = new QGroupBox(tr("Hue and Saturation"));
-	QGridLayout *channelsLay = new QGridLayout;
+	hueSatGroup->setLayout(hueSatLay);
 
+	QGridLayout *channelsLay = new QGridLayout;
 	channelsLay->addLayout(channelsHbox,		5, 1, 1, 1);
 	QGroupBox *channelsGroup = new QGroupBox(tr("Channels"));
 	channelsGroup->setLayout(channelsLay);
