@@ -20,16 +20,7 @@
 #define IMAGEVIEW_H
 
 #include <QtWidgets>
-
-class CropRubberBand : public QWidget
-{
-public:
-  CropRubberBand(QWidget* parent = 0);
-
-private:
-  QRubberBand* rubberband;
-  void resizeEvent(QResizeEvent *);
-};
+#include "croprubberband.h"
 
 class ImageView : public QWidget
 {

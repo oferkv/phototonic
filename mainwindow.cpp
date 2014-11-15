@@ -945,7 +945,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.4.38</h2>"
+	QString aboutString = "<h2>Phototonic v1.4.39</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -2100,10 +2100,10 @@ void Phototonic::loadShortcuts()
 		lastImageAction->setShortcut(QKeySequence("End"));
 		randomImageAction->setShortcut(QKeySequence("R"));
 		openAction->setShortcut(QKeySequence("Return"));
-		zoomOutAct->setShortcut(QKeySequence("Shift+Z"));
+		zoomOutAct->setShortcut(QKeySequence("Alt+Z"));
 		zoomInAct->setShortcut(QKeySequence("Z"));
 		resetZoomAct->setShortcut(QKeySequence("Ctrl+Z"));
-		origZoomAct->setShortcut(QKeySequence("Alt+Z"));
+		origZoomAct->setShortcut(QKeySequence("Shift+Z"));
 		rotateLeftAct->setShortcut(QKeySequence("Ctrl+Left"));
 		rotateRightAct->setShortcut(QKeySequence("Ctrl+Right"));
 		freeRotateLeftAct->setShortcut(QKeySequence("Ctrl+Shift+Left"));
@@ -2179,6 +2179,18 @@ void Phototonic::mousePressEvent(QMouseEvent *event)
 
 	if (GData::layoutMode == imageViewIdx) {
 		if (event->button() == Qt::MiddleButton) {
+
+			if (event->modifiers() == Qt::ShiftModifier) {
+				origZoom();
+				event->accept();
+				return;
+			}
+			if (event->modifiers() == Qt::ControlModifier) {
+				resetZoom();
+				event->accept();
+				return;
+			}
+
 			if (GData::reverseMouseBehavior && closeImageAct->isEnabled()) {
 				hideViewer();
 				event->accept();
