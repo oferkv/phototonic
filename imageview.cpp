@@ -88,14 +88,14 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	GData::cropHeight = 0;
 
 	GData::hueVal = 0;
-	GData::saturationVal = 0;
-	GData::lightnessVal = 0;
+	GData::saturationVal = 100;
+	GData::lightnessVal = 100;
 	GData::hueRedChannel = true;
 	GData::hueGreenChannel = true;
 	GData::hueBlueChannel = true;
 
-	GData::contrastVal = 0;
-	GData::brightVal = 0;
+	GData::contrastVal = 78;
+	GData::brightVal = 100;
 
 	GData::dialogLastX = 0;
 	GData::dialogLastY = 0;
@@ -133,12 +133,10 @@ void ImageView::resizeImage()
 	imageLabel->setVisible(false);
 	QSize imgSize = isAnimation? anim->currentPixmap().size() : imageLabel->pixmap()->size();
 
-	if (tempDisableResize)
+	if (tempDisableResize) {
 		imgSize.scale(calcZoom(imgSize.width()), calcZoom(imgSize.height()), Qt::KeepAspectRatio);
-	else
-	{
-		switch(GData::zoomInFlags)
-		{
+	} else {
+		switch(GData::zoomInFlags) {
 			case Disable:
 				if (imgSize.width() < size().width() && imgSize.height() < size().height())
 					imgSize.scale(calcZoom(imgSize.width()), calcZoom(imgSize.height()),
@@ -174,8 +172,7 @@ void ImageView::resizeImage()
 				break;
 		}
 
-		switch(GData::zoomOutFlags)
-		{
+		switch(GData::zoomOutFlags) {
 			case Disable:
 				if (imgSize.width() >= size().width() || imgSize.height() >= size().height())
 					imgSize.scale(calcZoom(imgSize.width()), calcZoom(imgSize.height()),
@@ -269,8 +266,7 @@ void ImageView::rotateByExifRotation(QImage &image, const QString &imageFullPath
 		}
 	}
 	
-	switch(orientation)
-	{
+	switch(orientation) {
 		case 2:
 			image = image.mirrored(true, false);
 			break;
@@ -304,20 +300,17 @@ void ImageView::rotateByExifRotation(QImage &image, const QString &imageFullPath
 
 void ImageView::transform()
 {
-	if (GData::exifRotationEnabled)
-	{
+	if (GData::exifRotationEnabled)	{
 		rotateByExifRotation(displayImage, currentImageFullPath);
 	}
 
-	if (GData::rotation)
-	{
+	if (GData::rotation) {
 		QTransform trans;
 		trans.rotate(GData::rotation);
 		displayImage = displayImage.transformed(trans, Qt::SmoothTransformation);
 	}
 
-	if (GData::flipH || GData::flipV)
-	{
+	if (GData::flipH || GData::flipV) {
 		displayImage = displayImage.mirrored(GData::flipH, GData::flipV);
 	}
 
@@ -334,22 +327,19 @@ void ImageView::transform()
 
 void ImageView::mirror()
 {
-	switch(mirrorLayout)
-	{
-		case LayDual:
-		{
+	switch(mirrorLayout) {
+		case LayDual: {
 			mirrorImage = QImage(displayImage.width() * 2, displayImage.height(),
-																		QImage::QImage::Format_ARGB32);
+													QImage::QImage::Format_ARGB32);
 			QPainter painter(&mirrorImage);
 			painter.drawImage(0, 0, displayImage);
 			painter.drawImage(displayImage.width(), 0, displayImage.mirrored(true, false));
 			break;
 		}
 
-		case LayTriple:
-		{
+		case LayTriple: {
 			mirrorImage = QImage(displayImage.width() * 3, displayImage.height(),
-																		QImage::QImage::Format_ARGB32);
+													QImage::QImage::Format_ARGB32);
 			QPainter painter(&mirrorImage);
 			painter.drawImage(0, 0, displayImage);
 			painter.drawImage(displayImage.width(), 0, displayImage.mirrored(true, false));
@@ -357,10 +347,9 @@ void ImageView::mirror()
 			break;
 		}
 
-		case LayQuad:
-		{
+		case LayQuad: {
 			mirrorImage = QImage(displayImage.width() * 2, displayImage.height() * 2,
-																		QImage::QImage::Format_ARGB32);
+													QImage::QImage::Format_ARGB32);
 			QPainter painter(&mirrorImage);
 			painter.drawImage(0, 0, displayImage);
 			painter.drawImage(displayImage.width(), 0, displayImage.mirrored(true, false));
@@ -370,10 +359,9 @@ void ImageView::mirror()
 			break;
 		}
 
-		case LayVDual:
-		{
+		case LayVDual: {
 			mirrorImage = QImage(displayImage.width(), displayImage.height() * 2,
-																		QImage::QImage::Format_ARGB32);
+													QImage::QImage::Format_ARGB32);
 			QPainter painter(&mirrorImage);
 			painter.drawImage(0, 0, displayImage);
 			painter.drawImage(0, displayImage.height(), displayImage.mirrored(false, true));
@@ -416,26 +404,20 @@ void rgbToHsl(int r, int g, int b, unsigned char *hue, unsigned char *sat, unsig
 	int		min, max;
 	int		delta;
 
-	if (r > g)	
-	{
+	if (r > g) {
 		max = MAX(r, b);
 		min = MIN(g, b);
-	}
-	else
-	{
+	} else {
 		max = MAX(g, b);
 		min = MIN(r, b);
 	}
 
 	l = (max + min) / 2.0;
 
-	if (max == min)
-	{
+	if (max == min) {
 		s = 0.0;
 		h = 0.0;
-	}
-	else
-	{
+	} else {
 		delta = (max - min);
 
 		if (l < 128)
@@ -466,15 +448,12 @@ void rgbToHsl(int r, int g, int b, unsigned char *hue, unsigned char *sat, unsig
 void hslToRgb(double h, double s, double l,
 					unsigned char *red, unsigned char *green, unsigned char *blue)
 {
-	if (s == 0)
-	{
+	if (s == 0) {
 		/* achromatic case */
 		*red = l;
 		*green = l;
 		*blue = l;
-	}
-	else
-	{
+	} else {
 		double m1, m2;
 
 		if (l < 128)
@@ -529,9 +508,14 @@ void ImageView::colorize()
 			g = qGreen(line[x]);
 			b = qBlue(line[x]);
 
+			r = bound0_255((r * (GData::redVal + 100)) / 100);
+			g = bound0_255((g * (GData::greenVal + 100)) / 100);
+			b = bound0_255((b * (GData::blueVal + 100)) / 100);
+
 			r = bound0_255(contrastTransform[r]);
 			g = bound0_255(contrastTransform[g]);
 			b = bound0_255(contrastTransform[b]);
+
 			r = bound0_255(brightTransform[r]);
 			g = bound0_255(brightTransform[g]);
 			b = bound0_255(brightTransform[b]);

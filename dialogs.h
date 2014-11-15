@@ -188,9 +188,11 @@ private:
 	QCheckBox *redB;
 	QCheckBox *greenB;
 	QCheckBox *blueB;
-
 	QSlider *brightSlide;
 	QSlider *contrastSlide;
+	QSlider *redSlide;
+	QSlider *greenSlide;
+	QSlider *blueSlide;
 };
 
 class AppMgmtDialog : public QDialog

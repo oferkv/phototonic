@@ -56,6 +56,9 @@ namespace GData
 	int lightnessVal;
 	int contrastVal;
 	int brightVal;
+	int redVal;
+	int greenVal;
+	int blueVal;
 	bool colorsActive;
 	bool colorizeEnabled;
 	bool hueRedChannel;

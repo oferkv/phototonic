@@ -945,7 +945,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.4.39</h2>"
+	QString aboutString = "<h2>Phototonic v1.4.40</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -1283,6 +1283,11 @@ void Phototonic::keepZoom()
 void Phototonic::keepTransformClicked()
 {
 	GData::keepTransform = keepTransformAct->isChecked();
+	imageView->refresh();
+	if (GData::keepTransform)
+		imageView->setFeedback(tr("Transformations Locked"));
+	else
+		imageView->setFeedback(tr("Transformations Unlocked"));
 }
 
 void Phototonic::rotateLeft()
@@ -2060,6 +2065,7 @@ void Phototonic::loadShortcuts()
 	GData::actionKeys[resizeAct->text()] = resizeAct;
 	GData::actionKeys[filterImagesFocusAct->text()] = filterImagesFocusAct;
 	GData::actionKeys[setPathFocusAct->text()] = setPathFocusAct;
+	GData::actionKeys[keepTransformAct->text()] = keepTransformAct;
 	
 	GData::appSettings->beginGroup("Shortcuts");
 	QStringList groupKeys = GData::appSettings->childKeys();
@@ -2127,6 +2133,7 @@ void Phototonic::loadShortcuts()
 		resizeAct->setShortcut(QKeySequence("Ctrl+I"));
 		filterImagesFocusAct->setShortcut(QKeySequence("Ctrl+F"));
 		setPathFocusAct->setShortcut(QKeySequence("Ctrl+L"));
+		keepTransformAct->setShortcut(QKeySequence("Ctrl+K"));
 	}
 		
 	GData::appSettings->endGroup();

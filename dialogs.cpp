@@ -1004,7 +1004,6 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	hueSlide->setTickInterval(25);
 	hueSlide->setRange(-100, 100);
 	hueSlide->setTracking(false);
-	hueSlide->setValue(GData::hueVal);
 	connect(hueSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
 
 	colorizeCb = new QCheckBox(tr("Colorize"), this);
@@ -1016,7 +1015,6 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	saturationSlide->setTickInterval(25);
 	saturationSlide->setRange(-100, 100);
 	saturationSlide->setTracking(false);
-	saturationSlide->setValue(GData::saturationVal);
 	connect(saturationSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
 
 	lightnessSlide = new QSlider(Qt::Horizontal);
@@ -1024,7 +1022,6 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	lightnessSlide->setTickInterval(25);
 	lightnessSlide->setRange(-100, 100);
 	lightnessSlide->setTracking(false);
-	lightnessSlide->setValue(GData::lightnessVal);
 	connect(lightnessSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
 
 	QHBoxLayout *channelsHbox = new QHBoxLayout;
@@ -1053,13 +1050,15 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	hueSatLay->addWidget(saturationSlide,	3, 1, 1, 1);
 	hueSatLay->addWidget(lightLab, 			4, 0, 1, 1);
 	hueSatLay->addWidget(lightnessSlide,		4, 1, 1, 1);
+	hueSatLay->setColumnMinimumWidth(0, 70);
 
 	QGroupBox *hueSatGroup = new QGroupBox(tr("Hue and Saturation"));
 	hueSatGroup->setLayout(hueSatLay);
 
 	QGridLayout *channelsLay = new QGridLayout;
 	channelsLay->addLayout(channelsHbox,		5, 1, 1, 1);
-	QGroupBox *channelsGroup = new QGroupBox(tr("Channels"));
+	channelsLay->setColumnMinimumWidth(0, 70);
+	QGroupBox *channelsGroup = new QGroupBox(tr("Affected Channels"));
 	channelsGroup->setLayout(channelsLay);
 
 	/* brightness contrast */
@@ -1071,7 +1070,6 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	brightSlide->setTickInterval(25);
 	brightSlide->setRange(-100, 100);
 	brightSlide->setTracking(false);
-	brightSlide->setValue(GData::brightVal);
 	connect(brightSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
 
 	contrastSlide = new QSlider(Qt::Horizontal);
@@ -1079,7 +1077,6 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	contrastSlide->setTickInterval(25);
 	contrastSlide->setRange(-100, 100);
 	contrastSlide->setTracking(false);
-	contrastSlide->setValue(GData::contrastVal);
 	contrastSlide->setInvertedAppearance(true);
 	connect(contrastSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
 
@@ -1088,12 +1085,51 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	brightContrastbox->addWidget(brightSlide,	1, 1, 1, 1);
 	brightContrastbox->addWidget(contrastLab, 2, 0, 1, 1);
 	brightContrastbox->addWidget(contrastSlide,	2, 1, 1, 1);
+	brightContrastbox->setColumnMinimumWidth(0, 70);
 
 	QGroupBox *brightContrastGroup = new QGroupBox(tr("Brightness and Contrast"));
 	brightContrastGroup->setLayout(brightContrastbox);
 
+	/* Channel mixer */
+	QLabel *redLab = new QLabel(tr("Red"));
+	redSlide = new QSlider(Qt::Horizontal);
+	redSlide->setTickPosition(QSlider::TicksAbove);
+	redSlide->setTickInterval(25);
+	redSlide->setRange(-100, 100);
+	redSlide->setTracking(false);
+	connect(redSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
+
+	QLabel *greenLab = new QLabel(tr("Green"));
+	greenSlide = new QSlider(Qt::Horizontal);
+	greenSlide->setTickPosition(QSlider::TicksAbove);
+	greenSlide->setTickInterval(25);
+	greenSlide->setRange(-100, 100);
+	greenSlide->setTracking(false);
+	connect(greenSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
+
+	QLabel *blueLab = new QLabel(tr("Blue"));
+	blueSlide = new QSlider(Qt::Horizontal);
+	blueSlide->setTickPosition(QSlider::TicksAbove);
+	blueSlide->setTickInterval(25);
+	blueSlide->setRange(-100, 100);
+	blueSlide->setTracking(false);
+	connect(blueSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
+
+	QGridLayout *channelMixbox = new QGridLayout;
+	channelMixbox->addWidget(redLab, 1, 0, 1, 1);
+	channelMixbox->addWidget(redSlide,	1, 1, 1, 1);
+	channelMixbox->addWidget(greenLab, 2, 0, 1, 1);
+	channelMixbox->addWidget(greenSlide, 2, 1, 1, 1);
+	channelMixbox->addWidget(blueLab, 3, 0, 1, 1);
+	channelMixbox->addWidget(blueSlide,	3, 1, 1, 1);
+	channelMixbox->setColumnMinimumWidth(0, 70);
+
+	QGroupBox *channelMixGroup = new QGroupBox(tr("Color Balance"));
+	channelMixGroup->setLayout(channelMixbox);
+
 	QVBoxLayout *mainVbox = new QVBoxLayout;
 	mainVbox->addWidget(brightContrastGroup);
+	mainVbox->addWidget(channelMixGroup);
 	mainVbox->addWidget(hueSatGroup);
 	mainVbox->addWidget(channelsGroup);
 	mainVbox->addStretch(1);	
@@ -1127,6 +1163,10 @@ void ColorsDialog::applyColors(int)
 	else
 		GData::lightnessVal = lightnessSlide->value() + 100;
 
+	GData::redVal = redSlide->value();
+	GData::greenVal = greenSlide->value();
+	GData::blueVal = blueSlide->value();
+		
 	imageView->refresh();
 }
 
@@ -1152,6 +1192,10 @@ void ColorsDialog::reset()
 
 	contrastSlide->setValue(0);
 	brightSlide->setValue(0);
+
+	redSlide->setValue(0);
+	greenSlide->setValue(0);
+	blueSlide->setValue(0);
 	
 	imageView->refresh();
 }
