@@ -21,6 +21,16 @@
 
 #include <QtWidgets>
 
+class CropRubberBand : public QWidget
+{
+public:
+  CropRubberBand(QWidget* parent = 0);
+
+private:
+  QRubberBand* rubberband;
+  void resizeEvent(QResizeEvent *);
+};
+
 class ImageView : public QWidget
 {
     Q_OBJECT
@@ -32,6 +42,7 @@ public:
 	QMenu *ImagePopUpMenu;
 	QScrollArea *scrlArea;
 	QLabel *infoLabel;
+	CropRubberBand *cropBand;
 
 	enum ZoomMethods
 	{
@@ -80,6 +91,7 @@ public slots:
 	void saveImageAs();
 	void copyImage();
 	void pasteImage();
+	void fastCrop();
 
 private slots:
 	void unsetFeedback();
@@ -114,6 +126,7 @@ private:
 	int preCroppedWidth;
 	int preCroppedHeight;
 	QLabel *feedbackLabel;
+	QPoint cropOrigin;
 
 	void setMouseMoveData(bool lockMove, int lMouseX, int lMouseY);
 	void centerImage(QSize &imgSize);

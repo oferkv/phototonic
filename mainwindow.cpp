@@ -57,6 +57,7 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 
 	copyMoveToDialog = 0;
 	colorsDialog = 0;
+	cropDialog = 0;
 	initComplete = true;
 	thumbView->busy = false;
 	currentHistoryIdx = -1;
@@ -143,6 +144,7 @@ void Phototonic::createImageView()
 	connect(saveAsAction, SIGNAL(triggered()), imageView, SLOT(saveImageAs()));
 	connect(copyImageAction, SIGNAL(triggered()), imageView, SLOT(copyImage()));
 	connect(pasteImageAction, SIGNAL(triggered()), imageView, SLOT(pasteImage()));
+	connect(cropToSelectionAct, SIGNAL(triggered()), imageView, SLOT(fastCrop()));
 	imageView->ImagePopUpMenu = new QMenu();
 
 	// Widget actions
@@ -163,6 +165,7 @@ void Phototonic::createImageView()
 	imageView->addAction(flipHAct);
 	imageView->addAction(flipVAct);
 	imageView->addAction(cropAct);
+	imageView->addAction(cropToSelectionAct);
 	imageView->addAction(resizeAct);
 	imageView->addAction(saveAction);
 	imageView->addAction(saveAsAction);
@@ -230,6 +233,7 @@ void Phototonic::createImageView()
 	transformSubMenuAct = new QAction(tr("Transform"), this);
 	transformSubMenuAct->setMenu(transformSubMenu);
 	imageView->ImagePopUpMenu->addAction(resizeAct);
+	imageView->ImagePopUpMenu->addAction(cropToSelectionAct);
 	imageView->ImagePopUpMenu->addAction(transformSubMenuAct);
 	transformSubMenu->addAction(colorsAct);
 	transformSubMenu->addAction(rotateRightAct);
@@ -535,6 +539,9 @@ void Phototonic::createActions()
 	cropAct = new QAction(tr("Cropping"), this);
 	cropAct->setIcon(QIcon(":/images/crop.png"));
 	connect(cropAct, SIGNAL(triggered()), this, SLOT(cropImage()));
+
+	cropToSelectionAct = new QAction(tr("Crop to Selection"), this);
+	cropToSelectionAct->setIcon(QIcon(":/images/crop.png"));
 
 	resizeAct = new QAction(tr("Scale Image"), this);
 	resizeAct->setIcon(QIcon::fromTheme("transform-scale", QIcon(":/images/scale.png")));
@@ -938,7 +945,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.4.37</h2>"
+	QString aboutString = "<h2>Phototonic v1.4.38</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -1844,7 +1851,7 @@ void Phototonic::readSettings()
 		GData::appSettings->setValue("backgroundColor", QColor(25, 25, 25));
 		GData::appSettings->setValue("backgroundThumbColor", QColor(200, 200, 200));
 		GData::appSettings->setValue("textThumbColor", QColor(25, 25, 25));
-		GData::appSettings->setValue("thumbSpacing", (int)3);
+		GData::appSettings->setValue("thumbSpacing", (int)8);
 		GData::appSettings->setValue("thumbPagesReadahead", (int)2);
 		GData::appSettings->setValue("thumbLayout", (int)GData::thumbsLayout);
 		GData::appSettings->setValue("zoomOutFlags", (int)1);
@@ -2036,6 +2043,7 @@ void Phototonic::loadShortcuts()
 	GData::actionKeys[flipHAct->text()] = flipHAct;
 	GData::actionKeys[flipVAct->text()] = flipVAct;
 	GData::actionKeys[cropAct->text()] = cropAct;
+	GData::actionKeys[cropToSelectionAct->text()] = cropToSelectionAct;
 	GData::actionKeys[colorsAct->text()] = colorsAct;
 	GData::actionKeys[mirrorDisabledAct->text()] = mirrorDisabledAct;
 	GData::actionKeys[mirrorDualAct->text()] = mirrorDualAct;
@@ -2102,7 +2110,8 @@ void Phototonic::loadShortcuts()
 		freeRotateRightAct->setShortcut(QKeySequence("Ctrl+Shift+Right"));
 		flipHAct->setShortcut(QKeySequence("Ctrl+Down"));
 		flipVAct->setShortcut(QKeySequence("Ctrl+Up"));
-		cropAct->setShortcut(QKeySequence("Ctrl+R"));
+		cropAct->setShortcut(QKeySequence("Ctrl+G"));
+		cropToSelectionAct->setShortcut(QKeySequence("Ctrl+R"));
 		colorsAct->setShortcut(QKeySequence("C"));
 		mirrorDisabledAct->setShortcut(QKeySequence("Ctrl+1"));
 		mirrorDualAct->setShortcut(QKeySequence("Ctrl+2"));
@@ -3122,12 +3131,14 @@ bool Phototonic::removeDirOp(QString dirToDelete)
 void Phototonic::cleanupCropDialog()
 {
 	delete cropDialog;
+	cropDialog = 0;
 	setInterfaceEnabled(true);
 }
 
 void Phototonic::cleanupScaleDialog()
 {
 	delete resizeDialog;
+	resizeDialog = 0;
 	setInterfaceEnabled(true);
 }
 

@@ -651,6 +651,7 @@ void SettingsDialog::pickBgImage()
 CropDialog::CropDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
 {
 	setWindowTitle(tr("Cropping"));
+	setWindowIcon(QIcon(":/images/crop.png"));
 	resize(350, 350);
 	if (GData::dialogLastX)
 		move(GData::dialogLastX, GData::dialogLastY);

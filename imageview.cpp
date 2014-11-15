@@ -27,6 +27,46 @@
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
+CropRubberBand::CropRubberBand(QWidget *parent) : QWidget(parent) {
+
+	setWindowFlags(Qt::SubWindow);
+
+	QVBoxLayout* mainLayout = new QVBoxLayout(this);
+	mainLayout->setContentsMargins(0, 0, 0, 0);
+
+	QHBoxLayout* topLayout = new QHBoxLayout();
+	topLayout->setContentsMargins(0, 0, 0, 0);
+	QHBoxLayout* bottomLayout = new QHBoxLayout();
+	bottomLayout->setContentsMargins(0, 0, 0, 0);
+	
+	QSizeGrip* grip1 = new QSizeGrip(this);
+	QSizeGrip* grip2 = new QSizeGrip(this);
+	QSizeGrip* grip3 = new QSizeGrip(this);
+	QSizeGrip* grip4 = new QSizeGrip(this);
+
+    grip1->setStyleSheet("background-color: rgba(0, 0, 0, 0%)");
+	grip2->setStyleSheet("background-color: rgba(0, 0, 0, 0%)");
+	grip3->setStyleSheet("background-color: rgba(0, 0, 0, 0%)");
+	grip4->setStyleSheet("background-color: rgba(0, 0, 0, 0%)");
+
+	topLayout->addWidget(grip1, 0, Qt::AlignTop | Qt::AlignLeft);
+	topLayout->addWidget(grip2, 1, Qt::AlignTop | Qt::AlignRight);
+	bottomLayout->addWidget(grip3, 0, Qt::AlignBottom | Qt::AlignLeft);
+	bottomLayout->addWidget(grip4, 1, Qt::AlignBottom | Qt::AlignRight);
+
+	mainLayout->addLayout(topLayout);
+	mainLayout->addLayout(bottomLayout);
+
+	rubberband = new QRubberBand(QRubberBand::Rectangle, this);
+	rubberband->setStyleSheet("background-color: rgb(255, 255, 255)");
+	rubberband->show();
+}
+
+void CropRubberBand::resizeEvent(QResizeEvent *) {
+  rubberband->resize(size());
+}
+
+
 ImageView::ImageView(QWidget *parent) : QWidget(parent)
 {
 	mainWindow = parent;
@@ -101,6 +141,7 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	GData::dialogLastY = 0;
 
 	newImage = false;
+	cropBand = 0;
 }
 
 static unsigned int getHeightByWidth(int imgWidth, int imgHeight, int newWidth)
@@ -322,9 +363,8 @@ void ImageView::transform()
 
 	preCroppedWidth = displayImage.width();
 	preCroppedHeight = displayImage.height();
-	if (GData::cropLeft || GData::cropTop || GData::cropWidth || GData::cropHeight)
-	{
-		displayImage = displayImage.copy(	
+	if (GData::cropLeft || GData::cropTop || GData::cropWidth || GData::cropHeight)	{
+		displayImage = displayImage.copy(
 								GData::cropLeft,
 								GData::cropTop,
 								displayImage.width() - GData::cropWidth - GData::cropLeft,
@@ -567,11 +607,15 @@ void ImageView::refresh()
 											Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 	else
 		displayImage = origImage;
+
 	transform();
+
 	if (GData::colorsActive || GData::keepTransform)
 		colorize();
+
 	if (mirrorLayout)
 		mirror();
+
 	displayPixmap = QPixmap::fromImage(displayImage);
 	imageLabel->setPixmap(displayPixmap);
 	resizeImage();
@@ -729,6 +773,19 @@ void ImageView::mouseDoubleClickEvent(QMouseEvent *event)
 void ImageView::mousePressEvent(QMouseEvent *event)
 {
 	if (event->button() == Qt::LeftButton) {
+
+		if (event->modifiers() == Qt::ControlModifier) {
+			cropOrigin = event->pos();
+		    if (!cropBand)
+		        cropBand = new CropRubberBand(this);
+	        cropBand->show();
+			cropBand->setGeometry(QRect(cropOrigin , event->pos()).normalized());
+		} else {
+			if (cropBand) {
+				cropBand->hide();
+			}
+		}
+
 		setMouseMoveData(true, event->x(), event->y());
 		QApplication::setOverrideCursor(Qt::ClosedHandCursor);
 		event->accept();
@@ -738,11 +795,51 @@ void ImageView::mousePressEvent(QMouseEvent *event)
 
 void ImageView::mouseReleaseEvent(QMouseEvent *event)
 {
-	if (event->button() == Qt::LeftButton)
-	{
+	if (event->button() == Qt::LeftButton) {
 		setMouseMoveData(false, 0, 0);
 		while (QApplication::overrideCursor())
 			QApplication::restoreOverrideCursor();
+	}
+
+	QWidget::mouseReleaseEvent(event);
+}
+
+void ImageView::fastCrop()
+{
+	if (cropBand && cropBand->isVisible()) {
+
+		QPoint bandTL = mapToGlobal(cropBand->geometry().topLeft());
+		QPoint bandBR = mapToGlobal(cropBand->geometry().bottomRight());
+
+		bandTL = imageLabel->mapFromGlobal(bandTL);
+		bandBR = imageLabel->mapFromGlobal(bandBR);
+		
+		double scaledX = imageLabel->rect().width();
+		double scaledY = imageLabel->rect().height();
+		scaledX = displayPixmap.width() / scaledX;
+		scaledY = displayPixmap.height() / scaledY;
+
+		bandTL.setX(int(bandTL.x() * scaledX));
+		bandTL.setY(int(bandTL.y() * scaledY));
+		bandBR.setX(int(bandBR.x() * scaledX));
+		bandBR.setY(int(bandBR.y() * scaledY));
+
+		int cropLeft = bandTL.x();
+		int cropTop = bandTL.y();
+		int cropWidth = displayPixmap.width() - bandBR.x();
+		int cropHeight = displayPixmap.height() -  bandBR.y();
+
+		if (cropLeft > 0)
+			GData::cropLeft += cropLeft;
+		if (cropTop > 0)
+			GData::cropTop += cropTop;
+		if (cropWidth > 0)
+			GData::cropWidth += cropWidth;
+		if (cropHeight > 0)
+			GData::cropHeight+= cropHeight;
+
+		cropBand->hide();
+		refresh();
 	}
 }
 
@@ -757,36 +854,40 @@ void ImageView::setMouseMoveData(bool lockMove, int lMouseX, int lMouseY)
 
 void ImageView::mouseMoveEvent(QMouseEvent *event)
 {
-	if (moveImageLocked) 
-	{
-		int newX = layoutX + (event->pos().x() - mouseX);
-		int newY = layoutY + (event->pos().y() - mouseY);
-		bool needToMove = false;
-
-		if (imageLabel->size().width() > size().width())
-		{
-			if (newX > 0)
-				newX = 0;
-			else if (newX < (size().width() - imageLabel->size().width()))
-				newX = (size().width() - imageLabel->size().width());
-			needToMove = true;
+	if (event->modifiers() == Qt::ControlModifier) {
+		if (cropBand && cropBand->isVisible()) {
+			cropBand->setGeometry(QRect(cropOrigin , event->pos()).normalized());
 		}
-		else
-			newX = layoutX;
-
-		if (imageLabel->size().height() > size().height())
+	} else {
+		if (moveImageLocked) 
 		{
-			if (newY > 0)
-				newY = 0;
-			else if (newY < (size().height() - imageLabel->size().height()))
-				newY = (size().height() - imageLabel->size().height());
-			needToMove = true;
-		}
-		else
-			newY = layoutY;
+			int newX = layoutX + (event->pos().x() - mouseX);
+			int newY = layoutY + (event->pos().y() - mouseY);
+			bool needToMove = false;
 
-		if (needToMove)
-			imageLabel->move(newX, newY);
+			if (imageLabel->size().width() > size().width()) 	{
+				if (newX > 0)
+					newX = 0;
+				else if (newX < (size().width() - imageLabel->size().width()))
+					newX = (size().width() - imageLabel->size().width());
+				needToMove = true;
+			}
+			else
+				newX = layoutX;
+
+			if (imageLabel->size().height() > size().height()) {
+				if (newY > 0)
+					newY = 0;
+				else if (newY < (size().height() - imageLabel->size().height()))
+					newY = (size().height() - imageLabel->size().height());
+				needToMove = true;
+			}
+			else
+				newY = layoutY;
+
+			if (needToMove)
+				imageLabel->move(newX, newY);
+		}
 	}
 }
 

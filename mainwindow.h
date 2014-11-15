@@ -221,6 +221,7 @@ private:
 	QAction *flipHAct;
 	QAction *flipVAct;
 	QAction *cropAct;
+	QAction *cropToSelectionAct;
 	QAction *resizeAct;
 	QAction *freeRotateLeftAct;
 	QAction *freeRotateRightAct;
@@ -318,9 +319,9 @@ private:
 
 	QMovie *busyMovie;
 	QLabel *busyLabel;
-	CropDialog *cropDialog;
 	ResizeDialog *resizeDialog;
 	ColorsDialog *colorsDialog;
+	CropDialog *cropDialog;
 
 	void refreshThumbs(bool noScroll);
 	void loadShortcuts();
