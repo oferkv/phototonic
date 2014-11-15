@@ -945,7 +945,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.4.40</h2>"
+	QString aboutString = "<h2>Phototonic v1.4.41</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -1317,9 +1317,11 @@ void Phototonic::cropImage()
 	if (GData::slideShowActive)
 		slideShow();
 
-	cropDialog = new CropDialog(this, imageView);
-	connect(cropDialog, SIGNAL(accepted()), this, SLOT(cleanupCropDialog()));
-	connect(cropDialog, SIGNAL(rejected()), this, SLOT(cleanupCropDialog()));
+	if (!cropDialog) {
+		cropDialog = new CropDialog(this, imageView);
+		connect(cropDialog, SIGNAL(accepted()), this, SLOT(cleanupCropDialog()));
+		connect(cropDialog, SIGNAL(rejected()), this, SLOT(cleanupCropDialog()));
+	}
 
 	cropDialog->show();
 	setInterfaceEnabled(false);
@@ -3149,8 +3151,6 @@ bool Phototonic::removeDirOp(QString dirToDelete)
 
 void Phototonic::cleanupCropDialog()
 {
-	delete cropDialog;
-	cropDialog = 0;
 	setInterfaceEnabled(true);
 }
 

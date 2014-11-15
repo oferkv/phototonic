@@ -317,11 +317,14 @@ void ImageView::transform()
 	preCroppedWidth = displayImage.width();
 	preCroppedHeight = displayImage.height();
 	if (GData::cropLeft || GData::cropTop || GData::cropWidth || GData::cropHeight)	{
+		int cropLeftPixels = (displayImage.width() * GData::cropLeft) / 100;
+		int cropTopPixels = (displayImage.height() * GData::cropTop) / 100;
+		
 		displayImage = displayImage.copy(
-								GData::cropLeft,
-								GData::cropTop,
-								displayImage.width() - GData::cropWidth - GData::cropLeft,
-								displayImage.height() - GData::cropHeight - GData::cropTop);
+			cropLeftPixels,
+			cropTopPixels,
+			displayImage.width() - ((displayImage.width() * GData::cropWidth) / 100) - cropLeftPixels,
+			displayImage.height() - ((displayImage.height() * GData::cropHeight) / 100) - cropTopPixels);
 	}
 }
 

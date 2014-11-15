@@ -121,6 +121,7 @@ public:
 
 public slots:
 	void ok();
+	void reset();
 	void applyCrop(int);
 
 private:

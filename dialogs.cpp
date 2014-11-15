@@ -652,98 +652,86 @@ CropDialog::CropDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
 {
 	setWindowTitle(tr("Cropping"));
 	setWindowIcon(QIcon(":/images/crop.png"));
-	resize(350, 350);
+	resize(350, 100);
 	if (GData::dialogLastX)
 		move(GData::dialogLastX, GData::dialogLastY);
 	imageView = imageView_;
 
 	QHBoxLayout *buttonsHbox = new QHBoxLayout;
+	QPushButton *resetButton = new QPushButton(tr("Reset"));
+	resetButton->setIcon(QIcon::fromTheme("document-revert"));
+	connect(resetButton, SIGNAL(clicked()), this, SLOT(reset()));
 	QPushButton *okButton = new QPushButton(tr("OK"));
 	okButton->setIcon(QIcon::fromTheme("dialog-ok"));
-	okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
+	buttonsHbox->addWidget(resetButton, 0, Qt::AlignLeft);
 	buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);
 
-	QSlider *topSlide = new QSlider(Qt::Vertical);
-	QSlider *bottomSlide = new QSlider(Qt::Vertical);
-	QSlider *leftSlide = new QSlider(Qt::Horizontal);
-	QSlider *rightSlide = new QSlider(Qt::Horizontal);
-
+	QSlider *topSlide = new QSlider(Qt::Horizontal);
 	topSlide->setTickPosition(QSlider::TicksAbove);
-	topSlide->setInvertedAppearance(true);
-	topSlide->setTickInterval(100);
+	topSlide->setTickInterval(10);
 	topSlide->setTracking(false);
 
-	bottomSlide->setTickPosition(QSlider::TicksBelow);
-	bottomSlide->setTickInterval(100);
+	QSlider *bottomSlide = new QSlider(Qt::Horizontal);
+	bottomSlide->setTickPosition(QSlider::TicksAbove);
+	bottomSlide->setTickInterval(10);
 	bottomSlide->setTracking(false);
 
+	QSlider *leftSlide = new QSlider(Qt::Horizontal);
 	leftSlide->setTickPosition(QSlider::TicksAbove);
-	leftSlide->setTickInterval(100);
+	leftSlide->setTickInterval(10);
 	leftSlide->setTracking(false);
 
-	rightSlide->setTickPosition(QSlider::TicksBelow);
-	rightSlide->setInvertedAppearance(true);
-	rightSlide->setTickInterval(100);
+	QSlider *rightSlide = new QSlider(Qt::Horizontal);
+	rightSlide->setTickPosition(QSlider::TicksAbove);
+	rightSlide->setTickInterval(10);
 	rightSlide->setTracking(false);
 
 	topSpin = new QSpinBox;
+	topSpin->setPrefix("% ");
 	bottomSpin = new QSpinBox;
+	bottomSpin->setPrefix("% ");
 	leftSpin = new QSpinBox;
+	leftSpin->setPrefix("% ");
 	rightSpin = new QSpinBox;
+	rightSpin->setPrefix("% ");
 
-	QGridLayout *mainGbox = new QGridLayout;
-
-	QLabel *topLab = new QLabel(tr("Top"));
 	QLabel *leftLab = new QLabel(tr("Left"));
 	QLabel *rightLab = new QLabel(tr("Right"));
+	QLabel *topLab = new QLabel(tr("Top"));
 	QLabel *bottomLab = new QLabel(tr("Bottom"));
 
-	QHBoxLayout *topBox = new QHBoxLayout;
-	topBox->addWidget(topLab);
-	topBox->addWidget(topSpin);
-	topBox->addStretch(1);	
+	QGridLayout *mainGbox = new QGridLayout;
+	mainGbox->addWidget(leftLab, 0, 0, 1, 1);
+	mainGbox->addWidget(leftSlide, 0, 1, 1, 1);
+	mainGbox->addWidget(leftSpin, 0, 2, 1, 1);
 
-	QHBoxLayout *bottomBox = new QHBoxLayout;
-	bottomBox->addWidget(bottomLab);
-	bottomBox->addWidget(bottomSpin);
-	bottomBox->addStretch(1);	
+	mainGbox->addWidget(rightLab, 1, 0, 1, 1);
+	mainGbox->addWidget(rightSlide, 1, 1, 1, 1);
+	mainGbox->addWidget(rightSpin, 1, 2, 1, 1);
 
-	QHBoxLayout *leftBox = new QHBoxLayout;
-	leftBox->addWidget(leftLab);
-	leftBox->addWidget(leftSpin);
-	leftBox->addStretch(1);	
+	mainGbox->addWidget(topLab, 2, 0, 1, 1);
+	mainGbox->addWidget(topSlide, 2, 1, 1, 1);
+	mainGbox->addWidget(topSpin, 2, 2, 1, 1);
 
-	QHBoxLayout *rightBox = new QHBoxLayout;
-	rightBox->addWidget(rightLab);
-	rightBox->addWidget(rightSpin);
-	rightBox->addStretch(1);	
+	mainGbox->addWidget(bottomLab, 3, 0, 1, 1);
+	mainGbox->addWidget(bottomSlide, 3, 1, 1, 1);
+	mainGbox->addWidget(bottomSpin, 3, 2, 1, 1);
 
-	mainGbox->addWidget(topSlide, 2, 1, 5, 1);
-	mainGbox->addLayout(leftBox, 4, 2, 1, 1);
-	mainGbox->addWidget(bottomSlide, 2, 7, 5, 1);
-	mainGbox->addLayout(rightBox, 4, 6, 1, 1);
-	mainGbox->addWidget(leftSlide, 1, 2, 1, 5);
-	mainGbox->addLayout(topBox, 2, 4, 1, 1);
-	mainGbox->addWidget(rightSlide, 7, 2, 1, 5);
-	mainGbox->addLayout(bottomBox, 6, 4, 1, 1);
 
 	QVBoxLayout *mainVbox = new QVBoxLayout;
 	mainVbox->addLayout(mainGbox);
 	mainVbox->addLayout(buttonsHbox);
 	setLayout(mainVbox);
 
-	int width = imageView->getImageWidthPreCropped();
-	int height = imageView->getImageHeightPreCropped();
-
-	topSpin->setRange(0, height);
-	bottomSpin->setRange(0, height);
-	leftSpin->setRange(0, width);
-	rightSpin->setRange(0, width);
-	topSlide->setRange(0, height);
-	bottomSlide->setRange(0, height);
-	leftSlide->setRange(0, width);
-	rightSlide->setRange(0, width);
+	topSpin->setRange(0, 100);
+	bottomSpin->setRange(0, 100);
+	leftSpin->setRange(0, 100);
+	rightSpin->setRange(0, 100);
+	topSlide->setRange(0, 100);
+	bottomSlide->setRange(0, 100);
+	leftSlide->setRange(0, 100);
+	rightSlide->setRange(0, 100);
 
 	connect(topSlide, SIGNAL(valueChanged(int)), topSpin, SLOT(setValue(int)));
 	connect(bottomSlide, SIGNAL(valueChanged(int)), bottomSpin, SLOT(setValue(int)));
@@ -753,11 +741,6 @@ CropDialog::CropDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
 	connect(bottomSpin, SIGNAL(valueChanged(int)), bottomSlide, SLOT(setValue(int)));
 	connect(leftSpin, SIGNAL(valueChanged(int)), leftSlide, SLOT(setValue(int)));
 	connect(rightSpin, SIGNAL(valueChanged(int)), rightSlide, SLOT(setValue(int)));
-
-	topSpin->setValue(GData::cropTop);
-	bottomSpin->setValue(GData::cropHeight);
-	leftSpin->setValue(GData::cropLeft);
-	rightSpin->setValue(GData::cropWidth);
 
 	connect(topSpin, SIGNAL(valueChanged(int)), this, SLOT(applyCrop(int)));
 	connect(bottomSpin, SIGNAL(valueChanged(int)), this, SLOT(applyCrop(int)));
@@ -779,6 +762,14 @@ void CropDialog::ok()
 	GData::dialogLastX = pos().x();
 	GData::dialogLastY = pos().y(); 
 	accept();
+}
+
+void CropDialog::reset()
+{
+	leftSpin->setValue(0);
+	rightSpin->setValue(0);
+	topSpin->setValue(0);
+	bottomSpin->setValue(0);
 }
 
 ResizeDialog::ResizeDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
