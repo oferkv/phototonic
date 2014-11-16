@@ -82,10 +82,8 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	mouseMovementTimer = new QTimer(this);
 	connect(mouseMovementTimer, SIGNAL(timeout()), this, SLOT(monitorCursorState()));
 
-	GData::cropLeft = 0;
-	GData::cropTop = 0;
-	GData::cropWidth = 0;
-	GData::cropHeight = 0;
+	GData::cropLeft = GData::cropTop = GData::cropWidth = GData::cropHeight = 0;
+	GData::cropLeftPercent= GData::cropTopPercent = GData::cropWidthPercent = GData::cropHeightPercent = 0;
 
 	GData::hueVal = 0;
 	GData::saturationVal = 100;
@@ -97,8 +95,7 @@ ImageView::ImageView(QWidget *parent) : QWidget(parent)
 	GData::contrastVal = 78;
 	GData::brightVal = 100;
 
-	GData::dialogLastX = 0;
-	GData::dialogLastY = 0;
+	GData::dialogLastX = GData::dialogLastY = 0;
 
 	newImage = false;
 	cropBand = 0;
@@ -314,17 +311,31 @@ void ImageView::transform()
 		displayImage = displayImage.mirrored(GData::flipH, GData::flipV);
 	}
 
-	preCroppedWidth = displayImage.width();
-	preCroppedHeight = displayImage.height();
+	int cropLeftPercentPixels = 0, cropTopPercentPixels = 0, cropWidthPercentPixels = 0, cropHeightPercentPixels = 0;
+	bool croppingOn = false;
+	if (GData::cropLeftPercent || GData::cropTopPercent
+			|| GData::cropWidthPercent || GData::cropHeightPercent)	{
+		croppingOn = true;
+		cropLeftPercentPixels = (displayImage.width() * GData::cropLeftPercent) / 100;
+		cropTopPercentPixels = (displayImage.height() * GData::cropTopPercent) / 100;
+		cropWidthPercentPixels = (displayImage.width() * GData::cropWidthPercent) / 100;
+		cropHeightPercentPixels = (displayImage.height() * GData::cropHeightPercent) / 100;
+	}
+	
 	if (GData::cropLeft || GData::cropTop || GData::cropWidth || GData::cropHeight)	{
-		int cropLeftPixels = (displayImage.width() * GData::cropLeft) / 100;
-		int cropTopPixels = (displayImage.height() * GData::cropTop) / 100;
-		
 		displayImage = displayImage.copy(
-			cropLeftPixels,
-			cropTopPixels,
-			displayImage.width() - ((displayImage.width() * GData::cropWidth) / 100) - cropLeftPixels,
-			displayImage.height() - ((displayImage.height() * GData::cropHeight) / 100) - cropTopPixels);
+			GData::cropLeft + cropLeftPercentPixels,
+			GData::cropTop + cropTopPercentPixels,
+			displayImage.width() - GData::cropLeft - GData::cropWidth - cropLeftPercentPixels - cropWidthPercentPixels,
+			displayImage.height() - GData::cropTop - GData::cropHeight - cropTopPercentPixels - cropHeightPercentPixels);
+	} else {
+		if (croppingOn)	{
+			displayImage = displayImage.copy(
+					cropLeftPercentPixels,
+					cropTopPercentPixels,
+					displayImage.width() - cropLeftPercentPixels - cropWidthPercentPixels,
+					displayImage.height() - cropTopPercentPixels - cropHeightPercentPixels);
+		}
 	}
 }
 
@@ -578,19 +589,14 @@ void ImageView::reload()
 	}
 
 	if (!GData::keepTransform) {
-		GData::cropLeft = 0;
-		GData::cropTop = 0;
-		GData::cropWidth = 0;
-		GData::cropHeight = 0;
+		GData::cropLeftPercent = GData::cropTopPercent = GData::cropWidthPercent = GData::cropHeightPercent = 0;
 		GData::rotation = 0;
-		GData::flipH = false;
-		GData::flipV = false;
+		GData::flipH = GData::flipV = false;
 	}
-	GData::scaledWidth = 0;
-	GData::scaledHeight = 0;
+	GData::scaledWidth = GData::scaledHeight = 0;
+	GData::cropLeft = GData::cropTop = GData::cropWidth = GData::cropHeight = 0;
 
-	if (newImage || currentImageFullPath.isEmpty())
-	{
+	if (newImage || currentImageFullPath.isEmpty())	{
 		newImage = true;
 		currentImageFullPath = CLIPBOARD_IMAGE_NAME;
 		origImage.load(":/images/no_image.png");
@@ -606,18 +612,14 @@ void ImageView::reload()
 	imageReader.setFileName(currentImageFullPath);
 
 	isAnimation = GData::enableAnimations? imageReader.supportsAnimation() : false;
-	if (isAnimation)
-	{
+	if (isAnimation) {
 		if (anim)
 			delete anim;
 		anim = new QMovie(currentImageFullPath);
 		imageLabel->setMovie(anim);
 		anim->start();
-	}
-	else
-	{
-		if (imageReader.size().isValid())
-		{
+	} else {
+		if (imageReader.size().isValid()) {
 			origImage.load(currentImageFullPath);
 			displayImage = origImage;
 			transform();
@@ -626,10 +628,10 @@ void ImageView::reload()
 			if (mirrorLayout)
 				mirror();
 			displayPixmap = QPixmap::fromImage(displayImage);
-		}
-		else
+		} else {
 			displayPixmap = QIcon::fromTheme("image-missing", 
-													QIcon(":/images/error_image.png")).pixmap(128, 128);
+										QIcon(":/images/error_image.png")).pixmap(128, 128);
+		}
 
 		imageLabel->setPixmap(displayPixmap);
 	}
@@ -751,7 +753,7 @@ void ImageView::mouseReleaseEvent(QMouseEvent *event)
 	QWidget::mouseReleaseEvent(event);
 }
 
-void ImageView::fastCrop()
+void ImageView::cropToSelection()
 {
 	if (cropBand && cropBand->isVisible()) {
 
@@ -783,7 +785,7 @@ void ImageView::fastCrop()
 		if (cropWidth > 0)
 			GData::cropWidth += cropWidth;
 		if (cropHeight > 0)
-			GData::cropHeight+= cropHeight;
+			GData::cropHeight += cropHeight;
 
 		cropBand->hide();
 		refresh();
@@ -1017,12 +1019,12 @@ void ImageView::contextMenuEvent(QContextMenuEvent *)
 
 int ImageView::getImageWidthPreCropped()
 {
-	return preCroppedWidth;
+	return origImage.width();
 }
 
 int ImageView::getImageHeightPreCropped()
 {
-	return preCroppedHeight;
+	return origImage.height();
 }
 
 bool ImageView::isNewImage()

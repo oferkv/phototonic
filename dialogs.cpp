@@ -750,10 +750,10 @@ CropDialog::CropDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
 
 void CropDialog::applyCrop(int)
 {
-	GData::cropLeft = leftSpin->value();
-	GData::cropTop = topSpin->value();
-	GData::cropWidth = rightSpin->value();
-	GData::cropHeight = bottomSpin->value();
+	GData::cropLeftPercent = leftSpin->value();
+	GData::cropTopPercent = topSpin->value();
+	GData::cropWidthPercent = rightSpin->value();
+	GData::cropHeightPercent = bottomSpin->value();
 	imageView->refresh();
 }
 

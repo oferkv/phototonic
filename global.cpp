@@ -46,6 +46,10 @@ namespace GData
 	int cropTop;
 	int cropWidth;
 	int cropHeight;
+	int cropLeftPercent;
+	int cropTopPercent;
+	int cropWidthPercent;
+	int cropHeightPercent;
 	bool noEnlargeSmallThumb;
 	int slideShowDelay;
 	bool slideShowRandom;

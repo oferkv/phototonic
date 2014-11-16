@@ -144,7 +144,7 @@ void Phototonic::createImageView()
 	connect(saveAsAction, SIGNAL(triggered()), imageView, SLOT(saveImageAs()));
 	connect(copyImageAction, SIGNAL(triggered()), imageView, SLOT(copyImage()));
 	connect(pasteImageAction, SIGNAL(triggered()), imageView, SLOT(pasteImage()));
-	connect(cropToSelectionAct, SIGNAL(triggered()), imageView, SLOT(fastCrop()));
+	connect(cropToSelectionAct, SIGNAL(triggered()), imageView, SLOT(cropToSelection()));
 	imageView->ImagePopUpMenu = new QMenu();
 
 	// Widget actions
@@ -945,7 +945,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.4.41</h2>"
+	QString aboutString = "<h2>Phototonic v1.4.42</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -1252,13 +1252,15 @@ void Phototonic::zoomOut()
 	GData::imageZoomFactor -= (GData::imageZoomFactor <= 0.25)? 0 : 0.25;
 	imageView->tempDisableResize = false;
 	imageView->resizeImage();
+	imageView->setFeedback(tr("Zoom Out to ") + QString::number(GData::imageZoomFactor * 100) + "%");
 }
 
 void Phototonic::zoomIn()
 {
-	GData::imageZoomFactor += (GData::imageZoomFactor >= 3.25)? 0 : 0.25;
+	GData::imageZoomFactor += (GData::imageZoomFactor >= 3.50)? 0 : 0.25;
 	imageView->tempDisableResize = false;
 	imageView->resizeImage();
+	imageView->setFeedback(tr("Zoom In to ") + QString::number(GData::imageZoomFactor * 100) + "%");
 }
 
 void Phototonic::resetZoom()
@@ -1266,6 +1268,7 @@ void Phototonic::resetZoom()
 	GData::imageZoomFactor = 1.0;
 	imageView->tempDisableResize = false;
 	imageView->resizeImage();
+	imageView->setFeedback(tr("Zoom Reset"));
 }
 
 void Phototonic::origZoom()
@@ -1273,21 +1276,32 @@ void Phototonic::origZoom()
 	GData::imageZoomFactor = 1.0;
 	imageView->tempDisableResize = true;
 	imageView->resizeImage();
+	imageView->setFeedback(tr("Original Size"));
 }
 
 void Phototonic::keepZoom()
 {
 	GData::keepZoomFactor = keepZoomAct->isChecked();
+	if (GData::keepZoomFactor)
+		imageView->setFeedback(tr("Zoom Locked"));
+	else
+		imageView->setFeedback(tr("Zoom Unlocked"));
 }
 
 void Phototonic::keepTransformClicked()
 {
 	GData::keepTransform = keepTransformAct->isChecked();
-	imageView->refresh();
-	if (GData::keepTransform)
+
+	if (GData::keepTransform) {
 		imageView->setFeedback(tr("Transformations Locked"));
-	else
+		if (cropDialog)
+			cropDialog->applyCrop(0);
+	} else {
+		GData::cropLeftPercent = GData::cropTopPercent = GData::cropWidthPercent = GData::cropHeightPercent = 0;
 		imageView->setFeedback(tr("Transformations Unlocked"));
+	}
+
+	imageView->refresh();
 }
 
 void Phototonic::rotateLeft()
@@ -1296,6 +1310,7 @@ void Phototonic::rotateLeft()
 	if (GData::rotation < 0)
 		GData::rotation = 270;
 	imageView->refresh();
+	imageView->setFeedback(tr("Rotation ") + QString::number(GData::rotation) + "\u00B0");
 }
 
 void Phototonic::rotateRight()
@@ -1304,12 +1319,21 @@ void Phototonic::rotateRight()
 	if (GData::rotation > 270)
 		GData::rotation = 0;
 	imageView->refresh();
+	imageView->setFeedback(tr("Rotation ") + QString::number(GData::rotation) + "\u00B0");
 }
 
 void Phototonic::flipVert()
 {
 	GData::flipV = !GData::flipV;
 	imageView->refresh();
+	imageView->setFeedback(GData::flipV? tr("Flipped Vertically") : tr("Unflipped Vertically"));
+}
+
+void Phototonic::flipHoriz()
+{
+	GData::flipH = !GData::flipH;
+	imageView->refresh();
+	imageView->setFeedback(GData::flipH? tr("Flipped Horizontally") : tr("Unflipped Horizontally"));
 }
 
 void Phototonic::cropImage()
@@ -1325,6 +1349,7 @@ void Phototonic::cropImage()
 
 	cropDialog->show();
 	setInterfaceEnabled(false);
+	cropDialog->applyCrop(0);
 }
 
 void Phototonic::scaleImage()
@@ -1351,6 +1376,7 @@ void Phototonic::freeRotateLeft()
 	if (GData::rotation < 0)
 		GData::rotation = 359;
 	imageView->refresh();
+	imageView->setFeedback(tr("Rotation ") + QString::number(GData::rotation) + "\u00B0");
 }
 
 void Phototonic::freeRotateRight()
@@ -1359,6 +1385,7 @@ void Phototonic::freeRotateRight()
 	if (GData::rotation > 360)
 		GData::rotation = 1;
 	imageView->refresh();
+	imageView->setFeedback(tr("Rotation ") + QString::number(GData::rotation) + "\u00B0");
 }
 
 void Phototonic::showColorsDialog()
@@ -1376,12 +1403,6 @@ void Phototonic::showColorsDialog()
 	colorsDialog->show();
 	colorsDialog->applyColors(0);
 	setInterfaceEnabled(false);
-}
-
-void Phototonic::flipHoriz()
-{
-	GData::flipH = !GData::flipH;
-	imageView->refresh();
 }
 
 void Phototonic::moveRight()
@@ -1408,37 +1429,41 @@ void Phototonic::setMirrorDisabled()
 {
 	imageView->mirrorLayout = ImageView::LayNone;
 	imageView->refresh();
+	imageView->setFeedback(tr("Mirroring Disabled"));
 }
 
 void Phototonic::setMirrorDual()
 {
 	imageView->mirrorLayout = ImageView::LayDual;
 	imageView->refresh();
+	imageView->setFeedback(tr("Mirroring: Dual"));
 }
 
 void Phototonic::setMirrorTriple()
 {
 	imageView->mirrorLayout = ImageView::LayTriple;
 	imageView->refresh();
+	imageView->setFeedback(tr("Mirroring: Triple"));
 }
 
 void Phototonic::setMirrorVDual()
 {
 	imageView->mirrorLayout = ImageView::LayVDual;
 	imageView->refresh();
+	imageView->setFeedback(tr("Mirroring: Dual Vertical"));
 }
 
 void Phototonic::setMirrorQuad()
 {
 	imageView->mirrorLayout = ImageView::LayQuad;
 	imageView->refresh();
+	imageView->setFeedback(tr("Mirroring: Quad"));
 }
 
 bool Phototonic::isValidPath(QString &path)
 {
 	QDir checkPath(path);
-	if (!checkPath.exists() || !checkPath.isReadable())
-	{
+	if (!checkPath.exists() || !checkPath.isReadable()) {
 		return false;
 	}
 	return true;
@@ -1455,8 +1480,7 @@ void Phototonic::pasteThumbs()
 	else
 		destDir = getSelectedPath();
 
-	if (!isValidPath(destDir))
-	{
+	if (!isValidPath(destDir)) {
 		QMessageBox msgBox;
 		msgBox.critical(this, tr("Error"), tr("Can not copy or move to ") + destDir);
 		selectCurrentViewDir();
@@ -1466,13 +1490,10 @@ void Phototonic::pasteThumbs()
 	bool pasteInCurrDir = (thumbView->currentViewDir == destDir);
 
 	QFileInfo fileInfo;
-	if (!GData::copyOp && pasteInCurrDir)
-	{
-		for (int tn = 0; tn < GData::copyCutFileList.size(); ++tn)
-		{
+	if (!GData::copyOp && pasteInCurrDir) {
+		for (int tn = 0; tn < GData::copyCutFileList.size(); ++tn) {
 			fileInfo = QFileInfo(GData::copyCutFileList[tn]);
-			if (fileInfo.absolutePath() == destDir)
-			{
+			if (fileInfo.absolutePath() == destDir) {
 				QMessageBox msgBox;
 				msgBox.critical(this, tr("Error"), tr("Can not copy or move to the same folder"));
 				return;
@@ -1482,10 +1503,8 @@ void Phototonic::pasteThumbs()
 
 	CpMvDialog *dialog = new CpMvDialog(this);
 	dialog->exec(thumbView, destDir, pasteInCurrDir);
-	if (pasteInCurrDir)
-	{
-		for (int tn = 0; tn < GData::copyCutFileList.size(); ++tn)
-		{
+	if (pasteInCurrDir) {
+		for (int tn = 0; tn < GData::copyCutFileList.size(); ++tn) {
 			thumbView->addThumb(GData::copyCutFileList[tn]);
 		}
 	}
@@ -1858,7 +1877,7 @@ void Phototonic::readSettings()
 		GData::appSettings->setValue("backgroundColor", QColor(25, 25, 25));
 		GData::appSettings->setValue("backgroundThumbColor", QColor(200, 200, 200));
 		GData::appSettings->setValue("textThumbColor", QColor(25, 25, 25));
-		GData::appSettings->setValue("thumbSpacing", (int)8);
+		GData::appSettings->setValue("thumbSpacing", (int)10);
 		GData::appSettings->setValue("thumbPagesReadahead", (int)2);
 		GData::appSettings->setValue("thumbLayout", (int)GData::thumbsLayout);
 		GData::appSettings->setValue("zoomOutFlags", (int)1);

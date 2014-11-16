@@ -61,6 +61,10 @@ namespace GData
 	extern int cropTop;
 	extern int cropWidth;
 	extern int cropHeight;
+	extern int cropLeftPercent;
+	extern int cropTopPercent;
+	extern int cropWidthPercent;
+	extern int cropHeightPercent;
 	extern bool noEnlargeSmallThumb;
 	extern int slideShowDelay;
 	extern bool slideShowRandom;

@@ -82,7 +82,7 @@ public slots:
 	void saveImageAs();
 	void copyImage();
 	void pasteImage();
-	void fastCrop();
+	void cropToSelection();
 
 private slots:
 	void unsetFeedback();
@@ -114,8 +114,6 @@ private:
 	int layoutX;
 	int layoutY;
 	bool isAnimation;
-	int preCroppedWidth;
-	int preCroppedHeight;
 	QLabel *feedbackLabel;
 	QPoint cropOrigin;
 
