@@ -29,6 +29,7 @@ public:
 	InfoView(QWidget *parent);
 	void clear();
 	void addEntry(QString &key, QString &value);
+	void addTitleEntry(QString title);
 
 public slots:
 	void showInfoViewMenu(QPoint pt);

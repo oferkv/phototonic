@@ -61,12 +61,22 @@ void InfoView::addEntry(QString &key, QString &value)
 	int atRow = infoModel->rowCount();
 	QStandardItem *itemKey = new QStandardItem(key);
 	infoModel->insertRow(atRow, itemKey);
-	if (!value.isEmpty())
-	{
+	if (!value.isEmpty()) {
 		QStandardItem *itemVal = new QStandardItem(value);
-		itemVal->setToolTip(key + ": " + value);
+		itemVal->setToolTip(value);
 		infoModel->setItem(atRow, 1, itemVal);
 	}
+}
+
+void InfoView::addTitleEntry(QString title)
+{
+	int atRow = infoModel->rowCount();
+	QStandardItem *itemKey = new QStandardItem(title);
+	infoModel->insertRow(atRow, itemKey);
+
+	QFont boldFont;
+	boldFont.setBold(true);
+    itemKey->setData(boldFont, Qt::FontRole);
 }
 
 void InfoView::copyEntry()

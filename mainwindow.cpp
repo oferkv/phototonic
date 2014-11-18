@@ -76,6 +76,7 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 
 void Phototonic::handleStartupArgs()
 {
+	cliImageLoaded = false;
 	if (QCoreApplication::arguments().size() == 2)
 	{
 		QFileInfo cliArg(QCoreApplication::arguments().at(1));
@@ -1252,7 +1253,7 @@ void Phototonic::zoomOut()
 	GData::imageZoomFactor -= (GData::imageZoomFactor <= 0.25)? 0 : 0.25;
 	imageView->tempDisableResize = false;
 	imageView->resizeImage();
-	imageView->setFeedback(tr("Zoom Out to ") + QString::number(GData::imageZoomFactor * 100) + "%");
+	imageView->setFeedback(tr("Zoom ") + QString::number(GData::imageZoomFactor * 100) + "%");
 }
 
 void Phototonic::zoomIn()
@@ -1260,7 +1261,7 @@ void Phototonic::zoomIn()
 	GData::imageZoomFactor += (GData::imageZoomFactor >= 3.50)? 0 : 0.25;
 	imageView->tempDisableResize = false;
 	imageView->resizeImage();
-	imageView->setFeedback(tr("Zoom In to ") + QString::number(GData::imageZoomFactor * 100) + "%");
+	imageView->setFeedback(tr("Zoom ") + QString::number(GData::imageZoomFactor * 100) + "%");
 }
 
 void Phototonic::resetZoom()

@@ -195,7 +195,8 @@ void ThumbView::updateExifInfo(QString imageFullPath)
 	Exiv2::ExifData &exifData = exifImage->exifData();
 	if (!exifData.empty()) {
 		Exiv2::ExifData::const_iterator end = exifData.end();
-		for (Exiv2::ExifData::const_iterator md = exifData.begin(); md != end; ++md) 	{
+		infoView->addTitleEntry("Exif");
+		for (Exiv2::ExifData::const_iterator md = exifData.begin(); md != end; ++md) {
 			// qDebug() << Exiv2::toString(md->key()).c_str() << " " << Exiv2::toString(md->value()).c_str();
 			key = QString::fromUtf8(md->tagName().c_str());
 			val = QString::fromUtf8(md->print().c_str());
@@ -206,6 +207,7 @@ void ThumbView::updateExifInfo(QString imageFullPath)
 	Exiv2::IptcData &iptcData = exifImage->iptcData();
 	if (!iptcData.empty()) {
 		Exiv2::IptcData::iterator end = iptcData.end();
+		infoView->addTitleEntry("IPTC");
 		for (Exiv2::IptcData::iterator md = iptcData.begin(); md != end; ++md) {
 			key = QString::fromUtf8(md->tagName().c_str());
 			val = QString::fromUtf8(md->print().c_str());
@@ -216,6 +218,7 @@ void ThumbView::updateExifInfo(QString imageFullPath)
 	Exiv2::XmpData &xmpData = exifImage->xmpData();
 	if (!xmpData.empty()) {
 		Exiv2::XmpData::iterator end = xmpData.end();
+		infoView->addTitleEntry("XMP");
 		for (Exiv2::XmpData::iterator md = xmpData.begin(); md != end; ++md) {
 			key = QString::fromUtf8(md->tagName().c_str());
 			val = QString::fromUtf8(md->print().c_str());
@@ -233,32 +236,39 @@ void ThumbView::handleSelectionChanged(const QItemSelection&)
 
 	infoView->clear();
 
-	if (nSelected == 1)
-	{
+	if (nSelected == 1) {
 		QString imageFullPath = thumbViewModel->item(indexesList.first().row())->data(FileNameRole).toString();
 		imageInfoReader.setFileName(imageFullPath);
 		QString key;
 		QString val;
 
-		if (imageInfoReader.size().isValid())
-		{
-			QFileInfo imageInfo = QFileInfo(imageFullPath);
+		QFileInfo imageInfo = QFileInfo(imageFullPath);
+		infoView->addTitleEntry("General");
 
-			key = tr("File name");
-			val = imageInfo.fileName();
-			infoView->addEntry(key, val);
+		key = tr("File name");
+		val = imageInfo.fileName();
+		infoView->addEntry(key, val);
 
-			key = tr("Location");
-			val = imageInfo.path();
-			infoView->addEntry(key, val);
+		key = tr("Location");
+		val = imageInfo.path();
+		infoView->addEntry(key, val);
 
+		key = tr("Size");
+		val = QString::number(imageInfo.size() / 1024.0, 'f', 2) + "K";
+		infoView->addEntry(key, val);
+
+		key = tr("Modified");
+		val = imageInfo.lastModified().toString(Qt::SystemLocaleShortDate);
+		infoView->addEntry(key, val);
+
+		if (imageInfoReader.size().isValid()) {
 			key = tr("Format");
 			val = imageInfoReader.format().toUpper();
 			infoView->addEntry(key, val);
 
 			key = tr("Resolution");
 			val = QString::number(imageInfoReader.size().width())
-					+ " x "
+					+ "x"
 					+ QString::number(imageInfoReader.size().height());
 			infoView->addEntry(key, val);
 
@@ -266,22 +276,12 @@ void ThumbView::handleSelectionChanged(const QItemSelection&)
 			val = QString::number((imageInfoReader.size().width() * imageInfoReader.size().height()) / 1000000.0, 'f', 2);
 			infoView->addEntry(key, val);
 
-			key = tr("Size");
-			val = QString::number(imageInfo.size() / 1024.0, 'f', 2) + "K";
-			infoView->addEntry(key, val);
-
-			key = tr("Modified");
-			val = imageInfo.lastModified().toString(Qt::SystemLocaleShortDate);
-			infoView->addEntry(key, val);
-			
 			updateExifInfo(imageFullPath);
 			recentThumb = imageFullPath;
-		}
-		else
-		{
+		} else {
 			imageInfoReader.read();
-			key = imageInfoReader.errorString();
-			val = "";
+			key = tr("Error");
+			val = imageInfoReader.errorString();
 			infoView->addEntry(key, val);
 		}
 	}
@@ -667,8 +667,7 @@ void ThumbView::loadThumbsRange()
 
 	for (	scrolledForward? currThumb = thumbsRangeFirst : currThumb = thumbsRangeLast;
 			(scrolledForward? currThumb <= thumbsRangeLast : currThumb >= thumbsRangeFirst);
-			scrolledForward? ++currThumb : --currThumb)
-	{
+			scrolledForward? ++currThumb : --currThumb) {
 		if (abortOp || thumbViewModel->rowCount() != currRowCount)
 			break;
 
@@ -679,36 +678,29 @@ void ThumbView::loadThumbsRange()
 		thumbReader.setFileName(imageFileName);
 		currThumbSize = thumbReader.size();
 
-		if (currThumbSize.isValid())
-		{
+		if (currThumbSize.isValid()) {
 			if (!GData::noEnlargeSmallThumb
-				|| (currThumbSize.width() > thumbWidth || currThumbSize.height() > thumbHeight))
-			{
+				|| (currThumbSize.width() > thumbWidth || currThumbSize.height() > thumbHeight)) {
 				currThumbSize.scale(QSize(thumbWidth, thumbHeight), Qt::KeepAspectRatio);
 			}
 
 			thumbReader.setScaledSize(currThumbSize);
 			thumb = thumbReader.read();
 
-			if (GData::exifThumbRotationEnabled)
-			{
+			if (GData::exifThumbRotationEnabled) {
 				ImageView::rotateByExifRotation(thumb, imageFileName);
 				currThumbSize = thumb.size();
 				currThumbSize.scale(QSize(thumbWidth, thumbHeight), Qt::KeepAspectRatio);
 			}
-				
 			thumbViewModel->item(currThumb)->setIcon(QPixmap::fromImage(thumb));
-		}
-		else
-		{
+		} else {
 			thumbViewModel->item(currThumb)->setIcon(QIcon::fromTheme("image-missing",
 									QIcon(":/images/error_image.png")).pixmap(BAD_IMG_SZ, BAD_IMG_SZ));
 			currThumbSize.setHeight(BAD_IMG_SZ);
 			currThumbSize.setWidth(BAD_IMG_SZ);
 		}
 
-		if (GData::thumbsLayout == Compact)
-		{
+		if (GData::thumbsLayout == Compact) {
 			if (GData::showLabels)
 				currThumbSize.setHeight(currThumbSize.height() + QFontMetrics(font()).height() + 5);
 			thumbViewModel->item(currThumb)->setSizeHint(currThumbSize);
@@ -721,8 +713,7 @@ void ThumbView::loadThumbsRange()
 		QApplication::processEvents();
 	}
 
-	if (GData::thumbsLayout == Compact && thumbViewModel->rowCount() > 0)
-	{
+	if (GData::thumbsLayout == Compact && thumbViewModel->rowCount() > 0) {
 		setRowHidden(0 , false);
 	}
 
