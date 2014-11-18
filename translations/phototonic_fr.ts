@@ -1132,7 +1132,7 @@
         <location filename="../mainwindow.cpp" line="1256"/>
         <location filename="../mainwindow.cpp" line="1264"/>
         <source>Zoom </source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom à </translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1499"/>
@@ -1659,7 +1659,7 @@
     <message>
         <location filename="../thumbview.cpp" line="283"/>
         <source>Error</source>
-        <translation type="unfinished">Erreur</translation>
+        <translation>Erreur</translation>
     </message>
     <message>
         <location filename="../thumbview.cpp" line="525"/>
