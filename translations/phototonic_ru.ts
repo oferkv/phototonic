@@ -82,14 +82,6 @@
         <translation>Яркость</translation>
     </message>
     <message>
-        <source>Channels</source>
-        <translation type="vanished">Каналы</translation>
-    </message>
-    <message>
-        <source>Enable</source>
-        <translation type="vanished">Разрешить</translation>
-    </message>
-    <message>
         <location filename="../dialogs.cpp" line="1000"/>
         <source>Colorize</source>
         <translation>Раскрасить</translation>
@@ -120,7 +112,7 @@
     <message>
         <location filename="../dialogs.cpp" line="1052"/>
         <source>Affected Channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Задействованные каналы</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1056"/>
@@ -140,33 +132,25 @@
     <message>
         <location filename="../dialogs.cpp" line="1118"/>
         <source>Color Balance</source>
-        <translation type="unfinished"></translation>
+        <translation>Цветовой баланс</translation>
     </message>
 </context>
 <context>
     <name>CopyMoveToDialog</name>
     <message>
-        <source>Copy or Move Images to...</source>
-        <translation type="vanished">Копировать или переместить изображения в...</translation>
-    </message>
-    <message>
-        <source>Add</source>
-        <translation type="vanished">Добавить</translation>
-    </message>
-    <message>
         <location filename="../dialogs.cpp" line="1333"/>
         <source>Move to...</source>
-        <translation type="unfinished"></translation>
+        <translation>Переместить в...</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1336"/>
         <source>Copy to...</source>
-        <translation type="unfinished"></translation>
+        <translation>Копировать в...</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1364"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Обзор...</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1366"/>
@@ -176,30 +160,18 @@
     <message>
         <location filename="../dialogs.cpp" line="1373"/>
         <source>Cancel</source>
-        <translation type="unfinished">Отмена</translation>
+        <translation>Отмена</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1378"/>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1388"/>
         <location filename="../dialogs.cpp" line="1414"/>
         <source>Destination: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="vanished">Закрыть</translation>
-    </message>
-    <message>
-        <source>Copy</source>
-        <translation type="vanished">Копировать</translation>
-    </message>
-    <message>
-        <source>Move</source>
-        <translation type="vanished">Переместить</translation>
+        <translation>Целевая папка: </translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1454"/>
@@ -243,7 +215,7 @@
     <message>
         <location filename="../dialogs.cpp" line="661"/>
         <source>Reset</source>
-        <translation type="unfinished">Сбросить</translation>
+        <translation>Сбросить</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="664"/>
@@ -315,11 +287,7 @@
     <message>
         <location filename="../imageview.cpp" line="971"/>
         <source>Images</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Image Files</source>
-        <translation type="vanished">Файлы изображений</translation>
+        <translation>Изображения</translation>
     </message>
 </context>
 <context>
@@ -618,6 +586,17 @@
         <source>Contributors / Translations:</source>
         <translation>Участники / переводчики:</translation>
     </message>
+    <message numerus="yes">
+        <location filename="../mainwindow.cpp" line="1514"/>
+        <location filename="../mainwindow.cpp" line="1654"/>
+        <location filename="../mainwindow.cpp" line="2791"/>
+        <source>%n image(s)</source>
+        <translation>
+            <numerusform>%n изображение</numerusform>
+            <numerusform>%n изображения</numerusform>
+            <numerusform>%n изображений</numerusform>
+        </translation>
+    </message>
     <message>
         <location filename="../mainwindow.cpp" line="1576"/>
         <location filename="../mainwindow.cpp" line="1626"/>
@@ -740,10 +719,6 @@
         <translation>Четырежды</translation>
     </message>
     <message>
-        <source>Keep Transformations</source>
-        <translation type="vanished">Оставлять преобразования</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="586"/>
         <source>Move Left</source>
         <translation>Сдвинуть влево</translation>
@@ -821,10 +796,6 @@
         <translation>Сообщения об ошибках</translation>
     </message>
     <message>
-        <source>Copy or Move to...</source>
-        <translation type="vanished">Копировать или переместить в...</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="606"/>
         <source>&amp;File</source>
         <translation>&amp;Файл</translation>
@@ -889,10 +860,6 @@
         <translation>Невозможно копировать или переместить в </translation>
     </message>
     <message>
-        <source>Can not cut and paste in the same folder</source>
-        <translation type="vanished">Невозможно вырезать и вставить в одну и ту же папку</translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="1513"/>
         <location filename="../mainwindow.cpp" line="2790"/>
         <source>Copied </source>
@@ -903,10 +870,6 @@
         <location filename="../mainwindow.cpp" line="2790"/>
         <source>Moved </source>
         <translation>Перемещено </translation>
-    </message>
-    <message>
-        <source> images</source>
-        <translation type="vanished"> изображений</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1572"/>
@@ -944,12 +907,12 @@
     <message>
         <location filename="../mainwindow.cpp" line="329"/>
         <source>Copy to...</source>
-        <translation type="unfinished"></translation>
+        <translation>Копировать в...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="332"/>
         <source>Move to...</source>
-        <translation type="unfinished"></translation>
+        <translation>Переместить в...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="345"/>
@@ -984,7 +947,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="544"/>
         <source>Crop to Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Обрезать в выделение</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="561"/>
@@ -994,17 +957,17 @@
     <message>
         <location filename="../mainwindow.cpp" line="582"/>
         <source>Lock Transformations</source>
-        <translation type="unfinished"></translation>
+        <translation>Зафиксировать преобразования</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="598"/>
         <source>Filter by Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Фильтровать по имени</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="600"/>
         <source>Set Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Установить путь</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="668"/>
@@ -1030,32 +993,32 @@
         <location filename="../mainwindow.cpp" line="1256"/>
         <location filename="../mainwindow.cpp" line="1264"/>
         <source>Zoom </source>
-        <translation type="unfinished"></translation>
+        <translation>Зум </translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1272"/>
         <source>Zoom Reset</source>
-        <translation type="unfinished"></translation>
+        <translation>Сбросить масштаб</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1287"/>
         <source>Zoom Locked</source>
-        <translation type="unfinished"></translation>
+        <translation>Масштаб зафиксирован</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1289"/>
         <source>Zoom Unlocked</source>
-        <translation type="unfinished"></translation>
+        <translation>Масштаб разблокирован</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1297"/>
         <source>Transformations Locked</source>
-        <translation type="unfinished"></translation>
+        <translation>Преобразования зафиксированы</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1302"/>
         <source>Transformations Unlocked</source>
-        <translation type="unfinished"></translation>
+        <translation>Преобразования разблокированы</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1314"/>
@@ -1063,64 +1026,57 @@
         <location filename="../mainwindow.cpp" line="1380"/>
         <location filename="../mainwindow.cpp" line="1389"/>
         <source>Rotation </source>
-        <translation type="unfinished"></translation>
+        <translation>Поворот </translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1330"/>
         <source>Flipped Vertically</source>
-        <translation type="unfinished"></translation>
+        <translation>Отражено по вертикали</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1330"/>
         <source>Unflipped Vertically</source>
-        <translation type="unfinished"></translation>
+        <translation>Возвращено в исходное положение по вертикали</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1337"/>
         <source>Flipped Horizontally</source>
-        <translation type="unfinished"></translation>
+        <translation>Отражено по горизонтали</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1337"/>
         <source>Unflipped Horizontally</source>
-        <translation type="unfinished"></translation>
+        <translation>Возвращено в исходное положение по горизонтали</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1433"/>
         <source>Mirroring Disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Зеркалирование отключено</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1440"/>
         <source>Mirroring: Dual</source>
-        <translation type="unfinished"></translation>
+        <translation>Зеркалирование: дважды</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1447"/>
         <source>Mirroring: Triple</source>
-        <translation type="unfinished"></translation>
+        <translation>Зеркалирование: трижды</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1454"/>
         <source>Mirroring: Dual Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Зеркалирование: дважды по вертикали</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1461"/>
         <source>Mirroring: Quad</source>
-        <translation type="unfinished"></translation>
+        <translation>Зеркалирование: четырежды</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1499"/>
         <source>Can not copy or move to the same folder</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1514"/>
-        <location filename="../mainwindow.cpp" line="1654"/>
-        <location filename="../mainwindow.cpp" line="2791"/>
-        <source> image(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно копировать или переместить в одну и ту же папку</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1654"/>
@@ -1478,7 +1434,7 @@
     <message>
         <location filename="../dialogs.cpp" line="359"/>
         <source>Background image: </source>
-        <translation type="unfinished"></translation>
+        <translation>Фоновое изображение: </translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="435"/>
@@ -1513,12 +1469,12 @@
     <message>
         <location filename="../dialogs.cpp" line="646"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть файл</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="647"/>
         <source>Images</source>
-        <translation type="unfinished"></translation>
+        <translation>Изображения</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="415"/>
@@ -1609,7 +1565,7 @@
     <message>
         <location filename="../thumbview.cpp" line="283"/>
         <source>Error</source>
-        <translation type="unfinished">Ошибка</translation>
+        <translation>Ошибка</translation>
     </message>
     <message>
         <location filename="../thumbview.cpp" line="525"/>

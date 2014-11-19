@@ -1511,7 +1511,7 @@ void Phototonic::pasteThumbs()
 	}
 
 	QString state = QString((GData::copyOp? tr("Copied ") : tr("Moved ")) + 
-								QString::number(dialog->nfiles) + tr(" image(s)"));
+								tr("%n image(s)", "", dialog->nfiles));
 	setStatus(state);
 	delete(dialog);
 	selectCurrentViewDir();
@@ -1651,7 +1651,7 @@ void Phototonic::deleteOp()
 			}
 		}
 		
-		QString state = QString(tr("Deleted ") + QString::number(nfiles) + tr(" image(s)"));
+		QString state = QString(tr("Deleted ") + tr("%n image(s)", "", nfiles));
 		setStatus(state);
 
 		thumbView->loadVisibleThumbs();
@@ -2788,7 +2788,7 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvD
 		GData::copyCutIdxList = thumbView->selectionModel()->selectedIndexes();
 		cpMvdialog->exec(thumbView, destDir, false);
 		QString state = QString((GData::copyOp? tr("Copied ") : tr("Moved ")) +
-												QString::number(cpMvdialog->nfiles) + tr(" image(s)"));
+							tr("%n image(s)", "", cpMvdialog->nfiles));
 		setStatus(state);
 		delete(cpMvdialog);
 	}
