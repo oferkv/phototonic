@@ -120,7 +120,7 @@
     <message>
         <location filename="../dialogs.cpp" line="1052"/>
         <source>Affected Channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Betroffene Kanäle</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1056"/>
@@ -140,7 +140,7 @@
     <message>
         <location filename="../dialogs.cpp" line="1118"/>
         <source>Color Balance</source>
-        <translation type="unfinished"></translation>
+        <translation>Farbabstimmung</translation>
     </message>
 </context>
 <context>
@@ -156,17 +156,17 @@
     <message>
         <location filename="../dialogs.cpp" line="1333"/>
         <source>Move to...</source>
-        <translation type="unfinished"></translation>
+        <translation>Verschieben nach...</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1336"/>
         <source>Copy to...</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopieren nach...</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1364"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Durchsuchen...</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1366"/>
@@ -176,18 +176,18 @@
     <message>
         <location filename="../dialogs.cpp" line="1373"/>
         <source>Cancel</source>
-        <translation type="unfinished">Abbrechen</translation>
+        <translation>Abbrechen</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1378"/>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1388"/>
         <location filename="../dialogs.cpp" line="1414"/>
         <source>Destination: </source>
-        <translation type="unfinished"></translation>
+        <translation>Ziel: </translation>
     </message>
     <message>
         <source>Close</source>
@@ -243,7 +243,7 @@
     <message>
         <location filename="../dialogs.cpp" line="661"/>
         <source>Reset</source>
-        <translation type="unfinished">Zurücksetzen</translation>
+        <translation>Zurücksetzen</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="664"/>
@@ -315,7 +315,7 @@
     <message>
         <location filename="../imageview.cpp" line="971"/>
         <source>Images</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilder</translation>
     </message>
     <message>
         <source>Image Files</source>
@@ -426,12 +426,12 @@
     <message>
         <location filename="../mainwindow.cpp" line="329"/>
         <source>Copy to...</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopieren nach...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="332"/>
         <source>Move to...</source>
-        <translation type="unfinished"></translation>
+        <translation>Verschieben nach...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="345"/>
@@ -456,22 +456,22 @@
     <message>
         <location filename="../mainwindow.cpp" line="544"/>
         <source>Crop to Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Auswahl zum Zuschneiden</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="582"/>
         <source>Lock Transformations</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformationen beibehalten</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="598"/>
         <source>Filter by Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nach Namen filtern</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="600"/>
         <source>Set Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Pfad setzen</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="668"/>
@@ -497,32 +497,32 @@
         <location filename="../mainwindow.cpp" line="1256"/>
         <location filename="../mainwindow.cpp" line="1264"/>
         <source>Zoom </source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1272"/>
         <source>Zoom Reset</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom zurücksetzen</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1287"/>
         <source>Zoom Locked</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom beibehalten</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1289"/>
         <source>Zoom Unlocked</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom entsperren</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1297"/>
         <source>Transformations Locked</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformationen beibehalten</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1302"/>
         <source>Transformations Unlocked</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformationen entsperren</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1314"/>
@@ -530,64 +530,64 @@
         <location filename="../mainwindow.cpp" line="1380"/>
         <location filename="../mainwindow.cpp" line="1389"/>
         <source>Rotation </source>
-        <translation type="unfinished"></translation>
+        <translation>Drehung </translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1330"/>
         <source>Flipped Vertically</source>
-        <translation type="unfinished"></translation>
+        <translation>Vertikal gespiegelt</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1330"/>
         <source>Unflipped Vertically</source>
-        <translation type="unfinished"></translation>
+        <translation>Vertikal spiegeln rückgängig</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1337"/>
         <source>Flipped Horizontally</source>
-        <translation type="unfinished"></translation>
+        <translation>Horizontal gespiegelt</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1337"/>
         <source>Unflipped Horizontally</source>
-        <translation type="unfinished"></translation>
+        <translation>Horizontal spiegeln rückgängig</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1433"/>
         <source>Mirroring Disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Spiegeln deaktiviert</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1440"/>
         <source>Mirroring: Dual</source>
-        <translation type="unfinished"></translation>
+        <translation>Spiegeln: Zweifach</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1447"/>
         <source>Mirroring: Triple</source>
-        <translation type="unfinished"></translation>
+        <translation>Spiegeln: Dreifach</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1454"/>
         <source>Mirroring: Dual Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Spiegeln: Zweifach vertikal</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1461"/>
         <source>Mirroring: Quad</source>
-        <translation type="unfinished"></translation>
+        <translation>Spiegeln: Vierfach</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1499"/>
         <source>Can not copy or move to the same folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopieren oder Verschieben in den selben Ordner nicht möglich</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1514"/>
         <location filename="../mainwindow.cpp" line="1654"/>
         <location filename="../mainwindow.cpp" line="2791"/>
         <source> image(s)</source>
-        <translation type="unfinished"></translation>
+        <translation> Bild(er)</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1971"/>
@@ -1466,7 +1466,7 @@
     <message>
         <location filename="../dialogs.cpp" line="359"/>
         <source>Background image: </source>
-        <translation type="unfinished"></translation>
+        <translation>Hintergrundbild: </translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="377"/>
@@ -1560,12 +1560,12 @@
     <message>
         <location filename="../dialogs.cpp" line="646"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei öffnen</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="647"/>
         <source>Images</source>
-        <translation type="unfinished"></translation>
+        <translation> Bilder</translation>
     </message>
     <message>
         <source>Rotate according to Exif orientation</source>
@@ -1703,7 +1703,7 @@
     <message>
         <location filename="../thumbview.cpp" line="283"/>
         <source>Error</source>
-        <translation type="unfinished">Fehler</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../thumbview.cpp" line="525"/>
