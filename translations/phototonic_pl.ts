@@ -305,12 +305,12 @@
     <message>
         <location filename="../imageview.cpp" line="794"/>
         <source>No selection</source>
-        <translation type="unfinished">Brak zaznaczenia</translation>
+        <translation>Brak zaznaczenia</translation>
     </message>
     <message>
         <location filename="../imageview.cpp" line="794"/>
         <source>Hold down the Ctrl key and select a region using the mouse</source>
-        <translation type="unfinished"></translation>
+        <translation>Przytrzymaj klawisz Ctrl i zaznacz rejon używając mysz</translation>
     </message>
     <message>
         <location filename="../imageview.cpp" line="927"/>
@@ -675,10 +675,10 @@
         <location filename="../mainwindow.cpp" line="1662"/>
         <location filename="../mainwindow.cpp" line="2799"/>
         <source>%n image(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n obrazka</numerusform>
+            <numerusform>%n obrazków</numerusform>
+            <numerusform>%n obrazków</numerusform>
         </translation>
     </message>
     <message>
@@ -1066,8 +1066,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="582"/>
         <source>Lock Transformations</source>
-        <translatorcomment>Zablokuj przekształcenia</translatorcomment>
-        <translation></translation>
+        <translation>Zablokuj przekształcenia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="598"/>
@@ -1083,8 +1082,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="668"/>
         <source>&amp;Tools</source>
-        <translatorcomment>&amp;Narzędzia</translatorcomment>
-        <translation></translation>
+        <translation>&amp;Narzędzia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="753"/>
@@ -1745,36 +1743,36 @@
         <location filename="../thumbview.cpp" line="590"/>
         <source>%n images, displaying </source>
         <translation>
-            <numerusform>%n obrazków, wyświetlonych</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform> %n obrazka, wyświetlonych</numerusform>
+            <numerusform> %n obrazków, wyświetlonych</numerusform>
+            <numerusform> %n obrazków, wyświetlonych</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../thumbview.cpp" line="591"/>
         <source>%n images (</source>
         <translation>
-            <numerusform>%n obrazków (</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform> %n obrazka (</numerusform>
+            <numerusform> %n obrazków (</numerusform>
+            <numerusform> %n obrazków (</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../thumbview.cpp" line="592"/>
         <source>%n originals and </source>
         <translation>
-            <numerusform>%n oryginałów i</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform> %n oryginału i</numerusform>
+            <numerusform> %n oryginałów i</numerusform>
+            <numerusform> %n oryginałów i</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../thumbview.cpp" line="593"/>
         <source>%n duplicates)</source>
         <translation>
-            <numerusform>%n duplikatów)</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform> %n duplikatu)</numerusform>
+            <numerusform> %n duplikatów)</numerusform>
+            <numerusform> %n duplikatów)</numerusform>
         </translation>
     </message>
     <message>
