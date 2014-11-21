@@ -591,6 +591,7 @@
         <location filename="../mainwindow.cpp" line="1507"/>
         <source>Can not copy or move to the same folder</source>
         <translation>Kopieren oder Verschieben in den selben Ordner nicht möglich</translation>
+<<<<<<< HEAD
     </message>
     <message>
 <<<<<<< HEAD
@@ -599,6 +600,8 @@
         <location filename="../mainwindow.cpp" line="2791"/>
         <source> image(s)</source>
         <translation> Bild(er)</translation>
+=======
+>>>>>>> upstream/master
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1971"/>
