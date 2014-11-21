@@ -789,6 +789,9 @@ void ImageView::cropToSelection()
 
 		cropBand->hide();
 		refresh();
+	} else {
+		QMessageBox msgBox;
+		msgBox.warning(this, tr("No selection"), tr("Hold down the Ctrl key and select a region using the mouse"));
 	}
 }
 
