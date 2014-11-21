@@ -281,12 +281,12 @@
     <message>
         <location filename="../imageview.cpp" line="794"/>
         <source>No selection</source>
-        <translation type="unfinished">Aucune sélection</translation>
+        <translation>Aucune sélection</translation>
     </message>
     <message>
         <location filename="../imageview.cpp" line="794"/>
         <source>Hold down the Ctrl key and select a region using the mouse</source>
-        <translation type="unfinished"></translation>
+        <translation>Maintenez la touche Ctrl enfoncée et sélectionnez une région à l&apos;aide de la souris</translation>
     </message>
     <message>
         <location filename="../imageview.cpp" line="927"/>
@@ -897,9 +897,9 @@
         <location filename="../mainwindow.cpp" line="1662"/>
         <location filename="../mainwindow.cpp" line="2799"/>
         <source>%n image(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n image</numerusform>
+            <numerusform>%n images</numerusform>
         </translation>
     </message>
     <message>
