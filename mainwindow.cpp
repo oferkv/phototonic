@@ -859,6 +859,7 @@ void Phototonic::createBookmarks()
 				this, SLOT(dropOp(Qt::KeyboardModifiers, bool, QString)));
 	addDockWidget(Qt::LeftDockWidgetArea, bmDock);
 
+	bookmarks->addAction(pasteAction);
 	bookmarks->addAction(removeBookmarkAction);
 	bookmarks->setContextMenuPolicy(Qt::ActionsContextMenu);
 }
@@ -946,7 +947,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.4.48</h2>"
+	QString aboutString = "<h2>Phototonic v1.4.53</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -1478,9 +1479,16 @@ void Phototonic::pasteThumbs()
 	QString destDir;
 	if (copyMoveToDialog)
 		destDir = copyMoveToDialog->selectedPath;
-	else
-		destDir = getSelectedPath();
-
+	else {
+		if (QApplication::focusWidget() == bookmarks) {
+			if (bookmarks->currentItem()) {
+				destDir = bookmarks->currentItem()->toolTip(0);
+			}
+		} else {
+			destDir = getSelectedPath();
+		}
+	}
+	
 	if (!isValidPath(destDir)) {
 		QMessageBox msgBox;
 		msgBox.critical(this, tr("Error"), tr("Can not copy or move to ") + destDir);
