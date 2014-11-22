@@ -281,12 +281,12 @@
     <message>
         <location filename="../imageview.cpp" line="794"/>
         <source>No selection</source>
-        <translation type="unfinished">Keine Auswahl</translation>
+        <translation>Keine Auswahl</translation>
     </message>
     <message>
         <location filename="../imageview.cpp" line="794"/>
         <source>Hold down the Ctrl key and select a region using the mouse</source>
-        <translation type="unfinished"></translation>
+        <translation>Halten Sie die STRG-Taste gedrückt und markieren einen Bereich mit der Maus</translation>
     </message>
     <message>
         <location filename="../imageview.cpp" line="927"/>
@@ -591,23 +591,9 @@
         <location filename="../mainwindow.cpp" line="1507"/>
         <source>Can not copy or move to the same folder</source>
         <translation>Kopieren oder Verschieben in den selben Ordner nicht möglich</translation>
-<<<<<<< HEAD
     </message>
     <message>
-<<<<<<< HEAD
-        <location filename="../mainwindow.cpp" line="1514"/>
-        <location filename="../mainwindow.cpp" line="1654"/>
-        <location filename="../mainwindow.cpp" line="2791"/>
-        <source> image(s)</source>
-        <translation> Bild(er)</translation>
-=======
->>>>>>> upstream/master
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1971"/>
-=======
         <location filename="../mainwindow.cpp" line="1979"/>
->>>>>>> upstream/master
         <source>Viewer</source>
         <translation>Betrachter</translation>
     </message>
@@ -1205,9 +1191,9 @@
         <location filename="../mainwindow.cpp" line="1662"/>
         <location filename="../mainwindow.cpp" line="2799"/>
         <source>%n image(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n Bild</numerusform>
+            <numerusform>%n Bilder</numerusform>
         </translation>
     </message>
     <message>
