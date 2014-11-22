@@ -253,12 +253,12 @@
     <message>
         <location filename="../imageview.cpp" line="794"/>
         <source>No selection</source>
-        <translation type="unfinished">Нет выделения</translation>
+        <translation>Нет выделения</translation>
     </message>
     <message>
         <location filename="../imageview.cpp" line="794"/>
         <source>Hold down the Ctrl key and select a region using the mouse</source>
-        <translation type="unfinished"></translation>
+        <translation>Зажмите клавишу Ctrl и выделите область изображения с помощью мыши</translation>
     </message>
     <message>
         <location filename="../imageview.cpp" line="927"/>
