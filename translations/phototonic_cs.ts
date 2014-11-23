@@ -132,7 +132,7 @@
     <message>
         <location filename="../dialogs.cpp" line="1052"/>
         <source>Affected Channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Ovlivněné kanály</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1056"/>
@@ -152,7 +152,7 @@
     <message>
         <location filename="../dialogs.cpp" line="1118"/>
         <source>Color Balance</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyvážení barev</translation>
     </message>
 </context>
 <context>
@@ -168,17 +168,17 @@
     <message>
         <location filename="../dialogs.cpp" line="1333"/>
         <source>Move to...</source>
-        <translation type="unfinished"></translation>
+        <translation>Přesunout do...</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1336"/>
         <source>Copy to...</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopírovat do...</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1364"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Procházet...</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1366"/>
@@ -188,18 +188,18 @@
     <message>
         <location filename="../dialogs.cpp" line="1373"/>
         <source>Cancel</source>
-        <translation type="unfinished">Zrušit</translation>
+        <translation>Zrušit</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1378"/>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1388"/>
         <location filename="../dialogs.cpp" line="1414"/>
         <source>Destination: </source>
-        <translation type="unfinished"></translation>
+        <translation>Cíl:</translation>
     </message>
     <message>
         <source>Close</source>
@@ -255,7 +255,7 @@
     <message>
         <location filename="../dialogs.cpp" line="661"/>
         <source>Reset</source>
-        <translation type="unfinished">Nastavit znovu</translation>
+        <translation>Nastavit znovu</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="664"/>
@@ -293,12 +293,12 @@
     <message>
         <location filename="../imageview.cpp" line="794"/>
         <source>No selection</source>
-        <translation type="unfinished">Žádný výběr</translation>
+        <translation>Žádný výběr</translation>
     </message>
     <message>
         <location filename="../imageview.cpp" line="794"/>
         <source>Hold down the Ctrl key and select a region using the mouse</source>
-        <translation type="unfinished"></translation>
+        <translation>Podržte klávesu Ctrl a pomocí myši vyberte oblast</translation>
     </message>
     <message>
         <location filename="../imageview.cpp" line="927"/>
@@ -337,7 +337,7 @@
     <message>
         <location filename="../imageview.cpp" line="974"/>
         <source>Images</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrázky</translation>
     </message>
     <message>
         <source>Image Files</source>
@@ -851,10 +851,10 @@
         <location filename="../mainwindow.cpp" line="1662"/>
         <location filename="../mainwindow.cpp" line="2799"/>
         <source>%n image(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n obrázek</numerusform>
+            <numerusform>%n obrázky</numerusform>
+            <numerusform>%n obrázků</numerusform>
         </translation>
     </message>
     <message>
@@ -992,82 +992,82 @@
     <message>
         <location filename="../mainwindow.cpp" line="329"/>
         <source>Copy to...</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopírovat do...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="332"/>
         <source>Move to...</source>
-        <translation type="unfinished"></translation>
+        <translation>Přesunout do...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="345"/>
         <source>Copy Image Data</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopírovat data obrázku</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="346"/>
         <source>Paste Image Data</source>
-        <translation type="unfinished"></translation>
+        <translation>Vložit data obrázku</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="406"/>
         <source>Show Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukázat nástrojový pruh</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="487"/>
         <source>Load Clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahrát schránku</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="497"/>
         <source>Add Bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation>Přídat záložku</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="501"/>
         <source>Remove Bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation>Odstranit záložku</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="544"/>
         <source>Crop to Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Oříznout výběr</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="561"/>
         <source>Find Duplicate Images</source>
-        <translation type="unfinished"></translation>
+        <translation>Najít zdvojené obrázky</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="582"/>
         <source>Lock Transformations</source>
-        <translation type="unfinished"></translation>
+        <translation>Uzamknout proměny</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="598"/>
         <source>Filter by Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtrovat podle názvu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="600"/>
         <source>Set Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavit cestu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="668"/>
         <source>&amp;Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nástroje</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="753"/>
         <source>Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrázek</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="848"/>
         <source>Bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Záložky</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="956"/>
@@ -1083,32 +1083,32 @@
         <location filename="../mainwindow.cpp" line="1257"/>
         <location filename="../mainwindow.cpp" line="1265"/>
         <source>Zoom </source>
-        <translation type="unfinished"></translation>
+        <translation>Zvětšení</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1273"/>
         <source>Zoom Reset</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavit zvětšení znovu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1288"/>
         <source>Zoom Locked</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvětšení zamknuto</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1290"/>
         <source>Zoom Unlocked</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvětšení odemknuto</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1298"/>
         <source>Transformations Locked</source>
-        <translation type="unfinished"></translation>
+        <translation>Proměny zamknuty</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1303"/>
         <source>Transformations Unlocked</source>
-        <translation type="unfinished"></translation>
+        <translation>Proměny odemknuty</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1315"/>
@@ -1116,57 +1116,57 @@
         <location filename="../mainwindow.cpp" line="1381"/>
         <location filename="../mainwindow.cpp" line="1390"/>
         <source>Rotation </source>
-        <translation type="unfinished"></translation>
+        <translation>Otočení</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1331"/>
         <source>Flipped Vertically</source>
-        <translation type="unfinished"></translation>
+        <translation>Převráceno svisle</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1331"/>
         <source>Unflipped Vertically</source>
-        <translation type="unfinished"></translation>
+        <translation>Svislé převrácení zrušeno</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1338"/>
         <source>Flipped Horizontally</source>
-        <translation type="unfinished"></translation>
+        <translation>Převráceno vodorovně</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1338"/>
         <source>Unflipped Horizontally</source>
-        <translation type="unfinished"></translation>
+        <translation>Vodorovné převrácení zrušeno</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1434"/>
         <source>Mirroring Disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Zrcadlení zakázáno</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1441"/>
         <source>Mirroring: Dual</source>
-        <translation type="unfinished"></translation>
+        <translation>Zrcadlení: Dvojice</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1448"/>
         <source>Mirroring: Triple</source>
-        <translation type="unfinished"></translation>
+        <translation>Zrcadlení: Trojice</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1455"/>
         <source>Mirroring: Dual Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Zrcadlení: Dvojice svisle</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1462"/>
         <source>Mirroring: Quad</source>
-        <translation type="unfinished"></translation>
+        <translation>Zrcadlení: Čtveřice</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1507"/>
         <source>Can not copy or move to the same folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze přesunout nebo kopírovat do stejné složky</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1584"/>
@@ -1452,7 +1452,7 @@
     <message>
         <location filename="../dialogs.cpp" line="359"/>
         <source>Background image: </source>
-        <translation type="unfinished"></translation>
+        <translation>Obrázek pozadí:</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="377"/>
@@ -1542,12 +1542,12 @@
     <message>
         <location filename="../dialogs.cpp" line="646"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Otevřít soubor</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="647"/>
         <source>Images</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrázky</translation>
     </message>
     <message>
         <source>Rotate according to Exif orientation</source>
@@ -1685,52 +1685,52 @@
     <message>
         <location filename="../thumbview.cpp" line="283"/>
         <source>Error</source>
-        <translation type="unfinished">Chyba</translation>
+        <translation>Chyba</translation>
     </message>
     <message>
         <location filename="../thumbview.cpp" line="525"/>
         <source>Searching duplicate images...</source>
-        <translation type="unfinished"></translation>
+        <translation>Hledají se zdvojené obrázky...</translation>
     </message>
     <message>
         <location filename="../thumbview.cpp" line="590"/>
         <source>Scanned </source>
-        <translation type="unfinished"></translation>
+        <translation>Prohledáno</translation>
     </message>
     <message numerus="yes">
         <location filename="../thumbview.cpp" line="590"/>
         <source>%n images, displaying </source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n obrázek, zobrazuje se </numerusform>
+            <numerusform>%n obrázky, zobrazují se </numerusform>
+            <numerusform>%n obrázků, zobrazuje se </numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../thumbview.cpp" line="591"/>
         <source>%n images (</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n obrázek (</numerusform>
+            <numerusform>%n obrázky (</numerusform>
+            <numerusform>%n obrázků (</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../thumbview.cpp" line="592"/>
         <source>%n originals and </source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n originál a </numerusform>
+            <numerusform>%n originály a</numerusform>
+            <numerusform>%n originálů a</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../thumbview.cpp" line="593"/>
         <source>%n duplicates)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n zdvojený obrázek)</numerusform>
+            <numerusform>%n zdvojené obrázky)</numerusform>
+            <numerusform>%n zdvojených obrázků)</numerusform>
         </translation>
     </message>
     <message>
