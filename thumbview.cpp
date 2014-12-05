@@ -243,7 +243,7 @@ void ThumbView::handleSelectionChanged(const QItemSelection&)
 		QString val;
 
 		QFileInfo imageInfo = QFileInfo(imageFullPath);
-		infoView->addTitleEntry("General");
+		infoView->addTitleEntry(tr("General"));
 
 		key = tr("File name");
 		val = imageInfo.fileName();
