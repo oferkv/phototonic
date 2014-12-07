@@ -44,21 +44,15 @@ private:
 	bool abortOp;
 };
 
-class KeyGrabLineEdit : public QLineEdit
+class KeyGrabTableView : public QTableView
 {
 	Q_OBJECT
  
-public:
-	KeyGrabLineEdit(QWidget *parent, QComboBox *combo);
-
 public slots:
-	void clearShortcut();
+	void clearShortcut(const QModelIndex & index);
 
 protected:
 	void keyPressEvent(QKeyEvent *e);
-
-private:
-	QComboBox *keysCombo;
 };
 
 class SettingsDialog : public QDialog
@@ -75,7 +69,6 @@ private slots:
 	void pickThumbsTextColor();
 	void pickStartupDir();
 	void pickBgImage();
-	void setActionKeyText(const QString &text);
 
 public slots:
 	void abort();
@@ -104,7 +97,6 @@ private:
 	QCheckBox *reverseMouseCb;
 	QSpinBox *slideDelaySpin;
 	QCheckBox *slideRandomCb;
-	KeyGrabLineEdit *keyLine;
 	QRadioButton *startupDirRadios[3];
 	QLineEdit *startupDirEdit;
 	QLineEdit *thumbsBackImageEdit;
