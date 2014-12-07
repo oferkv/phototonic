@@ -163,14 +163,11 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 	close();	
 }
 
-KeyGrabLineEdit::KeyGrabLineEdit(QWidget *parent, QComboBox *combo) : QLineEdit(parent)
+void KeyGrabTableView::keyPressEvent(QKeyEvent *e)
 {
-	keysCombo = combo;
-	setClearButtonEnabled(true);
-}
-
-void KeyGrabLineEdit::keyPressEvent(QKeyEvent *e)
-{
+	if (!this->selectedIndexes().count()) {
+		return;
+	}
 	QString keySeqText;
 	QString keyText("");
 	QString modifierText("");
@@ -214,19 +211,19 @@ void KeyGrabLineEdit::keyPressEvent(QKeyEvent *e)
 		}
 	}
 	
-	setText(keySeqText);
-	GData::actionKeys.value(keysCombo->currentText())->setShortcut(QKeySequence(keySeqText));
+	QStandardItemModel *mod = (QStandardItemModel*)this->model();
+	int row = this->selectedIndexes().first().row();
+	mod->item(row, 1)->setText(keySeqText);
+	GData::actionKeys.value(mod->item(row, 0)->text())->setShortcut(QKeySequence(keySeqText));
 }
 
-void KeyGrabLineEdit::clearShortcut()
+void KeyGrabTableView::clearShortcut(const QModelIndex & index)
 {
-	if (text() == "")
-		GData::actionKeys.value(keysCombo->currentText())->setShortcut(QKeySequence(""));
-}
-
-void SettingsDialog::setActionKeyText(const QString &text)
-{
-	keyLine->setText(GData::actionKeys.value(text)->shortcut().toString());
+	if (QApplication::mouseButtons() & Qt::RightButton) {
+		QStandardItemModel *mod = (QStandardItemModel*)this->model();
+		mod->item(index.row(), 1)->setText("");
+		GData::actionKeys.value(mod->item(index.row(), 0)->text())->setShortcut(QKeySequence(""));
+	}
 }
 
 SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
@@ -474,32 +471,40 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	startupDirEdit->setText(GData::specifiedStartDir);
 
 	// Keyboard shortcuts widgets
-	QComboBox *keysCombo = new QComboBox();
-	keyLine = new KeyGrabLineEdit(this, keysCombo);
-	connect(keyLine, SIGNAL(textChanged(const QString&)), keyLine, SLOT(clearShortcut()));
-	connect(keysCombo, SIGNAL(activated(const QString &)),
-							this, SLOT(setActionKeyText(const QString &)));
+	QStandardItemModel *keysModel = new QStandardItemModel();
+	KeyGrabTableView *keysTree = new KeyGrabTableView();
+	connect(keysTree, SIGNAL(pressed(const QModelIndex&)), keysTree, SLOT(clearShortcut(const QModelIndex&)));
+	keysTree->setModel(keysModel);
+	keysTree->setSelectionBehavior(QAbstractItemView::SelectRows);
+	keysTree->setSelectionMode(QAbstractItemView::SingleSelection);
+	keysTree->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	keysTree->verticalHeader()->hide();
+	keysTree->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+	keysTree->horizontalHeader()->setHighlightSections(false);
+	keysTree->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	keysModel->setHorizontalHeaderItem(0, new QStandardItem(tr("Action")));
+	keysModel->setHorizontalHeaderItem(1, new QStandardItem(tr("Shortcut")));
 
 	QMapIterator<QString, QAction *> it(GData::actionKeys);
 	while (it.hasNext())
 	{
 		it.next();
-		keysCombo->addItem(it.key());
+		QStandardItem *action = new QStandardItem(it.key());
+		action->setEditable(false);
+		QStandardItem *shortcut = new QStandardItem(GData::actionKeys.value(it.key())->shortcut().toString());
+		keysModel->appendRow(QList<QStandardItem*>() << action << shortcut);
 	}
-	keyLine->setText(GData::actionKeys.value(keysCombo->currentText())->shortcut().toString());
 
 	// Mouse settings
 	reverseMouseCb = new QCheckBox(tr("Swap mouse left-click and middle-click actions"), this);
 	reverseMouseCb->setChecked(GData::reverseMouseBehavior);
 
 	// Keyboard and mouse
-
 	QGroupBox *keyboardGrp = new QGroupBox(tr("Keyboard Shortcuts"));
-	QHBoxLayout *keyboardHbox = new QHBoxLayout;
-	keyboardHbox->addWidget(keysCombo);
-	keyboardHbox->addWidget(keyLine);
-	keyboardHbox->addStretch(1);
-	keyboardGrp->setLayout(keyboardHbox);
+	QVBoxLayout *keyboardVbox = new QVBoxLayout;
+	keyboardVbox->addWidget(keysTree);
+	keyboardVbox->addWidget(new QLabel(tr("Use right mouse button to delete shortcut.")));
+	keyboardGrp->setLayout(keyboardVbox);
 
 	QVBoxLayout *generalVbox = new QVBoxLayout;
 	generalVbox->addWidget(keyboardGrp);
