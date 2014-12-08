@@ -44,15 +44,26 @@ private:
 	bool abortOp;
 };
 
-class KeyGrabTableView : public QTableView
+class ShortcutsTableView : public QTableView
 {
 	Q_OBJECT
- 
+
+public:
+	ShortcutsTableView();
+	void addRow(QString action, QString shortcut);
+
 public slots:
-	void clearShortcut(const QModelIndex & index);
+	void showShortcutsTableMenu(QPoint pt);
+	void clearShortcut();
 
 protected:
 	void keyPressEvent(QKeyEvent *e);
+
+private:
+	QStandardItemModel *keysModel;
+	QModelIndex selectedEntry;
+	QMenu *shortcutsMenu;
+	QAction *clearAction;
 };
 
 class SettingsDialog : public QDialog

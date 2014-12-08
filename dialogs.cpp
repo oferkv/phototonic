@@ -163,7 +163,35 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 	close();	
 }
 
-void KeyGrabTableView::keyPressEvent(QKeyEvent *e)
+ShortcutsTableView::ShortcutsTableView()
+{
+	keysModel = new QStandardItemModel();
+	keysModel->setHorizontalHeaderItem(0, new QStandardItem(tr("Action")));
+	keysModel->setHorizontalHeaderItem(1, new QStandardItem(tr("Shortcut")));
+	setModel(keysModel);
+	setSelectionBehavior(QAbstractItemView::SelectRows);
+	setSelectionMode(QAbstractItemView::SingleSelection);
+	setEditTriggers(QAbstractItemView::NoEditTriggers);
+	verticalHeader()->hide();
+	verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+	horizontalHeader()->setHighlightSections(false);
+	horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
+	shortcutsMenu = new QMenu("");
+	clearAction = new QAction(tr("Delete shortcut"), this);
+	connect(clearAction, SIGNAL(triggered()), this, SLOT(clearShortcut()));
+	shortcutsMenu->addAction(clearAction);
+	setContextMenuPolicy(Qt::CustomContextMenu);
+	connect(this, SIGNAL(customContextMenuRequested(QPoint)), SLOT(showShortcutsTableMenu(QPoint)));
+}
+
+void ShortcutsTableView::addRow(QString action, QString shortcut)
+{
+	keysModel->appendRow(QList<QStandardItem*>() << new QStandardItem(action) << new QStandardItem(shortcut));
+}
+
+void ShortcutsTableView::keyPressEvent(QKeyEvent *e)
 {
 	if (!this->selectedIndexes().count()) {
 		return;
@@ -193,8 +221,8 @@ void KeyGrabTableView::keyPressEvent(QKeyEvent *e)
 	if (e->modifiers() & Qt::AltModifier && (e->key() > Qt::Key_0 &&  e->key() <= Qt::Key_Colon))
 	{
 		QMessageBox msgBox;
-		msgBox.warning(this, tr("Set shortcut"), keySeqText +
-						tr(" is reserved for shortcuts to external applications"));
+		msgBox.warning(this, tr("Set shortcut"),
+						tr("\"%1\" is reserved for shortcuts to external applications.").arg(keySeqText));
 		return;
 	}
 
@@ -205,25 +233,33 @@ void KeyGrabTableView::keyPressEvent(QKeyEvent *e)
 		if (it.value()->shortcut().toString() == keySeqText)
 		{
 			QMessageBox msgBox;
-			msgBox.warning(this, tr("Set shortcut"), keySeqText + tr(" is already assigned to \"")
-							+ it.key() + tr("\" action"));
+			msgBox.warning(this, tr("Set shortcut"),
+						tr("\"%1\" is already assigned to \"%2\" action.").arg(keySeqText).arg(it.key()));
 			return;
 		}
 	}
 	
-	QStandardItemModel *mod = (QStandardItemModel*)this->model();
-	int row = this->selectedIndexes().first().row();
+	QStandardItemModel *mod = (QStandardItemModel*)model();
+	int row = selectedIndexes().first().row();
 	mod->item(row, 1)->setText(keySeqText);
 	GData::actionKeys.value(mod->item(row, 0)->text())->setShortcut(QKeySequence(keySeqText));
 }
 
-void KeyGrabTableView::clearShortcut(const QModelIndex & index)
+void ShortcutsTableView::clearShortcut()
 {
-	if (QApplication::mouseButtons() & Qt::RightButton) {
-		QStandardItemModel *mod = (QStandardItemModel*)this->model();
-		mod->item(index.row(), 1)->setText("");
-		GData::actionKeys.value(mod->item(index.row(), 0)->text())->setShortcut(QKeySequence(""));
+	if (selectedEntry.isValid()) {
+		QStandardItemModel *mod = (QStandardItemModel*)model();
+		mod->item(selectedEntry.row(), 1)->setText("");
+		GData::actionKeys.value(mod->item(selectedEntry.row(), 0)->text())->setShortcut(QKeySequence(""));
 	}
+}
+
+void ShortcutsTableView::showShortcutsTableMenu(QPoint pt)
+{
+	selectedEntry = indexAt(pt);
+	if (selectedEntry.isValid())
+		shortcutsMenu->popup(viewport()->mapToGlobal(pt));
+
 }
 
 SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
@@ -471,28 +507,12 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	startupDirEdit->setText(GData::specifiedStartDir);
 
 	// Keyboard shortcuts widgets
-	QStandardItemModel *keysModel = new QStandardItemModel();
-	KeyGrabTableView *keysTree = new KeyGrabTableView();
-	connect(keysTree, SIGNAL(pressed(const QModelIndex&)), keysTree, SLOT(clearShortcut(const QModelIndex&)));
-	keysTree->setModel(keysModel);
-	keysTree->setSelectionBehavior(QAbstractItemView::SelectRows);
-	keysTree->setSelectionMode(QAbstractItemView::SingleSelection);
-	keysTree->setEditTriggers(QAbstractItemView::NoEditTriggers);
-	keysTree->verticalHeader()->hide();
-	keysTree->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
-	keysTree->horizontalHeader()->setHighlightSections(false);
-	keysTree->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-	keysModel->setHorizontalHeaderItem(0, new QStandardItem(tr("Action")));
-	keysModel->setHorizontalHeaderItem(1, new QStandardItem(tr("Shortcut")));
-
+	ShortcutsTableView *keysTable = new ShortcutsTableView();
 	QMapIterator<QString, QAction *> it(GData::actionKeys);
 	while (it.hasNext())
 	{
 		it.next();
-		QStandardItem *action = new QStandardItem(it.key());
-		action->setEditable(false);
-		QStandardItem *shortcut = new QStandardItem(GData::actionKeys.value(it.key())->shortcut().toString());
-		keysModel->appendRow(QList<QStandardItem*>() << action << shortcut);
+		keysTable->addRow(it.key(), GData::actionKeys.value(it.key())->shortcut().toString());
 	}
 
 	// Mouse settings
@@ -502,8 +522,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	// Keyboard and mouse
 	QGroupBox *keyboardGrp = new QGroupBox(tr("Keyboard Shortcuts"));
 	QVBoxLayout *keyboardVbox = new QVBoxLayout;
-	keyboardVbox->addWidget(keysTree);
-	keyboardVbox->addWidget(new QLabel(tr("Use right mouse button to delete shortcut.")));
+	keyboardVbox->addWidget(keysTable);
 	keyboardGrp->setLayout(keyboardVbox);
 
 	QVBoxLayout *generalVbox = new QVBoxLayout;

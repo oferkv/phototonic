@@ -954,8 +954,9 @@ void Phototonic::about()
 		+ "<p><a href=\"https://github.com/oferkv/phototonic/issues\">" + tr("Bug reports") + "</a></p>"
 		+ "<p>Copyright &copy; 2013-2014 Ofer Kashayov (oferkv@live.com)</p>"
 		+ tr("Contributors / Code:") + "<br>"
-		+ "Christopher Roy Bratusek (nano@jpberlin.de)<br><br>"
-		+ tr("Contributors / Translations:")
+		+ "Christopher Roy Bratusek (nano@jpberlin.de)<br>"
+		+ "Krzysztof Pyrkosz (pyrkosz@o2.pl)<br>"
+		+ "<br>" + tr("Contributors / Translations:")
 		+ "<table><tr><td>Czech:</td><td>Pavel Fric (pavelfric@seznam.cz)</td></tr>"
 		+ "<tr><td>French:</td><td>David Geiger (david.david@mageialinux-online.org)</td></tr>"
 		+ "<tr><td></td><td>Adrien Daugabel (adrien.d@mageialinux-online.org)</td></tr>"
