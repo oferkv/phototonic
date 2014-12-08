@@ -392,6 +392,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	QLabel *thumbsBackImageLab = new QLabel(tr("Background image: "));
 	thumbsBackImageEdit = new QLineEdit;
 	thumbsBackImageEdit->setClearButtonEnabled(true);
+	thumbsBackImageEdit->setMinimumWidth(200);
 
 	QToolButton *chooseThumbsBackImageButton = new QToolButton();
 	chooseThumbsBackImageButton->setIcon(QIcon::fromTheme("document-open", QIcon(":/images/open.png")));
