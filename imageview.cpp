@@ -791,7 +791,7 @@ void ImageView::cropToSelection()
 		refresh();
 	} else {
 		QMessageBox msgBox;
-		msgBox.warning(this, tr("No selection"), tr("Hold down the Ctrl key and select a region using the mouse"));
+		msgBox.warning(this, tr("No selection"), tr("Hold down the Ctrl key and select a region using the mouse."));
 	}
 }
 
@@ -941,7 +941,7 @@ void ImageView::saveImage()
 																			GData::defaultSaveQuality))
 	{
 		QMessageBox msgBox;
-		msgBox.critical(this, tr("Error"), tr("Failed to save image"));
+		msgBox.critical(this, tr("Error"), tr("Failed to save image."));
 		return;
 	}
 
@@ -954,12 +954,12 @@ void ImageView::saveImage()
 		catch (Exiv2::Error &error)
 		{
 			QMessageBox msgBox;
-			msgBox.critical(this, tr("Error"), tr("Failed to save Exif metadata"));
+			msgBox.critical(this, tr("Error"), tr("Failed to save Exif metadata."));
 		}
 	}
 
 	reload();
-	setFeedback(tr("Image saved"));
+	setFeedback(tr("Image saved."));
 }
 
 void ImageView::saveImageAs()
@@ -989,7 +989,7 @@ void ImageView::saveImageAs()
 		if (!displayPixmap.save(fileName, 0, GData::defaultSaveQuality))
 		{
 			QMessageBox msgBox;
-			msgBox.critical(this, tr("Error"), tr("Failed to save image"));
+			msgBox.critical(this, tr("Error"), tr("Failed to save image."));
 		}
 		else
 		{
@@ -1007,7 +1007,7 @@ void ImageView::saveImageAs()
 				}
 			}
 		
-			setFeedback(tr("Image saved"));
+			setFeedback(tr("Image saved."));
 		}
 	}
 }

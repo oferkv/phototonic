@@ -110,8 +110,8 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 			currFile = fileInfo.fileName();
 			destFile = destDir + QDir::separator() + currFile;
 
-			opLabel->setText((GData::copyOp? tr("Copying "):tr("Moving "))
-												+ sourceFile + tr(" to ") + destFile);
+			opLabel->setText((GData::copyOp? tr("Copying \"%1\" to \"%2\".") : tr("Moving \"%1\" to \"%2\"."))
+											.arg(sourceFile).arg(destFile));
 			QApplication::processEvents();
 
 			res = cpMvFile(GData::copyOp, currFile, sourceFile, destFile, destDir);
@@ -137,8 +137,8 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 			currFile = fileInfo.fileName();
 			destFile = destDir + QDir::separator() + currFile;
 
-			opLabel->setText((GData::copyOp? tr("Copying ") : 
-												tr("Moving ")) + sourceFile + tr(" to ") + destFile);
+			opLabel->setText((GData::copyOp? tr("Copying \"%1\" to \"%2\".") : tr("Moving \"%1\" to \"%2\"."))
+											.arg(sourceFile).arg(destFile));
 			QApplication::processEvents();
 
 			res = cpMvFile(GData::copyOp, currFile, sourceFile, destFile, destDir);
@@ -303,7 +303,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	fitSmallRadios[GData::zoomInFlags]->setChecked(true);
 
 	// imageView background color
-	QLabel *backgroundColorLab = new QLabel(tr("Background color: "));
+	QLabel *backgroundColorLab = new QLabel(tr("Background color:"));
 	backgroundColorButton = new QToolButton();
 	backgroundColorButton->setFixedSize(48, 24);
 	QHBoxLayout *bgColBox = new QHBoxLayout;
@@ -325,7 +325,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	wrapListCb->setChecked(GData::wrapImageList);
 
 	// Save quality
-	QLabel *saveQualityLab = new QLabel(tr("Default quality when saving images: "));
+	QLabel *saveQualityLab = new QLabel(tr("Default quality when saving images:"));
 	saveQualitySpin = new QSpinBox;
 	saveQualitySpin->setRange(0, 100);
 	saveQualitySpin->setValue(GData::defaultSaveQuality);
@@ -365,7 +365,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	viewerOptsBox->addStretch(1);
 
 	// thumbView background color
-	QLabel *bgThumbTxtLab = new QLabel(tr("Background color: "));
+	QLabel *bgThumbTxtLab = new QLabel(tr("Background color:"));
 	colThumbButton = new QToolButton();
 	colThumbButton->setFixedSize(48, 24);
 	QHBoxLayout *bgThumbColBox = new QHBoxLayout;
@@ -377,7 +377,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	thumbBgColor = GData::thumbsBackgroundColor;
 
 	// thumbView text color
-	QLabel *txtThumbTxtLab = new QLabel(tr("\tLabel color: "));
+	QLabel *txtThumbTxtLab = new QLabel("\t" + tr("Label color:"));
 	colThumbTextButton = new QToolButton();
 	colThumbTextButton->setFixedSize(48, 24);
 	bgThumbColBox->addWidget(txtThumbTxtLab);
@@ -389,7 +389,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	thumbTextColor = GData::thumbsTextColor;
 
 	// thumbview background image
-	QLabel *thumbsBackImageLab = new QLabel(tr("Background image: "));
+	QLabel *thumbsBackImageLab = new QLabel(tr("Background image:"));
 	thumbsBackImageEdit = new QLineEdit;
 	thumbsBackImageEdit->setClearButtonEnabled(true);
 	thumbsBackImageEdit->setMinimumWidth(200);
@@ -408,7 +408,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	thumbsBackImageEdit->setText(GData::thumbsBackImage);
 
 	// Thumbnail spacing
-	QLabel *thumbSpacingLab = new QLabel(tr("Add space between thumbnails: "));
+	QLabel *thumbSpacingLab = new QLabel(tr("Add space between thumbnails:"));
 	thumbSpacingSpin = new QSpinBox;
 	thumbSpacingSpin->setRange(0, 15);
 	thumbSpacingSpin->setValue(GData::thumbSpacing);
@@ -423,7 +423,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	noSmallThumbCb->setChecked(GData::noEnlargeSmallThumb);
 
 	// Thumbnail pages to read ahead
-	QLabel *thumbPagesLab = new QLabel(tr("Number of thumbnail pages to read ahead: "));
+	QLabel *thumbPagesLab = new QLabel(tr("Number of thumbnail pages to read ahead:"));
 	thumbPagesSpin = new QSpinBox;
 	thumbPagesSpin->setRange(1, 10);
 	thumbPagesSpin->setValue(GData::thumbPagesReadahead);
@@ -446,7 +446,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	thumbsOptsBox->addStretch(1);
 
 	// Slide show delay
-	QLabel *slideDelayLab = new QLabel(tr("Delay between slides in seconds: "));
+	QLabel *slideDelayLab = new QLabel(tr("Delay between slides in seconds:"));
 	slideDelaySpin = new QSpinBox;
 	slideDelaySpin->setRange(1, 3600);
 	slideDelaySpin->setValue(GData::slideShowDelay);
@@ -830,14 +830,14 @@ ResizeDialog::ResizeDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	connect(heightSpin, SIGNAL(valueChanged(int)), this, SLOT(adjustSizes()));
 
 	QGridLayout *mainGbox = new QGridLayout;
-	QLabel *origSizeLab = new QLabel(tr("Original size: "));
+	QLabel *origSizeLab = new QLabel(tr("Original size:"));
 	QString imageSizeStr = QString::number(width) + " x " + QString::number(height);
 	QLabel *origSizePixelsLab = new QLabel(imageSizeStr);
-	QLabel *widthLab = new QLabel(tr("Width: "));
-	QLabel *heightLab = new QLabel(tr("Height: "));
-	QLabel *unitsLab = new QLabel(tr("Units: "));
+	QLabel *widthLab = new QLabel(tr("Width:"));
+	QLabel *heightLab = new QLabel(tr("Height:"));
+	QLabel *unitsLab = new QLabel(tr("Units:"));
 
-	QLabel *newSizeLab = new QLabel(tr("New size: "));
+	QLabel *newSizeLab = new QLabel(tr("New size:"));
 	newSizePixelsLab = new QLabel(imageSizeStr);
 
 	pixelsRadio = new QRadioButton(tr("Pixels"));
@@ -1410,7 +1410,7 @@ CopyMoveToDialog::CopyMoveToDialog(QWidget *parent, QString thumbsPath, bool mov
 	buttonsHbox->addWidget(cancelButton, 0, Qt::AlignRight);
 	buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);
 
-	destinationLab = new QLabel(tr("Destination: "));
+	destinationLab = new QLabel(tr("Destination:"));
 	QFrame *line = new QFrame(this);
 	line->setObjectName(QString::fromUtf8("line"));
 	line->setFrameShape(QFrame::HLine);
@@ -1436,7 +1436,7 @@ CopyMoveToDialog::CopyMoveToDialog(QWidget *parent, QString thumbsPath, bool mov
 void CopyMoveToDialog::selection(const QItemSelection&, const QItemSelection&)
 {
 	if (pathsTable->selectionModel()->selectedRows().size() > 0) {
-		destinationLab->setText(tr("Destination: ") +
+		destinationLab->setText(tr("Destination:") + " " +
 			pathsTableModel->item(pathsTable->selectionModel()->selectedRows().at(0).row())->text());
 	}
 }

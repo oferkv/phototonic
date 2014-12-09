@@ -400,9 +400,9 @@ void ThumbView::updateThumbsCount()
 	QString state ;
 	
 	if (thumbViewModel->rowCount() > 0) {
-		state = (QString::number(thumbViewModel->rowCount()) + tr(" images"));
+		state = tr("%n image(s)", "", thumbViewModel->rowCount());
 	} else {
-		state = QString::number(thumbViewModel->rowCount()) + tr(" images");
+		state = tr("No images");
 	}
 
 	emit setStatus(state);
@@ -413,11 +413,13 @@ void ThumbView::updateThumbsSelection()
 	QString state;
 	int nSelected = selectionModel()->selectedIndexes().size();
 
-	if (!nSelected)
-		state = QString::number(thumbViewModel->rowCount()) + tr(" images");
-	else if (nSelected >= 1)
-		state = QString(tr("Selected ") + QString::number(nSelected) + tr(" of ")
-							+ QString::number(thumbViewModel->rowCount()) + tr(" images"));
+	if (!nSelected) {
+		updateThumbsCount();
+		return;
+	} else if (nSelected >= 1)
+		state = tr("Selected %1 of %2")
+					.arg(QString::number(nSelected))
+					.arg(tr("%n image(s)", "", thumbViewModel->rowCount()));
 	emit setStatus(state);
 }
 
@@ -587,10 +589,11 @@ void ThumbView::initThumbs()
 void ThumbView::updateFoundDupesState(int duplicates, int filesScanned, int originalImages)
 {
 	QString state;
-	state = tr("Scanned ") + tr("%n images, displaying ", "", filesScanned)
-				+  tr("%n images (", "", originalImages + duplicates) 
-				+  tr("%n originals and ", "", originalImages)
-				+  tr("%n duplicates)", "", duplicates);
+	state = tr("Scanned %1, displaying %2 (%3 and %4)")
+				.arg(tr("%n image(s)", "", filesScanned))
+				.arg(tr("%n image(s)", "", originalImages + duplicates))
+				.arg(tr("%n original(s)", "", originalImages))
+				.arg(tr("%n duplicate(s)", "", duplicates));
 	emit setStatus(state);
 }
 

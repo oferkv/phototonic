@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     QApplication QApp(argc, argv);
    	if (QCoreApplication::arguments().size() > 2)
    	{
-   		qDebug() << "Usage: phototonic [FILE or DIRECTORY]...";
+		qDebug() << QObject::tr("Usage: phototonic [FILE or DIRECTORY]...");
    		return -1;
 	}
 
