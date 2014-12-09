@@ -32,7 +32,8 @@ desktop.path = /usr/share/applications
 
 INSTALLS += target icon icon16 iconPixmaps desktop
 
-TRANSLATIONS = 	translations/phototonic_pl.ts \
+TRANSLATIONS = 	translations/phototonic_en.ts \
+		translations/phototonic_pl.ts \
 		translations/phototonic_de.ts \
 		translations/phototonic_ru.ts \
 		translations/phototonic_cs.ts \
