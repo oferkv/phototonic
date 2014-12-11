@@ -558,6 +558,7 @@ void Phototonic::createActions()
 	colorsAct->setIcon(QIcon(":/images/colors.png"));
 
 	findDupesAction = new QAction(tr("Find Duplicate Images"), this);
+	findDupesAction->setIcon(QIcon(":/images/duplicates.png"));
 	findDupesAction->setCheckable(true);
 	connect(findDupesAction, SIGNAL(triggered()), this, SLOT(findDuplicateImages()));
 
@@ -723,6 +724,7 @@ void Phototonic::createToolBars()
 	connect(pathBar, SIGNAL(returnPressed()), this, SLOT(goPathBarDir()));
 	goToolBar->addWidget(pathBar);
 	goToolBar->addAction(subFoldersAction);
+	goToolBar->addAction(findDupesAction);
 	connect(goToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setGoToolBarVisibility()));
 
 	/* View */
@@ -2913,7 +2915,10 @@ void Phototonic::reloadThumbsSlot()
 
 void Phototonic::setThumbviewWindowTitle()
 {
-	setWindowTitle(thumbView->currentViewDir + " - Phototonic");
+	if (findDupesAction->isChecked())
+		setWindowTitle(tr("Duplicate images in %1").arg(thumbView->currentViewDir) + " - Phototonic");
+	else
+		setWindowTitle(thumbView->currentViewDir + " - Phototonic");
 }
 
 void Phototonic::renameDir()
