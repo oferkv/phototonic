@@ -64,7 +64,6 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	needHistoryRecord = true;
 	interfaceDisabled = false;
 
-	doFindDuplicates = false;
 	refreshThumbs(true);
 	if (GData::layoutMode == thumbViewIdx)
 		thumbView->setFocus(Qt::OtherFocusReason);
@@ -559,6 +558,7 @@ void Phototonic::createActions()
 	colorsAct->setIcon(QIcon(":/images/colors.png"));
 
 	findDupesAction = new QAction(tr("Find Duplicate Images"), this);
+	findDupesAction->setCheckable(true);
 	connect(findDupesAction, SIGNAL(triggered()), this, SLOT(findDuplicateImages()));
 
 	mirrorDisabledAct = new QAction(tr("Disable"), this);
@@ -885,6 +885,7 @@ void Phototonic::sortThumbnains()
 
 void Phototonic::reload()
 {
+	findDupesAction->setChecked(false);
 	if (GData::layoutMode == thumbViewIdx) {
 		refreshThumbs(false);
 	} else {
@@ -894,6 +895,7 @@ void Phototonic::reload()
 
 void Phototonic::setIncludeSubFolders()
 {
+	findDupesAction->setChecked(false);
 	GData::includeSubFolders = subFoldersAction->isChecked();
 	refreshThumbs(false);
 }
@@ -1669,6 +1671,7 @@ void Phototonic::deleteOp()
 
 void Phototonic::goTo(QString path)
 {
+	findDupesAction->setChecked(false);
 	thumbView->setNeedScroll(true);
 	fsTree->setCurrentIndex(fsTree->fsModel->index(path));
 	thumbView->currentViewDir = path;
@@ -1677,6 +1680,7 @@ void Phototonic::goTo(QString path)
 
 void Phototonic::goSelectedDir(const QModelIndex &idx)
 {
+	findDupesAction->setChecked(false);
 	thumbView->setNeedScroll(true);
 	thumbView->currentViewDir = getSelectedPath();
 	refreshThumbs(true);
@@ -1685,6 +1689,7 @@ void Phototonic::goSelectedDir(const QModelIndex &idx)
 
 void Phototonic::goPathBarDir()
 {
+	findDupesAction->setChecked(false);
 	thumbView->setNeedScroll(true);
 
 	QDir checkPath(pathBar->text());
@@ -2899,9 +2904,8 @@ void Phototonic::reloadThumbsSlot()
 
 	thumbView->busy = true;
 
-	if (doFindDuplicates) {
+	if (findDupesAction->isChecked()) {
 		thumbView->loadDuplicates();
-		doFindDuplicates = false;
 	} else {
 		thumbView->load();
 	}
@@ -3247,7 +3251,6 @@ void Phototonic::addBookmark(QString path)
 
 void Phototonic::findDuplicateImages()
 {
-	doFindDuplicates = true;
 	refreshThumbs(true);	
 }
 

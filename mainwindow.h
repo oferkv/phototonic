@@ -297,7 +297,6 @@ private:
 	QWidget *pvDockEmptyWidget;
 	QVBoxLayout *imageViewContainer;
 	bool interfaceDisabled;
-	bool doFindDuplicates;
 
 	enum CentralWidgets	{
 		thumbViewIdx = 0,
