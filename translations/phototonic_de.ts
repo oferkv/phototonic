@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="de_DE">
+<TS version="2.1" language="de_DE">
 <context>
     <name>AppMgmtDialog</name>
     <message>
@@ -531,7 +531,7 @@
         <location filename="../mainwindow.cpp" line="1386"/>
         <location filename="../mainwindow.cpp" line="1395"/>
         <source>Rotation %1°</source>
-        <translation type="unfinished">Drehung %1°</translation>
+        <translation>Drehung %1°</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2467"/>
@@ -551,7 +551,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="2789"/>
         <source>Move &quot;%1&quot; to &quot;%2&quot;?</source>
-        <translation type="unfinished">Verschiebe &quot;%1&quot; nach &quot;%2&quot;?</translation>
+        <translation>Verschiebe &quot;%1&quot; nach &quot;%2&quot;?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2798"/>
@@ -566,7 +566,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="2919"/>
         <source>Duplicate images in %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Duplikate in %1</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2943"/>
@@ -1533,7 +1533,7 @@
     <message>
         <location filename="../main.cpp" line="27"/>
         <source>Usage: phototonic [FILE or DIRECTORY]...</source>
-        <translation type="unfinished"></translation>
+        <translation>Usage: phototonic [FILE or DIRECTORY]...</translation>
     </message>
 </context>
 <context>
@@ -1862,17 +1862,17 @@
     <message>
         <location filename="../dialogs.cpp" line="169"/>
         <source>Action</source>
-        <translation type="unfinished">Aktion</translation>
+        <translation>Aktion</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="170"/>
         <source>Shortcut</source>
-        <translation type="unfinished">Verknüpfung</translation>
+        <translation>Verknüpfung</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="182"/>
         <source>Delete shortcut</source>
-        <translation type="unfinished">Verknüpfung löschen</translation>
+        <translation>Verknüpfung löschen</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="224"/>
@@ -1976,7 +1976,7 @@
     <message>
         <location filename="../thumbview.cpp" line="246"/>
         <source>General</source>
-        <translation type="unfinished">Allgemein</translation>
+        <translation>Allgemein</translation>
     </message>
     <message>
         <location filename="../thumbview.cpp" line="260"/>
