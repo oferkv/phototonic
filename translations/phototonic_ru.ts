@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<TS version="2.1" language="ru_RU">
 <context>
     <name>AppMgmtDialog</name>
     <message>
@@ -175,7 +175,7 @@
     </message>
     <message>
         <source>Destination: </source>
-        <translation>Целевая папка: </translation>
+        <translation type="vanished">Целевая папка: </translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1479"/>
@@ -204,15 +204,15 @@
     </message>
     <message>
         <source>Copying </source>
-        <translation>Копирование </translation>
+        <translation type="vanished">Копирование </translation>
     </message>
     <message>
         <source>Moving </source>
-        <translation>Перемещение </translation>
+        <translation type="vanished">Перемещение </translation>
     </message>
     <message>
         <source> to </source>
-        <translation> в </translation>
+        <translation type="vanished"> в </translation>
     </message>
 </context>
 <context>
@@ -289,7 +289,7 @@
     </message>
     <message>
         <source>Hold down the Ctrl key and select a region using the mouse</source>
-        <translation>Зажмите клавишу Ctrl и выделите область изображения с помощью мыши</translation>
+        <translation type="vanished">Зажмите клавишу Ctrl и выделите область изображения с помощью мыши</translation>
     </message>
     <message>
         <location filename="../imageview.cpp" line="927"/>
@@ -305,15 +305,15 @@
     </message>
     <message>
         <source>Failed to save image</source>
-        <translation>Не удалось сохранить изображение</translation>
+        <translation type="vanished">Не удалось сохранить изображение</translation>
     </message>
     <message>
         <source>Failed to save Exif metadata</source>
-        <translation>Не удалось сохранить метаданные Exif</translation>
+        <translation type="vanished">Не удалось сохранить метаданные Exif</translation>
     </message>
     <message>
         <source>Image saved</source>
-        <translation>Изображение сохранено</translation>
+        <translation type="vanished">Изображение сохранено</translation>
     </message>
     <message>
         <location filename="../imageview.cpp" line="972"/>
@@ -338,21 +338,21 @@
     <name>KeyGrabLineEdit</name>
     <message>
         <source>Set shortcut</source>
-        <translation>Присвоить сочетание клавиш</translation>
+        <translation type="vanished">Присвоить сочетание клавиш</translation>
     </message>
     <message>
         <source> is reserved for shortcuts to external applications</source>
-        <translation> зарезервировано для сочетаний клавиш для внешних приложений</translation>
+        <translation type="vanished"> зарезервировано для сочетаний клавиш для внешних приложений</translation>
     </message>
     <message>
         <source> is already assigned to &quot;</source>
         <translatorcomment>Right word order in Russian</translatorcomment>
-        <translation> уже присвоено действию «</translation>
+        <translation type="vanished"> уже присвоено действию «</translation>
     </message>
     <message>
         <source>&quot; action</source>
         <translatorcomment>Right word order in Russian</translatorcomment>
-        <translation>»</translation>
+        <translation type="vanished">»</translation>
     </message>
 </context>
 <context>
@@ -655,7 +655,7 @@
     </message>
     <message>
         <source>Rotation %1u00B0</source>
-        <translation>Поворот %1u00B0</translation>
+        <translation type="vanished">Поворот %1u00B0</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1526"/>
@@ -776,7 +776,7 @@
     </message>
     <message>
         <source>Open With</source>
-        <translation>Открыть с помощью</translation>
+        <translation type="vanished">Открыть с помощью</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="493"/>
@@ -1042,7 +1042,7 @@
     </message>
     <message>
         <source>Failed to copy or move image</source>
-        <translation>Не удалось копировать или переместить изображение</translation>
+        <translation type="vanished">Не удалось копировать или переместить изображение</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1499"/>
@@ -1051,11 +1051,11 @@
     </message>
     <message>
         <source>Copied </source>
-        <translation>Скопировано </translation>
+        <translation type="vanished">Скопировано </translation>
     </message>
     <message>
         <source>Moved </source>
-        <translation>Перемещено </translation>
+        <translation type="vanished">Перемещено </translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1585"/>
@@ -1064,7 +1064,7 @@
     </message>
     <message>
         <source>Permanently delete </source>
-        <translation>Навсегда удалить </translation>
+        <translation type="vanished">Навсегда удалить </translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1605"/>
@@ -1169,11 +1169,11 @@
     </message>
     <message>
         <source>Failed to start external application</source>
-        <translation>Не удалось запустить внешнее приложение</translation>
+        <translation type="vanished">Не удалось запустить внешнее приложение</translation>
     </message>
     <message>
         <source>Zoom </source>
-        <translation>Зум </translation>
+        <translation type="vanished">Зум </translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1278"/>
@@ -1202,7 +1202,7 @@
     </message>
     <message>
         <source>Rotation </source>
-        <translation>Поворот </translation>
+        <translation type="vanished">Поворот </translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1336"/>
@@ -1256,11 +1256,11 @@
     </message>
     <message>
         <source>Deleted </source>
-        <translation>Удалено</translation>
+        <translation type="vanished">Удалено</translation>
     </message>
     <message>
         <source>Invalid Path: </source>
-        <translation>Неправильный путь: </translation>
+        <translation type="vanished">Неправильный путь: </translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1987"/>
@@ -1274,11 +1274,11 @@
     </message>
     <message>
         <source>Failed to open file </source>
-        <translation>Не удалось открыть файл </translation>
+        <translation type="vanished">Не удалось открыть файл </translation>
     </message>
     <message>
         <source>, file not found</source>
-        <translation>, файл не найден</translation>
+        <translation type="vanished">, файл не найден</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2483"/>
@@ -1292,19 +1292,19 @@
     </message>
     <message>
         <source>Can not move or copy images to this folder</source>
-        <translation>Невозможно переместить или копировать изображения в эту папку</translation>
+        <translation type="vanished">Невозможно переместить или копировать изображения в эту папку</translation>
     </message>
     <message>
         <source>Destination folder is same as source</source>
-        <translation>Папка назначения совпадает с исходной</translation>
+        <translation type="vanished">Папка назначения совпадает с исходной</translation>
     </message>
     <message>
         <source>Move </source>
-        <translation>Переместить </translation>
+        <translation type="vanished">Переместить </translation>
     </message>
     <message>
         <source> to </source>
-        <translation> в </translation>
+        <translation type="vanished"> в </translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2790"/>
@@ -1313,7 +1313,7 @@
     </message>
     <message>
         <source>Failed to move folder</source>
-        <translation>Не удалось переместить папку</translation>
+        <translation type="vanished">Не удалось переместить папку</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2800"/>
@@ -1322,11 +1322,11 @@
     </message>
     <message>
         <source>Failed to open folder: </source>
-        <translation>Не удалось открыть папку: </translation>
+        <translation type="vanished">Не удалось открыть папку: </translation>
     </message>
     <message>
         <source>Rename </source>
-        <translation>Переименовать </translation>
+        <translation type="vanished">Переименовать </translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2932"/>
@@ -1335,11 +1335,11 @@
     </message>
     <message>
         <source>Invalid name entered</source>
-        <translation>Введено неправильное имя</translation>
+        <translation type="vanished">Введено неправильное имя</translation>
     </message>
     <message>
         <source>Failed to rename folder</source>
-        <translation>Не удалось переименовать папку</translation>
+        <translation type="vanished">Не удалось переименовать папку</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2993"/>
@@ -1348,19 +1348,19 @@
     </message>
     <message>
         <source>Enter a new name for </source>
-        <translation>Введите новое имя для </translation>
+        <translation type="vanished">Введите новое имя для </translation>
     </message>
     <message>
         <source>No name entered</source>
-        <translation>Имя не было введено</translation>
+        <translation type="vanished">Имя не было введено</translation>
     </message>
     <message>
         <source>Failed to rename image</source>
-        <translation>Не удалось переименовать изображение</translation>
+        <translation type="vanished">Не удалось переименовать изображение</translation>
     </message>
     <message>
         <source> and all of its contents?</source>
-        <translation> и всё её содержиое?</translation>
+        <translation type="vanished"> и всё её содержиое?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="3056"/>
@@ -1369,11 +1369,11 @@
     </message>
     <message>
         <source>Failed to delete folder</source>
-        <translation>Не удалось удалить папку</translation>
+        <translation type="vanished">Не удалось удалить папку</translation>
     </message>
     <message>
         <source>Removed </source>
-        <translation>Удалена </translation>
+        <translation type="vanished">Удалена </translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="3097"/>
@@ -1387,11 +1387,11 @@
     </message>
     <message>
         <source>Failed to create new folder</source>
-        <translation>Не удалось создать новую папку</translation>
+        <translation type="vanished">Не удалось создать новую папку</translation>
     </message>
     <message>
         <source>Created </source>
-        <translation>Создана </translation>
+        <translation type="vanished">Создана </translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="3166"/>
@@ -1400,7 +1400,7 @@
     </message>
     <message>
         <source>Cannot perform action with temporary image</source>
-        <translation>Невозможно выполнить действие с временным изображением</translation>
+        <translation type="vanished">Невозможно выполнить действие с временным изображением</translation>
     </message>
 </context>
 <context>
@@ -1455,23 +1455,23 @@
     </message>
     <message>
         <source>Original size: </source>
-        <translation>Первоначальный размер: </translation>
+        <translation type="vanished">Первоначальный размер: </translation>
     </message>
     <message>
         <source>Width: </source>
-        <translation>Ширина: </translation>
+        <translation type="vanished">Ширина: </translation>
     </message>
     <message>
         <source>Height: </source>
-        <translation>Высота: </translation>
+        <translation type="vanished">Высота: </translation>
     </message>
     <message>
         <source>Units: </source>
-        <translation>Единицы: </translation>
+        <translation type="vanished">Единицы: </translation>
     </message>
     <message>
         <source>New size: </source>
-        <translation>Новый размер: </translation>
+        <translation type="vanished">Новый размер: </translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="843"/>
@@ -1539,7 +1539,7 @@
     </message>
     <message>
         <source>Background color: </source>
-        <translation>Цвет фона: </translation>
+        <translation type="vanished">Цвет фона: </translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="342"/>
@@ -1548,11 +1548,11 @@
     </message>
     <message>
         <source>	Label color: </source>
-        <translation>	Цвет имени: </translation>
+        <translation type="vanished">	Цвет имени: </translation>
     </message>
     <message>
         <source>Add space between thumbnails: </source>
-        <translation>Добавить пробел между эскизами: </translation>
+        <translation type="vanished">Добавить пробел между эскизами: </translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="422"/>
@@ -1561,7 +1561,7 @@
     </message>
     <message>
         <source>Number of thumbnail pages to read ahead: </source>
-        <translation>Количество страниц с эскизами загружаемыми заранее: </translation>
+        <translation type="vanished">Количество страниц с эскизами загружаемыми заранее: </translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="435"/>
@@ -1625,7 +1625,7 @@
     </message>
     <message>
         <source>Default quality when saving images: </source>
-        <translation>Качество по умолчанию при сохроанении изображений: </translation>
+        <translation type="vanished">Качество по умолчанию при сохроанении изображений: </translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="338"/>
@@ -1639,7 +1639,7 @@
     </message>
     <message>
         <source>Background image: </source>
-        <translation>Фоновое изображение: </translation>
+        <translation type="vanished">Фоновое изображение: </translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="469"/>
@@ -1683,7 +1683,7 @@
     </message>
     <message>
         <source>Delay between slides in seconds: </source>
-        <translation>Задержка между слайдами в секундах: </translation>
+        <translation type="vanished">Задержка между слайдами в секундах: </translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="459"/>
@@ -1766,15 +1766,15 @@
     <name>ThumbView</name>
     <message>
         <source> images</source>
-        <translation> изображений</translation>
+        <translation type="vanished"> изображений</translation>
     </message>
     <message>
         <source>Selected </source>
-        <translation>Выбрано </translation>
+        <translation type="vanished">Выбрано </translation>
     </message>
     <message>
         <source> of </source>
-        <translation> из </translation>
+        <translation type="vanished"> из </translation>
     </message>
     <message>
         <location filename="../thumbview.cpp" line="248"/>
@@ -1873,11 +1873,11 @@
     </message>
     <message>
         <source>Scanned </source>
-        <translation>Просмотрено </translation>
+        <translation type="vanished">Просмотрено </translation>
     </message>
     <message numerus="yes">
         <source>%n images, displaying </source>
-        <translation>
+        <translation type="vanished">
             <numerusform>%n изображение, показано </numerusform>
             <numerusform>%n изображения, показано </numerusform>
             <numerusform>%n изображений, показано </numerusform>
@@ -1885,7 +1885,7 @@
     </message>
     <message numerus="yes">
         <source>%n images (</source>
-        <translation>
+        <translation type="vanished">
             <numerusform>%n изображение (</numerusform>
             <numerusform>%n изображения (</numerusform>
             <numerusform>%n изображений (</numerusform>
@@ -1901,7 +1901,7 @@
     </message>
     <message numerus="yes">
         <source>%n duplicates)</source>
-        <translation>
+        <translation type="vanished">
             <numerusform>%n копия)</numerusform>
             <numerusform>%n копии)</numerusform>
             <numerusform>%n копий)</numerusform>

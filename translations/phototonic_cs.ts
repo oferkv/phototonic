@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="cs_CZ">
+<TS version="2.1" language="cs_CZ">
 <context>
     <name>AppMgmtDialog</name>
     <message>
@@ -10,15 +10,15 @@
     </message>
     <message>
         <source>Command</source>
-        <translation>Příkaz</translation>
+        <translation type="vanished">Příkaz</translation>
     </message>
     <message>
         <source>Path</source>
-        <translation>Cesta</translation>
+        <translation type="vanished">Cesta</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation>Přidat</translation>
+        <translation type="vanished">Přidat</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1266"/>
@@ -95,11 +95,11 @@
     </message>
     <message>
         <source>Channels</source>
-        <translation>Kanály</translation>
+        <translation type="vanished">Kanály</translation>
     </message>
     <message>
         <source>Enable</source>
-        <translation>Povolit</translation>
+        <translation type="vanished">Povolit</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1025"/>
@@ -159,11 +159,11 @@
     <name>CopyMoveToDialog</name>
     <message>
         <source>Copy or Move Images to...</source>
-        <translation>Kopírovat nebo přesunout obrázky do...</translation>
+        <translation type="vanished">Kopírovat nebo přesunout obrázky do...</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation>Přidat</translation>
+        <translation type="vanished">Přidat</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1358"/>
@@ -203,19 +203,19 @@
     </message>
     <message>
         <source>Destination: </source>
-        <translation>Cíl:</translation>
+        <translation type="vanished">Cíl:</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation>Zavřít</translation>
+        <translation type="vanished">Zavřít</translation>
     </message>
     <message>
         <source>Copy</source>
-        <translation>Kopírovat</translation>
+        <translation type="vanished">Kopírovat</translation>
     </message>
     <message>
         <source>Move</source>
-        <translation>Přesunout</translation>
+        <translation type="vanished">Přesunout</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1479"/>
@@ -244,15 +244,15 @@
     </message>
     <message>
         <source>Copying </source>
-        <translation>Kopíruje se </translation>
+        <translation type="vanished">Kopíruje se </translation>
     </message>
     <message>
         <source>Moving </source>
-        <translation>Přesunuje se </translation>
+        <translation type="vanished">Přesunuje se </translation>
     </message>
     <message>
         <source> to </source>
-        <translation> do </translation>
+        <translation type="vanished"> do </translation>
     </message>
 </context>
 <context>
@@ -329,7 +329,7 @@
     </message>
     <message>
         <source>Hold down the Ctrl key and select a region using the mouse</source>
-        <translation>Podržte klávesu Ctrl a pomocí myši vyberte oblast</translation>
+        <translation type="vanished">Podržte klávesu Ctrl a pomocí myši vyberte oblast</translation>
     </message>
     <message>
         <location filename="../imageview.cpp" line="927"/>
@@ -345,15 +345,15 @@
     </message>
     <message>
         <source>Failed to save image</source>
-        <translation>Nepodařilo se uložit obrázek</translation>
+        <translation type="vanished">Nepodařilo se uložit obrázek</translation>
     </message>
     <message>
         <source>Failed to save Exif metadata</source>
-        <translation>Nepodařilo se uložit popisná data EXIF</translation>
+        <translation type="vanished">Nepodařilo se uložit popisná data EXIF</translation>
     </message>
     <message>
         <source>Image saved</source>
-        <translation>Obrázek uložen</translation>
+        <translation type="vanished">Obrázek uložen</translation>
     </message>
     <message>
         <location filename="../imageview.cpp" line="972"/>
@@ -367,7 +367,7 @@
     </message>
     <message>
         <source>Image Files</source>
-        <translation>Obrázkové soubory</translation>
+        <translation type="vanished">Obrázkové soubory</translation>
     </message>
 </context>
 <context>
@@ -382,19 +382,19 @@
     <name>KeyGrabLineEdit</name>
     <message>
         <source>Set shortcut</source>
-        <translation>Nastavit klávesovou zkratku</translation>
+        <translation type="vanished">Nastavit klávesovou zkratku</translation>
     </message>
     <message>
         <source> is reserved for shortcuts to external applications</source>
-        <translation> je vyhrazeno pro klávesové zkratky vnějších programů</translation>
+        <translation type="vanished"> je vyhrazeno pro klávesové zkratky vnějších programů</translation>
     </message>
     <message>
         <source> is already assigned to &quot;</source>
-        <translation> je již přiřazeno činnosti &quot;</translation>
+        <translation type="vanished"> je již přiřazeno činnosti &quot;</translation>
     </message>
     <message>
         <source>&quot; action</source>
-        <translation>&quot;</translation>
+        <translation type="vanished">&quot;</translation>
     </message>
 </context>
 <context>
@@ -479,7 +479,7 @@
     </message>
     <message>
         <source>Copy or Move to...</source>
-        <translation>Kopírovat nebo přesunout do...</translation>
+        <translation type="vanished">Kopírovat nebo přesunout do...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="334"/>
@@ -498,11 +498,11 @@
     </message>
     <message>
         <source>Copy Image</source>
-        <translation>Kopírovat obrázek</translation>
+        <translation type="vanished">Kopírovat obrázek</translation>
     </message>
     <message>
         <source>Paste Image</source>
-        <translation>Vložit obrázek</translation>
+        <translation type="vanished">Vložit obrázek</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="347"/>
@@ -603,7 +603,7 @@
     </message>
     <message>
         <source>Manage</source>
-        <translation>Spravovat</translation>
+        <translation type="vanished">Spravovat</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="441"/>
@@ -663,11 +663,11 @@
     </message>
     <message>
         <source>Show Clipboard</source>
-        <translation>Ukázat schránku</translation>
+        <translation type="vanished">Ukázat schránku</translation>
     </message>
     <message>
         <source>Open With</source>
-        <translation>Otevřít pomocí</translation>
+        <translation type="vanished">Otevřít pomocí</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="493"/>
@@ -871,7 +871,7 @@
     </message>
     <message>
         <source>Keep Transformations</source>
-        <translation>Zachovat proměny</translation>
+        <translation type="vanished">Zachovat proměny</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="587"/>
@@ -988,7 +988,7 @@
     </message>
     <message>
         <source>Rotation %1u00B0</source>
-        <translation>Otočení %1u00B0</translation>
+        <translation type="vanished">Otočení %1u00B0</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1526"/>
@@ -1040,11 +1040,11 @@
     </message>
     <message>
         <source>&lt;p&gt;Git build v1.03.02 (</source>
-        <translation>&lt;p&gt;Sestavení Git v1.03.02 (</translation>
+        <translation type="vanished">&lt;p&gt;Sestavení Git v1.03.02 (</translation>
     </message>
     <message>
         <source>Built with Qt </source>
-        <translation>Sestaveno s Qt</translation>
+        <translation type="vanished">Sestaveno s Qt</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="957"/>
@@ -1058,15 +1058,15 @@
     </message>
     <message>
         <source>Contributors:&lt;br&gt;</source>
-        <translation>Přispěvatelé:&lt;br&gt;</translation>
+        <translation type="vanished">Přispěvatelé:&lt;br&gt;</translation>
     </message>
     <message>
         <source>Contributors / Translations:&lt;br&gt;</source>
-        <translation>Přispěvatelé/Překladatelé:&lt;br&gt;</translation>
+        <translation type="vanished">Přispěvatelé/Překladatelé:&lt;br&gt;</translation>
     </message>
     <message>
         <source>Translators:&lt;br&gt;</source>
-        <translation>Překladatelé:&lt;br&gt;</translation>
+        <translation type="vanished">Překladatelé:&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2987"/>
@@ -1098,11 +1098,11 @@
     </message>
     <message>
         <source>Failed to start external application</source>
-        <translation>Nepodařilo se spustit vnější program</translation>
+        <translation type="vanished">Nepodařilo se spustit vnější program</translation>
     </message>
     <message>
         <source>Failed to copy or move image</source>
-        <translation>Nepodařilo se kopírovat nebo přesunout obrázek</translation>
+        <translation type="vanished">Nepodařilo se kopírovat nebo přesunout obrázek</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1499"/>
@@ -1111,19 +1111,19 @@
     </message>
     <message>
         <source>Can not cut and paste in the same folder</source>
-        <translation>Nelze vyjmout a vložit do téže složky</translation>
+        <translation type="vanished">Nelze vyjmout a vložit do téže složky</translation>
     </message>
     <message>
         <source>Copied </source>
-        <translation>Zkopírováno </translation>
+        <translation type="vanished">Zkopírováno </translation>
     </message>
     <message>
         <source>Moved </source>
-        <translation>Přesunuto </translation>
+        <translation type="vanished">Přesunuto </translation>
     </message>
     <message>
         <source> images</source>
-        <translation> obrázků</translation>
+        <translation type="vanished"> obrázků</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1585"/>
@@ -1132,7 +1132,7 @@
     </message>
     <message>
         <source>Permanently delete </source>
-        <translation>Smazat trvale </translation>
+        <translation type="vanished">Smazat trvale </translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1605"/>
@@ -1253,7 +1253,7 @@
     </message>
     <message>
         <source>Zoom </source>
-        <translation>Zvětšení</translation>
+        <translation type="vanished">Zvětšení</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1278"/>
@@ -1282,7 +1282,7 @@
     </message>
     <message>
         <source>Rotation </source>
-        <translation>Otočení</translation>
+        <translation type="vanished">Otočení</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1336"/>
@@ -1350,11 +1350,11 @@
     </message>
     <message>
         <source>Deleted </source>
-        <translation>Smazáno </translation>
+        <translation type="vanished">Smazáno </translation>
     </message>
     <message>
         <source>Invalid Path: </source>
-        <translation>Neplatná cesta: </translation>
+        <translation type="vanished">Neplatná cesta: </translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2319"/>
@@ -1363,11 +1363,11 @@
     </message>
     <message>
         <source>Failed to open file </source>
-        <translation>Nepodařilo se otevřít obrázek</translation>
+        <translation type="vanished">Nepodařilo se otevřít obrázek</translation>
     </message>
     <message>
         <source>, file not found</source>
-        <translation>, soubor nebyl nalezen</translation>
+        <translation type="vanished">, soubor nebyl nalezen</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2483"/>
@@ -1386,19 +1386,19 @@
     </message>
     <message>
         <source>Can not move or copy images to this folder</source>
-        <translation>Nelze přesunout nebo kopírovat obrázky do této složky</translation>
+        <translation type="vanished">Nelze přesunout nebo kopírovat obrázky do této složky</translation>
     </message>
     <message>
         <source>Destination folder is same as source</source>
-        <translation>Cílová složka je stejná jako zdroj</translation>
+        <translation type="vanished">Cílová složka je stejná jako zdroj</translation>
     </message>
     <message>
         <source>Move </source>
-        <translation>Přesunout</translation>
+        <translation type="vanished">Přesunout</translation>
     </message>
     <message>
         <source> to </source>
-        <translation> do </translation>
+        <translation type="vanished"> do </translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2790"/>
@@ -1407,7 +1407,7 @@
     </message>
     <message>
         <source>Failed to move folder</source>
-        <translation>Nepodařilo se přesunout složku</translation>
+        <translation type="vanished">Nepodařilo se přesunout složku</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2800"/>
@@ -1416,11 +1416,11 @@
     </message>
     <message>
         <source>Failed to open folder: </source>
-        <translation>Nepodařilo se otevřít složku: </translation>
+        <translation type="vanished">Nepodařilo se otevřít složku: </translation>
     </message>
     <message>
         <source>Rename </source>
-        <translation>Přejmenovat </translation>
+        <translation type="vanished">Přejmenovat </translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2932"/>
@@ -1429,11 +1429,11 @@
     </message>
     <message>
         <source>Invalid name entered</source>
-        <translation>Zadán neplatný název</translation>
+        <translation type="vanished">Zadán neplatný název</translation>
     </message>
     <message>
         <source>Failed to rename folder</source>
-        <translation>Nepodařilo se přejmenovat složku</translation>
+        <translation type="vanished">Nepodařilo se přejmenovat složku</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2993"/>
@@ -1442,19 +1442,19 @@
     </message>
     <message>
         <source>Enter a new name for </source>
-        <translation>Zadat nový název pro </translation>
+        <translation type="vanished">Zadat nový název pro </translation>
     </message>
     <message>
         <source>No name entered</source>
-        <translation>Nebyl zadán žádný název</translation>
+        <translation type="vanished">Nebyl zadán žádný název</translation>
     </message>
     <message>
         <source>Failed to rename image</source>
-        <translation>Nepodařilo se přejmenovat obrázek</translation>
+        <translation type="vanished">Nepodařilo se přejmenovat obrázek</translation>
     </message>
     <message>
         <source> and all of its contents?</source>
-        <translation> a veškerý jeho obsah?</translation>
+        <translation type="vanished"> a veškerý jeho obsah?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="3056"/>
@@ -1463,11 +1463,11 @@
     </message>
     <message>
         <source>Failed to delete folder</source>
-        <translation>Nepodařilo se smazat složku</translation>
+        <translation type="vanished">Nepodařilo se smazat složku</translation>
     </message>
     <message>
         <source>Removed </source>
-        <translation>Odstraněno </translation>
+        <translation type="vanished">Odstraněno </translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="3097"/>
@@ -1481,15 +1481,15 @@
     </message>
     <message>
         <source>Failed to create new folder</source>
-        <translation>Nepodařilo se vytvořit novou složku</translation>
+        <translation type="vanished">Nepodařilo se vytvořit novou složku</translation>
     </message>
     <message>
         <source>Created </source>
-        <translation>Vytvořeno </translation>
+        <translation type="vanished">Vytvořeno </translation>
     </message>
     <message>
         <source>Executing file manager...</source>
-        <translation>Spustit správce souborů...</translation>
+        <translation type="vanished">Spustit správce souborů...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="3166"/>
@@ -1498,7 +1498,7 @@
     </message>
     <message>
         <source>Cannot perform action with temporary image</source>
-        <translation>Činnost nelze s dočasným souborem provést</translation>
+        <translation type="vanished">Činnost nelze s dočasným souborem provést</translation>
     </message>
 </context>
 <context>
@@ -1553,23 +1553,23 @@
     </message>
     <message>
         <source>Original size: </source>
-        <translation>Původní velikost: </translation>
+        <translation type="vanished">Původní velikost: </translation>
     </message>
     <message>
         <source>Width: </source>
-        <translation>Šířka: </translation>
+        <translation type="vanished">Šířka: </translation>
     </message>
     <message>
         <source>Height: </source>
-        <translation>Výška: </translation>
+        <translation type="vanished">Výška: </translation>
     </message>
     <message>
         <source>Units: </source>
-        <translation>Jednotky: </translation>
+        <translation type="vanished">Jednotky: </translation>
     </message>
     <message>
         <source>New size: </source>
-        <translation>Nová velikost: </translation>
+        <translation type="vanished">Nová velikost: </translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="843"/>
@@ -1616,7 +1616,7 @@
     </message>
     <message>
         <source>Background color: </source>
-        <translation>Barva pozadí:</translation>
+        <translation type="vanished">Barva pozadí:</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="342"/>
@@ -1625,15 +1625,15 @@
     </message>
     <message>
         <source>	Label color: </source>
-        <translation>	Barva štítku: </translation>
+        <translation type="vanished">	Barva štítku: </translation>
     </message>
     <message>
         <source>Background image: </source>
-        <translation>Obrázek pozadí:</translation>
+        <translation type="vanished">Obrázek pozadí:</translation>
     </message>
     <message>
         <source>Add space between thumbnails: </source>
-        <translation>Vložit mezi náhledy odstup: </translation>
+        <translation type="vanished">Vložit mezi náhledy odstup: </translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="422"/>
@@ -1642,7 +1642,7 @@
     </message>
     <message>
         <source>Number of thumbnail pages to read ahead: </source>
-        <translation>Počet stránek s náhledy, jež se mají načíst dopředu:</translation>
+        <translation type="vanished">Počet stránek s náhledy, jež se mají načíst dopředu:</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="435"/>
@@ -1706,7 +1706,7 @@
     </message>
     <message>
         <source>Default quality when saving images: </source>
-        <translation>Výchozí jakost obrazu při ukládání obrázků: </translation>
+        <translation type="vanished">Výchozí jakost obrazu při ukládání obrázků: </translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="338"/>
@@ -1725,7 +1725,7 @@
     </message>
     <message>
         <source>Rotate according to Exif orientation</source>
-        <translation>Otočit podle natočení EXIF</translation>
+        <translation type="vanished">Otočit podle natočení EXIF</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="346"/>
@@ -1790,7 +1790,7 @@
     </message>
     <message>
         <source>Delay between slides in seconds: </source>
-        <translation>Zpoždění mezi snímky v sekundách: </translation>
+        <translation type="vanished">Zpoždění mezi snímky v sekundách: </translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="459"/>
@@ -1809,11 +1809,11 @@
     </message>
     <message>
         <source>Keyboard Shortcuts:</source>
-        <translation>Klávesové zkratky:</translation>
+        <translation type="vanished">Klávesové zkratky:</translation>
     </message>
     <message>
         <source>Keyboard and Mouse</source>
-        <translation>Klávesnice a myš</translation>
+        <translation type="vanished">Klávesnice a myš</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="565"/>
@@ -1876,15 +1876,15 @@
     <name>ThumbView</name>
     <message>
         <source> images</source>
-        <translation> obrázků</translation>
+        <translation type="vanished"> obrázků</translation>
     </message>
     <message>
         <source>Selected </source>
-        <translation>Vybráno</translation>
+        <translation type="vanished">Vybráno</translation>
     </message>
     <message>
         <source> of </source>
-        <translation> z </translation>
+        <translation type="vanished"> z </translation>
     </message>
     <message>
         <location filename="../thumbview.cpp" line="248"/>
@@ -1978,11 +1978,11 @@
     </message>
     <message>
         <source>Scanned </source>
-        <translation>Prohledáno</translation>
+        <translation type="vanished">Prohledáno</translation>
     </message>
     <message numerus="yes">
         <source>%n images, displaying </source>
-        <translation>
+        <translation type="vanished">
             <numerusform>%n obrázek, zobrazuje se </numerusform>
             <numerusform>%n obrázky, zobrazují se </numerusform>
             <numerusform>%n obrázků, zobrazuje se </numerusform>
@@ -1990,7 +1990,7 @@
     </message>
     <message numerus="yes">
         <source>%n images (</source>
-        <translation>
+        <translation type="vanished">
             <numerusform>%n obrázek (</numerusform>
             <numerusform>%n obrázky (</numerusform>
             <numerusform>%n obrázků (</numerusform>

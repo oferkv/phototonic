@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="pl_PL">
+<TS version="2.1" language="pl_PL">
 <context>
     <name>AppMgmtDialog</name>
     <message>
@@ -15,11 +15,11 @@
     </message>
     <message>
         <source>Path</source>
-        <translation>Ścieżka</translation>
+        <translation type="vanished">Ścieżka</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation>Dodaj</translation>
+        <translation type="vanished">Dodaj</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1268"/>
@@ -58,11 +58,11 @@
     </message>
     <message>
         <source>Error</source>
-        <translation>Błąd</translation>
+        <translation type="vanished">Błąd</translation>
     </message>
     <message>
         <source>Not an executable</source>
-        <translation>Nie wykonywalny</translation>
+        <translation type="vanished">Nie wykonywalny</translation>
     </message>
 </context>
 <context>
@@ -99,11 +99,11 @@
     </message>
     <message>
         <source>Channels</source>
-        <translation>Kanały</translation>
+        <translation type="vanished">Kanały</translation>
     </message>
     <message>
         <source>Enable</source>
-        <translation>Włącz</translation>
+        <translation type="vanished">Włącz</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1025"/>
@@ -163,11 +163,11 @@
     <name>CopyMoveToDialog</name>
     <message>
         <source>Copy or Move Images to...</source>
-        <translation>Skopiuj lub Przenieś Obrazki do...</translation>
+        <translation type="vanished">Skopiuj lub Przenieś Obrazki do...</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation>Dodaj</translation>
+        <translation type="vanished">Dodaj</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1358"/>
@@ -207,19 +207,19 @@
     </message>
     <message>
         <source>Destination: </source>
-        <translation>Miejsce przeznaczenia:</translation>
+        <translation type="vanished">Miejsce przeznaczenia:</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation>Zamknij</translation>
+        <translation type="vanished">Zamknij</translation>
     </message>
     <message>
         <source>Copy</source>
-        <translation>Skopiuj</translation>
+        <translation type="vanished">Skopiuj</translation>
     </message>
     <message>
         <source>Move</source>
-        <translation>Przenieś</translation>
+        <translation type="vanished">Przenieś</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1479"/>
@@ -228,7 +228,7 @@
     </message>
     <message>
         <source>Choose Directory</source>
-        <translation>Wybierz Katalog</translation>
+        <translation type="vanished">Wybierz Katalog</translation>
     </message>
 </context>
 <context>
@@ -252,15 +252,15 @@
     </message>
     <message>
         <source>Copying </source>
-        <translation>Kopiowanie </translation>
+        <translation type="vanished">Kopiowanie </translation>
     </message>
     <message>
         <source>Moving </source>
-        <translation>Przenoszenie </translation>
+        <translation type="vanished">Przenoszenie </translation>
     </message>
     <message>
         <source> to </source>
-        <translation> do </translation>
+        <translation type="vanished"> do </translation>
     </message>
 </context>
 <context>
@@ -305,7 +305,7 @@
     <name>ImageView</name>
     <message>
         <source>New image</source>
-        <translation>Nowy obrazek</translation>
+        <translation type="vanished">Nowy obrazek</translation>
     </message>
     <message>
         <location filename="../imageview.cpp" line="607"/>
@@ -341,7 +341,7 @@
     </message>
     <message>
         <source>Hold down the Ctrl key and select a region using the mouse</source>
-        <translation>Przytrzymaj klawisz Ctrl i zaznacz rejon używając mysz</translation>
+        <translation type="vanished">Przytrzymaj klawisz Ctrl i zaznacz rejon używając mysz</translation>
     </message>
     <message>
         <location filename="../imageview.cpp" line="927"/>
@@ -357,15 +357,15 @@
     </message>
     <message>
         <source>Failed to save image</source>
-        <translation>Nie udało się zapisać obrazka</translation>
+        <translation type="vanished">Nie udało się zapisać obrazka</translation>
     </message>
     <message>
         <source>Failed to save Exif metadata</source>
-        <translation>Nie udało się zapisać metadanych Exif</translation>
+        <translation type="vanished">Nie udało się zapisać metadanych Exif</translation>
     </message>
     <message>
         <source>Image saved</source>
-        <translation>Obrazek zapisany</translation>
+        <translation type="vanished">Obrazek zapisany</translation>
     </message>
     <message>
         <location filename="../imageview.cpp" line="972"/>
@@ -379,7 +379,7 @@
     </message>
     <message>
         <source>Image Files</source>
-        <translation>Pliki Graficzne</translation>
+        <translation type="vanished">Pliki Graficzne</translation>
     </message>
 </context>
 <context>
@@ -394,23 +394,23 @@
     <name>KeyGrabLineEdit</name>
     <message>
         <source>Set shortcut</source>
-        <translation>Ustaw skrót</translation>
+        <translation type="vanished">Ustaw skrót</translation>
     </message>
     <message>
         <source> is reserved for shortcuts to external applications</source>
-        <translation>jest zarezerwowany dla skrótów do zewnętrznych aplikacji</translation>
+        <translation type="vanished">jest zarezerwowany dla skrótów do zewnętrznych aplikacji</translation>
     </message>
     <message>
         <source> is already assigned to &quot;</source>
-        <translation>jest już przypisany do &quot;</translation>
+        <translation type="vanished">jest już przypisany do &quot;</translation>
     </message>
     <message>
         <source>Already assigned to &quot;</source>
-        <translation>Już przypisany do &quot;</translation>
+        <translation type="vanished">Już przypisany do &quot;</translation>
     </message>
     <message>
         <source>&quot; action</source>
-        <translation>&quot; akcja</translation>
+        <translation type="vanished">&quot; akcja</translation>
     </message>
 </context>
 <context>
@@ -434,7 +434,7 @@
     </message>
     <message>
         <source>Mirror</source>
-        <translation>Lustro</translation>
+        <translation type="vanished">Lustro</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="284"/>
@@ -488,7 +488,7 @@
     </message>
     <message>
         <source>Copy/Move to...</source>
-        <translation>Skopiuj/Przenieś do...</translation>
+        <translation type="vanished">Skopiuj/Przenieś do...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2003"/>
@@ -518,11 +518,11 @@
     </message>
     <message>
         <source>Copy Image</source>
-        <translation>Skopiuj Obrazek</translation>
+        <translation type="vanished">Skopiuj Obrazek</translation>
     </message>
     <message>
         <source>Paste Image</source>
-        <translation>Wklej Obrazek</translation>
+        <translation type="vanished">Wklej Obrazek</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="347"/>
@@ -629,7 +629,7 @@
     </message>
     <message>
         <source>Manage</source>
-        <translation>Zarządzaj</translation>
+        <translation type="vanished">Zarządzaj</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="441"/>
@@ -721,7 +721,7 @@
     </message>
     <message>
         <source>Rotation %1u00B0</source>
-        <translation>Obrót %1u00B0</translation>
+        <translation type="vanished">Obrót %1u00B0</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1526"/>
@@ -864,11 +864,11 @@
     </message>
     <message>
         <source>New Image</source>
-        <translation>Nowy Obrazek</translation>
+        <translation type="vanished">Nowy Obrazek</translation>
     </message>
     <message>
         <source>Open With</source>
-        <translation>Otwórz Z</translation>
+        <translation type="vanished">Otwórz Z</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="493"/>
@@ -988,7 +988,7 @@
     </message>
     <message>
         <source>Keep Transformations</source>
-        <translation>Zachowaj Przekształcenia</translation>
+        <translation type="vanished">Zachowaj Przekształcenia</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="587"/>
@@ -1017,7 +1017,7 @@
     </message>
     <message>
         <source>File</source>
-        <translation>Plik</translation>
+        <translation type="vanished">Plik</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="697"/>
@@ -1026,7 +1026,7 @@
     </message>
     <message>
         <source>Go</source>
-        <translation>Idź</translation>
+        <translation type="vanished">Idź</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="261"/>
@@ -1042,7 +1042,7 @@
     </message>
     <message>
         <source>Help</source>
-        <translation>Pomoc</translation>
+        <translation type="vanished">Pomoc</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="707"/>
@@ -1081,11 +1081,11 @@
     </message>
     <message>
         <source>Copy or Move to...</source>
-        <translation>Skopiuj lub Przenieś do...</translation>
+        <translation type="vanished">Skopiuj lub Przenieś do...</translation>
     </message>
     <message>
         <source>Show Clipboard</source>
-        <translation>Pokaż Schowek</translation>
+        <translation type="vanished">Pokaż Schowek</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="607"/>
@@ -1114,11 +1114,11 @@
     </message>
     <message>
         <source>Built with Qt </source>
-        <translation>Zbudowany z Qt</translation>
+        <translation type="vanished">Zbudowany z Qt</translation>
     </message>
     <message>
         <source>Translators:&lt;br&gt;</source>
-        <translation>Tłumacze:&lt;br&gt;</translation>
+        <translation type="vanished">Tłumacze:&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2987"/>
@@ -1150,7 +1150,7 @@
     </message>
     <message>
         <source>Failed to copy or move image</source>
-        <translation>Nie udało się skopiować lub przenieść obrazka</translation>
+        <translation type="vanished">Nie udało się skopiować lub przenieść obrazka</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1499"/>
@@ -1159,19 +1159,19 @@
     </message>
     <message>
         <source>Can not cut and paste in the same folder</source>
-        <translation>Nie można wyciąć i wkleić w tym samym katalogu</translation>
+        <translation type="vanished">Nie można wyciąć i wkleić w tym samym katalogu</translation>
     </message>
     <message>
         <source>Copied </source>
-        <translation>Skopiowane</translation>
+        <translation type="vanished">Skopiowane</translation>
     </message>
     <message>
         <source>Moved </source>
-        <translation>Przeniesione </translation>
+        <translation type="vanished">Przeniesione </translation>
     </message>
     <message>
         <source> images</source>
-        <translation> obrazki</translation>
+        <translation type="vanished"> obrazki</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1585"/>
@@ -1180,7 +1180,7 @@
     </message>
     <message>
         <source>Permanently delete </source>
-        <translation>Trwale usunięte</translation>
+        <translation type="vanished">Trwale usunięte</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1605"/>
@@ -1279,11 +1279,11 @@
     </message>
     <message>
         <source>Failed to start external application</source>
-        <translation>Nieudany start zewnętrznej aplikacji</translation>
+        <translation type="vanished">Nieudany start zewnętrznej aplikacji</translation>
     </message>
     <message>
         <source>Zoom </source>
-        <translation>Powiększenie</translation>
+        <translation type="vanished">Powiększenie</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1278"/>
@@ -1312,7 +1312,7 @@
     </message>
     <message>
         <source>Rotation </source>
-        <translation>Obrót</translation>
+        <translation type="vanished">Obrót</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1336"/>
@@ -1366,7 +1366,7 @@
     </message>
     <message>
         <source> image(s)</source>
-        <translation>obrazek(i)</translation>
+        <translation type="vanished">obrazek(i)</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1589"/>
@@ -1384,11 +1384,11 @@
     </message>
     <message>
         <source>Deleted </source>
-        <translation>Usunięte </translation>
+        <translation type="vanished">Usunięte </translation>
     </message>
     <message>
         <source>Invalid Path: </source>
-        <translation>Nieprawidłowa Ścieżka: </translation>
+        <translation type="vanished">Nieprawidłowa Ścieżka: </translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1987"/>
@@ -1402,11 +1402,11 @@
     </message>
     <message>
         <source>Failed to open file </source>
-        <translation>Nie udało się otworzyć pliku </translation>
+        <translation type="vanished">Nie udało się otworzyć pliku </translation>
     </message>
     <message>
         <source>, file not found</source>
-        <translation>, plik nie znaleziony</translation>
+        <translation type="vanished">, plik nie znaleziony</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2483"/>
@@ -1415,7 +1415,7 @@
     </message>
     <message>
         <source>End Slide Show</source>
-        <translation>Zakończ Pokaz Slajdów</translation>
+        <translation type="vanished">Zakończ Pokaz Slajdów</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2512"/>
@@ -1424,19 +1424,19 @@
     </message>
     <message>
         <source>Can not move or copy images to this folder</source>
-        <translation>Nie można przenieść lub skopiować obrazków do tego katalogu</translation>
+        <translation type="vanished">Nie można przenieść lub skopiować obrazków do tego katalogu</translation>
     </message>
     <message>
         <source>Destination folder is same as source</source>
-        <translation>Katalog docelowy jest taki sam jak źródłowy</translation>
+        <translation type="vanished">Katalog docelowy jest taki sam jak źródłowy</translation>
     </message>
     <message>
         <source>Move </source>
-        <translation>Przenieś</translation>
+        <translation type="vanished">Przenieś</translation>
     </message>
     <message>
         <source> to </source>
-        <translation>do</translation>
+        <translation type="vanished">do</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2790"/>
@@ -1445,7 +1445,7 @@
     </message>
     <message>
         <source>Failed to move folder</source>
-        <translation>Nie udało się przenieść katalogu</translation>
+        <translation type="vanished">Nie udało się przenieść katalogu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2800"/>
@@ -1454,11 +1454,11 @@
     </message>
     <message>
         <source>Failed to open folder: </source>
-        <translation>Nie udało się otworzyć katalogu: </translation>
+        <translation type="vanished">Nie udało się otworzyć katalogu: </translation>
     </message>
     <message>
         <source>Rename </source>
-        <translation>Zmień nazwę </translation>
+        <translation type="vanished">Zmień nazwę </translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2932"/>
@@ -1467,11 +1467,11 @@
     </message>
     <message>
         <source>Invalid name entered</source>
-        <translation>Wprowadzono nieprawidłową nazwę</translation>
+        <translation type="vanished">Wprowadzono nieprawidłową nazwę</translation>
     </message>
     <message>
         <source>Failed to rename folder</source>
-        <translation>Nie udało się zmienić nazwy katalogu</translation>
+        <translation type="vanished">Nie udało się zmienić nazwy katalogu</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="2993"/>
@@ -1480,19 +1480,19 @@
     </message>
     <message>
         <source>Enter a new name for </source>
-        <translation>Wprowadź nową nazwę dla</translation>
+        <translation type="vanished">Wprowadź nową nazwę dla</translation>
     </message>
     <message>
         <source>No name entered</source>
-        <translation>Nie wprowadzono nazwy</translation>
+        <translation type="vanished">Nie wprowadzono nazwy</translation>
     </message>
     <message>
         <source>Failed to rename image</source>
-        <translation>Nie można zmienić nazwy obrazka</translation>
+        <translation type="vanished">Nie można zmienić nazwy obrazka</translation>
     </message>
     <message>
         <source> and all of its contents?</source>
-        <translation> i całą jego zawartość?</translation>
+        <translation type="vanished"> i całą jego zawartość?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="3056"/>
@@ -1501,11 +1501,11 @@
     </message>
     <message>
         <source>Failed to delete folder</source>
-        <translation>Nie udało się usunąć katalogu</translation>
+        <translation type="vanished">Nie udało się usunąć katalogu</translation>
     </message>
     <message>
         <source>Removed </source>
-        <translation>Usunięty </translation>
+        <translation type="vanished">Usunięty </translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="3097"/>
@@ -1519,15 +1519,15 @@
     </message>
     <message>
         <source>Failed to create new folder</source>
-        <translation>Nie udało się stworzyć nowego katalogu</translation>
+        <translation type="vanished">Nie udało się stworzyć nowego katalogu</translation>
     </message>
     <message>
         <source>Created </source>
-        <translation>Stworzony </translation>
+        <translation type="vanished">Stworzony </translation>
     </message>
     <message>
         <source>Executing file manager...</source>
-        <translation>Uruchomienie managera plików...</translation>
+        <translation type="vanished">Uruchomienie managera plików...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="3166"/>
@@ -1536,7 +1536,7 @@
     </message>
     <message>
         <source>Cannot perform action with temporary image</source>
-        <translation>Nie można wykonać akcji z tymczasowym obrazkiem</translation>
+        <translation type="vanished">Nie można wykonać akcji z tymczasowym obrazkiem</translation>
     </message>
 </context>
 <context>
@@ -1595,23 +1595,23 @@
     </message>
     <message>
         <source>Original size: </source>
-        <translation>Oryginalny rozmiar:</translation>
+        <translation type="vanished">Oryginalny rozmiar:</translation>
     </message>
     <message>
         <source>Width: </source>
-        <translation>Szerokość:</translation>
+        <translation type="vanished">Szerokość:</translation>
     </message>
     <message>
         <source>Height: </source>
-        <translation>Wysokość:</translation>
+        <translation type="vanished">Wysokość:</translation>
     </message>
     <message>
         <source>Units: </source>
-        <translation>Jednostki:</translation>
+        <translation type="vanished">Jednostki:</translation>
     </message>
     <message>
         <source>New size: </source>
-        <translation>Nowy rozmiar:</translation>
+        <translation type="vanished">Nowy rozmiar:</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="843"/>
@@ -1658,7 +1658,7 @@
     </message>
     <message>
         <source>Background color: </source>
-        <translation>Kolor tła: </translation>
+        <translation type="vanished">Kolor tła: </translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="342"/>
@@ -1667,15 +1667,15 @@
     </message>
     <message>
         <source>	Label color: </source>
-        <translation>    Kolor etykiety: </translation>
+        <translation type="vanished">    Kolor etykiety: </translation>
     </message>
     <message>
         <source>Background image: </source>
-        <translation>Obrazek tła:</translation>
+        <translation type="vanished">Obrazek tła:</translation>
     </message>
     <message>
         <source>Add space between thumbnails: </source>
-        <translation>Dodaj przestrzeń pomiędzy miniaturkami: </translation>
+        <translation type="vanished">Dodaj przestrzeń pomiędzy miniaturkami: </translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="422"/>
@@ -1684,7 +1684,7 @@
     </message>
     <message>
         <source>Number of thumbnail pages to read ahead: </source>
-        <translation>Liczba stron miniatur do odczytu z przodu: </translation>
+        <translation type="vanished">Liczba stron miniatur do odczytu z przodu: </translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="435"/>
@@ -1748,7 +1748,7 @@
     </message>
     <message>
         <source>Default quality when saving images: </source>
-        <translation>Domyślna jakość gdy zapisywane obrazki: </translation>
+        <translation type="vanished">Domyślna jakość gdy zapisywane obrazki: </translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="338"/>
@@ -1767,7 +1767,7 @@
     </message>
     <message>
         <source>Rotate according to Exif orientation</source>
-        <translation>Obróć według orientacji Exif</translation>
+        <translation type="vanished">Obróć według orientacji Exif</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="346"/>
@@ -1832,7 +1832,7 @@
     </message>
     <message>
         <source>Delay between slides in seconds: </source>
-        <translation>Opóźnienie pomiędzy slajdami w sekundach: </translation>
+        <translation type="vanished">Opóźnienie pomiędzy slajdami w sekundach: </translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="459"/>
@@ -1851,11 +1851,11 @@
     </message>
     <message>
         <source>Keyboard Shortcuts:</source>
-        <translation>Skróty Klawiaturowe:</translation>
+        <translation type="vanished">Skróty Klawiaturowe:</translation>
     </message>
     <message>
         <source>Keyboard and Mouse</source>
-        <translation>Klawiatura i Mysz</translation>
+        <translation type="vanished">Klawiatura i Mysz</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="565"/>
@@ -1903,34 +1903,34 @@
     </message>
     <message>
         <source> is reserved for shortcuts to external applications</source>
-        <translation>jest zarezerwowany dla skrótów do zewnętrznych aplikacji</translation>
+        <translation type="vanished">jest zarezerwowany dla skrótów do zewnętrznych aplikacji</translation>
     </message>
     <message>
         <source> is already assigned to &quot;%1&quot; action</source>
-        <translation>jest już przypisany do akcji &quot;%1&quot;</translation>
+        <translation type="vanished">jest już przypisany do akcji &quot;%1&quot;</translation>
     </message>
     <message>
         <source> is already assigned to &quot;</source>
-        <translation>jest już przypisany do &quot;</translation>
+        <translation type="vanished">jest już przypisany do &quot;</translation>
     </message>
     <message>
         <source>&quot; action</source>
-        <translation>&quot; akcja</translation>
+        <translation type="vanished">&quot; akcja</translation>
     </message>
 </context>
 <context>
     <name>ThumbView</name>
     <message>
         <source> images</source>
-        <translation> obrazków</translation>
+        <translation type="vanished"> obrazków</translation>
     </message>
     <message>
         <source>Selected </source>
-        <translation>Wybrane </translation>
+        <translation type="vanished">Wybrane </translation>
     </message>
     <message>
         <source> of </source>
-        <translation> z </translation>
+        <translation type="vanished"> z </translation>
     </message>
     <message>
         <location filename="../thumbview.cpp" line="248"/>
@@ -2032,11 +2032,11 @@
     </message>
     <message>
         <source>Scanned </source>
-        <translation>Skanowane</translation>
+        <translation type="vanished">Skanowane</translation>
     </message>
     <message numerus="yes">
         <source>%n images, displaying </source>
-        <translation>
+        <translation type="vanished">
             <numerusform> %n obrazka, wyświetlonych</numerusform>
             <numerusform> %n obrazków, wyświetlonych</numerusform>
             <numerusform> %n obrazków, wyświetlonych</numerusform>
@@ -2044,7 +2044,7 @@
     </message>
     <message numerus="yes">
         <source>%n images (</source>
-        <translation>
+        <translation type="vanished">
             <numerusform> %n obrazka (</numerusform>
             <numerusform> %n obrazków (</numerusform>
             <numerusform> %n obrazków (</numerusform>
@@ -2052,7 +2052,7 @@
     </message>
     <message numerus="yes">
         <source>%n originals and </source>
-        <translation>
+        <translation type="vanished">
             <numerusform> %n oryginału i</numerusform>
             <numerusform> %n oryginałów i</numerusform>
             <numerusform> %n oryginałów i</numerusform>
@@ -2060,7 +2060,7 @@
     </message>
     <message numerus="yes">
         <source>%n duplicates)</source>
-        <translation>
+        <translation type="vanished">
             <numerusform> %n duplikatu)</numerusform>
             <numerusform> %n duplikatów)</numerusform>
             <numerusform> %n duplikatów)</numerusform>
