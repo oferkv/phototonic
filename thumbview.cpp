@@ -565,7 +565,7 @@ void ThumbView::initThumbs()
 		hintSize = QSize(thumbWidth / 2, thumbWidth / 2);
 	else if (GData::thumbsLayout == Classic)
 		hintSize = QSize(thumbWidth, thumbHeight + 
-							(GData::showLabels? QFontMetrics(font()).height() + 5 : 0));
+							(GData::showLabels? QFontMetrics(font()).height()*(GData::thumbLabel.count("\n")+1) + 5 : 0));
 
 	for (currThumb = 0; currThumb < thumbFileInfoList.size(); ++currThumb)
 	{
@@ -574,8 +574,17 @@ void ThumbView::initThumbs()
 		thumbIitem->setData(false, LoadedRole);
 		thumbIitem->setData(currThumb, SortRole);
 		thumbIitem->setData(thumbFileInfo.filePath(), FileNameRole);
-		if (GData::thumbsLayout != Squares && GData::showLabels)
-			thumbIitem->setData(thumbFileInfo.fileName(), Qt::DisplayRole);
+		if (GData::thumbsLayout != Squares && GData::showLabels) {
+			QString l = GData::thumbLabel;
+			l.replace("%filename%", thumbFileInfo.fileName());
+			imageInfoReader.setFileName(thumbFileInfo.filePath());
+			l.replace("%size%", QString::number(thumbFileInfo.size() / 1024.0, 'f', 2) + "K");
+			if (imageInfoReader.size().isValid()) {
+				l.replace("%width%", QString::number(imageInfoReader.size().width()));
+				l.replace("%height%", QString::number(imageInfoReader.size().height()));
+			}
+			thumbIitem->setData(l, Qt::DisplayRole);
+		}
 		if (GData::thumbsLayout == Compact)
 			thumbIitem->setIcon(emptyPixMap);
 		thumbIitem->setTextAlignment(Qt::AlignTop | Qt::AlignHCenter);
@@ -618,7 +627,7 @@ void ThumbView::findDupes(bool resetCounters)
 		}
 		totalFiles++;
 
-	    md5gen.addData(file.readAll());
+		md5gen.addData(file.readAll());
 	    file.close();
 		QString md5 = md5gen.result().toHex();
 
@@ -736,15 +745,24 @@ void ThumbView::addThumb(QString &imageFullPath)
 		hintSize = QSize(thumbWidth / 2, thumbWidth / 2);
 	else if (GData::thumbsLayout == Classic)
 		hintSize = QSize(thumbWidth, thumbHeight + 
-							(GData::showLabels? QFontMetrics(font()).height() + 5 : 0));
+							(GData::showLabels? QFontMetrics(font()).height()*(GData::thumbLabel.count("\n")+1) + 5 : 0));
 	
 	thumbFileInfo = QFileInfo(imageFullPath);
 	thumbIitem->setData(true, LoadedRole);
 	thumbIitem->setData(0, SortRole);
 	thumbIitem->setData(thumbFileInfo.filePath(), FileNameRole);
-	if (GData::thumbsLayout != Squares && GData::showLabels)
-		thumbIitem->setData(thumbFileInfo.fileName(), Qt::DisplayRole);
-
+	if (GData::thumbsLayout != Squares && GData::showLabels) {
+		QString l = GData::thumbLabel;
+		l.replace("%filename%", thumbFileInfo.fileName());
+		imageInfoReader.setFileName(thumbFileInfo.filePath());
+		l.replace("%size%", QString::number(thumbFileInfo.size() / 1024.0, 'f', 2) + "K");
+		if (imageInfoReader.size().isValid()) {
+			l.replace("%width%", QString::number(imageInfoReader.size().width()));
+			l.replace("%height%", QString::number(imageInfoReader.size().height()));
+		}
+		thumbIitem->setData(l, Qt::DisplayRole);
+	}
+	thumbIitem->setTextAlignment(Qt::AlignTop | Qt::AlignHCenter);
 	thumbReader.setFileName(imageFullPath);
 	currThumbSize = thumbReader.size();
 	if (currThumbSize.isValid())

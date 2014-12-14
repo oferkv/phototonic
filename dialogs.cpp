@@ -442,6 +442,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	QFontMetrics thumbLabelFontMetrics(thumbLabel->font());
 	thumbLabel->setFixedHeight(5 * thumbLabelFontMetrics.lineSpacing());
 	thumbLabelVbox->addWidget(thumbLabel);
+	thumbLabelVbox->addWidget(new QLabel(tr("Supported tags: %filename% %width% %height% %size%")));
 	thumbLabelGrp->setLayout(thumbLabelVbox);
 
 	// Thumbnail options
