@@ -554,44 +554,11 @@ finish:
 void ThumbView::initThumbs()
 {
 	thumbFileInfoList = thumbsDir->entryInfoList();
-	static QStandardItem *thumbIitem;
-	static int currThumb;
-	static QPixmap emptyPixMap;
-	static QSize hintSize;
 
-	emptyPixMap = QPixmap::fromImage(emptyImg).scaled(thumbWidth, thumbHeight);
-
-	if (GData::thumbsLayout == Squares)
-		hintSize = QSize(thumbWidth / 2, thumbWidth / 2);
-	else if (GData::thumbsLayout == Classic)
-		hintSize = QSize(thumbWidth, thumbHeight + 
-							(GData::showLabels? QFontMetrics(font()).height()*(GData::thumbLabel.count("\n")+1) + 5 : 0));
-
-	for (currThumb = 0; currThumb < thumbFileInfoList.size(); ++currThumb)
+	for (int currThumb = 0; currThumb < thumbFileInfoList.size(); ++currThumb)
 	{
-		thumbFileInfo = thumbFileInfoList.at(currThumb);
-		thumbIitem = new QStandardItem();
-		thumbIitem->setData(false, LoadedRole);
-		thumbIitem->setData(currThumb, SortRole);
-		thumbIitem->setData(thumbFileInfo.filePath(), FileNameRole);
-		if (GData::thumbsLayout != Squares && GData::showLabels) {
-			QString l = GData::thumbLabel;
-			l.replace("%filename%", thumbFileInfo.fileName());
-			imageInfoReader.setFileName(thumbFileInfo.filePath());
-			l.replace("%size%", QString::number(thumbFileInfo.size() / 1024.0, 'f', 2) + "K");
-			if (imageInfoReader.size().isValid()) {
-				l.replace("%width%", QString::number(imageInfoReader.size().width()));
-				l.replace("%height%", QString::number(imageInfoReader.size().height()));
-			}
-			thumbIitem->setData(l, Qt::DisplayRole);
-		}
-		if (GData::thumbsLayout == Compact)
-			thumbIitem->setIcon(emptyPixMap);
-		thumbIitem->setTextAlignment(Qt::AlignTop | Qt::AlignHCenter);
-		if (GData::thumbsLayout != Compact)
-			thumbIitem->setSizeHint(hintSize);
-
-		thumbViewModel->appendRow(thumbIitem);
+		QString filePath = thumbFileInfoList.at(currThumb).filePath();
+		addThumb(filePath, currThumb);
 	}
 }
 
@@ -656,6 +623,7 @@ void ThumbView::findDupes(bool resetCounters)
 		}
 	}
 	updateFoundDupesState(foundDups, totalFiles, originalImages);
+	loadVisibleThumbs();
 }
 
 void ThumbView::loadThumbsRange()
@@ -714,7 +682,7 @@ void ThumbView::loadThumbsRange()
 
 		if (GData::thumbsLayout == Compact) {
 			if (GData::showLabels)
-				currThumbSize.setHeight(currThumbSize.height() + QFontMetrics(font()).height() + 5);
+				currThumbSize.setHeight(currThumbSize.height() + QFontMetrics(font()).height()*(GData::thumbLabel.count("\n")+1) + 5);
 			thumbViewModel->item(currThumb)->setSizeHint(currThumbSize);
 			if (isThumbVisible(thumbViewModel->item(currThumb)->index()))
 				setRowHidden(currThumb, false);
@@ -733,13 +701,15 @@ void ThumbView::loadThumbsRange()
 	abortOp = false;
 }
 
-void ThumbView::addThumb(QString &imageFullPath)
+void ThumbView::addThumb(QString &imageFullPath, int sortValue)
 {
 	QStandardItem *thumbIitem = new QStandardItem();
-	QImageReader thumbReader;
+	//QImageReader thumbReader;
 	QSize hintSize;
-	QSize currThumbSize;
+	//QSize currThumbSize;
 	static QImage thumb;
+
+	static QPixmap emptyPixMap = QPixmap::fromImage(emptyImg).scaled(thumbWidth, thumbHeight);
 
 	if (GData::thumbsLayout == Squares)
 		hintSize = QSize(thumbWidth / 2, thumbWidth / 2);
@@ -748,8 +718,8 @@ void ThumbView::addThumb(QString &imageFullPath)
 							(GData::showLabels? QFontMetrics(font()).height()*(GData::thumbLabel.count("\n")+1) + 5 : 0));
 	
 	thumbFileInfo = QFileInfo(imageFullPath);
-	thumbIitem->setData(true, LoadedRole);
-	thumbIitem->setData(0, SortRole);
+	thumbIitem->setData(false, LoadedRole);
+	thumbIitem->setData(sortValue, SortRole);
 	thumbIitem->setData(thumbFileInfo.filePath(), FileNameRole);
 	if (GData::thumbsLayout != Squares && GData::showLabels) {
 		QString l = GData::thumbLabel;
@@ -763,7 +733,7 @@ void ThumbView::addThumb(QString &imageFullPath)
 		thumbIitem->setData(l, Qt::DisplayRole);
 	}
 	thumbIitem->setTextAlignment(Qt::AlignTop | Qt::AlignHCenter);
-	thumbReader.setFileName(imageFullPath);
+	/*thumbReader.setFileName(imageFullPath);
 	currThumbSize = thumbReader.size();
 	if (currThumbSize.isValid())
 	{
@@ -796,10 +766,15 @@ void ThumbView::addThumb(QString &imageFullPath)
 	if (GData::thumbsLayout == Compact)
 	{
 		if (GData::showLabels)
-			currThumbSize.setHeight(currThumbSize.height() + QFontMetrics(font()).height() + 5);
+			currThumbSize.setHeight(currThumbSize.height() + QFontMetrics(font()).height()*(GData::thumbLabel.count("\n")+1) + 5);
 		thumbIitem->setSizeHint(currThumbSize);
 	}
 	else
+		thumbIitem->setSizeHint(hintSize);*/
+
+	if (GData::thumbsLayout == Compact)
+		thumbIitem->setIcon(emptyPixMap);
+	if (GData::thumbsLayout != Compact)
 		thumbIitem->setSizeHint(hintSize);
 
 	thumbViewModel->appendRow(thumbIitem);
