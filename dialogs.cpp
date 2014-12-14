@@ -435,6 +435,15 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	enableThumbExifCb = new QCheckBox(tr("Rotate thumbnails according to Exif orientation"), this);
 	enableThumbExifCb->setChecked(GData::exifThumbRotationEnabled);
 
+	// Thumbnail label
+	QVBoxLayout *thumbLabelVbox = new QVBoxLayout();
+	QGroupBox *thumbLabelGrp = new QGroupBox(tr("Thumbnail Label"));
+	thumbLabel = new QPlainTextEdit(GData::thumbLabel);
+	QFontMetrics thumbLabelFontMetrics(thumbLabel->font());
+	thumbLabel->setFixedHeight(5 * thumbLabelFontMetrics.lineSpacing());
+	thumbLabelVbox->addWidget(thumbLabel);
+	thumbLabelGrp->setLayout(thumbLabelVbox);
+
 	// Thumbnail options
 	QVBoxLayout *thumbsOptsBox = new QVBoxLayout;
 	thumbsOptsBox->addLayout(bgThumbColBox);
@@ -443,6 +452,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	thumbsOptsBox->addWidget(enableThumbExifCb);
 	thumbsOptsBox->addLayout(thumbPagesHbox);
 	thumbsOptsBox->addWidget(noSmallThumbCb);
+	thumbsOptsBox->addWidget(thumbLabelGrp);
 	thumbsOptsBox->addStretch(1);
 
 	// Slide show delay
@@ -594,6 +604,7 @@ void SettingsDialog::saveSettings()
 	GData::thumbsBackgroundColor = thumbBgColor;
 	GData::thumbsTextColor = thumbTextColor;
 	GData::thumbsBackImage = thumbsBackImageEdit->text();
+	GData::thumbLabel = thumbLabel->toPlainText();
 	GData::thumbSpacing = thumbSpacingSpin->value();
 	GData::thumbPagesReadahead = thumbPagesSpin->value();
 	GData::exitInsteadOfClose = exitCliCb->isChecked();
