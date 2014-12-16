@@ -723,12 +723,20 @@ void ThumbView::addThumb(QString &imageFullPath, int sortValue)
 	thumbIitem->setData(thumbFileInfo.filePath(), FileNameRole);
 	if (GData::thumbsLayout != Squares && GData::showLabels) {
 		QString l = GData::thumbLabel;
-		l.replace("%filename%", thumbFileInfo.fileName());
 		imageInfoReader.setFileName(thumbFileInfo.filePath());
-		l.replace("%size%", QString::number(thumbFileInfo.size() / 1024.0, 'f', 2) + "K");
-		if (imageInfoReader.size().isValid()) {
-			l.replace("%width%", QString::number(imageInfoReader.size().width()));
-			l.replace("%height%", QString::number(imageInfoReader.size().height()));
+		QRegularExpression re("%.*?%");
+		QRegularExpressionMatchIterator i = re.globalMatch(l, 0);
+		while (i.hasNext()) {
+			QRegularExpressionMatch match = i.next();
+			if (match.captured() == "%size%") {
+				l.replace("%size%", QString::number(thumbFileInfo.size() / 1024.0, 'f', 2) + "K");
+			} else if (match.captured() == "%filename%") {
+				l.replace("%filename%", thumbFileInfo.fileName());
+			} else if (match.captured() == "%width%") {
+				l.replace("%width%", QString::number(imageInfoReader.size().width()));
+			} else if (match.captured() == "%height%") {
+				l.replace("%height%", QString::number(imageInfoReader.size().height()));
+			}
 		}
 		thumbIitem->setData(l, Qt::DisplayRole);
 	}
