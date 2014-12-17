@@ -417,9 +417,9 @@ void ThumbView::updateThumbsSelection()
 		updateThumbsCount();
 		return;
 	} else if (nSelected >= 1)
-		state = tr("Selected %1 of %2")
+		state = tr("Selected %1 of%2")
 					.arg(QString::number(nSelected))
-					.arg(tr("%n image(s)", "", thumbViewModel->rowCount()));
+					.arg(tr(" %n image(s)", "", thumbViewModel->rowCount()));
 	emit setStatus(state);
 }
 
