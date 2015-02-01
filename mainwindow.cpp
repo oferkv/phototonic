@@ -951,7 +951,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.5.29</h2>"
+	QString aboutString = "<h2>Phototonic v1.5.32</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -1852,8 +1852,7 @@ void Phototonic::writeSettings()
 	/* Action shortcuts */
 	GData::appSettings->beginGroup("Shortcuts");
 	QMapIterator<QString, QAction *> scIter(GData::actionKeys);
-	while (scIter.hasNext())
-	{
+	while (scIter.hasNext()) {
 		scIter.next();
 		GData::appSettings->setValue(scIter.key(), scIter.value()->shortcut().toString());
 	}
@@ -1863,21 +1862,19 @@ void Phototonic::writeSettings()
 	GData::appSettings->beginGroup("ExternalApps");
 	GData::appSettings->remove("");
 	QMapIterator<QString, QString> eaIter(GData::externalApps);
-	while (eaIter.hasNext())
-	{
+	while (eaIter.hasNext()) {
 		eaIter.next();
 		GData::appSettings->setValue(eaIter.key(), eaIter.value());
 	}
 	GData::appSettings->endGroup();
 
-	/* copyMoveTo paths */
+	/* save bookmarks */
 	int idx = 0;
 	GData::appSettings->beginGroup("CopyMoveToPaths");
 	GData::appSettings->remove("");
 	QSetIterator<QString> pathsIter(GData::bookmarkPaths);
-	while (pathsIter.hasNext())
-	{
-		GData::appSettings->setValue("path" + ++idx, pathsIter.next());
+	while (pathsIter.hasNext()) {
+		GData::appSettings->setValue("path" + QString::number(++idx), pathsIter.next());
 	}
 	GData::appSettings->endGroup();
 }
