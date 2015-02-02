@@ -487,7 +487,7 @@ void Phototonic::createActions()
 	connect(goFrwdAction, SIGNAL(triggered()), this, SLOT(goForward()));
 	goFrwdAction->setEnabled(false);
 
-	goUpAction = new QAction(tr("Up"), this);
+	goUpAction = new QAction(tr("Go Up"), this);
 	goUpAction->setObjectName("up");
 	goUpAction->setIcon(QIcon::fromTheme("go-up", QIcon(":/images/up.png")));
 	connect(goUpAction, SIGNAL(triggered()), this, SLOT(goUp()));
