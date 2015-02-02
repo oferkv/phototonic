@@ -1960,14 +1960,14 @@
     <message>
         <location filename="../thumbview.cpp" line="420"/>
         <source>Selected %1 of%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélection de %1 sur%2</translation>
     </message>
     <message numerus="yes">
         <location filename="../thumbview.cpp" line="422"/>
         <source> %n image(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform> %n image</numerusform>
+            <numerusform> %n images</numerusform>
         </translation>
     </message>
     <message>
