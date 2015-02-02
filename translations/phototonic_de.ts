@@ -891,7 +891,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="451"/>
         <source>Up</source>
-        <translation>Nach oben</translation>
+        <translation>Übergeordnetes Verzeichnis</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="455"/>
@@ -2000,7 +2000,7 @@
     <message>
         <location filename="../thumbview.cpp" line="420"/>
         <source>Selected %1 of%2</source>
-        <translation>Ausgewählt %1 von%2</translation>
+        <translation>Ausgewählt %1 von %2</translation>
     </message>
     <message numerus="yes">
         <location filename="../thumbview.cpp" line="422"/>
