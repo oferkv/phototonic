@@ -2000,11 +2000,7 @@
     <message>
         <location filename="../thumbview.cpp" line="420"/>
         <source>Selected %1 of%2</source>
-<<<<<<< HEAD
         <translation>Ausgewählt %1 von %2</translation>
-=======
-        <translation>Ausgewählt %1 von%2</translation>
->>>>>>> upstream/master
     </message>
     <message numerus="yes">
         <location filename="../thumbview.cpp" line="422"/>
