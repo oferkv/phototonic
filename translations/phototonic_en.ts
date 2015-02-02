@@ -1576,7 +1576,6 @@
         <location filename="../thumbview.cpp" line="593"/>
         <location filename="../thumbview.cpp" line="594"/>
         <source>%n image(s)</source>
-        <translatorcomment>%n images</translatorcomment>
         <translation>
             <numerusform>%n image</numerusform>
             <numerusform>%n images</numerusform>
@@ -1590,14 +1589,14 @@
     <message>
         <location filename="../thumbview.cpp" line="420"/>
         <source>Selected %1 of%2</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message numerus="yes">
         <location filename="../thumbview.cpp" line="422"/>
         <source> %n image(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform> %n image</numerusform>
+            <numerusform> %n images</numerusform>
         </translation>
     </message>
     <message>

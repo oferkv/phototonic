@@ -168,6 +168,7 @@ ShortcutsTableView::ShortcutsTableView()
 	keysModel = new QStandardItemModel();
 	keysModel->setHorizontalHeaderItem(0, new QStandardItem(tr("Action")));
 	keysModel->setHorizontalHeaderItem(1, new QStandardItem(tr("Shortcut")));
+	keysModel->setHorizontalHeaderItem(2, new QStandardItem(""));
 	setModel(keysModel);
 	setSelectionBehavior(QAbstractItemView::SelectRows);
 	setSelectionMode(QAbstractItemView::SingleSelection);
@@ -177,6 +178,7 @@ ShortcutsTableView::ShortcutsTableView()
 	horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
 	horizontalHeader()->setHighlightSections(false);
 	horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+	setColumnHidden(2, true);
 
 	shortcutsMenu = new QMenu("");
 	clearAction = new QAction(tr("Delete shortcut"), this);
@@ -186,9 +188,9 @@ ShortcutsTableView::ShortcutsTableView()
 	connect(this, SIGNAL(customContextMenuRequested(QPoint)), SLOT(showShortcutsTableMenu(QPoint)));
 }
 
-void ShortcutsTableView::addRow(QString action, QString shortcut)
+void ShortcutsTableView::addRow(QString action, QString description, QString shortcut)
 {
-	keysModel->appendRow(QList<QStandardItem*>() << new QStandardItem(action) << new QStandardItem(shortcut));
+	keysModel->appendRow(QList<QStandardItem*>() << new QStandardItem(description) << new QStandardItem(shortcut) << new QStandardItem(action));
 }
 
 void ShortcutsTableView::keyPressEvent(QKeyEvent *e)
@@ -242,7 +244,7 @@ void ShortcutsTableView::keyPressEvent(QKeyEvent *e)
 	QStandardItemModel *mod = (QStandardItemModel*)model();
 	int row = selectedIndexes().first().row();
 	mod->item(row, 1)->setText(keySeqText);
-	GData::actionKeys.value(mod->item(row, 0)->text())->setShortcut(QKeySequence(keySeqText));
+	GData::actionKeys.value(mod->item(row, 2)->text())->setShortcut(QKeySequence(keySeqText));
 }
 
 void ShortcutsTableView::clearShortcut()
@@ -250,7 +252,7 @@ void ShortcutsTableView::clearShortcut()
 	if (selectedEntry.isValid()) {
 		QStandardItemModel *mod = (QStandardItemModel*)model();
 		mod->item(selectedEntry.row(), 1)->setText("");
-		GData::actionKeys.value(mod->item(selectedEntry.row(), 0)->text())->setShortcut(QKeySequence(""));
+		GData::actionKeys.value(mod->item(selectedEntry.row(), 2)->text())->setShortcut(QKeySequence(""));
 	}
 }
 
@@ -524,7 +526,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	while (it.hasNext())
 	{
 		it.next();
-		keysTable->addRow(it.key(), GData::actionKeys.value(it.key())->shortcut().toString());
+		keysTable->addRow(it.key(), GData::actionKeys.value(it.key())->text(), GData::actionKeys.value(it.key())->shortcut().toString());
 	}
 
 	// Mouse settings
