@@ -50,7 +50,7 @@ class ShortcutsTableView : public QTableView
 
 public:
 	ShortcutsTableView();
-	void addRow(QString action, QString shortcut);
+	void addRow(QString action, QString description, QString shortcut);
 
 public slots:
 	void showShortcutsTableMenu(QPoint pt);
