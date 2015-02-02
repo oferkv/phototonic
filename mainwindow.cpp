@@ -2189,11 +2189,27 @@ void Phototonic::loadShortcuts()
 
 	if (groupKeys.size())
 	{
-		for (int i = 0; i < groupKeys.size(); ++i)
+		if (groupKeys.contains(thumbsGoTopAct->text()))
 		{
-			if (GData::actionKeys.value(groupKeys.at(i)))
-				GData::actionKeys.value(groupKeys.at(i))->setShortcut
-											(GData::appSettings->value(groupKeys.at(i)).toString());
+			QMapIterator<QString, QAction *> key(GData::actionKeys);
+			while (key.hasNext()) {
+				key.next();
+				if (groupKeys.contains(key.value()->text()))
+				{
+					key.value()->setShortcut(GData::appSettings->value(key.value()->text()).toString());
+					GData::appSettings->remove(key.value()->text());
+					GData::appSettings->setValue(key.key(), key.value()->shortcut().toString());
+				}
+			}
+		}
+		else
+		{
+			for (int i = 0; i < groupKeys.size(); ++i)
+			{
+				if (GData::actionKeys.value(groupKeys.at(i)))
+					GData::actionKeys.value(groupKeys.at(i))->setShortcut
+									(GData::appSettings->value(groupKeys.at(i)).toString());
+			}
 		}
 	}
 	else
