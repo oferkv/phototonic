@@ -39,7 +39,7 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	setupDocks();
 
 	connect(qApp, SIGNAL(focusChanged(QWidget*, QWidget*)), 
-				this, SLOT(updateActions(QWidget*, QWidget*)));
+				this, SLOT(updateActions()));
 
 	restoreGeometry(GData::appSettings->value("Geometry").toByteArray());
 	restoreState(GData::appSettings->value("WindowState").toByteArray());
@@ -121,7 +121,7 @@ void Phototonic::createThumbView()
 	connect(thumbView, SIGNAL(setStatus(QString)), this, SLOT(setStatus(QString)));
 	connect(thumbView, SIGNAL(showBusy(bool)), this, SLOT(showBusyStatus(bool)));
 	connect(thumbView->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), 
-				this, SLOT(changeActionsBySelection(QItemSelection, QItemSelection)));
+				this, SLOT(updateActions()));
 
 	iiDock = new QDockWidget(tr("Image Info"), this);
 	iiDock->setObjectName("Image Info");
@@ -925,6 +925,9 @@ void Phototonic::createFSTree()
 				this, SLOT(dropOp(Qt::KeyboardModifiers, bool, QString)));
 
 	fsTree->setCurrentIndex(fsTree->fsModel->index(QDir::currentPath()));
+
+	connect(fsTree->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)),
+				this, SLOT(updateActions()));
 }
 
 void Phototonic::createBookmarks()
@@ -941,6 +944,8 @@ void Phototonic::createBookmarks()
 	connect(removeBookmarkAction, SIGNAL(triggered()), bookmarks, SLOT(removeBookmark()));
 	connect(bookmarks, SIGNAL(dropOp(Qt::KeyboardModifiers, bool, QString)),
 				this, SLOT(dropOp(Qt::KeyboardModifiers, bool, QString)));
+	connect(bookmarks, SIGNAL(itemSelectionChanged()),
+				this, SLOT(updateActions()));
 	addDockWidget(Qt::LeftDockWidgetArea, bmDock);
 
 	bookmarks->addAction(pasteAction);
@@ -1694,6 +1699,11 @@ void Phototonic::deleteViewerImage()
 
 void Phototonic::deleteOp()
 {
+	if (QApplication::focusWidget() == bookmarks) {
+		bookmarks->removeBookmark();
+		return;
+	}
+
 	if (QApplication::focusWidget() == fsTree)
 	{
 		deleteDir();
@@ -1851,26 +1861,36 @@ void Phototonic::setCopyCutActions(bool setEnabled)
 	copyAction->setEnabled(setEnabled);
 }
 
-void Phototonic::changeActionsBySelection(const QItemSelection&, const QItemSelection&)
+void Phototonic::setDeleteAction(bool setEnabled)
 {
-	setCopyCutActions(thumbView->selectionModel()->selectedIndexes().size());
+	deleteAction->setEnabled(setEnabled);
 }
 
-void Phototonic::updateActions(QWidget*, QWidget *selectedWidget)
+void Phototonic::updateActions()
 {
-	if (selectedWidget == thumbView) {
+	if (QApplication::focusWidget() == thumbView) {
 		setCopyCutActions(thumbView->selectionModel()->selectedIndexes().size());
+		setDeleteAction(thumbView->selectionModel()->selectedIndexes().size());
+	} else if (QApplication::focusWidget() == bookmarks) {
+		setCopyCutActions(false);
+		setDeleteAction(bookmarks->selectionModel()->selectedIndexes().size());
+	} else if (QApplication::focusWidget() == fsTree) {
+		setCopyCutActions(false);
+		setDeleteAction(fsTree->selectionModel()->selectedIndexes().size());
+	} else if (GData::layoutMode == imageViewIdx) {
+		setCopyCutActions(false);
+		setDeleteAction(true);
 	} else {
 		setCopyCutActions(false);
+		setDeleteAction(false);
 	}
 
 	if (GData::layoutMode == imageViewIdx && !interfaceDisabled) {
 		setViewerKeyEventsEnabled(true);
 		fullScreenAct->setEnabled(true);
 		closeImageAct->setEnabled(true);
-
 	} else {
-		if (selectedWidget == imageView->scrlArea) {
+		if (QApplication::focusWidget() == imageView->scrlArea) {
 			setViewerKeyEventsEnabled(true);
 			fullScreenAct->setEnabled(false);
 			closeImageAct->setEnabled(false);
@@ -1879,7 +1899,6 @@ void Phototonic::updateActions(QWidget*, QWidget *selectedWidget)
 			fullScreenAct->setEnabled(false);
 			closeImageAct->setEnabled(false);
 		}
-
 	}
 }
 
@@ -2506,6 +2525,8 @@ void Phototonic::showViewer()
 			imageView->infoLabel->setVisible(GData::enableImageInfoFS);
 		}
 		imageView->adjustSize();
+
+		updateActions();
 	}
 }
 
@@ -2833,6 +2854,8 @@ void Phototonic::hideViewer()
 	thumbView->setFocus(Qt::OtherFocusReason);
 	showBusyStatus(false);
 	setContextMenuPolicy(Qt::DefaultContextMenu);
+
+	updateActions();
 }
 
 void Phototonic::goBottom()
@@ -3333,6 +3356,7 @@ void Phototonic::setInterfaceEnabled(bool enable)
 	if (enable) {
 		if (isFullScreen())
 			imageView->setCursorHiding(true);
+		updateActions();
 	} else {
 		imageView->setCursorHiding(false);
 	}
