@@ -1038,24 +1038,25 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.5.32</h2>"
+	QString aboutString = "<h2>Phototonic v1.5.47</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
 		+ "<p><a href=\"https://github.com/oferkv/phototonic/issues\">" + tr("Bug reports") + "</a></p>"
-		+ "<p>Copyright &copy; 2013-2014 Ofer Kashayov (oferkv@live.com)</p>"
-		+ tr("Contributors / Code:") + "<br>"
-		+ "Christopher Roy Bratusek (nano@jpberlin.de)<br>"
-		+ "Krzysztof Pyrkosz (pyrkosz@o2.pl)<br>"
-		+ "<br>" + tr("Contributors / Translations:")
-		+ "<table><tr><td>Czech:</td><td>Pavel Fric (pavelfric@seznam.cz)</td></tr>"
-		+ "<tr><td>French:</td><td>David Geiger (david.david@mageialinux-online.org)</td></tr>"
-		+ "<tr><td></td><td>Adrien Daugabel (adrien.d@mageialinux-online.org)</td></tr>"
+		+ "<p></p>"
+		+ "<table><tr><td>Code:</td><td>Ofer Kashayov (oferkv@gmail.com)</td></tr>"
+		+ "<tr><td></td><td>Krzysztof Pyrkosz (pyrkosz@o2.pl)</td></tr>"
+		+ "<tr><td></td><td>Christopher Roy Bratusek (nano@jpberlin.de)</td></tr>"
+		+ "<tr><td></td><td></td></tr>"
+		+ "<tr><td>Czech:</td><td>Pavel Fric (pavelfric@seznam.cz)</td></tr>"
+		+ "<tr><td>French:</td><td>Adrien Daugabel (adrien.d@mageialinux-online.org)</td></tr>"
+		+ "<tr><td></td><td>David Geiger (david.david@mageialinux-online.org)</td></tr>"
 		+ "<tr><td></td><td>Rémi Verschelde (akien@mageia.org)</td></tr>"
 		+ "<tr><td>German:</td><td>Jonathan Hooverman (jonathan.hooverman@gmail.com)</td></tr>"
 		+ QString::fromUtf8("<tr><td>Polish:</td><td>Robert Wojew\u00F3dzki (robwoj44@poczta.onet.pl)</td></tr>")
 		+ "<tr><td>Russian:</td><td>Ilya Alexandrovich (yast4ik@gmail.com)</td></tr></table>"
-		+ "<p>Phototonic is licensed under the GNU General Public License version 3</p>";
+		+ "<p>Phototonic is licensed under the GNU General Public License version 3</p>"
+		+ "<p>Copyright &copy; 2013-2015 Ofer Kashayov</p>";
 
 	QMessageBox::about(this, tr("About") + " Phototonic", aboutString);
 }
