@@ -57,8 +57,7 @@ private slots:
 	void setIncludeSubFolders();
 	void showSettings();
 	void toggleFullScreen();
-	void updateActions(QWidget *old, QWidget *now);
-	void changeActionsBySelection(const QItemSelection&, const QItemSelection&);
+	void updateActions();
 	void reloadThumbsSlot();
 	void renameDir();
 	void setThumbviewWindowTitle();
@@ -345,6 +344,7 @@ private:
 	bool isValidPath(QString &path);
 	QString getSelectedPath();
 	void setCopyCutActions(bool setEnabled);
+	void setDeleteAction(bool setEnabled);
 	void wheelEvent(QWheelEvent *event);	
 	void copyOrCutThumbs(bool copy);
 	void showNewImageWarning(QWidget *parent);
