@@ -22,13 +22,19 @@
 #ifndef FSTREE_H
 #define FSTREE_H
 
+class FSModel : public QFileSystemModel
+{
+public:
+	bool hasChildren(const QModelIndex &parent) const;
+};
+
 class FSTree : public QTreeView
 {
 	Q_OBJECT
 
 public:
 	FSTree(QWidget *parent);
-	QFileSystemModel *fsModel;
+	FSModel *fsModel;
 	QModelIndex getCurrentIndex();
 	void setModelFlags();
 

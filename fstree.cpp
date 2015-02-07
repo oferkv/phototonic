@@ -24,7 +24,7 @@ FSTree::FSTree(QWidget *parent) : QTreeView(parent)
 	setDragEnabled(true);
 	setDragDropMode(QAbstractItemView::InternalMove);
 
-	fsModel = new QFileSystemModel;
+	fsModel = new FSModel();
 	fsModel->setRootPath("");
 	setModelFlags();
 
@@ -39,6 +39,20 @@ FSTree::FSTree(QWidget *parent) : QTreeView(parent)
 								this, SLOT(resizeTreeColumn(const QModelIndex &)));
 	connect(this, SIGNAL(collapsed(const QModelIndex &)),
 								this, SLOT(resizeTreeColumn(const QModelIndex &)));
+}
+
+bool FSModel::hasChildren(const QModelIndex &parent) const
+{
+	// return false if item cant have children
+	if (parent.flags() &  Qt::ItemNeverHasChildren) {
+		return false;
+	}
+
+	if (filePath(parent) == "")
+		return true;
+
+	// return if at least one child exists
+	return QDirIterator(filePath(parent), filter() | QDir::NoDotAndDotDot, QDirIterator::NoIteratorFlags).hasNext();
 }
 
 QModelIndex FSTree::getCurrentIndex()
