@@ -18,13 +18,30 @@
 
 #include "fstree.h"
 
+bool FSModel::hasChildren(const QModelIndex &parent) const
+{
+	if (parent.column() > 0)
+		return false;
+
+	if (!parent.isValid()) // drives
+		return true;
+
+	// return false if item cant have children
+	if (parent.flags() &  Qt::ItemNeverHasChildren) {
+		return false;
+	}
+
+	// return if at least one child exists
+	return QDirIterator(filePath(parent), filter() | QDir::NoDotAndDotDot, QDirIterator::NoIteratorFlags).hasNext();
+}
+
 FSTree::FSTree(QWidget *parent) : QTreeView(parent)
 {
 	setAcceptDrops(true);
 	setDragEnabled(true);
 	setDragDropMode(QAbstractItemView::InternalMove);
 
-	fsModel = new QFileSystemModel;
+	fsModel = new FSModel();
 	fsModel->setRootPath("");
 	setModelFlags();
 

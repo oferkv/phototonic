@@ -39,7 +39,7 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	setupDocks();
 
 	connect(qApp, SIGNAL(focusChanged(QWidget*, QWidget*)), 
-				this, SLOT(updateActions(QWidget*, QWidget*)));
+				this, SLOT(updateActions()));
 
 	restoreGeometry(GData::appSettings->value("Geometry").toByteArray());
 	restoreState(GData::appSettings->value("WindowState").toByteArray());
@@ -121,7 +121,7 @@ void Phototonic::createThumbView()
 	connect(thumbView, SIGNAL(setStatus(QString)), this, SLOT(setStatus(QString)));
 	connect(thumbView, SIGNAL(showBusy(bool)), this, SLOT(showBusyStatus(bool)));
 	connect(thumbView->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)), 
-				this, SLOT(changeActionsBySelection(QItemSelection, QItemSelection)));
+				this, SLOT(updateActions()));
 
 	iiDock = new QDockWidget(tr("Image Info"), this);
 	iiDock->setObjectName("Image Info");
@@ -925,6 +925,9 @@ void Phototonic::createFSTree()
 				this, SLOT(dropOp(Qt::KeyboardModifiers, bool, QString)));
 
 	fsTree->setCurrentIndex(fsTree->fsModel->index(QDir::currentPath()));
+
+	connect(fsTree->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)),
+				this, SLOT(updateActions()));
 }
 
 void Phototonic::createBookmarks()
@@ -941,6 +944,8 @@ void Phototonic::createBookmarks()
 	connect(removeBookmarkAction, SIGNAL(triggered()), bookmarks, SLOT(removeBookmark()));
 	connect(bookmarks, SIGNAL(dropOp(Qt::KeyboardModifiers, bool, QString)),
 				this, SLOT(dropOp(Qt::KeyboardModifiers, bool, QString)));
+	connect(bookmarks, SIGNAL(itemSelectionChanged()),
+				this, SLOT(updateActions()));
 	addDockWidget(Qt::LeftDockWidgetArea, bmDock);
 
 	bookmarks->addAction(pasteAction);
@@ -1033,24 +1038,25 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.5.32</h2>"
+	QString aboutString = "<h2>Phototonic v1.5.48</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
 		+ "<p><a href=\"https://github.com/oferkv/phototonic/issues\">" + tr("Bug reports") + "</a></p>"
-		+ "<p>Copyright &copy; 2013-2014 Ofer Kashayov (oferkv@live.com)</p>"
-		+ tr("Contributors / Code:") + "<br>"
-		+ "Christopher Roy Bratusek (nano@jpberlin.de)<br>"
-		+ "Krzysztof Pyrkosz (pyrkosz@o2.pl)<br>"
-		+ "<br>" + tr("Contributors / Translations:")
-		+ "<table><tr><td>Czech:</td><td>Pavel Fric (pavelfric@seznam.cz)</td></tr>"
-		+ "<tr><td>French:</td><td>David Geiger (david.david@mageialinux-online.org)</td></tr>"
-		+ "<tr><td></td><td>Adrien Daugabel (adrien.d@mageialinux-online.org)</td></tr>"
+		+ "<p></p>"
+		+ "<table><tr><td>Code:</td><td>Ofer Kashayov (oferkv@gmail.com)</td></tr>"
+		+ "<tr><td></td><td>Krzysztof Pyrkosz (pyrkosz@o2.pl)</td></tr>"
+		+ "<tr><td></td><td>Christopher Roy Bratusek (nano@jpberlin.de)</td></tr>"
+		+ "<tr><td></td><td></td></tr>"
+		+ "<tr><td>Czech:</td><td>Pavel Fric (pavelfric@seznam.cz)</td></tr>"
+		+ "<tr><td>French:</td><td>Adrien Daugabel (adrien.d@mageialinux-online.org)</td></tr>"
+		+ "<tr><td></td><td>David Geiger (david.david@mageialinux-online.org)</td></tr>"
 		+ "<tr><td></td><td>Rémi Verschelde (akien@mageia.org)</td></tr>"
 		+ "<tr><td>German:</td><td>Jonathan Hooverman (jonathan.hooverman@gmail.com)</td></tr>"
 		+ QString::fromUtf8("<tr><td>Polish:</td><td>Robert Wojew\u00F3dzki (robwoj44@poczta.onet.pl)</td></tr>")
 		+ "<tr><td>Russian:</td><td>Ilya Alexandrovich (yast4ik@gmail.com)</td></tr></table>"
-		+ "<p>Phototonic is licensed under the GNU General Public License version 3</p>";
+		+ "<p>Phototonic is licensed under the GNU General Public License version 3</p>"
+		+ "<p>Copyright &copy; 2013-2015 Ofer Kashayov</p>";
 
 	QMessageBox::about(this, tr("About") + " Phototonic", aboutString);
 }
@@ -1694,6 +1700,11 @@ void Phototonic::deleteViewerImage()
 
 void Phototonic::deleteOp()
 {
+	if (QApplication::focusWidget() == bookmarks) {
+		bookmarks->removeBookmark();
+		return;
+	}
+
 	if (QApplication::focusWidget() == fsTree)
 	{
 		deleteDir();
@@ -1851,26 +1862,36 @@ void Phototonic::setCopyCutActions(bool setEnabled)
 	copyAction->setEnabled(setEnabled);
 }
 
-void Phototonic::changeActionsBySelection(const QItemSelection&, const QItemSelection&)
+void Phototonic::setDeleteAction(bool setEnabled)
 {
-	setCopyCutActions(thumbView->selectionModel()->selectedIndexes().size());
+	deleteAction->setEnabled(setEnabled);
 }
 
-void Phototonic::updateActions(QWidget*, QWidget *selectedWidget)
+void Phototonic::updateActions()
 {
-	if (selectedWidget == thumbView) {
+	if (QApplication::focusWidget() == thumbView) {
 		setCopyCutActions(thumbView->selectionModel()->selectedIndexes().size());
+		setDeleteAction(thumbView->selectionModel()->selectedIndexes().size());
+	} else if (QApplication::focusWidget() == bookmarks) {
+		setCopyCutActions(false);
+		setDeleteAction(bookmarks->selectionModel()->selectedIndexes().size());
+	} else if (QApplication::focusWidget() == fsTree) {
+		setCopyCutActions(false);
+		setDeleteAction(fsTree->selectionModel()->selectedIndexes().size());
+	} else if (GData::layoutMode == imageViewIdx) {
+		setCopyCutActions(false);
+		setDeleteAction(true);
 	} else {
 		setCopyCutActions(false);
+		setDeleteAction(false);
 	}
 
 	if (GData::layoutMode == imageViewIdx && !interfaceDisabled) {
 		setViewerKeyEventsEnabled(true);
 		fullScreenAct->setEnabled(true);
 		closeImageAct->setEnabled(true);
-
 	} else {
-		if (selectedWidget == imageView->scrlArea) {
+		if (QApplication::focusWidget() == imageView->scrlArea) {
 			setViewerKeyEventsEnabled(true);
 			fullScreenAct->setEnabled(false);
 			closeImageAct->setEnabled(false);
@@ -1879,7 +1900,6 @@ void Phototonic::updateActions(QWidget*, QWidget *selectedWidget)
 			fullScreenAct->setEnabled(false);
 			closeImageAct->setEnabled(false);
 		}
-
 	}
 }
 
@@ -2509,6 +2529,8 @@ void Phototonic::showViewer()
 			imageView->infoLabel->setVisible(GData::enableImageInfoFS);
 		}
 		imageView->adjustSize();
+
+		updateActions();
 	}
 }
 
@@ -2836,6 +2858,8 @@ void Phototonic::hideViewer()
 	thumbView->setFocus(Qt::OtherFocusReason);
 	showBusyStatus(false);
 	setContextMenuPolicy(Qt::DefaultContextMenu);
+
+	updateActions();
 }
 
 void Phototonic::goBottom()
@@ -3336,6 +3360,7 @@ void Phototonic::setInterfaceEnabled(bool enable)
 	if (enable) {
 		if (isFullScreen())
 			imageView->setCursorHiding(true);
+		updateActions();
 	} else {
 		imageView->setCursorHiding(false);
 	}

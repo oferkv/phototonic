@@ -1,3 +1,169 @@
+commit a6ed57b18062df7395a17dab3bc6993835d03c4a (HEAD, tag: v1.5.47, origin/master, origin/HEAD, github/master, master)
+Author: oferkv <oferkv@gmail.com>
+Date:   Fri Feb 6 15:52:47 2015 +0200
+
+    Fix version and sync repos
+
+commit 2beb1df9c73564920880c5971de03a2c1da55e4b
+Author: Krzysztof Pyrkosz <pyrkosz@o2.pl>
+Date:   Wed Feb 4 22:50:44 2015 +0100
+
+    Delete action enhacments
+    
+    Enable or disable delete action based on active widget and item
+    selection and make delete action work on bookmark tree.
+
+commit c96bbe2bbbca02ce2f3459675c0590592a05174c
+Author: Krzysztof Pyrkosz <pyrkosz@o2.pl>
+Date:   Mon Feb 2 20:09:22 2015 +0100
+
+    Issue #173: Change Up to Go Up and fix space in German translation
+
+commit 3600f4fa5800352055d9145b2b535e1d0828a7e8
+Author: Jonathan Hooverman <Jonathan.Hooverman@gmail.com>
+Date:   Mon Feb 2 19:48:18 2015 +0100
+
+    Updated German translation
+
+commit d77589838712d812e2aa1bff4d20a00031e78ad6
+Author: Jonathan Hooverman <Jonathan.Hooverman@gmail.com>
+Date:   Mon Feb 2 18:52:46 2015 +0100
+
+    Updated German translation
+
+commit 0221fd21da8825b5641be49dbae1cbf48132774a
+Author: Krzysztof Pyrkosz <pyrkosz@o2.pl>
+Date:   Mon Feb 2 04:22:22 2015 +0100
+
+    Issue #165: Import and delete old key bindings
+
+commit 1080c59cdc8941e21153b4bd7c98c174500924fe
+Author: Krzysztof Pyrkosz <pyrkosz@o2.pl>
+Date:   Mon Feb 2 04:18:39 2015 +0100
+
+    Issue #165: Language neutral saving of key bindings
+
+commit d455052b58e83ec061a8ce767524295453f523e2
+Author: Krzysztof Pyrkosz <pyrkosz@o2.pl>
+Date:   Sun Feb 1 23:52:21 2015 +0100
+
+    Include compiled translations
+
+commit 3bf066f245d442d1930db328160c588a6dca4562
+Author: Krzysztof Pyrkosz <pyrkosz@o2.pl>
+Date:   Sun Feb 1 23:49:29 2015 +0100
+
+    Update translation files to reflect Ilya87 updates
+
+commit 35f66071c56b128d17285e4644922a238f58bd4d
+Author: oferkv <oferkv@gmail.com>
+Date:   Mon Jan 12 21:13:53 2015 +0200
+
+    Fix invalid saving of bookmarks
+
+commit d1cfef5ad0b6d550d8ea6e13d37aa754ce1e7aeb
+Author: Ilya87 <yast4ik@yahoo.com>
+Date:   Thu Dec 18 00:19:33 2014 +0300
+
+    Update Russian translation and fix %n image(s) for Rusians
+
+commit 07ea48a5419ccf757be3032686ca6a8935f6acce
+Author: oferkv <oferkv@gmail.com>
+Date:   Sat Dec 13 20:11:17 2014 +0200
+
+    Update translation bins and version
+
+commit 7dcc0e9b619cc4275e215c6d611f9bac6f706a96
+Author: SARL ENR-68 <david@david.david>
+Date:   Sat Dec 13 16:13:18 2014 +0100
+
+    Update French translation (for new change)
+    
+    - by Geiger David <david.david@mageialinux-online.org>
+
+commit 309357a6e6d5d5f5ddb3b87fbdf0ad3f162b5556
+Author: Jonathan Hooverman <Jonathan.Hooverman@gmail.com>
+Date:   Fri Dec 12 21:54:49 2014 +0100
+
+    	Updated German translation
+
+commit 28fab187ae9de3aed8ce06eaf60f2a36cceefed7
+Author: Krzysztof Pyrkosz <pyrkosz@o2.pl>
+Date:   Thu Dec 11 23:01:41 2014 +0100
+
+    #152 fix update: polish translation and ts files update
+
+commit 10434505c9ffe1920ecba6f6072295338ccc8d94
+Author: Krzysztof Pyrkosz <pyrkosz@o2.pl>
+Date:   Thu Dec 11 22:47:01 2014 +0100
+
+    #152 fix update: add "find duplicate images" icon and titlebar text
+
+commit 018d29d6306c87a6edfb3d5aff3680f928b56fd6
+Author: Krzysztof Pyrkosz <pyrkosz@o2.pl>
+Date:   Thu Dec 11 21:48:09 2014 +0100
+
+    #152 fix proposal: make find duplicates permanent
+    
+    Fix issue #152 by making "Find duplicates" setting permanent.
+    Probably we should add some type of notification above Thumbs view.
+    Changing dir, including subfolders or refreshing unsets "Find
+    duplicates" option.
+
+commit cd061335fd9898715ff53cfa3745d0d3502d725c
+Author: Krzysztof Pyrkosz <pyrkosz@o2.pl>
+Date:   Tue Dec 9 01:33:20 2014 +0100
+
+    Fix issue #150: I18n clean-ups
+
+commit 17259d2aee87922cf9dd09fb5774a143673e4d52
+Author: oferkv <oferkv@gmail.com>
+Date:   Mon Dec 8 21:57:51 2014 +0200
+
+    Minor fix to thumbs bg image and version adjustment
+
+commit 4fb55d0d707c435e46b388fa523e90e7c705ca99
+Author: Krzysztof Pyrkosz <pyrkosz@o2.pl>
+Date:   Mon Dec 8 00:04:12 2014 +0100
+
+    Issue #106: clear popup, clean up, translations
+
+commit e715cd1e188a3315db8bee0d22a696f907055f93
+Author: Krzysztof Pyrkosz <pyrkosz@o2.pl>
+Date:   Sun Dec 7 01:43:12 2014 +0100
+
+    Fix issue #106: Keyboard shortcuts should be in a list and not a combo
+
+commit 5fa5aafeadfdb28bbeb5956f7eb0ba5e2cc55dee
+Author: krzyc <pyrkosz@o2.pl>
+Date:   Fri Dec 5 11:45:31 2014 +0100
+
+    Allow translation of "General" in thumbview.cpp
+
+commit b41ed98a56b38cba27cb97c12984c31db31ae63e
+Author: oferkv <oferkv@gmail.com>
+Date:   Sun Nov 23 20:09:23 2014 +0200
+
+    Add Change Log
+
+commit 8a9534c6d7604e235b88242d762e2014a61deb34
+Author: oferkv <oferkv@gmail.com>
+Date:   Sun Nov 23 19:41:47 2014 +0200
+
+    Update translation bins and adjust version
+
+commit 83ab836400e00e79d3b6973f553434916786ba3c
+Author: oferkv <oferkv@gmail.com>
+Date:   Sun Nov 23 19:38:37 2014 +0200
+
+    Update Czech translation
+
+commit 0973e5b710fd3562e02240a77f3a98710fa2400e
+Author: Jonathan Hooverman <Jonathan.Hooverman@gmail.com>
+Date:   Sat Nov 22 12:43:42 2014 +0100
+
+    Updated German translation
+
 commit 98c3f6b68bfe791915662af0cb31388e015c6a46 (tag: v1.5)
 Author: oferkv <oferkv@gmail.com>
 Date:   Sat Nov 22 12:27:01 2014 +0200
