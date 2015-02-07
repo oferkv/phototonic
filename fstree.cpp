@@ -18,6 +18,23 @@
 
 #include "fstree.h"
 
+bool FSModel::hasChildren(const QModelIndex &parent) const
+{
+	if (parent.column() > 0)
+		return false;
+
+	if (!parent.isValid()) // drives
+		return true;
+
+	// return false if item cant have children
+	if (parent.flags() &  Qt::ItemNeverHasChildren) {
+		return false;
+	}
+
+	// return if at least one child exists
+	return QDirIterator(filePath(parent), filter() | QDir::NoDotAndDotDot, QDirIterator::NoIteratorFlags).hasNext();
+}
+
 FSTree::FSTree(QWidget *parent) : QTreeView(parent)
 {
 	setAcceptDrops(true);
@@ -39,20 +56,6 @@ FSTree::FSTree(QWidget *parent) : QTreeView(parent)
 								this, SLOT(resizeTreeColumn(const QModelIndex &)));
 	connect(this, SIGNAL(collapsed(const QModelIndex &)),
 								this, SLOT(resizeTreeColumn(const QModelIndex &)));
-}
-
-bool FSModel::hasChildren(const QModelIndex &parent) const
-{
-	// return false if item cant have children
-	if (parent.flags() &  Qt::ItemNeverHasChildren) {
-		return false;
-	}
-
-	if (filePath(parent) == "")
-		return true;
-
-	// return if at least one child exists
-	return QDirIterator(filePath(parent), filter() | QDir::NoDotAndDotDot, QDirIterator::NoIteratorFlags).hasNext();
 }
 
 QModelIndex FSTree::getCurrentIndex()
