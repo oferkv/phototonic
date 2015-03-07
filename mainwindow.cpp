@@ -1938,6 +1938,7 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("imageToolBarVisible", (bool)imageToolBarVisible);
 	GData::appSettings->setValue("fsDockVisible", (bool)GData::fsDockVisible);
 	GData::appSettings->setValue("iiDockVisible", (bool)GData::iiDockVisible);
+	GData::appSettings->setValue("bmDockVisible", (bool)GData::bmDockVisible);
 	GData::appSettings->setValue("pvDockVisible", (bool)GData::pvDockVisible);
 	GData::appSettings->setValue("startupDir", (int)GData::startupDir);
 	GData::appSettings->setValue("specifiedStartDir", GData::specifiedStartDir);
@@ -2391,7 +2392,7 @@ void Phototonic::setDocksVisibility(bool visible)
 	}
 
 	fsDock->setVisible(visible? GData::fsDockVisible : false);
-	bmDock->setVisible(visible? GData::fsDockVisible : false);
+	bmDock->setVisible(visible? GData::bmDockVisible : false);
 	iiDock->setVisible(visible? GData::iiDockVisible : false);
 	pvDock->setVisible(visible? GData::pvDockVisible : false);
 
