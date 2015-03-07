@@ -2798,9 +2798,7 @@ void Phototonic::hideViewer()
 		imageView->infoLabel->setVisible(false);
 	}
 
-	while (qApp->hasPendingEvents()) {
-		QApplication::processEvents();
-	}
+	QApplication::processEvents();
 
 	GData::layoutMode = thumbViewIdx;
 	mainLayout->removeWidget(imageView);
@@ -2817,9 +2815,7 @@ void Phototonic::hideViewer()
 
 	thumbView->setResizeMode(QListView::Fixed);
 	thumbView->setVisible(true);
-	while (qApp->hasPendingEvents()) {
-		QApplication::processEvents();
-	}
+	QApplication::processEvents();
 	setThumbviewWindowTitle();
 
 	fsDock->setMaximumHeight(QWIDGETSIZE_MAX);
