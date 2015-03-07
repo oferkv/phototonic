@@ -43,6 +43,16 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 
 	restoreGeometry(GData::appSettings->value("Geometry").toByteArray());
 	restoreState(GData::appSettings->value("WindowState").toByteArray());
+
+	editToolBarVisible = editToolBar->isVisibleTo(this);
+	goToolBarVisible = goToolBar->isVisibleTo(this);
+	viewToolBarVisible = viewToolBar->isVisibleTo(this);
+	imageToolBarVisible = imageToolBar->isVisibleTo(this);
+	GData::fsDockVisible = fsDock->isVisibleTo(this);
+	GData::bmDockVisible = bmDock->isVisibleTo(this);
+	GData::iiDockVisible = iiDock->isVisibleTo(this);
+	GData::pvDockVisible = pvDock->isVisibleTo(this);
+
 	setWindowIcon(QIcon(":/images/phototonic.png"));
 
 	mainLayout = new QHBoxLayout;
@@ -1932,14 +1942,6 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("noEnlargeSmallThumb", (bool)GData::noEnlargeSmallThumb);
 	GData::appSettings->setValue("slideShowDelay", (int)GData::slideShowDelay);
 	GData::appSettings->setValue("slideShowRandom", (bool)GData::slideShowRandom);
-	GData::appSettings->setValue("editToolBarVisible", (bool)editToolBarVisible);
-	GData::appSettings->setValue("goToolBarVisible", (bool)goToolBarVisible);
-	GData::appSettings->setValue("viewToolBarVisible", (bool)viewToolBarVisible);
-	GData::appSettings->setValue("imageToolBarVisible", (bool)imageToolBarVisible);
-	GData::appSettings->setValue("fsDockVisible", (bool)GData::fsDockVisible);
-	GData::appSettings->setValue("iiDockVisible", (bool)GData::iiDockVisible);
-	GData::appSettings->setValue("bmDockVisible", (bool)GData::bmDockVisible);
-	GData::appSettings->setValue("pvDockVisible", (bool)GData::pvDockVisible);
 	GData::appSettings->setValue("startupDir", (int)GData::startupDir);
 	GData::appSettings->setValue("specifiedStartDir", GData::specifiedStartDir);
 	GData::appSettings->setValue("thumbsBackImage", GData::thumbsBackImage);
@@ -2048,14 +2050,6 @@ void Phototonic::readSettings()
 	GData::slideShowDelay = GData::appSettings->value("slideShowDelay").toInt();
 	GData::slideShowRandom = GData::appSettings->value("slideShowRandom").toBool();
 	GData::slideShowActive = false;
-	editToolBarVisible = GData::appSettings->value("editToolBarVisible").toBool();
-	goToolBarVisible = GData::appSettings->value("goToolBarVisible").toBool();
-	viewToolBarVisible = GData::appSettings->value("viewToolBarVisible").toBool();
-	imageToolBarVisible = GData::appSettings->value("imageToolBarVisible").toBool();
-	GData::fsDockVisible = GData::appSettings->value("fsDockVisible").toBool();
-	GData::bmDockVisible = GData::appSettings->value("bmDockVisible").toBool();
-	GData::iiDockVisible = GData::appSettings->value("iiDockVisible").toBool();
-	GData::pvDockVisible = GData::appSettings->value("pvDockVisible").toBool();
 	GData::startupDir = (GData::StartupDir)GData::appSettings->value("startupDir").toInt();
 	GData::specifiedStartDir = GData::appSettings->value("specifiedStartDir").toString();
 	GData::thumbsBackImage = GData::appSettings->value("thumbsBackImage").toString();
