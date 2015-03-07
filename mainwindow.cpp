@@ -2374,17 +2374,6 @@ void Phototonic::newImage()
 
 void Phototonic::setDocksVisibility(bool visible)
 {
-	if (!visible) {
-		fsDock->setMaximumHeight(fsDock->height());
-		bmDock->setMaximumHeight(bmDock->height());
-		iiDock->setMaximumHeight(iiDock->height());
-		pvDock->setMaximumHeight(pvDock->height());
-		fsDock->setMaximumWidth(fsDock->width());
-		bmDock->setMaximumWidth(bmDock->width());
-		iiDock->setMaximumWidth(iiDock->width());
-		pvDock->setMaximumWidth(pvDock->width());
-	}
-
 	fsDock->setVisible(visible? GData::fsDockVisible : false);
 	bmDock->setVisible(visible? GData::bmDockVisible : false);
 	iiDock->setVisible(visible? GData::iiDockVisible : false);
@@ -2813,21 +2802,8 @@ void Phototonic::hideViewer()
 	QApplication::processEvents();
 	setThumbviewWindowTitle();
 
-	fsDock->setMaximumHeight(QWIDGETSIZE_MAX);
-	bmDock->setMaximumHeight(QWIDGETSIZE_MAX);
-	iiDock->setMaximumHeight(QWIDGETSIZE_MAX);
-	pvDock->setMaximumHeight(QWIDGETSIZE_MAX);
-	fsDock->setMaximumWidth(QWIDGETSIZE_MAX);
-	bmDock->setMaximumWidth(QWIDGETSIZE_MAX);
-	iiDock->setMaximumWidth(QWIDGETSIZE_MAX);
-	pvDock->setMaximumWidth(QWIDGETSIZE_MAX);
-
 	if (!cliFileName.isEmpty()) {
 		cliFileName = "";
-		if (!shouldMaximize) {
-			restoreGeometry(GData::appSettings->value("Geometry").toByteArray());
-		}
-		restoreState(GData::appSettings->value("WindowState").toByteArray());
 	}
 
 	if (thumbView->thumbViewModel->rowCount() > 0) {
