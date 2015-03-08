@@ -16,6 +16,7 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "dircompleter.h"
 #include "mainwindow.h"
 #include "global.h"
 
@@ -806,11 +807,7 @@ void Phototonic::createToolBars()
 
 	/* path bar */
 	pathBar = new QLineEdit;
-	pathComplete = new QCompleter(this);
-	QDirModel *pathCompleteDirMod = new QDirModel;
-	pathCompleteDirMod->setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
-	pathComplete->setModel(pathCompleteDirMod);
-	pathBar->setCompleter(pathComplete);
+	pathBar->setCompleter(new DirCompleter(pathBar));
 	pathBar->setMinimumWidth(200);
 	pathBar->setMaximumWidth(300);
 	connect(pathBar, SIGNAL(returnPressed()), this, SLOT(goPathBarDir()));
