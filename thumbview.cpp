@@ -297,8 +297,43 @@ void ThumbView::startDrag(Qt::DropActions)
 
 	QDrag *drag = new QDrag(this);
 	QMimeData *mimeData = new QMimeData;
+	QList<QUrl> urls;
+	for (QModelIndexList::const_iterator it = indexesList.constBegin(),
+										end = indexesList.constEnd(); it != end; ++it) {
+		urls << QUrl(thumbViewModel->item(it->row())->data(FileNameRole).toString());
+	}
+	mimeData->setUrls(urls);
 	drag->setMimeData(mimeData);
-	drag->start(Qt::CopyAction | Qt::MoveAction);
+	QPixmap pix;
+	if (indexesList.count() > 1) {
+		pix = QPixmap(128,112);
+		pix.fill(Qt::transparent);
+		QPainter p(&pix);
+		p.setBrush(Qt::NoBrush);
+		p.setPen(QPen(Qt::white, 2));
+		int x = 0, y = 0, xmax = 0, ymax = 0;
+		for (int i = 0; i < qMin(5,indexesList.count()); ++i) {
+			QPixmap pix = thumbViewModel->item(indexesList.at(i).row())->icon().pixmap(72);
+			if (i == 4) {
+				x = (xmax - pix.width())/2;
+				y = (ymax - pix.height())/2;
+			}
+			p.drawPixmap(x, y, pix);
+			xmax = qMax(xmax, qMin(128, x + pix.width()));
+			ymax = qMax(ymax, qMin(112, y + pix.height()));
+			p.drawRect(x+1, y+1, qMin(126, pix.width()-2), qMin(110, pix.height()-2));
+			x = !(x == y)*56;
+			y = !y*40;
+		}
+		p.end();
+		pix = pix.copy(0, 0, xmax, ymax);
+		drag->setPixmap(pix);
+	} else {
+		pix = thumbViewModel->item(indexesList.at(0).row())->icon().pixmap(128);
+		drag->setPixmap(pix);
+	}
+	drag->setHotSpot(QPoint(pix.width()/2, pix.height()/2));
+	drag->exec(Qt::CopyAction|Qt::MoveAction|Qt::LinkAction, Qt::IgnoreAction);
 }
 
 void ThumbView::abort()
