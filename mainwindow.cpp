@@ -2371,6 +2371,7 @@ void Phototonic::newImage()
 
 void Phototonic::setDocksVisibility(bool visible)
 {
+	layout()->setEnabled(false);
 	fsDock->setVisible(visible? GData::fsDockVisible : false);
 	bmDock->setVisible(visible? GData::bmDockVisible : false);
 	iiDock->setVisible(visible? GData::iiDockVisible : false);
@@ -2386,6 +2387,7 @@ void Phototonic::setDocksVisibility(bool visible)
 	imageToolBar->setVisible(visible? imageToolBarVisible : GData::imageToolbarFullScreen);
 
 	setContextMenuPolicy(Qt::PreventContextMenu);
+	layout()->setEnabled(true);
 }
 
 void Phototonic::openOp()
