@@ -20,6 +20,10 @@
 #include "mainwindow.h"
 #include "global.h"
 
+#ifdef Q_OS_UNIX
+#include <unistd.h>
+#endif
+
 #define THUMB_SIZE_MIN	50
 #define THUMB_SIZE_MAX	300
 
@@ -2502,6 +2506,8 @@ void Phototonic::showViewer()
 		imageView->setVisible(true);
 		thumbView->setVisible(false);
 		setDocksVisibility(false);
+		QApplication::processEvents(); // ensure a vsible update
+									   // "helps" compositors which perform animated transitions
 		if (GData::isFullScreen == true) {
 			shouldMaximize = isMaximized();
 			showFullScreen();
@@ -2773,7 +2779,9 @@ void Phototonic::hideViewer()
 
 	showBusyStatus(true);
 
+	QSize fullScreenSize;
 	if (isFullScreen())	{
+		fullScreenSize = size();
 		showNormal();
 		if (shouldMaximize)
 			showMaximized();
@@ -2781,13 +2789,11 @@ void Phototonic::hideViewer()
 		imageView->infoLabel->setVisible(false);
 	}
 
-	QApplication::processEvents();
-
 	GData::layoutMode = thumbViewIdx;
 	mainLayout->removeWidget(imageView);
-	
+
 	imageViewContainer->addWidget(imageView);
-	setDocksVisibility(true);
+
 	while (QApplication::overrideCursor()) {
 		QApplication::restoreOverrideCursor();
 	}
@@ -2823,6 +2829,30 @@ void Phototonic::hideViewer()
 	setContextMenuPolicy(Qt::DefaultContextMenu);
 
 	updateActions();
+
+#ifdef Q_OS_UNIX
+	// there's no usleep on windows - but WM is sync there anyway
+	if (fullScreenSize.isValid()) {
+		// HACK
+		// I hate this code.
+		// The problem is that showFullScreen will call the WM and it takes some time
+		// until the WM reacts and resizes the window.
+		// If the docks etc. are shown before that happened, the following resize
+		// will alter the previous geometries (they were hidden before the window
+		// entered the fs mode)
+		uint timeout = 0;
+		// ideally, this hits immediately (because of the internal actions)
+		// but we're not gonna wait more than 250 ms for this - the dock layout
+		// will then change, but more likely the FS mode change has no impact on
+		// the size at all.
+		while (size() == fullScreenSize && timeout < 250000) {
+			usleep(5000);
+			timeout += 5000;
+			QApplication::processEvents();
+		}
+	}
+#endif
+	setDocksVisibility(true);
 }
 
 void Phototonic::goBottom()
