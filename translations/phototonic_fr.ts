@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="fr_FR">
+<TS version="2.1" language="fr_FR">
 <context>
     <name>AppMgmtDialog</name>
     <message>
@@ -477,12 +477,12 @@
     <message>
         <location filename="../mainwindow.cpp" line="351"/>
         <source>Save</source>
-        <translation>Enregister</translation>
+        <translation>Enregistrer</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="355"/>
         <source>Save As</source>
-        <translation>Enregister sous</translation>
+        <translation>Enregistrer sous</translation>
     </message>
     <message>
         <source>Copy Image</source>
@@ -1141,7 +1141,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="490"/>
         <source>Go Up</source>
-        <translation type="unfinished">Monter</translation>
+        <translation>Monter</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="534"/>
