@@ -1035,7 +1035,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.5.64</h2>"
+	QString aboutString = "<h2>Phototonic v1.5.66</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -2824,9 +2824,7 @@ void Phototonic::hideViewer()
 		imageView->infoLabel->setVisible(false);
 	}
 
-	while (qApp->hasPendingEvents()) {
-		QApplication::processEvents();
-	}
+	QApplication::processEvents();
 
 	GData::layoutMode = thumbViewIdx;
 	mainLayout->removeWidget(imageView);
@@ -2843,9 +2841,10 @@ void Phototonic::hideViewer()
 
 	thumbView->setResizeMode(QListView::Fixed);
 	thumbView->setVisible(true);
-	while (qApp->hasPendingEvents()) {
+	for (int i = 0; i <= 100 && qApp->hasPendingEvents(); ++i) {
 		QApplication::processEvents();
 	}
+
 	setThumbviewWindowTitle();
 
 	fsDock->setMaximumHeight(QWIDGETSIZE_MAX);
