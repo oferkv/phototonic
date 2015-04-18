@@ -968,6 +968,8 @@ void ImageView::saveImageAs()
 	Exiv2::Image::AutoPtr newExifImage;
 	bool exifError = false;
 
+	setCursorHiding(false);
+
 	QString fileName = QFileDialog::getSaveFileName(this,
 		tr("Save image as"),
 		currentImageFullPath,
@@ -1009,6 +1011,9 @@ void ImageView::saveImageAs()
 		
 			setFeedback(tr("Image saved."));
 		}
+	}
+	if (mainWindow->isFullScreen()) {
+		setCursorHiding(true);
 	}
 }
 

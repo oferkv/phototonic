@@ -16,6 +16,7 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "dircompleter.h"
 #include "mainwindow.h"
 #include "global.h"
 
@@ -796,11 +797,7 @@ void Phototonic::createToolBars()
 
 	/* path bar */
 	pathBar = new QLineEdit;
-	pathComplete = new QCompleter(this);
-	QDirModel *pathCompleteDirMod = new QDirModel;
-	pathCompleteDirMod->setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
-	pathComplete->setModel(pathCompleteDirMod);
-	pathBar->setCompleter(pathComplete);
+	pathBar->setCompleter(new DirCompleter(pathBar));
 	pathBar->setMinimumWidth(200);
 	pathBar->setMaximumWidth(300);
 	connect(pathBar, SIGNAL(returnPressed()), this, SLOT(goPathBarDir()));
@@ -1038,20 +1035,21 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.5.48</h2>"
+	QString aboutString = "<h2>Phototonic v1.5.66</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
 		+ "<p><a href=\"https://github.com/oferkv/phototonic/issues\">" + tr("Bug reports") + "</a></p>"
 		+ "<p></p>"
 		+ "<table><tr><td>Code:</td><td>Ofer Kashayov (oferkv@gmail.com)</td></tr>"
+		+ QString::fromUtf8("<tr><td></td><td>Thomas L\u00FCbking (thomas.luebking@gmail.com)</td></tr>")
 		+ "<tr><td></td><td>Krzysztof Pyrkosz (pyrkosz@o2.pl)</td></tr>"
 		+ "<tr><td></td><td>Christopher Roy Bratusek (nano@jpberlin.de)</td></tr>"
 		+ "<tr><td></td><td></td></tr>"
 		+ "<tr><td>Czech:</td><td>Pavel Fric (pavelfric@seznam.cz)</td></tr>"
 		+ "<tr><td>French:</td><td>Adrien Daugabel (adrien.d@mageialinux-online.org)</td></tr>"
 		+ "<tr><td></td><td>David Geiger (david.david@mageialinux-online.org)</td></tr>"
-		+ "<tr><td></td><td>Rémi Verschelde (akien@mageia.org)</td></tr>"
+		+ QString::fromUtf8("<tr><td></td><td>R\u00E9mi Verschelde (akien@mageia.org)</td></tr>")
 		+ "<tr><td>German:</td><td>Jonathan Hooverman (jonathan.hooverman@gmail.com)</td></tr>"
 		+ QString::fromUtf8("<tr><td>Polish:</td><td>Robert Wojew\u00F3dzki (robwoj44@poczta.onet.pl)</td></tr>")
 		+ "<tr><td>Russian:</td><td>Ilya Alexandrovich (yast4ik@gmail.com)</td></tr></table>"
@@ -1181,9 +1179,18 @@ void Phototonic::updateExternalApps()
 void Phototonic::chooseExternalApp()
 {
 	AppMgmtDialog *dialog = new AppMgmtDialog(this);
+
+	if (GData::slideShowActive)
+		slideShow();
+	imageView->setCursorHiding(false);
+
 	dialog->exec();
 	updateExternalApps();
 	delete(dialog);
+
+	if (isFullScreen()) {
+		imageView->setCursorHiding(true);
+	}
 }
 
 void Phototonic::showSettings()
@@ -1278,6 +1285,10 @@ void Phototonic::moveImagesTo()
 
 void Phototonic::copyMoveImages(bool move)
 {
+	if (GData::slideShowActive)
+		slideShow();
+	imageView->setCursorHiding(false);
+
 	copyMoveToDialog = new CopyMoveToDialog(this, getSelectedPath(), move);
 	if (copyMoveToDialog->exec()) {
 		if (GData::layoutMode == thumbViewIdx) {
@@ -1290,6 +1301,10 @@ void Phototonic::copyMoveImages(bool move)
 		} else {
 			if (imageView->isNewImage()) 	{
 				showNewImageWarning(this);
+				if (isFullScreen()) {
+					imageView->setCursorHiding(true);
+				}
+
 				return;
 			}
 		
@@ -1316,6 +1331,10 @@ void Phototonic::copyMoveImages(bool move)
 	bookmarks->reloadBookmarks();
 	delete(copyMoveToDialog);
 	copyMoveToDialog = 0;
+
+	if (isFullScreen()) {
+		imageView->setCursorHiding(true);
+	}
 }
 
 void Phototonic::thumbsZoomIn()
@@ -1658,11 +1677,15 @@ void Phototonic::updateCurrentImage(int currentRow)
 
 void Phototonic::deleteViewerImage()
 {
-	if (imageView->isNewImage())
-	{
+	if (imageView->isNewImage()) {
 		showNewImageWarning(this);
 		return;
 	}
+
+	if (GData::slideShowActive)
+		slideShow();
+
+	imageView->setCursorHiding(false);
 
 	bool ok;
 	QFileInfo fileInfo = QFileInfo(imageView->currentImageFullPath);
@@ -1673,7 +1696,7 @@ void Phototonic::deleteViewerImage()
 	msgBox.setWindowTitle(tr("Delete image"));
 	msgBox.setIcon(QMessageBox::Warning);
 	msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
-	msgBox.setDefaultButton(QMessageBox::Cancel);
+	msgBox.setDefaultButton(QMessageBox::Yes);
 	msgBox.setButtonText(QMessageBox::Yes, tr("Yes"));  
     msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));  
 	int ret = msgBox.exec();
@@ -1691,10 +1714,16 @@ void Phototonic::deleteViewerImage()
 		{
 			QMessageBox msgBox;
 			msgBox.critical(this, tr("Error"), tr("Failed to delete image"));
+			if (isFullScreen()) {
+				imageView->setCursorHiding(true);
+			}
 			return;
 		}
 
 		updateCurrentImage(currentRow);
+	}
+	if (isFullScreen()) {
+		imageView->setCursorHiding(true);
 	}
 }
 
@@ -1705,55 +1734,51 @@ void Phototonic::deleteOp()
 		return;
 	}
 
-	if (QApplication::focusWidget() == fsTree)
-	{
+	if (QApplication::focusWidget() == fsTree) {
 		deleteDir();
 		return;
 	}
 
-	if (GData::layoutMode == imageViewIdx)
-	{
+	if (GData::layoutMode == imageViewIdx) {
 		deleteViewerImage();
 		return;
 	}
 
-	if (thumbView->selectionModel()->selectedIndexes().size() < 1)
-	{
+	if (thumbView->selectionModel()->selectedIndexes().size() < 1) {
 		setStatus(tr("No selection"));
 		return;
 	}
 
+	// deleting from thumbnail viewer
 	QMessageBox msgBox;
 	msgBox.setText(tr("Permanently delete selected images?"));
 	msgBox.setWindowTitle(tr("Delete images"));
 	msgBox.setIcon(QMessageBox::Warning);
 	msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
-	msgBox.setDefaultButton(QMessageBox::Cancel);
+	msgBox.setDefaultButton(QMessageBox::Yes);
 	msgBox.setButtonText(QMessageBox::Yes, tr("Yes"));  
-    msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));  
+	msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));  
 	int ret = msgBox.exec();
 
-	if (ret == QMessageBox::Yes)
-	{
+	if (ret == QMessageBox::Yes) {
 		QModelIndexList indexesList;
 		int nfiles = 0;
 		bool ok;
 	
-		while((indexesList = thumbView->selectionModel()->selectedIndexes()).size())
-		{
+		while((indexesList = thumbView->selectionModel()->selectedIndexes()).size()) {
 			ok = QFile::remove(thumbView->thumbViewModel->item(
 								indexesList.first().row())->data(thumbView->FileNameRole).toString());
 
 			++nfiles;
-			if (ok)
-			{
-				 thumbView->thumbViewModel->removeRow(indexesList.first().row());
-			}
-			else
-			{
+			if (ok) {
+				thumbView->thumbViewModel->removeRow(indexesList.first().row());
+			} else {
 				QMessageBox msgBox;
 				msgBox.critical(this, tr("Error"), tr("Failed to delete image."));
 				return;
+			}
+			if (thumbView->thumbViewModel->rowCount() > 0) {
+				thumbView->setRowHidden(0 , false);
 			}
 		}
 		
@@ -1939,6 +1964,7 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("imageToolBarVisible", (bool)imageToolBarVisible);
 	GData::appSettings->setValue("fsDockVisible", (bool)GData::fsDockVisible);
 	GData::appSettings->setValue("iiDockVisible", (bool)GData::iiDockVisible);
+	GData::appSettings->setValue("bmDockVisible", (bool)GData::bmDockVisible);
 	GData::appSettings->setValue("pvDockVisible", (bool)GData::pvDockVisible);
 	GData::appSettings->setValue("startupDir", (int)GData::startupDir);
 	GData::appSettings->setValue("specifiedStartDir", GData::specifiedStartDir);
@@ -2394,7 +2420,7 @@ void Phototonic::setDocksVisibility(bool visible)
 	}
 
 	fsDock->setVisible(visible? GData::fsDockVisible : false);
-	bmDock->setVisible(visible? GData::fsDockVisible : false);
+	bmDock->setVisible(visible? GData::bmDockVisible : false);
 	iiDock->setVisible(visible? GData::iiDockVisible : false);
 	pvDock->setVisible(visible? GData::pvDockVisible : false);
 
@@ -2801,9 +2827,7 @@ void Phototonic::hideViewer()
 		imageView->infoLabel->setVisible(false);
 	}
 
-	while (qApp->hasPendingEvents()) {
-		QApplication::processEvents();
-	}
+	QApplication::processEvents();
 
 	GData::layoutMode = thumbViewIdx;
 	mainLayout->removeWidget(imageView);
@@ -2820,9 +2844,10 @@ void Phototonic::hideViewer()
 
 	thumbView->setResizeMode(QListView::Fixed);
 	thumbView->setVisible(true);
-	while (qApp->hasPendingEvents()) {
+	for (int i = 0; i <= 100 && qApp->hasPendingEvents(); ++i) {
 		QApplication::processEvents();
 	}
+
 	setThumbviewWindowTitle();
 
 	fsDock->setMaximumHeight(QWIDGETSIZE_MAX);
@@ -3110,8 +3135,14 @@ void Phototonic::rename()
 		return;
 	}
 
-	bool ok;
+	if (GData::slideShowActive)
+		slideShow();
+	imageView->setCursorHiding(false);
 
+	QString currnetFilePath = selectedImageFileName;
+	QFile currentFile(currnetFilePath);
+	QString newImageFullPath = thumbView->currentViewDir;
+	bool ok;
 	QString title = tr("Rename Image");
 	QString newImageName = QInputDialog::getText(this,
 									title, tr("Enter a new name for \"%1\":")
@@ -3122,20 +3153,16 @@ void Phototonic::rename()
 									&ok);
 
 	if (!ok) {
-		return;
+		goto cleanUp;
 	}
 
 	if(newImageName.isEmpty()) {
 		QMessageBox msgBox;
 		msgBox.critical(this, tr("Error"), tr("No name entered."));
-		return;
+		goto cleanUp;
 	}
 
 	newImageName += "." + QFileInfo(selectedImageFileName).suffix();
-	QString currnetFilePath = selectedImageFileName;
-	QFile currentFile(currnetFilePath);
-
-	QString newImageFullPath = thumbView->currentViewDir;
 	if (newImageFullPath.right(1) == QDir::separator()) {
 		newImageFullPath +=  newImageName;
 	} else {
@@ -3161,6 +3188,11 @@ void Phototonic::rename()
 	} else {
 		QMessageBox msgBox;
 		msgBox.critical(this, tr("Error"), tr("Failed to rename image."));
+	}
+
+cleanUp:
+	if (isFullScreen()) {
+		imageView->setCursorHiding(true);
 	}
 }
 
