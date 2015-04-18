@@ -27,6 +27,7 @@ class DirCompleter : public QCompleter
 public:
 	DirCompleter(QObject *parent = 0);
 	QString pathFromIndex(const QModelIndex &index) const;
+
 public slots:
 	QStringList splitPath(const QString &path) const;
 };
