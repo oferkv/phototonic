@@ -1038,7 +1038,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.5.54</h2>"
+	QString aboutString = "<h2>Phototonic v1.5.60</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -1736,24 +1736,22 @@ void Phototonic::deleteOp()
 		return;
 	}
 
-	if (QApplication::focusWidget() == fsTree)
-	{
+	if (QApplication::focusWidget() == fsTree) {
 		deleteDir();
 		return;
 	}
 
-	if (GData::layoutMode == imageViewIdx)
-	{
+	if (GData::layoutMode == imageViewIdx) {
 		deleteViewerImage();
 		return;
 	}
 
-	if (thumbView->selectionModel()->selectedIndexes().size() < 1)
-	{
+	if (thumbView->selectionModel()->selectedIndexes().size() < 1) {
 		setStatus(tr("No selection"));
 		return;
 	}
 
+	// deleting from thumbnail viewer
 	QMessageBox msgBox;
 	msgBox.setText(tr("Permanently delete selected images?"));
 	msgBox.setWindowTitle(tr("Delete images"));
@@ -1761,30 +1759,28 @@ void Phototonic::deleteOp()
 	msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
 	msgBox.setDefaultButton(QMessageBox::Yes);
 	msgBox.setButtonText(QMessageBox::Yes, tr("Yes"));  
-    msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));  
+	msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));  
 	int ret = msgBox.exec();
 
-	if (ret == QMessageBox::Yes)
-	{
+	if (ret == QMessageBox::Yes) {
 		QModelIndexList indexesList;
 		int nfiles = 0;
 		bool ok;
 	
-		while((indexesList = thumbView->selectionModel()->selectedIndexes()).size())
-		{
+		while((indexesList = thumbView->selectionModel()->selectedIndexes()).size()) {
 			ok = QFile::remove(thumbView->thumbViewModel->item(
 								indexesList.first().row())->data(thumbView->FileNameRole).toString());
 
 			++nfiles;
-			if (ok)
-			{
-				 thumbView->thumbViewModel->removeRow(indexesList.first().row());
-			}
-			else
-			{
+			if (ok) {
+				thumbView->thumbViewModel->removeRow(indexesList.first().row());
+			} else {
 				QMessageBox msgBox;
 				msgBox.critical(this, tr("Error"), tr("Failed to delete image."));
 				return;
+			}
+			if (thumbView->thumbViewModel->rowCount() > 0) {
+				thumbView->setRowHidden(0 , false);
 			}
 		}
 		
