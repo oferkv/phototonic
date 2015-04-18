@@ -16,8 +16,13 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "dircompleter.h"
 #include "mainwindow.h"
 #include "global.h"
+
+#ifdef Q_OS_UNIX
+#include <unistd.h>
+#endif
 
 #define THUMB_SIZE_MIN	50
 #define THUMB_SIZE_MAX	300
@@ -43,6 +48,16 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 
 	restoreGeometry(GData::appSettings->value("Geometry").toByteArray());
 	restoreState(GData::appSettings->value("WindowState").toByteArray());
+
+	editToolBarVisible = editToolBar->isVisibleTo(this);
+	goToolBarVisible = goToolBar->isVisibleTo(this);
+	viewToolBarVisible = viewToolBar->isVisibleTo(this);
+	imageToolBarVisible = imageToolBar->isVisibleTo(this);
+	GData::fsDockVisible = fsDock->isVisibleTo(this);
+	GData::bmDockVisible = bmDock->isVisibleTo(this);
+	GData::iiDockVisible = iiDock->isVisibleTo(this);
+	GData::pvDockVisible = pvDock->isVisibleTo(this);
+
 	setWindowIcon(QIcon(":/images/phototonic.png"));
 
 	mainLayout = new QHBoxLayout;
@@ -796,11 +811,7 @@ void Phototonic::createToolBars()
 
 	/* path bar */
 	pathBar = new QLineEdit;
-	pathComplete = new QCompleter(this);
-	QDirModel *pathCompleteDirMod = new QDirModel;
-	pathCompleteDirMod->setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
-	pathComplete->setModel(pathCompleteDirMod);
-	pathBar->setCompleter(pathComplete);
+	pathBar->setCompleter(new DirCompleter(pathBar));
 	pathBar->setMinimumWidth(200);
 	pathBar->setMaximumWidth(300);
 	connect(pathBar, SIGNAL(returnPressed()), this, SLOT(goPathBarDir()));
@@ -1959,13 +1970,6 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("noEnlargeSmallThumb", (bool)GData::noEnlargeSmallThumb);
 	GData::appSettings->setValue("slideShowDelay", (int)GData::slideShowDelay);
 	GData::appSettings->setValue("slideShowRandom", (bool)GData::slideShowRandom);
-	GData::appSettings->setValue("editToolBarVisible", (bool)editToolBarVisible);
-	GData::appSettings->setValue("goToolBarVisible", (bool)goToolBarVisible);
-	GData::appSettings->setValue("viewToolBarVisible", (bool)viewToolBarVisible);
-	GData::appSettings->setValue("imageToolBarVisible", (bool)imageToolBarVisible);
-	GData::appSettings->setValue("fsDockVisible", (bool)GData::fsDockVisible);
-	GData::appSettings->setValue("iiDockVisible", (bool)GData::iiDockVisible);
-	GData::appSettings->setValue("pvDockVisible", (bool)GData::pvDockVisible);
 	GData::appSettings->setValue("startupDir", (int)GData::startupDir);
 	GData::appSettings->setValue("specifiedStartDir", GData::specifiedStartDir);
 	GData::appSettings->setValue("thumbsBackImage", GData::thumbsBackImage);
@@ -2074,14 +2078,6 @@ void Phototonic::readSettings()
 	GData::slideShowDelay = GData::appSettings->value("slideShowDelay").toInt();
 	GData::slideShowRandom = GData::appSettings->value("slideShowRandom").toBool();
 	GData::slideShowActive = false;
-	editToolBarVisible = GData::appSettings->value("editToolBarVisible").toBool();
-	goToolBarVisible = GData::appSettings->value("goToolBarVisible").toBool();
-	viewToolBarVisible = GData::appSettings->value("viewToolBarVisible").toBool();
-	imageToolBarVisible = GData::appSettings->value("imageToolBarVisible").toBool();
-	GData::fsDockVisible = GData::appSettings->value("fsDockVisible").toBool();
-	GData::bmDockVisible = GData::appSettings->value("bmDockVisible").toBool();
-	GData::iiDockVisible = GData::appSettings->value("iiDockVisible").toBool();
-	GData::pvDockVisible = GData::appSettings->value("pvDockVisible").toBool();
 	GData::startupDir = (GData::StartupDir)GData::appSettings->value("startupDir").toInt();
 	GData::specifiedStartDir = GData::appSettings->value("specifiedStartDir").toString();
 	GData::thumbsBackImage = GData::appSettings->value("thumbsBackImage").toString();
@@ -2406,19 +2402,9 @@ void Phototonic::newImage()
 
 void Phototonic::setDocksVisibility(bool visible)
 {
-	if (!visible) {
-		fsDock->setMaximumHeight(fsDock->height());
-		bmDock->setMaximumHeight(bmDock->height());
-		iiDock->setMaximumHeight(iiDock->height());
-		pvDock->setMaximumHeight(pvDock->height());
-		fsDock->setMaximumWidth(fsDock->width());
-		bmDock->setMaximumWidth(bmDock->width());
-		iiDock->setMaximumWidth(iiDock->width());
-		pvDock->setMaximumWidth(pvDock->width());
-	}
-
+	layout()->setEnabled(false);
 	fsDock->setVisible(visible? GData::fsDockVisible : false);
-	bmDock->setVisible(visible? GData::fsDockVisible : false);
+	bmDock->setVisible(visible? GData::bmDockVisible : false);
 	iiDock->setVisible(visible? GData::iiDockVisible : false);
 	pvDock->setVisible(visible? GData::pvDockVisible : false);
 
@@ -2432,6 +2418,7 @@ void Phototonic::setDocksVisibility(bool visible)
 	imageToolBar->setVisible(visible? imageToolBarVisible : GData::imageToolbarFullScreen);
 
 	setContextMenuPolicy(Qt::PreventContextMenu);
+	layout()->setEnabled(true);
 }
 
 void Phototonic::openOp()
@@ -2546,6 +2533,8 @@ void Phototonic::showViewer()
 		imageView->setVisible(true);
 		thumbView->setVisible(false);
 		setDocksVisibility(false);
+		QApplication::processEvents(); // ensure a vsible update
+									   // "helps" compositors which perform animated transitions
 		if (GData::isFullScreen == true) {
 			shouldMaximize = isMaximized();
 			showFullScreen();
@@ -2817,7 +2806,9 @@ void Phototonic::hideViewer()
 
 	showBusyStatus(true);
 
+	QSize fullScreenSize;
 	if (isFullScreen())	{
+		fullScreenSize = size();
 		showNormal();
 		if (shouldMaximize)
 			showMaximized();
@@ -2825,15 +2816,11 @@ void Phototonic::hideViewer()
 		imageView->infoLabel->setVisible(false);
 	}
 
-	while (qApp->hasPendingEvents()) {
-		QApplication::processEvents();
-	}
-
 	GData::layoutMode = thumbViewIdx;
 	mainLayout->removeWidget(imageView);
-	
+
 	imageViewContainer->addWidget(imageView);
-	setDocksVisibility(true);
+
 	while (QApplication::overrideCursor()) {
 		QApplication::restoreOverrideCursor();
 	}
@@ -2844,26 +2831,11 @@ void Phototonic::hideViewer()
 
 	thumbView->setResizeMode(QListView::Fixed);
 	thumbView->setVisible(true);
-	while (qApp->hasPendingEvents()) {
-		QApplication::processEvents();
-	}
+	QApplication::processEvents();
 	setThumbviewWindowTitle();
-
-	fsDock->setMaximumHeight(QWIDGETSIZE_MAX);
-	bmDock->setMaximumHeight(QWIDGETSIZE_MAX);
-	iiDock->setMaximumHeight(QWIDGETSIZE_MAX);
-	pvDock->setMaximumHeight(QWIDGETSIZE_MAX);
-	fsDock->setMaximumWidth(QWIDGETSIZE_MAX);
-	bmDock->setMaximumWidth(QWIDGETSIZE_MAX);
-	iiDock->setMaximumWidth(QWIDGETSIZE_MAX);
-	pvDock->setMaximumWidth(QWIDGETSIZE_MAX);
 
 	if (!cliFileName.isEmpty()) {
 		cliFileName = "";
-		if (!shouldMaximize) {
-			restoreGeometry(GData::appSettings->value("Geometry").toByteArray());
-		}
-		restoreState(GData::appSettings->value("WindowState").toByteArray());
 	}
 
 	if (thumbView->thumbViewModel->rowCount() > 0) {
@@ -2884,6 +2856,30 @@ void Phototonic::hideViewer()
 	setContextMenuPolicy(Qt::DefaultContextMenu);
 
 	updateActions();
+
+#ifdef Q_OS_UNIX
+	// there's no usleep on windows - but WM is sync there anyway
+	if (fullScreenSize.isValid()) {
+		// HACK
+		// I hate this code.
+		// The problem is that showFullScreen will call the WM and it takes some time
+		// until the WM reacts and resizes the window.
+		// If the docks etc. are shown before that happened, the following resize
+		// will alter the previous geometries (they were hidden before the window
+		// entered the fs mode)
+		uint timeout = 0;
+		// ideally, this hits immediately (because of the internal actions)
+		// but we're not gonna wait more than 250 ms for this - the dock layout
+		// will then change, but more likely the FS mode change has no impact on
+		// the size at all.
+		while (size() == fullScreenSize && timeout < 250000) {
+			usleep(5000);
+			timeout += 5000;
+			QApplication::processEvents();
+		}
+	}
+#endif
+	setDocksVisibility(true);
 }
 
 void Phototonic::goBottom()
