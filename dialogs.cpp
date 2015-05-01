@@ -522,6 +522,10 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	reverseMouseCb = new QCheckBox(tr("Swap mouse left-click and middle-click actions"), this);
 	reverseMouseCb->setChecked(GData::reverseMouseBehavior);
 
+	// Delete confirmation setting
+	deleteConfirmCb = new QCheckBox(tr("Ask confirmation before deleting photo"), this);
+	deleteConfirmCb->setChecked(GData::deleteConfirm);
+
 	// Keyboard and mouse
 	QGroupBox *keyboardGrp = new QGroupBox(tr("Keyboard Shortcuts"));
 	QVBoxLayout *keyboardVbox = new QVBoxLayout;
@@ -531,6 +535,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	QVBoxLayout *generalVbox = new QVBoxLayout;
 	generalVbox->addWidget(keyboardGrp);
 	generalVbox->addWidget(reverseMouseCb);
+	generalVbox->addWidget(deleteConfirmCb);
 	generalVbox->addWidget(startupDirGroupBox);
 	generalVbox->addStretch(1);
 	
@@ -609,6 +614,7 @@ void SettingsDialog::saveSettings()
 	GData::exifThumbRotationEnabled = enableThumbExifCb->isChecked();
 	GData::enableImageInfoFS = imageInfoCb->isChecked();
 	GData::reverseMouseBehavior = reverseMouseCb->isChecked();
+	GData::deleteConfirm = deleteConfirmCb->isChecked();
 
 	if (startupDirRadios[0]->isChecked())
 		GData::startupDir = GData::defaultDir;

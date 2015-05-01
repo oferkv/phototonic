@@ -1691,17 +1691,24 @@ void Phototonic::deleteViewerImage()
 	QFileInfo fileInfo = QFileInfo(imageView->currentImageFullPath);
 	QString fileName = fileInfo.fileName();
 
-	QMessageBox msgBox;
-	msgBox.setText(tr("Permanently delete") + " " + fileName);
-	msgBox.setWindowTitle(tr("Delete image"));
-	msgBox.setIcon(QMessageBox::Warning);
-	msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
-	msgBox.setDefaultButton(QMessageBox::Yes);
-	msgBox.setButtonText(QMessageBox::Yes, tr("Yes"));  
-    msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));  
-	int ret = msgBox.exec();
+	bool gonnaDelete = true;
+	if (GData::deleteConfirm) {
+		QMessageBox msgBox;
+		msgBox.setText(tr("Permanently delete") + " " + fileName);
+		msgBox.setWindowTitle(tr("Delete image"));
+		msgBox.setIcon(QMessageBox::Warning);
+		msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+		msgBox.setDefaultButton(QMessageBox::Yes);
+		msgBox.setButtonText(QMessageBox::Yes, tr("Yes"));  
+	    msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));  
+		int ret = msgBox.exec();
 
-	if (ret == QMessageBox::Yes)
+		if (ret != QMessageBox::Yes) {
+			gonnaDelete = false;
+		}
+	}
+
+	if (gonnaDelete)
 	{
 		int currentRow = thumbView->getCurrentRow();
 
@@ -1750,17 +1757,24 @@ void Phototonic::deleteOp()
 	}
 
 	// deleting from thumbnail viewer
-	QMessageBox msgBox;
-	msgBox.setText(tr("Permanently delete selected images?"));
-	msgBox.setWindowTitle(tr("Delete images"));
-	msgBox.setIcon(QMessageBox::Warning);
-	msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
-	msgBox.setDefaultButton(QMessageBox::Yes);
-	msgBox.setButtonText(QMessageBox::Yes, tr("Yes"));  
-	msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));  
-	int ret = msgBox.exec();
+	bool gonnaDelete = true;
+	if (GData::deleteConfirm) {
+		QMessageBox msgBox;
+		msgBox.setText(tr("Permanently delete selected images?"));
+		msgBox.setWindowTitle(tr("Delete images"));
+		msgBox.setIcon(QMessageBox::Warning);
+		msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+		msgBox.setDefaultButton(QMessageBox::Yes);
+		msgBox.setButtonText(QMessageBox::Yes, tr("Yes"));  
+		msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));  
+		int ret = msgBox.exec();
 
-	if (ret == QMessageBox::Yes) {
+		if (ret != QMessageBox::Yes) {
+			gonnaDelete = false;
+		}
+	}
+
+	if (gonnaDelete) {
 		QModelIndexList indexesList;
 		int nfiles = 0;
 		bool ok;
@@ -1949,6 +1963,7 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("exifRotationEnabled", (bool)GData::exifRotationEnabled);
 	GData::appSettings->setValue("exifThumbRotationEnabled", (bool)GData::exifThumbRotationEnabled);
 	GData::appSettings->setValue("reverseMouseBehavior", (bool)GData::reverseMouseBehavior);
+	GData::appSettings->setValue("deleteConfirm", (bool)GData::deleteConfirm);
 	GData::appSettings->setValue("showHiddenFiles", (bool)GData::showHiddenFiles);
 	GData::appSettings->setValue("wrapImageList", (bool)GData::wrapImageList);
 	GData::appSettings->setValue("imageZoomFactor", (float)GData::imageZoomFactor);
@@ -2033,6 +2048,7 @@ void Phototonic::readSettings()
 		GData::appSettings->setValue("exifRotationEnabled", (bool)true);
 		GData::appSettings->setValue("exifThumbRotationEnabled", (bool)false);
 		GData::appSettings->setValue("reverseMouseBehavior", (bool)false);
+		GData::appSettings->setValue("deleteConfirm", (bool)true);
 		GData::appSettings->setValue("showHiddenFiles", (bool)false);
 		GData::appSettings->setValue("slideShowDelay", (int)5);
 		GData::appSettings->setValue("slideShowRandom", (bool)false);
@@ -2058,6 +2074,7 @@ void Phototonic::readSettings()
 	GData::exifRotationEnabled = GData::appSettings->value("exifRotationEnabled").toBool();
 	GData::exifThumbRotationEnabled = GData::appSettings->value("exifThumbRotationEnabled").toBool();
 	GData::reverseMouseBehavior = GData::appSettings->value("reverseMouseBehavior").toBool();
+	GData::deleteConfirm = GData::appSettings->value("deleteConfirm").toBool();
 	GData::showHiddenFiles = GData::appSettings->value("showHiddenFiles").toBool();
 	GData::wrapImageList = GData::appSettings->value("wrapImageList").toBool();
 	GData::imageZoomFactor = GData::appSettings->value("imageZoomFactor").toFloat();
