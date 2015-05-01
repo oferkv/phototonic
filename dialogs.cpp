@@ -523,7 +523,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	reverseMouseCb->setChecked(GData::reverseMouseBehavior);
 
 	// Delete confirmation setting
-	deleteConfirmCb = new QCheckBox(tr("Ask confirmation before deleting photo"), this);
+	deleteConfirmCb = new QCheckBox(tr("Delete confirmation"), this);
 	deleteConfirmCb->setChecked(GData::deleteConfirm);
 
 	// Keyboard and mouse

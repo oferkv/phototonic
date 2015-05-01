@@ -1035,17 +1035,17 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.5.66</h2>"
+	QString aboutString = "<h2>Phototonic v1.5.70</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
 		+ "<p><a href=\"https://github.com/oferkv/phototonic/issues\">" + tr("Bug reports") + "</a></p>"
 		+ "<p></p>"
 		+ "<table><tr><td>Code:</td><td>Ofer Kashayov (oferkv@gmail.com)</td></tr>"
-		+ QString::fromUtf8("<tr><td></td><td>Thomas L\u00FCbking (thomas.luebking@gmail.com)</td></tr>")
-		+ "<tr><td></td><td>Krzysztof Pyrkosz (pyrkosz@o2.pl)</td></tr>"
 		+ "<tr><td></td><td>Christopher Roy Bratusek (nano@jpberlin.de)</td></tr>"
-		+ "<tr><td></td><td></td></tr>"
+		+ "<tr><td></td><td>Krzysztof Pyrkosz (pyrkosz@o2.pl)</td></tr>"
+		+ QString::fromUtf8("<tr><td></td><td>Thomas L\u00FCbking (thomas.luebking@gmail.com)</td></tr>")
+		+ "<tr><td></td><td>Tung Le ()</td></tr>"
 		+ "<tr><td>Czech:</td><td>Pavel Fric (pavelfric@seznam.cz)</td></tr>"
 		+ "<tr><td>French:</td><td>Adrien Daugabel (adrien.d@mageialinux-online.org)</td></tr>"
 		+ "<tr><td></td><td>David Geiger (david.david@mageialinux-online.org)</td></tr>"
@@ -1691,7 +1691,7 @@ void Phototonic::deleteViewerImage()
 	QFileInfo fileInfo = QFileInfo(imageView->currentImageFullPath);
 	QString fileName = fileInfo.fileName();
 
-	bool gonnaDelete = true;
+	bool deleteConfirmed = true;
 	if (GData::deleteConfirm) {
 		QMessageBox msgBox;
 		msgBox.setText(tr("Permanently delete") + " " + fileName);
@@ -1700,15 +1700,14 @@ void Phototonic::deleteViewerImage()
 		msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
 		msgBox.setDefaultButton(QMessageBox::Yes);
 		msgBox.setButtonText(QMessageBox::Yes, tr("Yes"));  
-	    msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));  
-		int ret = msgBox.exec();
+		msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));  
 
-		if (ret != QMessageBox::Yes) {
-			gonnaDelete = false;
+		if (msgBox.exec() != QMessageBox::Yes) {
+			deleteConfirmed = false;
 		}
 	}
 
-	if (gonnaDelete)
+	if (deleteConfirmed)
 	{
 		int currentRow = thumbView->getCurrentRow();
 
@@ -1757,7 +1756,7 @@ void Phototonic::deleteOp()
 	}
 
 	// deleting from thumbnail viewer
-	bool gonnaDelete = true;
+	bool deleteConfirmed = true;
 	if (GData::deleteConfirm) {
 		QMessageBox msgBox;
 		msgBox.setText(tr("Permanently delete selected images?"));
@@ -1767,14 +1766,13 @@ void Phototonic::deleteOp()
 		msgBox.setDefaultButton(QMessageBox::Yes);
 		msgBox.setButtonText(QMessageBox::Yes, tr("Yes"));  
 		msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));  
-		int ret = msgBox.exec();
 
-		if (ret != QMessageBox::Yes) {
-			gonnaDelete = false;
+		if (msgBox.exec() != QMessageBox::Yes) {
+			deleteConfirmed = false;
 		}
 	}
 
-	if (gonnaDelete) {
+	if (deleteConfirmed) {
 		QModelIndexList indexesList;
 		int nfiles = 0;
 		bool ok;
