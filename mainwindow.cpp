@@ -23,6 +23,8 @@
 #define THUMB_SIZE_MIN	50
 #define THUMB_SIZE_MAX	300
 
+#define CONFIRM_DELETE 0
+
 Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 {
 	GData::appSettings = new QSettings("phototonic", "phototonic_103");
@@ -1691,17 +1693,24 @@ void Phototonic::deleteViewerImage()
 	QFileInfo fileInfo = QFileInfo(imageView->currentImageFullPath);
 	QString fileName = fileInfo.fileName();
 
-	QMessageBox msgBox;
-	msgBox.setText(tr("Permanently delete") + " " + fileName);
-	msgBox.setWindowTitle(tr("Delete image"));
-	msgBox.setIcon(QMessageBox::Warning);
-	msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
-	msgBox.setDefaultButton(QMessageBox::Yes);
-	msgBox.setButtonText(QMessageBox::Yes, tr("Yes"));  
-    msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));  
-	int ret = msgBox.exec();
+	bool gonnaDelete = true;
+	if (CONFIRM_DELETE) {
+		QMessageBox msgBox;
+		msgBox.setText(tr("Permanently delete") + " " + fileName);
+		msgBox.setWindowTitle(tr("Delete image"));
+		msgBox.setIcon(QMessageBox::Warning);
+		msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+		msgBox.setDefaultButton(QMessageBox::Yes);
+		msgBox.setButtonText(QMessageBox::Yes, tr("Yes"));  
+	    msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));  
+		int ret = msgBox.exec();
 
-	if (ret == QMessageBox::Yes)
+		if (ret != QMessageBox::Yes) {
+			gonnaDelete = false;
+		}
+	}
+
+	if (gonnaDelete)
 	{
 		int currentRow = thumbView->getCurrentRow();
 
@@ -1750,17 +1759,24 @@ void Phototonic::deleteOp()
 	}
 
 	// deleting from thumbnail viewer
-	QMessageBox msgBox;
-	msgBox.setText(tr("Permanently delete selected images?"));
-	msgBox.setWindowTitle(tr("Delete images"));
-	msgBox.setIcon(QMessageBox::Warning);
-	msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
-	msgBox.setDefaultButton(QMessageBox::Yes);
-	msgBox.setButtonText(QMessageBox::Yes, tr("Yes"));  
-	msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));  
-	int ret = msgBox.exec();
+	bool gonnaDelete = true;
+	if (CONFIRM_DELETE) {
+		QMessageBox msgBox;
+		msgBox.setText(tr("Permanently delete selected images?"));
+		msgBox.setWindowTitle(tr("Delete images"));
+		msgBox.setIcon(QMessageBox::Warning);
+		msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+		msgBox.setDefaultButton(QMessageBox::Yes);
+		msgBox.setButtonText(QMessageBox::Yes, tr("Yes"));  
+		msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));  
+		int ret = msgBox.exec();
 
-	if (ret == QMessageBox::Yes) {
+		if (ret != QMessageBox::Yes) {
+			gonnaDelete = false;
+		}
+	}
+
+	if (gonnaDelete) {
 		QModelIndexList indexesList;
 		int nfiles = 0;
 		bool ok;
