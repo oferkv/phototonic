@@ -93,6 +93,7 @@ namespace GData
 	extern QMap<QString, QString> externalApps;
 	extern QSet<QString> bookmarkPaths;
 	extern bool reverseMouseBehavior;
+	extern bool deleteConfirm;
 	extern QModelIndexList copyCutIdxList;
 	extern bool copyOp;
 	extern QStringList copyCutFileList;
