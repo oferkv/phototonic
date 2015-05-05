@@ -95,6 +95,7 @@ private:
 	QSpinBox *thumbSpacingSpin;
 	QSpinBox *thumbPagesSpin;
 	QSpinBox *saveQualitySpin;
+	QPlainTextEdit *thumbLabel;
 	QColor bgColor;
 	QColor thumbBgColor;
 	QColor thumbTextColor;

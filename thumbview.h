@@ -86,7 +86,7 @@ public:
 	void setCurrentRow(int row);
 	void setImageviewWindowTitle();
 	QString getSingleSelectionFilename();
-	void addThumb(QString &imageFullPath);
+	void addThumb(QString &imageFullPath, int sortValue = 0);
 	void abort();
 
 protected:

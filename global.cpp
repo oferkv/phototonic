@@ -27,6 +27,7 @@ namespace GData
 	QColor backgroundColor;
 	QColor thumbsBackgroundColor;
 	QColor thumbsTextColor;
+	QString thumbLabel;
 	unsigned int thumbsLayout;
 	unsigned int thumbSpacing;
 	unsigned int thumbPagesReadahead;

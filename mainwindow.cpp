@@ -1949,6 +1949,7 @@ void Phototonic::writeSettings()
 
 	GData::appSettings->setValue("thumbsSortFlags", (int)thumbView->thumbsSortFlags);
 	GData::appSettings->setValue("thumbsZoomVal", (int)thumbView->thumbSize);
+	GData::appSettings->setValue("thumbLabel", (QString)GData::thumbLabel);
 	GData::appSettings->setValue("isFullScreen", (bool)GData::isFullScreen);
 	GData::appSettings->setValue("backgroundColor", GData::backgroundColor);
 	GData::appSettings->setValue("backgroundThumbColor", GData::thumbsBackgroundColor);
@@ -2028,6 +2029,7 @@ void Phototonic::readSettings()
 		resize(800, 600);
 		GData::appSettings->setValue("thumbsSortFlags", (int)0);
 		GData::appSettings->setValue("thumbsZoomVal", (int)150);
+		GData::appSettings->setValue("thumbLabel", (QString)"%filename%");
 		GData::appSettings->setValue("isFullScreen", (bool)false);
 		GData::appSettings->setValue("backgroundColor", QColor(25, 25, 25));
 		GData::appSettings->setValue("backgroundThumbColor", QColor(200, 200, 200));
@@ -2078,6 +2080,7 @@ void Phototonic::readSettings()
 	GData::imageZoomFactor = GData::appSettings->value("imageZoomFactor").toFloat();
 	GData::zoomOutFlags = GData::appSettings->value("zoomOutFlags").toInt();
 	GData::zoomInFlags = GData::appSettings->value("zoomInFlags").toInt();
+	GData::thumbLabel= GData::appSettings->value("thumbLabel").toString();
 	GData::rotation = 0;
 	GData::keepTransform = false;
 	shouldMaximize = GData::appSettings->value("shouldMaximize").toBool();
