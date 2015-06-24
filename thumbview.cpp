@@ -197,7 +197,6 @@ void ThumbView::updateExifInfo(QString imageFullPath)
 		Exiv2::ExifData::const_iterator end = exifData.end();
 		infoView->addTitleEntry("Exif");
 		for (Exiv2::ExifData::const_iterator md = exifData.begin(); md != end; ++md) {
-			// qDebug() << Exiv2::toString(md->key()).c_str() << " " << Exiv2::toString(md->value()).c_str();
 			key = QString::fromUtf8(md->tagName().c_str());
 			val = QString::fromUtf8(md->print().c_str());
 			infoView->addEntry(key, val);
@@ -233,6 +232,7 @@ void ThumbView::handleSelectionChanged(const QItemSelection&)
 	QModelIndexList indexesList = selectionModel()->selectedIndexes();
 	int nSelected = indexesList.size();
 	QString imageFullPath;
+	QString statusStr;
 
 	infoView->clear();
 
@@ -285,7 +285,30 @@ void ThumbView::handleSelectionChanged(const QItemSelection&)
 			infoView->addEntry(key, val);
 		}
 	}
-	updateThumbsSelection();
+		
+	if (nSelected == 0) {
+		imageTags->showFolderTags();
+	} else {
+		QStringList SelectedThumgsPaths;
+		for (int tn = indexesList.size() - 1; tn >= 0 ; --tn) {
+			SelectedThumgsPaths << 
+				thumbViewModel->item(indexesList[tn].row())->data(FileNameRole).toString();
+		}
+
+		imageTags->showSelectedImagesTags(SelectedThumgsPaths);
+	}
+
+	/* update status bar */
+	if (!nSelected) {
+		updateThumbsCount();
+		return;
+	} else if (nSelected >= 1) {
+		statusStr = tr("Selected %1 of%2")
+					.arg(QString::number(nSelected))
+					.arg(tr(" %n image(s)", "", thumbViewModel->rowCount()));
+	}
+
+	emit setStatus(statusStr);
 }
 
 void ThumbView::startDrag(Qt::DropActions)
@@ -440,22 +463,7 @@ void ThumbView::updateThumbsCount()
 	} else {
 		state = tr("No images");
 	}
-
-	emit setStatus(state);
-}
-
-void ThumbView::updateThumbsSelection()
-{
-	QString state;
-	int nSelected = selectionModel()->selectedIndexes().size();
-
-	if (!nSelected) {
-		updateThumbsCount();
-		return;
-	} else if (nSelected >= 1)
-		state = tr("Selected %1 of%2")
-					.arg(QString::number(nSelected))
-					.arg(tr(" %n image(s)", "", thumbViewModel->rowCount()));
+	thumbsDir->setPath(GData::currentViewDir);
 	emit setStatus(state);
 }
 
@@ -499,7 +507,7 @@ void ThumbView::loadPrepare()
 		thumbsDir->setFilter(thumbsDir->filter() | QDir::Hidden);
 	}
 	
-	thumbsDir->setPath(currentViewDir);
+	thumbsDir->setPath(GData::currentViewDir);
 
 	QDir::SortFlags tempThumbsSortFlags = thumbsSortFlags;
 	if (tempThumbsSortFlags & QDir::Size || tempThumbsSortFlags & QDir::Time) {
@@ -519,6 +527,8 @@ void ThumbView::loadPrepare()
 
 	thumbsRangeFirst = -1;
 	thumbsRangeLast = -1;
+
+	imageTags->resetTagsState();
 }
 
 void ThumbView::load()
@@ -530,7 +540,7 @@ void ThumbView::load()
 
 	if (GData::includeSubFolders) {
 		emit showBusy(true);
-		QDirIterator iterator(currentViewDir, QDirIterator::Subdirectories);
+		QDirIterator iterator(GData::currentViewDir, QDirIterator::Subdirectories);
 		while (iterator.hasNext()) {
 			iterator.next();
 			if (iterator.fileInfo().isDir() && iterator.fileName() != "." && iterator.fileName() != "..") {
@@ -546,7 +556,9 @@ void ThumbView::load()
 			}
 			QApplication::processEvents();
 		}
-		updateThumbsSelection();
+
+		QItemSelection dummy;
+		handleSelectionChanged(dummy);
 	}
 
 finish:
@@ -566,7 +578,7 @@ void ThumbView::loadDuplicates()
 	findDupes(true);
 
 	if (GData::includeSubFolders) {
-		QDirIterator iterator(currentViewDir, QDirIterator::Subdirectories);
+		QDirIterator iterator(GData::currentViewDir, QDirIterator::Subdirectories);
 		while (iterator.hasNext()) {
 			iterator.next();
 			if (iterator.fileInfo().isDir() && iterator.fileName() != "." && iterator.fileName() != "..") {
@@ -591,10 +603,12 @@ void ThumbView::initThumbs()
 {
 	thumbFileInfoList = thumbsDir->entryInfoList();
 	static QStandardItem *thumbIitem;
-	static int currThumb;
+	static int fileIndex;
 	static QPixmap emptyPixMap;
 	static QSize hintSize;
+	int processEventsCounter = 0;
 
+	emit showBusy(true);
 	emptyPixMap = QPixmap::fromImage(emptyImg).scaled(thumbWidth, thumbHeight);
 
 	if (GData::thumbsLayout == Squares)
@@ -603,12 +617,18 @@ void ThumbView::initThumbs()
 		hintSize = QSize(thumbWidth, thumbHeight + 
 							(GData::showLabels? QFontMetrics(font()).height() + 5 : 0));
 
-	for (currThumb = 0; currThumb < thumbFileInfoList.size(); ++currThumb)
-	{
-		thumbFileInfo = thumbFileInfoList.at(currThumb);
+	for (fileIndex = 0; fileIndex < thumbFileInfoList.size(); ++fileIndex) {
+		thumbFileInfo = thumbFileInfoList.at(fileIndex);
+
+		imageTags->readImageTagsToCache(thumbFileInfo.filePath());
+		if (imageTags->folderFilteringActive &&
+				imageTags->isImageFilteredOut(thumbFileInfo.filePath())) {
+			continue;
+		}
+		
 		thumbIitem = new QStandardItem();
 		thumbIitem->setData(false, LoadedRole);
-		thumbIitem->setData(currThumb, SortRole);
+		thumbIitem->setData(fileIndex, SortRole);
 		thumbIitem->setData(thumbFileInfo.filePath(), FileNameRole);
 		if (GData::thumbsLayout != Squares && GData::showLabels)
 			thumbIitem->setData(thumbFileInfo.fileName(), Qt::DisplayRole);
@@ -619,7 +639,19 @@ void ThumbView::initThumbs()
 			thumbIitem->setSizeHint(hintSize);
 
 		thumbViewModel->appendRow(thumbIitem);
+
+		++processEventsCounter;
+		if (processEventsCounter > 100) {
+			processEventsCounter = 0;
+			QApplication::processEvents();
+		}
 	}
+
+	if (imageTags->currentDisplayMode == FolderTagsDisplay) {
+		imageTags->showFolderTags();
+	}
+
+	emit showBusy(false);
 }
 
 void ThumbView::updateFoundDupesState(int duplicates, int filesScanned, int originalImages)
@@ -673,7 +705,6 @@ void ThumbView::findDupes(bool resetCounters)
 			dupImage.duplicates = 0; 
 			dupImageHashes.insert(md5, dupImage);
 		}
-
 		
 		QApplication::processEvents();
 		updateFoundDupesState(foundDups, totalFiles, originalImages);

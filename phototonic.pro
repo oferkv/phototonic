@@ -11,9 +11,9 @@ QMAKE_LFLAGS += $$(LDFLAGS)
 
 # Input
 HEADERS += dialogs.h mainwindow.h thumbview.h imageview.h croprubberband.h global.h infoview.h \
-			fstree.h bookmarks.h dircompleter.h
+			fstree.h bookmarks.h dircompleter.h tags.h
 SOURCES += dialogs.cpp main.cpp mainwindow.cpp thumbview.cpp imageview.cpp croprubberband.cpp \
-			global.cpp infoview.cpp fstree.cpp bookmarks.cpp dircompleter.cpp
+			global.cpp infoview.cpp fstree.cpp bookmarks.cpp dircompleter.cpp tags.cpp
 RESOURCES += phototonic.qrc
 
 target.path = /usr/bin/

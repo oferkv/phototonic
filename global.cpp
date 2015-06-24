@@ -75,6 +75,7 @@ namespace GData
 	bool imageToolbarFullScreen;
 	QMap<QString, QString> externalApps;
 	QSet<QString> bookmarkPaths;
+	QSet<QString> knownTags;
 	bool reverseMouseBehavior;
 	bool deleteConfirm;
 	QModelIndexList copyCutIdxList;
@@ -89,9 +90,11 @@ namespace GData
 	bool showLabels;
 	bool smallIcons;
 	bool LockDocks;
+	bool tagsDockVisible;
 	bool fsDockVisible;
 	bool bmDockVisible;
 	bool iiDockVisible;
+	QString currentViewDir;
 	bool pvDockVisible;
 	bool ivDockVisible;
 	QString thumbsBackImage;

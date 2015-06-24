@@ -92,6 +92,7 @@ namespace GData
 	extern bool imageToolbarFullScreen;
 	extern QMap<QString, QString> externalApps;
 	extern QSet<QString> bookmarkPaths;
+	extern QSet<QString> knownTags;
 	extern bool reverseMouseBehavior;
 	extern bool deleteConfirm;
 	extern QModelIndexList copyCutIdxList;
@@ -108,10 +109,12 @@ namespace GData
 	extern bool LockDocks;
 	extern bool fsDockVisible;
 	extern bool bmDockVisible;
+	extern bool tagsDockVisible;
 	extern bool iiDockVisible;
 	extern bool pvDockVisible;
 	extern bool ivDockVisible;
 	extern QString thumbsBackImage;
+	extern QString currentViewDir;
 }
 
 #endif // GLOBAL_H

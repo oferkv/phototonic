@@ -23,6 +23,7 @@
 #include "thumbview.h"
 #include "imageview.h"
 #include "dialogs.h"
+#include "tags.h"
 
 class Phototonic : public QMainWindow
 {
@@ -85,7 +86,6 @@ private slots:
 	void loadFirstImage();
 	void loadLastImage();
 	void loadRandomImage();
-	void selectRecentThumb();
 	void updateIndexByViewerImage();
 	void selectAllThumbs();
 	void deleteOp();
@@ -140,6 +140,7 @@ private slots:
 	void setImageToolBarVisibility();
 	void setFsDockVisibility();
 	void setBmDockVisibility();
+	void setTagsDockVisibility();
 	void setIiDockVisibility();
 	void setPvDockVisibility();
 	void lockDocks();
@@ -275,6 +276,7 @@ private:
 	QLabel *stateLabel;
 	QDockWidget *fsDock;
 	QDockWidget *bmDock;
+	QDockWidget *tagsDock;
 	QDockWidget *pvDock;
 	FSTree *fsTree;
 	BookMarks *bookmarks;
@@ -287,10 +289,12 @@ private:
 	CopyMoveToDialog *copyMoveToDialog;
 	QWidget *fsDockOrigWidget;
 	QWidget *bmDockOrigWidget;
+	QWidget *tagsDockOrigWidget;
 	QWidget *iiDockOrigWidget;
 	QWidget *pvDockOrigWidget;
 	QWidget *fsDockEmptyWidget;
 	QWidget *bmDockEmptyWidget;
+	QWidget *tagsDockEmptyWidget;
 	QWidget *iiDockEmptyWidget;
 	QWidget *pvDockEmptyWidget;
 	QVBoxLayout *imageViewContainer;
@@ -337,6 +341,7 @@ private:
 	void setfsModelFlags();
 	void createFSTree();
 	void createBookmarks();
+	void createImageTags();
 	void writeSettings();
 	void readSettings();
 	void recordHistory(QString dir);

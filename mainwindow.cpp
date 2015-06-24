@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2013-2014 Ofer Kashayov <oferkv@live.com>
+ *  Copyright (C) 2013-2015 Ofer Kashayov <oferkv@live.com>
  *  This file is part of Phototonic Image Viewer.
  *
  *  Phototonic is free software: you can redistribute it and/or modify
@@ -34,6 +34,7 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	createStatusBar();
 	createFSTree();
 	createBookmarks();
+	createImageTags();
 	createImageView();
 	updateExternalApps();
 	loadShortcuts();
@@ -68,9 +69,7 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	refreshThumbs(true);
 	if (GData::layoutMode == thumbViewIdx)
 		thumbView->setFocus(Qt::OtherFocusReason);
-	if (!cliImageLoaded)
-		QTimer::singleShot(100, this, SLOT(selectRecentThumb()));
-	else 
+	if (cliImageLoaded)
 		QTimer::singleShot(100, this, SLOT(updateIndexByViewerImage()));
 }
 
@@ -82,13 +81,13 @@ void Phototonic::handleStartupArgs()
 		QFileInfo cliArg(QCoreApplication::arguments().at(1));
 		if (cliArg.isDir())
 		{
-			thumbView->currentViewDir = QCoreApplication::arguments().at(1);
+			GData::currentViewDir = QCoreApplication::arguments().at(1);
 			cliImageLoaded = false;
 		}
 		else
 		{
-			thumbView->currentViewDir = cliArg.absolutePath();
-			cliFileName = thumbView->currentViewDir + QDir::separator() + cliArg.fileName();
+			GData::currentViewDir = cliArg.absolutePath();
+			cliFileName = GData::currentViewDir + QDir::separator() + cliArg.fileName();
 			cliImageLoaded = true;
 			loadImagefromCli();
 		}
@@ -96,9 +95,9 @@ void Phototonic::handleStartupArgs()
 	else
 	{
 		if (GData::startupDir == GData::specifiedDir)
-			thumbView->currentViewDir = GData::specifiedStartDir;
+			GData::currentViewDir = GData::specifiedStartDir;
 		else if (GData::startupDir == GData::rememberLastDir)
-			thumbView->currentViewDir = GData::appSettings->value("lastDir").toString();
+			GData::currentViewDir = GData::appSettings->value("lastDir").toString();
 	}
 	selectCurrentViewDir();
 }
@@ -950,6 +949,22 @@ void Phototonic::createBookmarks()
 	bookmarks->setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
+void Phototonic::createImageTags()
+{
+	tagsDock = new QDockWidget(tr("Tags"), this);
+	tagsDock->setObjectName("Tags");
+	thumbView->imageTags = new ImageTags(tagsDock);
+	tagsDock->setWidget(thumbView->imageTags);
+	
+	connect(tagsDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setTagsDockVisibility()));	
+	connect(tagsDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setTagsDockVisibility()));	
+	addDockWidget(Qt::LeftDockWidgetArea, tagsDock);
+
+	connect(thumbView->imageTags, SIGNAL(setStatus(QString)), this, SLOT(setStatus(QString)));
+	connect(thumbView->imageTags, SIGNAL(reloadThumbs()), this, SLOT(reloadThumbsSlot()));
+	connect(thumbView->imageTags->removeTagAction, SIGNAL(triggered()), this, SLOT(deleteOp()));
+}
+
 void Phototonic::sortThumbnains()
 {
 	thumbView->thumbsSortFlags = QDir::IgnoreCase;
@@ -990,7 +1005,6 @@ void Phototonic::refreshThumbs(bool scrollToTop)
 {
 	thumbView->setNeedScroll(scrollToTop);
 	QTimer::singleShot(0, this, SLOT(reloadThumbsSlot()));
-	QTimer::singleShot(100, this, SLOT(selectRecentThumb()));
 }
 
 void Phototonic::setClassicThumbs()
@@ -1035,7 +1049,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.5.70</h2>"
+	QString aboutString = "<h2>Phototonic v1.5.73</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -1045,7 +1059,7 @@ void Phototonic::about()
 		+ "<tr><td></td><td>Christopher Roy Bratusek (nano@jpberlin.de)</td></tr>"
 		+ "<tr><td></td><td>Krzysztof Pyrkosz (pyrkosz@o2.pl)</td></tr>"
 		+ QString::fromUtf8("<tr><td></td><td>Thomas L\u00FCbking (thomas.luebking@gmail.com)</td></tr>")
-		+ "<tr><td></td><td>Tung Le ()</td></tr>"
+		+ "<tr><td></td><td>Tung Le</td></tr>"
 		+ "<tr><td>Czech:</td><td>Pavel Fric (pavelfric@seznam.cz)</td></tr>"
 		+ "<tr><td>French:</td><td>Adrien Daugabel (adrien.d@mageialinux-online.org)</td></tr>"
 		+ "<tr><td></td><td>David Geiger (david.david@mageialinux-online.org)</td></tr>"
@@ -1608,7 +1622,7 @@ void Phototonic::pasteThumbs()
 		return;
 	}
 
-	bool pasteInCurrDir = (thumbView->currentViewDir == destDir);
+	bool pasteInCurrDir = (GData::currentViewDir == destDir);
 
 	QFileInfo fileInfo;
 	if (!GData::copyOp && pasteInCurrDir) {
@@ -1684,7 +1698,6 @@ void Phototonic::deleteViewerImage()
 
 	if (GData::slideShowActive)
 		slideShow();
-
 	imageView->setCursorHiding(false);
 
 	bool ok;
@@ -1735,6 +1748,11 @@ void Phototonic::deleteViewerImage()
 
 void Phototonic::deleteOp()
 {
+	if (QApplication::focusWidget() == thumbView->imageTags->tagsTree) {
+		thumbView->imageTags->removeTag();
+		return;
+	}
+
 	if (QApplication::focusWidget() == bookmarks) {
 		bookmarks->removeBookmark();
 		return;
@@ -1806,7 +1824,7 @@ void Phototonic::goTo(QString path)
 	findDupesAction->setChecked(false);
 	thumbView->setNeedScroll(true);
 	fsTree->setCurrentIndex(fsTree->fsModel->index(path));
-	thumbView->currentViewDir = path;
+	GData::currentViewDir = path;
 	refreshThumbs(true);
 }
 
@@ -1814,9 +1832,14 @@ void Phototonic::goSelectedDir(const QModelIndex &idx)
 {
 	findDupesAction->setChecked(false);
 	thumbView->setNeedScroll(true);
-	thumbView->currentViewDir = getSelectedPath();
+	GData::currentViewDir = getSelectedPath();
 	refreshThumbs(true);
-	fsTree->expand(idx);
+
+	if (fsTree->isExpanded((idx))) {
+		fsTree->setExpanded(idx, false);
+	} else {
+		fsTree->expand(idx);
+	}
 }
 
 void Phototonic::goPathBarDir()
@@ -1829,11 +1852,11 @@ void Phototonic::goPathBarDir()
 	{
 		QMessageBox msgBox;
 		msgBox.critical(this, tr("Error"), tr("Invalid Path:") + " " + pathBar->text());
-		pathBar->setText(thumbView->currentViewDir);
+		pathBar->setText(GData::currentViewDir);
 		return;
 	}
 	
-	thumbView->currentViewDir = pathBar->text();
+	GData::currentViewDir = pathBar->text();
 	refreshThumbs(true);
 	selectCurrentViewDir();
 }
@@ -1884,7 +1907,7 @@ void Phototonic::goForward()
 
 void Phototonic::goUp()
 {
-	QFileInfo fileInfo = QFileInfo(thumbView->currentViewDir);
+	QFileInfo fileInfo = QFileInfo(GData::currentViewDir);
 	goTo(fileInfo.dir().absolutePath());
 }
 
@@ -1982,7 +2005,7 @@ void Phototonic::writeSettings()
 	GData::appSettings->setValue("specifiedStartDir", GData::specifiedStartDir);
 	GData::appSettings->setValue("thumbsBackImage", GData::thumbsBackImage);
 	GData::appSettings->setValue("lastDir", GData::startupDir == GData::rememberLastDir?
-																		thumbView->currentViewDir: "");
+																		GData::currentViewDir: "");
 	GData::appSettings->setValue("enableImageInfoFS", (bool)GData::enableImageInfoFS);
 	GData::appSettings->setValue("showLabels", (bool)GData::showLabels);
 	GData::appSettings->setValue("smallIcons", (bool)GData::smallIcons);
@@ -2015,6 +2038,16 @@ void Phototonic::writeSettings()
 	QSetIterator<QString> pathsIter(GData::bookmarkPaths);
 	while (pathsIter.hasNext()) {
 		GData::appSettings->setValue("path" + QString::number(++idx), pathsIter.next());
+	}
+	GData::appSettings->endGroup();
+
+	/* save known Tags */
+	idx = 0;
+	GData::appSettings->beginGroup("KnownTags");
+	GData::appSettings->remove("");
+	QSetIterator<QString> tagsIter(GData::knownTags);
+	while (tagsIter.hasNext()) {
+		GData::appSettings->setValue("tag" + QString::number(++idx), tagsIter.next());
 	}
 	GData::appSettings->endGroup();
 }
@@ -2105,19 +2138,27 @@ void Phototonic::readSettings()
 	GData::LockDocks = GData::appSettings->value("LockDocks").toBool();
 	GData::imageToolbarFullScreen = GData::appSettings->value("imageToolbarFullScreen").toBool();
 
+	/* read external apps */
 	GData::appSettings->beginGroup("ExternalApps");
 	QStringList extApps = GData::appSettings->childKeys();
-	for (int i = 0; i < extApps.size(); ++i)
-	{
+	for (int i = 0; i < extApps.size(); ++i) {
 		GData::externalApps[extApps.at(i)] = GData::appSettings->value(extApps.at(i)).toString();
 	}
 	GData::appSettings->endGroup();
 
+	/* read bookmarks */
 	GData::appSettings->beginGroup("CopyMoveToPaths");
 	QStringList paths = GData::appSettings->childKeys();
-	for (int i = 0; i < paths.size(); ++i)
-	{
+	for (int i = 0; i < paths.size(); ++i) {
 		GData::bookmarkPaths.insert(GData::appSettings->value(paths.at(i)).toString());
+	}
+	GData::appSettings->endGroup();
+
+	/* read known tags */
+	GData::appSettings->beginGroup("KnownTags");
+	QStringList tags = GData::appSettings->childKeys();
+	for (int i = 0; i < tags.size(); ++i) {
+		GData::knownTags.insert(GData::appSettings->value(tags.at(i)).toString());
 	}
 	GData::appSettings->endGroup();
 }
@@ -2144,10 +2185,12 @@ void Phototonic::setupDocks()
 
 	fsDockOrigWidget = fsDock->titleBarWidget();
 	bmDockOrigWidget = bmDock->titleBarWidget();
+	tagsDockOrigWidget = tagsDock->titleBarWidget();
 	iiDockOrigWidget = iiDock->titleBarWidget();
 	pvDockOrigWidget = pvDock->titleBarWidget();
 	fsDockEmptyWidget = new QWidget;
 	bmDockEmptyWidget = new QWidget;
+	tagsDockEmptyWidget = new QWidget;
 	iiDockEmptyWidget = new QWidget;
 	pvDockEmptyWidget = new QWidget;
 	lockDocks();
@@ -2163,11 +2206,13 @@ void Phototonic::lockDocks()
 	if (GData::LockDocks) {
 		fsDock->setTitleBarWidget(fsDockEmptyWidget);
 		bmDock->setTitleBarWidget(bmDockEmptyWidget);
+		tagsDock->setTitleBarWidget(tagsDockEmptyWidget);
 		iiDock->setTitleBarWidget(iiDockEmptyWidget);
 		pvDock->setTitleBarWidget(pvDockEmptyWidget);
 	} else {
 		fsDock->setTitleBarWidget(fsDockOrigWidget);
 		bmDock->setTitleBarWidget(bmDockOrigWidget);
+		tagsDock->setTitleBarWidget(tagsDockOrigWidget);
 		iiDock->setTitleBarWidget(iiDockOrigWidget);
 		pvDock->setTitleBarWidget(pvDockOrigWidget);
 	}
@@ -2175,11 +2220,11 @@ void Phototonic::lockDocks()
 
 QMenu *Phototonic::createPopupMenu()
 {
-	QMenu *testMenu = QMainWindow::createPopupMenu();
-	testMenu->addSeparator();
-	testMenu->addAction(actSmallIcons);
-	testMenu->addAction(actLockDocks);
-	return testMenu;
+	QMenu *extraActsMenu = QMainWindow::createPopupMenu();
+	extraActsMenu->addSeparator();
+	extraActsMenu->addAction(actSmallIcons);
+	extraActsMenu->addAction(actLockDocks);
+	return extraActsMenu;
 }
 
 void Phototonic::loadShortcuts()
@@ -2423,16 +2468,19 @@ void Phototonic::setDocksVisibility(bool visible)
 	if (!visible) {
 		fsDock->setMaximumHeight(fsDock->height());
 		bmDock->setMaximumHeight(bmDock->height());
+		tagsDock->setMaximumHeight(tagsDock->height());
 		iiDock->setMaximumHeight(iiDock->height());
 		pvDock->setMaximumHeight(pvDock->height());
 		fsDock->setMaximumWidth(fsDock->width());
 		bmDock->setMaximumWidth(bmDock->width());
+		tagsDock->setMaximumWidth(tagsDock->width());
 		iiDock->setMaximumWidth(iiDock->width());
 		pvDock->setMaximumWidth(pvDock->width());
 	}
 
 	fsDock->setVisible(visible? GData::fsDockVisible : false);
 	bmDock->setVisible(visible? GData::bmDockVisible : false);
+	tagsDock->setVisible(visible? GData::tagsDockVisible : false);
 	iiDock->setVisible(visible? GData::iiDockVisible : false);
 	pvDock->setVisible(visible? GData::pvDockVisible : false);
 
@@ -2530,6 +2578,14 @@ void Phototonic::setBmDockVisibility()
 		return;
 
 	GData::bmDockVisible = bmDock->isVisible();
+}
+
+void Phototonic::setTagsDockVisibility()
+{
+	if (GData::layoutMode == imageViewIdx)
+		return;
+
+	GData::tagsDockVisible = tagsDock->isVisible();
 }
 
 void Phototonic::setIiDockVisibility()
@@ -2792,20 +2848,6 @@ void Phototonic::loadRandomImage()
 		selectThumbByRow(randomRow);
 }
 
-void Phototonic::selectRecentThumb()
-{
-	if (thumbView->thumbViewModel->rowCount() > 0) 
-	{
-		if (thumbView->setCurrentIndexByName(thumbView->recentThumb))
-			thumbView->selectCurrentIndex();
-		else
-		{
-			if (thumbView->setCurrentIndexByRow(0))
-				thumbView->selectCurrentIndex();
-		}
-	}
-}
-
 void Phototonic::setViewerKeyEventsEnabled(bool enabled)
 {
 	moveLeftAct->setEnabled(enabled);
@@ -2859,15 +2901,16 @@ void Phototonic::hideViewer()
 	for (int i = 0; i <= 100 && qApp->hasPendingEvents(); ++i) {
 		QApplication::processEvents();
 	}
-
 	setThumbviewWindowTitle();
 
 	fsDock->setMaximumHeight(QWIDGETSIZE_MAX);
 	bmDock->setMaximumHeight(QWIDGETSIZE_MAX);
+	tagsDock->setMaximumHeight(QWIDGETSIZE_MAX);
 	iiDock->setMaximumHeight(QWIDGETSIZE_MAX);
 	pvDock->setMaximumHeight(QWIDGETSIZE_MAX);
 	fsDock->setMaximumWidth(QWIDGETSIZE_MAX);
 	bmDock->setMaximumWidth(QWIDGETSIZE_MAX);
+	tagsDock->setMaximumWidth(QWIDGETSIZE_MAX);
 	iiDock->setMaximumWidth(QWIDGETSIZE_MAX);
 	pvDock->setMaximumWidth(QWIDGETSIZE_MAX);
 
@@ -2936,7 +2979,7 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvD
 		return;
 	}
 	
-	if (destDir == 	thumbView->currentViewDir) {
+	if (destDir == 	GData::currentViewDir) {
 		msgBox.critical(this, tr("Error"), tr("Destination folder is same as source."));
 		return;
 	}
@@ -2973,7 +3016,7 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvD
 
 void Phototonic::selectCurrentViewDir()
 {
-	QModelIndex idx = fsTree->fsModel->index(thumbView->currentViewDir); 
+	QModelIndex idx = fsTree->fsModel->index(GData::currentViewDir); 
 	if (idx.isValid())
 	{
 		fsTree->expand(idx);
@@ -2992,9 +3035,9 @@ void Phototonic::checkDirState(const QModelIndex &, int, int)
 		thumbView->abort();
 	}
 
-	if (!QDir().exists(thumbView->currentViewDir))
+	if (!QDir().exists(GData::currentViewDir))
 	{
-		thumbView->currentViewDir = "";
+		GData::currentViewDir = "";
 		QTimer::singleShot(0, this, SLOT(reloadThumbsSlot()));
 	}
 }
@@ -3032,18 +3075,18 @@ void Phototonic::reloadThumbsSlot()
 		return;
 	}
 
-	if (thumbView->currentViewDir == "")
+	if (GData::currentViewDir == "")
 	{
-		thumbView->currentViewDir = getSelectedPath();
-		if (thumbView->currentViewDir == "")
+		GData::currentViewDir = getSelectedPath();
+		if (GData::currentViewDir == "")
 			return;
 	}
 
-	QDir checkPath(thumbView->currentViewDir);
+	QDir checkPath(GData::currentViewDir);
 	if (!checkPath.exists() || !checkPath.isReadable())
 	{
 		QMessageBox msgBox;
-		msgBox.critical(this, tr("Error"), tr("Failed to open folder:") + " " + thumbView->currentViewDir);
+		msgBox.critical(this, tr("Error"), tr("Failed to open folder:") + " " + GData::currentViewDir);
 		return;
 	}
 
@@ -3053,8 +3096,8 @@ void Phototonic::reloadThumbsSlot()
 		imageView->loadImage(ImagePath);
 	}
 
-	pathBar->setText(thumbView->currentViewDir);
-	recordHistory(thumbView->currentViewDir);
+	pathBar->setText(GData::currentViewDir);
+	recordHistory(GData::currentViewDir);
 	if (currentHistoryIdx > 0)
 		goBackAction->setEnabled(true);
 
@@ -3075,9 +3118,9 @@ void Phototonic::reloadThumbsSlot()
 void Phototonic::setThumbviewWindowTitle()
 {
 	if (findDupesAction->isChecked())
-		setWindowTitle(tr("Duplicate images in %1").arg(thumbView->currentViewDir) + " - Phototonic");
+		setWindowTitle(tr("Duplicate images in %1").arg(GData::currentViewDir) + " - Phototonic");
 	else
-		setWindowTitle(thumbView->currentViewDir + " - Phototonic");
+		setWindowTitle(GData::currentViewDir + " - Phototonic");
 }
 
 void Phototonic::renameDir()
@@ -3115,7 +3158,7 @@ void Phototonic::renameDir()
 		return;
 	}
 
-	if (thumbView->currentViewDir == dirInfo.absoluteFilePath()) 
+	if (GData::currentViewDir == dirInfo.absoluteFilePath()) 
 		fsTree->setCurrentIndex(fsTree->fsModel->index(newFullPathName));
 	else
 		selectCurrentViewDir();
@@ -3153,7 +3196,7 @@ void Phototonic::rename()
 
 	QString currnetFilePath = selectedImageFileName;
 	QFile currentFile(currnetFilePath);
-	QString newImageFullPath = thumbView->currentViewDir;
+	QString newImageFullPath = GData::currentViewDir;
 	bool ok;
 	QString title = tr("Rename Image");
 	QString newImageName = QInputDialog::getText(this,
@@ -3245,7 +3288,7 @@ void Phototonic::deleteDir()
 	QString state = QString(tr("Removed \"%1\"").arg(deletePath));
 	setStatus(state);
 
-	if (thumbView->currentViewDir == deletePath) 
+	if (GData::currentViewDir == deletePath) 
 	{
 		if (idxAbove.isValid())
 			fsTree->setCurrentIndex(idxAbove);

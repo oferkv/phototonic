@@ -26,6 +26,7 @@
 #include "bookmarks.h"
 #include "infoview.h"
 #include "imageview.h"
+#include "tags.h"
 
 struct DuplicateImage
 {
@@ -43,7 +44,6 @@ public:
 	QStringList *fileFilters;
 	QList<QStandardItem*> *thumbList;
 	QStandardItemModel *thumbViewModel;
-	QString currentViewDir;
 	QString recentThumb;
 	QDir::SortFlags thumbsSortFlags;
 	int thumbSize;
@@ -51,6 +51,7 @@ public:
 	int thumbHeight;
 	QString filterStr;
 	bool busy;
+	ImageTags *imageTags;
 
 	enum UserRoles
 	{
@@ -118,7 +119,6 @@ private:
 	int getLastVisibleThumb();
 	bool isThumbVisible(QModelIndex idx);
 	void updateThumbsCount();
-	void updateThumbsSelection();
 	void updateExifInfo(QString imageFullPath);
 
 signals:
