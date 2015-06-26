@@ -2382,8 +2382,11 @@ void Phototonic::closeEvent(QCloseEvent *event)
 {
 	thumbView->abort();
 	writeSettings();
-	if (!QApplication::clipboard()->image().isNull())
+	hide();
+	qDebug() << "Phototonic: releasing clipboard...";
+	if (!QApplication::clipboard()->image().isNull()) {
 		QApplication::clipboard()->clear();
+	}
 	event->accept();
 }
 

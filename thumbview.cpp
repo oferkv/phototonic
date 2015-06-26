@@ -668,6 +668,7 @@ void ThumbView::updateFoundDupesState(int duplicates, int filesScanned, int orig
 void ThumbView::findDupes(bool resetCounters)
 {
 	thumbFileInfoList = thumbsDir->entryInfoList();
+	int processEventsCounter = 0;
 	static int originalImages;
 	static int foundDups;
 	static int totalFiles;
@@ -706,7 +707,12 @@ void ThumbView::findDupes(bool resetCounters)
 			dupImageHashes.insert(md5, dupImage);
 		}
 		
-		QApplication::processEvents();
+		++processEventsCounter;
+		if (processEventsCounter > 9) {
+			processEventsCounter = 0;
+			QApplication::processEvents();
+		}
+		
 		updateFoundDupesState(foundDups, totalFiles, originalImages);
 		
 		if (abortOp) {

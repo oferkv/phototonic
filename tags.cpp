@@ -22,6 +22,7 @@
 SetTagsDialog::SetTagsDialog(QWidget *parent) : QDialog(parent)
 {
     opLabel = new QLabel("");
+    opLabel->setWordWrap(true);
     abortOp = false;
     
     cancelButton = new QPushButton(tr("Cancel"));
@@ -60,7 +61,6 @@ ImageTags::ImageTags(QWidget *parent) : QWidget(parent)
 	mainLayout->setSpacing(0);
 	mainLayout->addWidget(tagsTree);
 	setLayout(mainLayout);
-	// oferkv: rememver to remove this extra layout if no widgets will be added!
 
 	currentDisplayMode = FolderTagsDisplay;
 	folderFilteringActive = false;
@@ -70,16 +70,18 @@ ImageTags::ImageTags(QWidget *parent) : QWidget(parent)
 	connect(tagsTree, SIGNAL(itemClicked(QTreeWidgetItem *, int)),
 				this, SLOT(tagClicked(QTreeWidgetItem *, int)));
 
-	setContextMenuPolicy(Qt::CustomContextMenu);
-	connect(this, SIGNAL(customContextMenuRequested(QPoint)), SLOT(showMenu(QPoint)));
+	tagsTree->setContextMenuPolicy(Qt::CustomContextMenu);
+	connect(tagsTree, SIGNAL(customContextMenuRequested(QPoint)), SLOT(showMenu(QPoint)));
 
 	addToSelectionAction = new QAction(tr("Tag"), this);
+	addToSelectionAction->setIcon(QIcon(":/images/tag_yellow.png"));
 	connect(addToSelectionAction, SIGNAL(triggered()), this, SLOT(addTagsToSelection()));
 
 	removeFromSelectionAction = new QAction(tr("Untag"), this);
 	connect(removeFromSelectionAction, SIGNAL(triggered()), this, SLOT(removeTagsFromSelection()));
 
 	clearFolderFiltersAction = new QAction(tr("Clear Filters"), this);
+	clearFolderFiltersAction->setIcon(QIcon::fromTheme("edit-clear"));
 	connect(clearFolderFiltersAction, SIGNAL(triggered()), this, SLOT(clearFolderFilters()));
 
 	addTagAction = new QAction(tr("New Tag"), this);
@@ -87,7 +89,7 @@ ImageTags::ImageTags(QWidget *parent) : QWidget(parent)
 	connect(addTagAction, SIGNAL(triggered()), this, SLOT(addNewTag()));
 
 	removeTagAction = new QAction(tr("Remove Tag"), this);
-	removeTagAction ->setIcon(QIcon::fromTheme("edit-delete", QIcon(":/images/delete.png")));
+	removeTagAction->setIcon(QIcon::fromTheme("edit-delete", QIcon(":/images/delete.png")));
 
 	tagsMenu = new QMenu("");
 	tagsMenu->addAction(addToSelectionAction);
@@ -202,7 +204,7 @@ bool ImageTags::writeTagsToImage(QString &imageFileName, QSet<QString> &newTags)
    	}
 	catch (Exiv2::Error &error) {
 		QMessageBox msgBox;
-		msgBox.critical(this, tr("Error"), tr("Failed to save image tags"));
+		msgBox.critical(this, tr("Error"), tr("Failed to save tags to ") + imageFileName);
 		return false;
 	}
 
@@ -395,6 +397,7 @@ void ImageTags::applyUserAction(QTreeWidgetItem *item)
 
 void ImageTags::applyUserAction(QList<QTreeWidgetItem *> tagsList)
 {
+	int processEventsCounter = 0;
 	SetTagsDialog *dialog = new SetTagsDialog(this);
 	dialog->show();
 
@@ -419,11 +422,14 @@ void ImageTags::applyUserAction(QList<QTreeWidgetItem *> tagsList)
 			}
 		}
 
-		if (!writeTagsToImage(imageName, cacheGetImageTags(imageName))) {
-			break;
+		writeTagsToImage(imageName, cacheGetImageTags(imageName));
+
+		++processEventsCounter;
+		if (processEventsCounter > 9) {
+			processEventsCounter = 0;
+			QApplication::processEvents();
 		}
 
-		QApplication::processEvents();
 		if (dialog->abortOp) {
 			break;
 		}
