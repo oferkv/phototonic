@@ -651,7 +651,17 @@ void ThumbView::initThumbs()
 		imageTags->showFolderTags();
 	}
 
+	if (thumbFileInfoList.size() && selectionModel()->selectedIndexes().size() == 0) {
+		selectThumbByRow(0);
+	}
+
 	emit showBusy(false);
+}
+
+void ThumbView::selectThumbByRow(int row)
+{
+	setCurrentIndexByRow(row);
+	selectCurrentIndex();
 }
 
 void ThumbView::updateFoundDupesState(int duplicates, int filesScanned, int originalImages)

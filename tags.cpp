@@ -18,34 +18,7 @@
 
 #include "tags.h"
 #include "global.h"
-
-SetTagsDialog::SetTagsDialog(QWidget *parent) : QDialog(parent)
-{
-    opLabel = new QLabel("");
-    opLabel->setWordWrap(true);
-    abortOp = false;
-    
-    cancelButton = new QPushButton(tr("Cancel"));
-   	cancelButton->setIcon(QIcon::fromTheme("dialog-cancel"));
-    cancelButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect(cancelButton, SIGNAL(clicked()), this, SLOT(abort()));
-
-    QHBoxLayout *topLayout = new QHBoxLayout;
-    topLayout->addWidget(opLabel);
-
-    QHBoxLayout *buttonsLayout = new QHBoxLayout;
-    buttonsLayout->addWidget(cancelButton);
-
-    QVBoxLayout *mainLayout = new QVBoxLayout;
-    mainLayout->addLayout(topLayout);
-    mainLayout->addLayout(buttonsLayout, Qt::AlignRight);
-    setLayout(mainLayout);
-}
-
-void SetTagsDialog::abort()
-{
-	abortOp = true;
-}
+#include "dialogs.h"
 
 ImageTags::ImageTags(QWidget *parent) : QWidget(parent)
 {
@@ -398,7 +371,7 @@ void ImageTags::applyUserAction(QTreeWidgetItem *item)
 void ImageTags::applyUserAction(QList<QTreeWidgetItem *> tagsList)
 {
 	int processEventsCounter = 0;
-	SetTagsDialog *dialog = new SetTagsDialog(this);
+	ProgressDialog *dialog = new ProgressDialog(this);
 	dialog->show();
 
 	for (int i = 0; i < currentSelectedImages.size(); ++i) {
@@ -415,10 +388,14 @@ void ImageTags::applyUserAction(QList<QTreeWidgetItem *> tagsList)
 
 			if (tagState == Qt::Checked) {
 				dialog->opLabel->setText("Tagging " + imageName);
-				cacheAddTagToImage(imageName, tagName);
+				if (cacheAddTagToImage(imageName, tagName)) {
+					writeTagsToImage(imageName, cacheGetImageTags(imageName));
+				}
 			} else {
 				dialog->opLabel->setText("Untagging " + imageName);
-				cacheRemoveTagFromImage(imageName, tagName);
+				if (cacheRemoveTagFromImage(imageName, tagName)) {
+					writeTagsToImage(imageName, cacheGetImageTags(imageName));
+				}
 			}
 		}
 
@@ -564,9 +541,9 @@ void ImageTags::cacheUpdateImageTags(QString &imageFileName, QSet<QString> tags)
 	imageTagsCache[imageFileName] = tags;
 }
 
-void ImageTags::cacheRemoveTagFromImage(QString &imageFileName, const QString &tagName)
+bool ImageTags::cacheRemoveTagFromImage(QString &imageFileName, const QString &tagName)
 {
-	imageTagsCache[imageFileName].remove(tagName);
+	return imageTagsCache[imageFileName].remove(tagName);
 }
 
 QSet<QString> &ImageTags::cacheGetImageTags(QString &imageFileName)
@@ -579,9 +556,14 @@ void ImageTags::cacheSetImageTags(const QString &imageFileName, QSet<QString> ta
 	imageTagsCache.insert(imageFileName, tags);
 }
 
-void ImageTags::cacheAddTagToImage(QString &imageFileName, QString &tagName)
+bool ImageTags::cacheAddTagToImage(QString &imageFileName, QString &tagName)
 {
+	if (imageTagsCache[imageFileName].contains(tagName)) {
+		return false;
+	}
+	
 	imageTagsCache[imageFileName].insert(tagName);
+	return true;
 }
 
 void ImageTags::cacheClear()

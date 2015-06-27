@@ -69,8 +69,10 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	refreshThumbs(true);
 	if (GData::layoutMode == thumbViewIdx)
 		thumbView->setFocus(Qt::OtherFocusReason);
-	if (cliImageLoaded)
+
+	if (cliImageLoaded) {
 		QTimer::singleShot(100, this, SLOT(updateIndexByViewerImage()));
+	}
 }
 
 void Phototonic::handleStartupArgs()
@@ -1049,7 +1051,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.6.2</h2>"
+	QString aboutString = "<h2>Phototonic v1.6.3</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -1336,7 +1338,7 @@ void Phototonic::copyMoveImages(bool move)
 				if (!copyMoveToDialog->copyOp) {
 					int currentRow = thumbView->getCurrentRow();
 					thumbView->thumbViewModel->removeRow(currentRow);
-					updateCurrentImage(currentRow);
+					loadCurrentImage(currentRow);
 				}
 			}
 		}
@@ -1642,6 +1644,16 @@ void Phototonic::pasteThumbs()
 		for (int tn = 0; tn < GData::copyCutFileList.size(); ++tn) {
 			thumbView->addThumb(GData::copyCutFileList[tn]);
 		}
+	} else {
+		int row = dialog->latestRow;
+		if (thumbView->thumbViewModel->rowCount()) {
+			if (row >= thumbView->thumbViewModel->rowCount()) {
+				row = thumbView->thumbViewModel->rowCount() -1 ;
+			}
+
+			thumbView->setCurrentRow(row);
+			thumbView->selectThumbByRow(row);
+		}
 	}
 
 	QString state = QString((GData::copyOp? tr("Copied") : tr("Moved")) + " " +
@@ -1658,33 +1670,33 @@ void Phototonic::pasteThumbs()
 	thumbView->loadVisibleThumbs();
 }
 
-void Phototonic::updateCurrentImage(int currentRow)
+void Phototonic::loadCurrentImage(int currentRow)
 {
 	bool wrapImageListTmp = GData::wrapImageList;
 	GData::wrapImageList = false;
 
-	if (currentRow == thumbView->thumbViewModel->rowCount())
-	{
+	if (currentRow == thumbView->thumbViewModel->rowCount()) {
 		thumbView->setCurrentRow(currentRow - 1);
 	}
 
-	if (thumbView->getNextRow() < 0 && currentRow > 0)
-	{
+	if (thumbView->getNextRow() < 0 && currentRow > 0) {
 		imageView->loadImage(thumbView->thumbViewModel->item(currentRow - 1)->
 											data(thumbView->FileNameRole).toString());
-	}
-	else
-	{
+	} else {
 		if (thumbView->thumbViewModel->rowCount() == 0)
 		{
 			hideViewer();
 			refreshThumbs(true);
 			return;
 		}
+
+		if (currentRow > (thumbView->thumbViewModel->rowCount() - 1))
+			currentRow = thumbView->thumbViewModel->rowCount() - 1;
+
 		imageView->loadImage(thumbView->thumbViewModel->item(currentRow)->
 											data(thumbView->FileNameRole).toString());
 	}
-		
+
 	GData::wrapImageList = wrapImageListTmp;
 	thumbView->setImageviewWindowTitle();
 }
@@ -1739,7 +1751,7 @@ void Phototonic::deleteViewerImage()
 			return;
 		}
 
-		updateCurrentImage(currentRow);
+		loadCurrentImage(currentRow);
 	}
 	if (isFullScreen()) {
 		imageView->setCursorHiding(true);
@@ -1794,28 +1806,55 @@ void Phototonic::deleteOp()
 		QModelIndexList indexesList;
 		int nfiles = 0;
 		bool ok;
-	
+		QList<int> rows;
+		int row;
+
+		ProgressDialog *dialog = new ProgressDialog(this);
+		dialog->show();
+
 		while((indexesList = thumbView->selectionModel()->selectedIndexes()).size()) {
-			ok = QFile::remove(thumbView->thumbViewModel->item(
-								indexesList.first().row())->data(thumbView->FileNameRole).toString());
+			QString fileName = thumbView->thumbViewModel->item(
+								indexesList.first().row())->data(thumbView->FileNameRole).toString();
+			dialog->opLabel->setText("Deleting " + fileName);
+			ok = QFile::remove(fileName);
 
 			++nfiles;
 			if (ok) {
-				thumbView->thumbViewModel->removeRow(indexesList.first().row());
+				row = indexesList.first().row();
+				rows << row;
+				thumbView->thumbViewModel->removeRow(row);
 			} else {
 				QMessageBox msgBox;
 				msgBox.critical(this, tr("Error"), tr("Failed to delete image."));
-				return;
+				break;
 			}
 			if (thumbView->thumbViewModel->rowCount() > 0) {
 				thumbView->setRowHidden(0 , false);
 			}
+
+			if (dialog->abortOp) {
+				break;
+			}
 		}
-		
+
+		if (thumbView->thumbViewModel->rowCount()) {
+
+			qSort(rows.begin(), rows.end());
+			row = rows.at(0);
+
+			if (row >= thumbView->thumbViewModel->rowCount()) {
+				row = thumbView->thumbViewModel->rowCount() -1 ;
+			}
+
+			thumbView->setCurrentRow(row);
+			thumbView->selectThumbByRow(row);
+		}
+
+		dialog->close();
+		delete(dialog);
+
 		QString state = QString(tr("Deleted") + " " + tr("%n image(s)", "", nfiles));
 		setStatus(state);
-
-		thumbView->loadVisibleThumbs();
 	}
 }
 
@@ -1938,7 +1977,7 @@ void Phototonic::updateActions()
 	} else if (QApplication::focusWidget() == fsTree) {
 		setCopyCutActions(false);
 		setDeleteAction(fsTree->selectionModel()->selectedIndexes().size());
-	} else if (GData::layoutMode == imageViewIdx) {
+	} else if (GData::layoutMode == imageViewIdx || QApplication::focusWidget() == imageView->scrlArea) {
 		setCopyCutActions(false);
 		setDeleteAction(true);
 	} else {
@@ -2323,8 +2362,8 @@ void Phototonic::loadShortcuts()
 		thumbsGoTopAct->setShortcut(QKeySequence("Ctrl+Home"));
 		thumbsGoBottomAct->setShortcut(QKeySequence("Ctrl+End"));
 		closeImageAct->setShortcut(Qt::Key_Escape);
-		fullScreenAct->setShortcut(QKeySequence("F"));
-		settingsAction->setShortcut(QKeySequence("P"));
+		fullScreenAct->setShortcut(QKeySequence("Alt+Return"));
+		settingsAction->setShortcut(QKeySequence("Ctrl+P"));
 		exitAction->setShortcut(QKeySequence("Ctrl+Q"));
 		cutAction->setShortcut(QKeySequence("Ctrl+X"));
 		copyAction->setShortcut(QKeySequence("Ctrl+C"));
@@ -2338,17 +2377,17 @@ void Phototonic::loadShortcuts()
 		goBackAction->setShortcut(QKeySequence("Alt+Left"));
 		goFrwdAction->setShortcut(QKeySequence("Alt+Right"));
 		goUpAction->setShortcut(QKeySequence("Alt+Up"));
-		slideShowAction->setShortcut(QKeySequence("W"));
+		slideShowAction->setShortcut(QKeySequence("Ctrl+W"));
 		nextImageAction->setShortcut(QKeySequence("PgDown"));
 		prevImageAction->setShortcut(QKeySequence("PgUp"));
 		firstImageAction->setShortcut(QKeySequence("Home"));
 		lastImageAction->setShortcut(QKeySequence("End"));
-		randomImageAction->setShortcut(QKeySequence("R"));
+		randomImageAction->setShortcut(QKeySequence("Ctrl+D"));
 		openAction->setShortcut(QKeySequence("Return"));
-		zoomOutAct->setShortcut(QKeySequence("Alt+Z"));
-		zoomInAct->setShortcut(QKeySequence("Z"));
-		resetZoomAct->setShortcut(QKeySequence("Ctrl+Z"));
-		origZoomAct->setShortcut(QKeySequence("Shift+Z"));
+		zoomOutAct->setShortcut(QKeySequence("-"));
+		zoomInAct->setShortcut(QKeySequence("+"));
+		resetZoomAct->setShortcut(QKeySequence("*"));
+		origZoomAct->setShortcut(QKeySequence("/"));
 		rotateLeftAct->setShortcut(QKeySequence("Ctrl+Left"));
 		rotateRightAct->setShortcut(QKeySequence("Ctrl+Right"));
 		freeRotateLeftAct->setShortcut(QKeySequence("Ctrl+Shift+Left"));
@@ -2357,7 +2396,7 @@ void Phototonic::loadShortcuts()
 		flipVAct->setShortcut(QKeySequence("Ctrl+Up"));
 		cropAct->setShortcut(QKeySequence("Ctrl+G"));
 		cropToSelectionAct->setShortcut(QKeySequence("Ctrl+R"));
-		colorsAct->setShortcut(QKeySequence("C"));
+		colorsAct->setShortcut(QKeySequence("Ctrl+O"));
 		mirrorDisabledAct->setShortcut(QKeySequence("Ctrl+1"));
 		mirrorDualAct->setShortcut(QKeySequence("Ctrl+2"));
 		mirrorTripleAct->setShortcut(QKeySequence("Ctrl+3"));
@@ -2760,12 +2799,6 @@ void Phototonic::slideShowHandler()
 	}
 }
 
-void Phototonic::selectThumbByRow(int row)
-{
-	thumbView->setCurrentIndexByRow(row);
-	thumbView->selectCurrentIndex();
-}
-
 void Phototonic::loadNextImage()
 {
 	if (thumbView->thumbViewModel->rowCount() <= 0)
@@ -2785,7 +2818,7 @@ void Phototonic::loadNextImage()
 	thumbView->setImageviewWindowTitle();
 
 	if (GData::layoutMode == thumbViewIdx)
-		selectThumbByRow(nextRow);
+		thumbView->selectThumbByRow(nextRow);
 }
 
 void Phototonic::loadPrevImage()
@@ -2807,7 +2840,7 @@ void Phototonic::loadPrevImage()
 	thumbView->setImageviewWindowTitle();
 
 	if (GData::layoutMode == thumbViewIdx)
-		selectThumbByRow(prevRow);
+		thumbView->selectThumbByRow(prevRow);
 }
 
 void Phototonic::loadFirstImage()
@@ -2820,7 +2853,7 @@ void Phototonic::loadFirstImage()
 	thumbView->setImageviewWindowTitle();
 
 	if (GData::layoutMode == thumbViewIdx)
-		selectThumbByRow(0);
+		thumbView->selectThumbByRow(0);
 }
 
 void Phototonic::loadLastImage()
@@ -2834,7 +2867,7 @@ void Phototonic::loadLastImage()
 	thumbView->setImageviewWindowTitle();
 
 	if (GData::layoutMode == thumbViewIdx)
-		selectThumbByRow(lastRow);
+		thumbView->selectThumbByRow(lastRow);
 }
 
 void Phototonic::loadRandomImage()
@@ -2848,7 +2881,7 @@ void Phototonic::loadRandomImage()
 	thumbView->setImageviewWindowTitle();
 
 	if (GData::layoutMode == thumbViewIdx)
-		selectThumbByRow(randomRow);
+		thumbView->selectThumbByRow(randomRow);
 }
 
 void Phototonic::setViewerKeyEventsEnabled(bool enabled)
@@ -3008,6 +3041,19 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvD
 		CpMvDialog *cpMvdialog = new CpMvDialog(this);
 		GData::copyCutIdxList = thumbView->selectionModel()->selectedIndexes();
 		cpMvdialog->exec(thumbView, destDir, false);
+
+		if (!GData::copyOp) {
+			int row = cpMvdialog->latestRow;
+			if (thumbView->thumbViewModel->rowCount()) {
+				if (row >= thumbView->thumbViewModel->rowCount()) {
+					row = thumbView->thumbViewModel->rowCount() -1 ;
+				}
+
+				thumbView->setCurrentRow(row);
+				thumbView->selectThumbByRow(row);
+			}
+		}
+		
 		QString state = QString((GData::copyOp? tr("Copied") : tr("Moved")) + " " +
 							tr("%n image(s)", "", cpMvdialog->nfiles));
 		setStatus(state);

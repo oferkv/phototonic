@@ -328,7 +328,7 @@ private:
 	void loadShortcuts();
 	void setupDocks();
 	void deleteViewerImage();
-	void updateCurrentImage(int currentRow);
+	void loadCurrentImage(int currentRow);
 	void selectCurrentViewDir();
 	void handleStartupArgs();
 	void addMenuSeparator(QWidget *widget);
@@ -353,7 +353,6 @@ private:
 	void copyOrCutThumbs(bool copy);
 	void showNewImageWarning(QWidget *parent);
 	bool removeDirOp(QString dirToDelete);
-	void selectThumbByRow(int row);
 	void setInterfaceEnabled(bool enable);
 	void addBookmark(QString path);
 	void copyMoveImages(bool move);

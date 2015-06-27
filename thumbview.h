@@ -89,6 +89,7 @@ public:
 	QString getSingleSelectionFilename();
 	void addThumb(QString &imageFullPath);
 	void abort();
+	void selectThumbByRow(int row);
 
 protected:
 	void startDrag(Qt::DropActions);

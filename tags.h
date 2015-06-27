@@ -28,23 +28,6 @@ enum TagsDisplayMode
 	SelectionTagsDisplay
 };
 
-class SetTagsDialog : public QDialog
-{
-    Q_OBJECT
-
-public slots:
-	void abort();
-
-public:
-	QLabel *opLabel;
-	bool abortOp;
-	
-    SetTagsDialog(QWidget *parent);
-
-private:
-	QPushButton *cancelButton;
-};
-
 class ImageTags : public QWidget
 {
 	Q_OBJECT
@@ -89,10 +72,10 @@ private:
 	void redrawTree();
 
 	void cacheUpdateImageTags(QString &imageFileName, QSet<QString> tags);
-	void cacheRemoveTagFromImage(QString &imageFileName, const QString &tagName);
+	bool cacheRemoveTagFromImage(QString &imageFileName, const QString &tagName);
 	QSet<QString> &cacheGetImageTags(QString &imageFileName);
 	void cacheSetImageTags(const QString &imageFileName, QSet<QString> tags);
-	void cacheAddTagToImage(QString &imageFileName, QString &tagName);
+	bool cacheAddTagToImage(QString &imageFileName, QString &tagName);
 	void cacheClear();
 
 private slots:

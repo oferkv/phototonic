@@ -137,14 +137,14 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 			currFile = fileInfo.fileName();
 			destFile = destDir + QDir::separator() + currFile;
 
-			opLabel->setText((GData::copyOp? tr("Copying \"%1\" to \"%2\".") : tr("Moving \"%1\" to \"%2\"."))
-											.arg(sourceFile).arg(destFile));
+			opLabel->setText((GData::copyOp? 
+				tr("Copying \"%1\" to \"%2\".")
+				: tr("Moving \"%1\" to \"%2\".")).arg(sourceFile).arg(destFile));
 			QApplication::processEvents();
 
 			res = cpMvFile(GData::copyOp, currFile, sourceFile, destFile, destDir);
 
-			if (!res || abortOp)
-			{
+			if (!res || abortOp) {
 				break;
 			}
 
@@ -157,6 +157,7 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
 			for (int t = rowList.size() - 1; t >= 0; --t)
 				thumbView->thumbViewModel->removeRow(rowList.at(t));
 		}
+		latestRow = rowList.at(0);
 	}
 
 	nfiles = GData::copyCutIdxList.size();
@@ -1503,5 +1504,32 @@ void CopyMoveToDialog::remove()
 	if((indexesList = pathsTable->selectionModel()->selectedIndexes()).size()) {
 		pathsTableModel->removeRow(indexesList.first().row());
 	}
+}
+
+ProgressDialog::ProgressDialog(QWidget *parent) : QDialog(parent)
+{
+    opLabel = new QLabel("");
+    abortOp = false;
+    
+    cancelButton = new QPushButton(tr("Cancel"));
+   	cancelButton->setIcon(QIcon::fromTheme("dialog-cancel"));
+    cancelButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(cancelButton, SIGNAL(clicked()), this, SLOT(abort()));
+
+    QHBoxLayout *topLayout = new QHBoxLayout;
+    topLayout->addWidget(opLabel);
+
+    QHBoxLayout *buttonsLayout = new QHBoxLayout;
+    buttonsLayout->addWidget(cancelButton);
+
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    mainLayout->addLayout(topLayout);
+    mainLayout->addLayout(buttonsLayout, Qt::AlignRight);
+    setLayout(mainLayout);
+}
+
+void ProgressDialog::abort()
+{
+	abortOp = true;
 }
 

@@ -36,6 +36,7 @@ public:
     CpMvDialog(QWidget *parent);
 	void exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDir);
 	int nfiles;
+	int latestRow;
 
 private:
 	QLabel *opLabel;
@@ -246,6 +247,23 @@ private:
 	QLabel *destinationLab;
 
 	void savePaths();
+};
+
+class ProgressDialog : public QDialog
+{
+    Q_OBJECT
+
+public slots:
+	void abort();
+
+public:
+	QLabel *opLabel;
+	bool abortOp;
+	
+    ProgressDialog(QWidget *parent);
+
+private:
+	QPushButton *cancelButton;
 };
 
 #endif // DIALOGS_H
