@@ -1051,7 +1051,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.6.3</h2>"
+	QString aboutString = "<h2>Phototonic v1.6.4</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -1062,6 +1062,7 @@ void Phototonic::about()
 		+ "<tr><td></td><td>Krzysztof Pyrkosz (pyrkosz@o2.pl)</td></tr>"
 		+ QString::fromUtf8("<tr><td></td><td>Thomas L\u00FCbking (thomas.luebking@gmail.com)</td></tr>")
 		+ "<tr><td></td><td>Tung Le</td></tr>"
+		+ "<tr><td></td><td>Peter Mattern</td></tr>"
 		+ "<tr><td>Czech:</td><td>Pavel Fric (pavelfric@seznam.cz)</td></tr>"
 		+ "<tr><td>French:</td><td>Adrien Daugabel (adrien.d@mageialinux-online.org)</td></tr>"
 		+ "<tr><td></td><td>David Geiger (david.david@mageialinux-online.org)</td></tr>"

@@ -387,12 +387,12 @@ void ImageTags::applyUserAction(QList<QTreeWidgetItem *> tagsList)
 			QString tagName = tagsList.at(i)->text(0);
 
 			if (tagState == Qt::Checked) {
-				dialog->opLabel->setText("Tagging " + imageName);
+				dialog->opLabel->setText(tr("Tagging ") + imageName);
 				if (cacheAddTagToImage(imageName, tagName)) {
 					writeTagsToImage(imageName, cacheGetImageTags(imageName));
 				}
 			} else {
-				dialog->opLabel->setText("Untagging " + imageName);
+				dialog->opLabel->setText(tr("Untagging ") + imageName);
 				if (cacheRemoveTagFromImage(imageName, tagName)) {
 					writeTagsToImage(imageName, cacheGetImageTags(imageName));
 				}
