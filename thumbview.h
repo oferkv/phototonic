@@ -28,6 +28,8 @@
 #include "imageview.h"
 #include "tags.h"
 
+class ImageTags;
+
 struct DuplicateImage
 {
 	QString filePath;
@@ -71,25 +73,29 @@ public:
 	void loadPrepare();
 	void load();
 	void loadDuplicates();
+
+	void setThumbColors();
+	bool setCurrentIndexByName(QString &FileName);
+	bool setCurrentIndexByRow(int row);
+	void setCurrentRow(int row);
+	void setImageviewWindowTitle();
 	void setNeedScroll(bool needScroll)
 	{
 		isNeedScroll = needScroll;
 	}
-	void setThumbColors();
-	bool setCurrentIndexByName(QString &FileName);
-	bool setCurrentIndexByRow(int row);
+
 	void selectCurrentIndex();
+	void addThumb(QString &imageFullPath);
+	void abort();
+	void selectThumbByRow(int row);
+	
 	int getNextRow();
 	int getPrevRow();
 	int getLastRow();
 	int getRandomRow();
 	int getCurrentRow();
-	void setCurrentRow(int row);
-	void setImageviewWindowTitle();
+	QStringList getSelectedThumbsList();
 	QString getSingleSelectionFilename();
-	void addThumb(QString &imageFullPath);
-	void abort();
-	void selectThumbByRow(int row);
 
 protected:
 	void startDrag(Qt::DropActions);

@@ -285,17 +285,9 @@ void ThumbView::handleSelectionChanged(const QItemSelection&)
 			infoView->addEntry(key, val);
 		}
 	}
-		
-	if (nSelected == 0) {
-		imageTags->showFolderTags();
-	} else {
-		QStringList SelectedThumgsPaths;
-		for (int tn = indexesList.size() - 1; tn >= 0 ; --tn) {
-			SelectedThumgsPaths << 
-				thumbViewModel->item(indexesList[tn].row())->data(FileNameRole).toString();
-		}
 
-		imageTags->showSelectedImagesTags(SelectedThumgsPaths);
+	if (imageTags->currentDisplayMode == SelectionTagsDisplay) {
+		imageTags->showSelectedImagesTags();
 	}
 
 	/* update status bar */
@@ -309,6 +301,19 @@ void ThumbView::handleSelectionChanged(const QItemSelection&)
 	}
 
 	emit setStatus(statusStr);
+}
+
+QStringList ThumbView::getSelectedThumbsList()
+{
+	QModelIndexList indexesList = selectionModel()->selectedIndexes();
+	QStringList SelectedThumbsPaths;
+	
+	for (int tn = indexesList.size() - 1; tn >= 0 ; --tn) {
+		SelectedThumbsPaths << 
+			thumbViewModel->item(indexesList[tn].row())->data(FileNameRole).toString();
+	}
+
+	return SelectedThumbsPaths;
 }
 
 void ThumbView::startDrag(Qt::DropActions)
@@ -647,8 +652,11 @@ void ThumbView::initThumbs()
 		}
 	}
 
-	if (imageTags->currentDisplayMode == FolderTagsDisplay) {
-		imageTags->showFolderTags();
+    imageTags->populateTagsTree();
+	if (imageTags->currentDisplayMode == SelectionTagsDisplay) {
+		imageTags->showSelectedImagesTags();
+	} else {
+		imageTags->showTagsFilter();
 	}
 
 	if (thumbFileInfoList.size() && selectionModel()->selectedIndexes().size() == 0) {

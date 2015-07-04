@@ -955,7 +955,7 @@ void Phototonic::createImageTags()
 {
 	tagsDock = new QDockWidget(tr("Tags"), this);
 	tagsDock->setObjectName("Tags");
-	thumbView->imageTags = new ImageTags(tagsDock);
+	thumbView->imageTags = new ImageTags(tagsDock, thumbView);
 	tagsDock->setWidget(thumbView->imageTags);
 	
 	connect(tagsDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setTagsDockVisibility()));	
@@ -1051,7 +1051,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.6.4</h2>"
+	QString aboutString = "<h2>Phototonic v1.6.5</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -1874,12 +1874,7 @@ void Phototonic::goSelectedDir(const QModelIndex &idx)
 	thumbView->setNeedScroll(true);
 	GData::currentViewDir = getSelectedPath();
 	refreshThumbs(true);
-
-	if (fsTree->isExpanded((idx))) {
-		fsTree->setExpanded(idx, false);
-	} else {
-		fsTree->expand(idx);
-	}
+	fsTree->expand(idx);
 }
 
 void Phototonic::goPathBarDir()

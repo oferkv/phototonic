@@ -21,6 +21,9 @@
 
 #include <QtWidgets>
 #include <exiv2/exiv2.hpp>
+#include "thumbview.h"
+
+class ThumbView;
 
 enum TagsDisplayMode
 {
@@ -39,34 +42,33 @@ public:
 	QAction *removeTagAction;
 	TagsDisplayMode currentDisplayMode;
 	
-	ImageTags(QWidget *parent);
+	ImageTags(QWidget *parent, ThumbView *thumbView);
 	void addTag(QString tagName, bool tagChecked);
 	void readImageTagsToCache(const QString &imageFullPath);
 	void addImageTagsToCache(const QString &imageFullPath, QSet<QString> imageFileTags);
-	void showFolderTags();
-	void showSelectedImagesTags(QStringList &selectedThumbs);
+	void showTagsFilter();
+	void showSelectedImagesTags();
 	void resetTagsState();
 	bool isImageFilteredOut(QString imagePath);
 	void removeTag();
+	void populateTagsTree();
 
 private:
-	QString currentImage;
-	QStringList currentSelectedImages;
 	QSet<QString> imageFilteringTags;
 	QMap<QString, QSet<QString> > imageTagsCache;
 	QAction *addTagAction;
 	QAction *addToSelectionAction;
 	QAction *removeFromSelectionAction;
-	QAction *clearFolderFiltersAction;
-	QTreeWidgetItem *tagsRootItem;
+	QAction *clearTagsFilterAction;
 	QTreeWidgetItem *lastChangedTagItem;
+	ThumbView *thumbView;
+	QTabBar *tabs;
 	
 	void readImageFileTags(QSet<QString> &tags, const QString &imageFullPath);
 	bool writeTagsToImage(QString &imageFileName, QSet<QString> &tags);
 	QSet<QString> getCheckedTags();
-	void setTagEnabled(QTreeWidgetItem *tagItem, Qt::CheckState status);
+	void setTagIcon(QTreeWidgetItem *tagItem, Qt::CheckState status);
 	void setActiveViewMode(TagsDisplayMode mode);
-	void clearTagsRootItem();
 	void applyUserAction(QTreeWidgetItem *item);
 	void applyUserAction(QList<QTreeWidgetItem *> tagsList);
 	void redrawTree();
@@ -85,8 +87,9 @@ private slots:
 	void showMenu(QPoint pt);
 	void addNewTag();
 	void addTagsToSelection();
-	void clearFolderFilters();
+	void clearTagFilters();
 	void removeTagsFromSelection();
+	void tabsChanged(int index);
 
 signals:
 	void setStatus(QString state);

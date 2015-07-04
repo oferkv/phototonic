@@ -23,7 +23,6 @@
 #include "thumbview.h"
 #include "imageview.h"
 #include "dialogs.h"
-#include "tags.h"
 
 class Phototonic : public QMainWindow
 {

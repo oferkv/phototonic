@@ -529,12 +529,12 @@
     <message>
         <location filename="../mainwindow.cpp" line="286"/>
         <source>Top</source>
-        <translation>Nahoře</translation>
+        <translation>Ve složce nahoru</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="291"/>
         <source>Bottom</source>
-        <translation>Dole</translation>
+        <translation>Ve složce dolů</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="296"/>
@@ -643,7 +643,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="388"/>
         <source>Reverse</source>
-        <translation>Obrácený</translation>
+        <translation>Obráceně</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="411"/>
@@ -673,7 +673,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="444"/>
         <source>Compact</source>
-        <translation>Malé</translation>
+        <translation>Zabírající málo místa</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="446"/>
@@ -1735,7 +1735,7 @@
     <message>
         <location filename="../dialogs.cpp" line="345"/>
         <source>Rotate image according to Exif orientation</source>
-        <translation>Otočit obrázek podle natočení EXIF</translation>
+        <translation>Otočit obrázek podle údaje o natočení v EXIF</translation>
     </message>
     <message>
         <source>	Label color: </source>
@@ -1752,16 +1752,16 @@
     <message>
         <location filename="../dialogs.cpp" line="425"/>
         <source>Show original size of images smaller than the thumbnail size</source>
-        <translation>Ukázat původní velikost obrázků menších než je velikost náhledu</translation>
+        <translation>Ukázat původní velikost obrázků menších, než je velikost náhledu</translation>
     </message>
     <message>
         <source>Number of thumbnail pages to read ahead: </source>
-        <translation type="vanished">Počet stránek s náhledy, jež se mají načíst dopředu:</translation>
+        <translation type="vanished">Počet stránek s náhledy k načtení dopředu:</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="438"/>
         <source>Rotate thumbnails according to Exif orientation</source>
-        <translation>Otočit náhledy podle natočení EXIF</translation>
+        <translation>Otočit náhledy podle údaje o natočení v EXIF</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="565"/>
@@ -1839,12 +1839,12 @@
     </message>
     <message>
         <source>Rotate according to Exif orientation</source>
-        <translation type="vanished">Otočit podle natočení EXIF</translation>
+        <translation type="vanished">Otočit podle údaje o natočení v EXIF</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="349"/>
         <source>Show image file name in full screen mode</source>
-        <translation>Zobrazit název souboru s obrázkem v režimu celé obrazovky</translation>
+        <translation>Zobrazit název souboru obrázku v režimu celé obrazovky</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="309"/>
@@ -1924,7 +1924,7 @@
     <message>
         <location filename="../dialogs.cpp" line="523"/>
         <source>Swap mouse left-click and middle-click actions</source>
-        <translation>Vyměnit klepnutí levým tlačítkem myši s klepnutím prostředním tlačítkem</translation>
+        <translation>Vyměnit klepnutí levým tlačítkem myši za klepnutí prostředním tlačítkem</translation>
     </message>
     <message>
         <source>Keyboard Shortcuts:</source>
