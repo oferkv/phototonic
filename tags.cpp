@@ -91,8 +91,10 @@ void ImageTags::redrawTree()
 void ImageTags::showMenu(QPoint pt)
 {
     QTreeWidgetItem *item = tagsTree->itemAt(pt);
-	if (item)
-    	tagsMenu->popup(tagsTree->viewport()->mapToGlobal(pt));
+	addToSelectionAction->setEnabled(item? true : false);
+	removeFromSelectionAction->setEnabled(item? true : false);
+	removeTagAction->setEnabled(item? true : false);
+    tagsMenu->popup(tagsTree->viewport()->mapToGlobal(pt));
 }
 
 void ImageTags::setTagIcon(QTreeWidgetItem *tagItem, Qt::CheckState status)
