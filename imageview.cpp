@@ -243,11 +243,14 @@ void ImageView::rotateByExifRotation(QImage &image, const QString &imageFullPath
 	QTransform trans;
 	Exiv2::Image::AutoPtr exifImage;
 
+	qDebug() << "Trying to read image metadata for; " << imageFullPath;
+	
 	try {
 		exifImage = Exiv2::ImageFactory::open(imageFullPath.toStdString());
 		exifImage->readMetadata();
 	}
 	catch (Exiv2::Error &error) {
+		qDebug() << "Failed to read metadata";
 		return;
 	}
 
@@ -259,9 +262,12 @@ void ImageView::rotateByExifRotation(QImage &image, const QString &imageFullPath
 			orientation = exifData["Exif.Image.Orientation"].value().toLong();
 		}
 		catch (Exiv2::Error &error) {
+			qDebug() << "Failed to read orientation";
 			return;
 		}
 	}
+
+	qDebug() << "Read orientation for this image: " << orientation;
 	
 	switch(orientation) {
 		case 2:

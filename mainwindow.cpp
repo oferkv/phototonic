@@ -2229,8 +2229,6 @@ void Phototonic::setupDocks()
 	iiDockEmptyWidget = new QWidget;
 	pvDockEmptyWidget = new QWidget;
 	lockDocks();
-
-	setDockOptions(QMainWindow::AllowNestedDocks);
 }
 
 void Phototonic::lockDocks()
@@ -2604,42 +2602,37 @@ void Phototonic::setImageToolBarVisibility()
 
 void Phototonic::setFsDockVisibility()
 {
-	if (GData::layoutMode == imageViewIdx)
-		return;
-
-	GData::fsDockVisible = fsDock->isVisible();
+	if (GData::layoutMode != imageViewIdx) {
+		GData::fsDockVisible = fsDock->isVisible();
+	}
 }
 
 void Phototonic::setBmDockVisibility()
 {
-	if (GData::layoutMode == imageViewIdx)
-		return;
-
-	GData::bmDockVisible = bmDock->isVisible();
+	if (GData::layoutMode != imageViewIdx) {
+		GData::bmDockVisible = bmDock->isVisible();
+	}
 }
 
 void Phototonic::setTagsDockVisibility()
 {
-	if (GData::layoutMode == imageViewIdx)
-		return;
-
-	GData::tagsDockVisible = tagsDock->isVisible();
+	if (GData::layoutMode != imageViewIdx) {
+		GData::tagsDockVisible = tagsDock->isVisible();
+	}
 }
 
 void Phototonic::setIiDockVisibility()
 {
-	if (GData::layoutMode == imageViewIdx)
-		return;
-
-	GData::iiDockVisible = iiDock->isVisible();
+	if (GData::layoutMode != imageViewIdx) {
+		GData::iiDockVisible = iiDock->isVisible();
+	}
 }
 
 void Phototonic::setPvDockVisibility()
 {
-	if (GData::layoutMode == imageViewIdx)
-		return;
-
-	GData::pvDockVisible = pvDock->isVisible();
+	if (GData::layoutMode != imageViewIdx) {
+		GData::pvDockVisible = pvDock->isVisible();
+	}
 }
 
 void Phototonic::showViewer()
