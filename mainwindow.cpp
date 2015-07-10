@@ -1051,7 +1051,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.6.6</h2>"
+	QString aboutString = "<h2>Phototonic v1.6.8</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -3268,7 +3268,7 @@ void Phototonic::rename()
 		thumbView->thumbViewModel->item(
 					indexesList.first().row())->setData(newImageFullPath, thumbView->FileNameRole);
 
-		if (GData::thumbsLayout != ThumbView::Squares) {
+		if (GData::showLabels) {
 			thumbView->thumbViewModel->item(
 					indexesList.first().row())->setData(newImageName, Qt::DisplayRole);
 		}

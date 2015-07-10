@@ -492,6 +492,16 @@ void ImageTags::addNewTag()
 		return;
 	}
 
+	QSetIterator<QString> knownTagsIt(GData::knownTags);
+	while (knownTagsIt.hasNext()) {
+	    QString tag = knownTagsIt.next();
+	    if (newTagName == tag) {
+			QMessageBox msgBox;
+			msgBox.critical(this, tr("Error"), tr("Tag ") + newTagName + tr(" already exists"));
+			return;
+        }
+    }
+
 	addTag(newTagName, false);
 	GData::knownTags.insert(newTagName);
 	redrawTree();

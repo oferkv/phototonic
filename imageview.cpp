@@ -243,14 +243,11 @@ void ImageView::rotateByExifRotation(QImage &image, const QString &imageFullPath
 	QTransform trans;
 	Exiv2::Image::AutoPtr exifImage;
 
-	qDebug() << "Trying to read image metadata for; " << imageFullPath;
-	
 	try {
 		exifImage = Exiv2::ImageFactory::open(imageFullPath.toStdString());
 		exifImage->readMetadata();
 	}
 	catch (Exiv2::Error &error) {
-		qDebug() << "Failed to read metadata";
 		return;
 	}
 
@@ -262,13 +259,10 @@ void ImageView::rotateByExifRotation(QImage &image, const QString &imageFullPath
 			orientation = exifData["Exif.Image.Orientation"].value().toLong();
 		}
 		catch (Exiv2::Error &error) {
-			qDebug() << "Failed to read orientation";
 			return;
 		}
 	}
 
-	qDebug() << "Read orientation for this image: " << orientation;
-	
 	switch(orientation) {
 		case 2:
 			image = image.mirrored(true, false);
@@ -979,38 +973,29 @@ void ImageView::saveImageAs()
 	QString fileName = QFileDialog::getSaveFileName(this,
 		tr("Save image as"),
 		currentImageFullPath,
-		tr("Images") + " (*.jpg *.jpeg *.jpe *.png *.bmp *.tiff *.tif *.ppm *.xbm *.xpm)");
+		tr("Images") + " (*.jpg *.jpeg *.jpe *.png *.bmp *.ppm *.pgm *.pbm *.xbm *.xpm)");
 		
-	if (!fileName.isEmpty())
-	{
-		try
-		{
+	if (!fileName.isEmpty()) {
+		try {
 			exifImage = Exiv2::ImageFactory::open(currentImageFullPath.toStdString());
 			exifImage->readMetadata();
 		}
-		catch (Exiv2::Error &error)
-		{
+		catch (Exiv2::Error &error)	{
 			exifError = true;
 		}
 
 	
-		if (!displayPixmap.save(fileName, 0, GData::defaultSaveQuality))
-		{
+		if (!displayPixmap.save(fileName, 0, GData::defaultSaveQuality)) {
 			QMessageBox msgBox;
 			msgBox.critical(this, tr("Error"), tr("Failed to save image."));
-		}
-		else
-		{
-			if (!exifError)
-			{
-				try
-				{
+		} else {
+			if (!exifError) {
+				try	{
 					newExifImage = Exiv2::ImageFactory::open(fileName.toStdString());
 					newExifImage->setMetadata(*exifImage);
 					newExifImage->writeMetadata();
 				}
-				catch (Exiv2::Error &error)
-				{
+				catch (Exiv2::Error &error) {
 					exifError = true;
 				}
 			}
@@ -1056,8 +1041,7 @@ void ImageView::pasteImage()
 	if (isAnimation)
 		return;
 
-	if (!QApplication::clipboard()->image().isNull())
-	{
+	if (!QApplication::clipboard()->image().isNull()) {
 		origImage = QApplication::clipboard()->image();
 		refresh();
 	}
