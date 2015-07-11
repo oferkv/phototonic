@@ -747,7 +747,7 @@ void ImageView::mouseReleaseEvent(QMouseEvent *event)
 			QApplication::restoreOverrideCursor();
 		}
 
-		if (cropBand->isVisible()) {
+		if (cropBand && cropBand->isVisible()) {
 			setFeedback(tr("Selection size: ")
 			+ QString::number(cropBand->width())
 			+ "x"
