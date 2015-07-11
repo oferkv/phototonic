@@ -22,6 +22,7 @@
 #include <QtWidgets>
 #include <exiv2/exiv2.hpp>
 #include "thumbview.h"
+#include "mdcache.h"
 
 class ThumbView;
 
@@ -36,16 +37,9 @@ class ImageTags : public QWidget
 	Q_OBJECT
 
 public:
-	QMenu *tagsMenu;
-	QTreeWidget *tagsTree;
-	bool folderFilteringActive;
-	QAction *removeTagAction;
-	TagsDisplayMode currentDisplayMode;
-	
-	ImageTags(QWidget *parent, ThumbView *thumbView);
+	ImageTags(QWidget *parent, ThumbView *thumbView, MetadataCache *mdCache);
 	void addTag(QString tagName, bool tagChecked);
 	void readImageTagsToCache(const QString &imageFullPath);
-	void addImageTagsToCache(const QString &imageFullPath, QSet<QString> imageFileTags);
 	void showTagsFilter();
 	void showSelectedImagesTags();
 	void resetTagsState();
@@ -53,17 +47,13 @@ public:
 	void removeTag();
 	void populateTagsTree();
 
+	QMenu *tagsMenu;
+	QTreeWidget *tagsTree;
+	bool folderFilteringActive;
+	QAction *removeTagAction;
+	TagsDisplayMode currentDisplayMode;
+
 private:
-	QSet<QString> imageFilteringTags;
-	QMap<QString, QSet<QString> > imageTagsCache;
-	QAction *addTagAction;
-	QAction *addToSelectionAction;
-	QAction *removeFromSelectionAction;
-	QAction *clearTagsFilterAction;
-	QTreeWidgetItem *lastChangedTagItem;
-	ThumbView *thumbView;
-	QTabBar *tabs;
-	
 	void readImageFileTags(QSet<QString> &tags, const QString &imageFullPath);
 	bool writeTagsToImage(QString &imageFileName, QSet<QString> &tags);
 	QSet<QString> getCheckedTags();
@@ -73,12 +63,15 @@ private:
 	void applyUserAction(QList<QTreeWidgetItem *> tagsList);
 	void redrawTree();
 
-	void cacheUpdateImageTags(QString &imageFileName, QSet<QString> tags);
-	bool cacheRemoveTagFromImage(QString &imageFileName, const QString &tagName);
-	QSet<QString> &cacheGetImageTags(QString &imageFileName);
-	void cacheSetImageTags(const QString &imageFileName, QSet<QString> tags);
-	bool cacheAddTagToImage(QString &imageFileName, QString &tagName);
-	void cacheClear();
+	QSet<QString> imageFilteringTags;
+	QAction *addTagAction;
+	QAction *addToSelectionAction;
+	QAction *removeFromSelectionAction;
+	QAction *clearTagsFilterAction;
+	QTreeWidgetItem *lastChangedTagItem;
+	ThumbView *thumbView;
+	QTabBar *tabs;
+	MetadataCache *mdCache;	
 
 private slots:
 	void tagClicked(QTreeWidgetItem *item, int column);

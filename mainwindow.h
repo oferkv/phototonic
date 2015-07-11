@@ -298,6 +298,7 @@ private:
 	QWidget *pvDockEmptyWidget;
 	QVBoxLayout *imageViewContainer;
 	bool interfaceDisabled;
+	MetadataCache *mdCache;
 
 	enum CentralWidgets	{
 		thumbViewIdx = 0,

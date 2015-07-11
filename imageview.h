@@ -21,6 +21,7 @@
 
 #include <QtWidgets>
 #include "croprubberband.h"
+#include "mdcache.h"
 
 class ImageView : public QWidget
 {
@@ -61,7 +62,7 @@ public:
 		MoveRight
 	};
 
-	ImageView(QWidget *parent = 0);
+	ImageView(QWidget *parent, MetadataCache *mdCache);
 	void loadImage(QString imageFileName);
 	void resizeImage();
 	void setCursorHiding(bool hide);
@@ -72,7 +73,7 @@ public:
 	int getImageHeightPreCropped();
 	bool isNewImage();
 	void keyMoveEvent(int direction);
-	static void rotateByExifRotation(QImage &image, const QString &imageFullPath);
+	void rotateByExifRotation(QImage &image, QString &imageFullPath);
 	void setInfo(QString infoString);
 	void setFeedback(QString feedbackString);
 
@@ -116,6 +117,7 @@ private:
 	bool isAnimation;
 	QLabel *feedbackLabel;
 	QPoint cropOrigin;
+	MetadataCache *mdCache;
 
 	void setMouseMoveData(bool lockMove, int lMouseX, int lMouseY);
 	void centerImage(QSize &imgSize);

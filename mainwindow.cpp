@@ -116,7 +116,8 @@ bool Phototonic::event(QEvent *event)
 
 void Phototonic::createThumbView()
 {
-	thumbView = new ThumbView(this);
+	mdCache = new MetadataCache;
+	thumbView = new ThumbView(this, mdCache);
 	thumbView->thumbsSortFlags = (QDir::SortFlags)GData::appSettings->value("thumbsSortFlags").toInt();
 	thumbView->thumbsSortFlags |= QDir::IgnoreCase;
 
@@ -141,7 +142,7 @@ void Phototonic::addMenuSeparator(QWidget *widget)
 
 void Phototonic::createImageView()
 {
-	imageView = new ImageView(this);
+	imageView = new ImageView(this, mdCache);
 	connect(saveAction, SIGNAL(triggered()), imageView, SLOT(saveImage()));
 	connect(saveAsAction, SIGNAL(triggered()), imageView, SLOT(saveImageAs()));
 	connect(copyImageAction, SIGNAL(triggered()), imageView, SLOT(copyImage()));
@@ -279,6 +280,7 @@ void Phototonic::createImageView()
 	imageView->setContextMenuPolicy(Qt::DefaultContextMenu);
 	GData::isFullScreen = GData::appSettings->value("isFullScreen").toBool();
 	fullScreenAct->setChecked(GData::isFullScreen); 
+	thumbView->setImageView(imageView);
 }
 
 void Phototonic::createActions()
@@ -955,7 +957,7 @@ void Phototonic::createImageTags()
 {
 	tagsDock = new QDockWidget(tr("Tags"), this);
 	tagsDock->setObjectName("Tags");
-	thumbView->imageTags = new ImageTags(tagsDock, thumbView);
+	thumbView->imageTags = new ImageTags(tagsDock, thumbView, mdCache);
 	tagsDock->setWidget(thumbView->imageTags);
 	
 	connect(tagsDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setTagsDockVisibility()));	
@@ -1051,7 +1053,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.6.8</h2>"
+	QString aboutString = "<h2>Phototonic v1.6.9</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -1709,8 +1711,9 @@ void Phototonic::deleteViewerImage()
 		return;
 	}
 
-	if (GData::slideShowActive)
+	if (GData::slideShowActive) {
 		slideShow();
+	}
 	imageView->setCursorHiding(false);
 
 	bool ok;
@@ -1733,17 +1736,14 @@ void Phototonic::deleteViewerImage()
 		}
 	}
 
-	if (deleteConfirmed)
-	{
+	if (deleteConfirmed) {
 		int currentRow = thumbView->getCurrentRow();
 
 		ok = QFile::remove(imageView->currentImageFullPath);
-		if (ok)
-		{
+		if (ok) {
 			 thumbView->thumbViewModel->removeRow(currentRow);
-		}
-		else
-		{
+			 imageView->setFeedback(tr("Deleted ") + fileName);
+		} else {
 			QMessageBox msgBox;
 			msgBox.critical(this, tr("Error"), tr("Failed to delete image"));
 			if (isFullScreen()) {

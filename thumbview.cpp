@@ -20,8 +20,9 @@
 
 #define BAD_IMG_SZ	64
 
-ThumbView::ThumbView(QWidget *parent) : QListView(parent)
+ThumbView::ThumbView(QWidget *parent, MetadataCache *mdCache) : QListView(parent)
 {
+	this->mdCache = mdCache;
 	GData::thumbsBackgroundColor = GData::appSettings->value("backgroundThumbColor").value<QColor>();
 	GData::thumbsTextColor = GData::appSettings->value("textThumbColor").value<QColor>();
 	setThumbColors();
@@ -630,7 +631,7 @@ void ThumbView::initThumbs()
 	for (fileIndex = 0; fileIndex < thumbFileInfoList.size(); ++fileIndex) {
 		thumbFileInfo = thumbFileInfoList.at(fileIndex);
 
-		imageTags->readImageTagsToCache(thumbFileInfo.filePath());
+		mdCache->loadImageMetadata(thumbFileInfo.filePath());
 		if (imageTags->folderFilteringActive &&
 				imageTags->isImageFilteredOut(thumbFileInfo.filePath())) {
 			continue;
@@ -787,7 +788,7 @@ void ThumbView::loadThumbsRange()
 			thumb = thumbReader.read();
 
 			if (GData::exifThumbRotationEnabled) {
-				ImageView::rotateByExifRotation(thumb, imageFileName);
+				imageView->rotateByExifRotation(thumb, imageFileName);
 				currThumbSize = thumb.size();
 				currThumbSize.scale(QSize(thumbWidth, thumbHeight), Qt::KeepAspectRatio);
 			}
@@ -856,7 +857,7 @@ void ThumbView::addThumb(QString &imageFullPath)
 
 		if (GData::exifThumbRotationEnabled)
 		{
-			ImageView::rotateByExifRotation(thumb, imageFullPath);
+			imageView->rotateByExifRotation(thumb, imageFullPath);
 			currThumbSize = thumb.size();
 			currThumbSize.scale(QSize(thumbWidth, thumbHeight), Qt::KeepAspectRatio);
 		}
@@ -911,3 +912,12 @@ void ThumbView::invertSelection()
 	selectionModel()->select(toggleSelection, QItemSelectionModel::Toggle);
 }
 
+void ThumbView::setNeedScroll(bool needScroll)
+{
+	isNeedScroll = needScroll;
+}
+
+void ThumbView::setImageView(ImageView *imageView)
+{
+	this->imageView  = imageView;
+}

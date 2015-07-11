@@ -20,7 +20,7 @@
 #include "global.h"
 #include "dialogs.h"
 
-ImageTags::ImageTags(QWidget *parent, ThumbView *thumbView) : QWidget(parent)
+ImageTags::ImageTags(QWidget *parent, ThumbView *thumbView, MetadataCache *mdCache) : QWidget(parent)
 {
 	tagsTree = new QTreeWidget;
 	tagsTree->setColumnCount(2);
@@ -29,6 +29,7 @@ ImageTags::ImageTags(QWidget *parent, ThumbView *thumbView) : QWidget(parent)
 	tagsTree->header()->close();
 	tagsTree->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	this->thumbView = thumbView;
+	this->mdCache = mdCache;
 
 	tabs = new QTabBar(this);
 	tabs->addTab("Set Tags");
@@ -118,32 +119,6 @@ void ImageTags::addTag(QString tagName, bool tagChecked)
 	tagsTree->addTopLevelItem(tagItem);
 }
 
-void ImageTags::readImageFileTags(QSet<QString> &tags, const QString &imageFullPath)
-{
-	Exiv2::Image::AutoPtr exifImage;
-
-	try {
-		exifImage = Exiv2::ImageFactory::open(imageFullPath.toStdString());
-		exifImage->readMetadata();
-	}
-	catch (Exiv2::Error &error) {
-		return;
-	}
-
-	Exiv2::IptcData &iptcData = exifImage->iptcData();
-	if (!iptcData.empty()) {
-		QString key;
-		Exiv2::IptcData::iterator end = iptcData.end();
-		for (Exiv2::IptcData::iterator iptcIt = iptcData.begin(); iptcIt != end; ++iptcIt) {
-			if (iptcIt->tagName() == "Keywords") {
-				QString tagName = QString::fromUtf8(iptcIt->toString().c_str());
-				tags.insert(tagName);
-				GData::knownTags.insert(tagName);
-			}
-        }
-    }
-}
-
 bool ImageTags::writeTagsToImage(QString &imageFileName, QSet<QString> &newTags)
 {
 	QSet<QString> imageTags;
@@ -189,26 +164,6 @@ bool ImageTags::writeTagsToImage(QString &imageFileName, QSet<QString> &newTags)
 	return true;
 }
 
-void ImageTags::readImageTagsToCache(const QString &imageFullPath)
-{
-	QSet<QString> imageTags;
-	readImageFileTags(imageTags, imageFullPath);
-
-	if (imageTags.size()) {
-		cacheSetImageTags(imageFullPath, imageTags);
-	}
-			
-    return;
-}
-
-void ImageTags::addImageTagsToCache(const QString &imageFullPath, QSet<QString> imageTags)
-{
-	if (imageTags.size()) {
-		cacheSetImageTags(imageFullPath, imageTags);
-	}
-    return;
-}
-
 void ImageTags::showSelectedImagesTags()
 {
 	static bool busy = false;
@@ -222,7 +177,7 @@ void ImageTags::showSelectedImagesTags()
 	int selectedThumbsNum = selectedThumbs.size();
 	QMap<QString, int> tagsCount;
 	for (int i = 0; i < selectedThumbsNum; ++i) {
-		QSetIterator<QString> imageTagsIter(cacheGetImageTags(selectedThumbs[i]));
+		QSetIterator<QString> imageTagsIter(mdCache->getImageTags(selectedThumbs[i]));
 		while (imageTagsIter.hasNext()) {
 			QString imageTag = imageTagsIter.next();
 			tagsCount[imageTag]++;
@@ -318,7 +273,7 @@ void ImageTags::setActiveViewMode(TagsDisplayMode mode)
 
 bool ImageTags::isImageFilteredOut(QString imageFileName)
 {
-	QSet<QString> imageTags = cacheGetImageTags(imageFileName);
+	QSet<QString> imageTags = mdCache->getImageTags(imageFileName);
 
 	QSetIterator<QString> folderCheckedTagsIt(imageFilteringTags);
 	while (folderCheckedTagsIt.hasNext()) {
@@ -334,7 +289,7 @@ bool ImageTags::isImageFilteredOut(QString imageFileName)
 void ImageTags::resetTagsState()
 {
 	tagsTree->clear();
-	cacheClear();
+	mdCache->clear();
 }
 
 QSet<QString> ImageTags::getCheckedTags()
@@ -389,18 +344,18 @@ void ImageTags::applyUserAction(QList<QTreeWidgetItem *> tagsList)
 
 			if (tagState == Qt::Checked) {
 				dialog->opLabel->setText(tr("Tagging ") + imageName);
-				if (cacheAddTagToImage(imageName, tagName)) {
-					writeTagsToImage(imageName, cacheGetImageTags(imageName));
+				if (mdCache->addTagToImage(imageName, tagName)) {
+					writeTagsToImage(imageName, mdCache->getImageTags(imageName));
 				}
 			} else {
 				dialog->opLabel->setText(tr("Untagging ") + imageName);
-				if (cacheRemoveTagFromImage(imageName, tagName)) {
-					writeTagsToImage(imageName, cacheGetImageTags(imageName));
+				if (mdCache->removeTagFromImage(imageName, tagName)) {
+					writeTagsToImage(imageName, mdCache->getImageTags(imageName));
 				}
 			}
 		}
 
-		writeTagsToImage(imageName, cacheGetImageTags(imageName));
+		writeTagsToImage(imageName, mdCache->getImageTags(imageName));
 
 		++processEventsCounter;
 		if (processEventsCounter > 9) {
@@ -545,40 +500,5 @@ void ImageTags::removeTag()
 	if (removedTagWasChecked) {
 		applyTagFiltering();
 	}
-}
-
-void ImageTags::cacheUpdateImageTags(QString &imageFileName, QSet<QString> tags)
-{
-	imageTagsCache[imageFileName] = tags;
-}
-
-bool ImageTags::cacheRemoveTagFromImage(QString &imageFileName, const QString &tagName)
-{
-	return imageTagsCache[imageFileName].remove(tagName);
-}
-
-QSet<QString> &ImageTags::cacheGetImageTags(QString &imageFileName)
-{
-	return imageTagsCache[imageFileName] ;
-}
-
-void ImageTags::cacheSetImageTags(const QString &imageFileName, QSet<QString> tags)
-{
-	imageTagsCache.insert(imageFileName, tags);
-}
-
-bool ImageTags::cacheAddTagToImage(QString &imageFileName, QString &tagName)
-{
-	if (imageTagsCache[imageFileName].contains(tagName)) {
-		return false;
-	}
-	
-	imageTagsCache[imageFileName].insert(tagName);
-	return true;
-}
-
-void ImageTags::cacheClear()
-{
-	imageTagsCache.clear();
 }
 

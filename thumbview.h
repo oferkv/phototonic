@@ -27,6 +27,7 @@
 #include "infoview.h"
 #include "imageview.h"
 #include "tags.h"
+#include "mdcache.h"
 
 class ImageTags;
 
@@ -41,7 +42,43 @@ class ThumbView : public QListView
 	Q_OBJECT
 
 public:
+	enum UserRoles {
+		FileNameRole = Qt::UserRole + 1,
+		SortRole,
+		LoadedRole
+	};
+
+	enum ThumbnailLayouts {
+		Classic,
+		Compact,
+		Squares
+	};
+
+	ThumbView(QWidget *parent, MetadataCache *mdCache);
+	void loadPrepare();
+	void load();
+	void loadDuplicates();
+	void setThumbColors();
+	bool setCurrentIndexByName(QString &FileName);
+	bool setCurrentIndexByRow(int row);
+	void setCurrentRow(int row);
+	void setImageviewWindowTitle();
+	void setNeedScroll(bool needScroll);
+	void selectCurrentIndex();
+	void addThumb(QString &imageFullPath);
+	void abort();
+	void selectThumbByRow(int row);
+	int getNextRow();
+	int getPrevRow();
+	int getLastRow();
+	int getRandomRow();
+	int getCurrentRow();
+	QStringList getSelectedThumbsList();
+	QString getSingleSelectionFilename();
+	void setImageView(ImageView *imageView);
+
 	InfoView *infoView;
+	ImageTags *imageTags;
 	QDir *thumbsDir;
 	QStringList *fileFilters;
 	QList<QStandardItem*> *thumbList;
@@ -53,49 +90,6 @@ public:
 	int thumbHeight;
 	QString filterStr;
 	bool busy;
-	ImageTags *imageTags;
-
-	enum UserRoles
-	{
-		FileNameRole = Qt::UserRole + 1,
-		SortRole,
-		LoadedRole
-	};
-
-	enum ThumbnailLayouts
-	{
-		Classic,
-		Compact,
-		Squares
-	};
-
-	ThumbView(QWidget *parent);
-	void loadPrepare();
-	void load();
-	void loadDuplicates();
-
-	void setThumbColors();
-	bool setCurrentIndexByName(QString &FileName);
-	bool setCurrentIndexByRow(int row);
-	void setCurrentRow(int row);
-	void setImageviewWindowTitle();
-	void setNeedScroll(bool needScroll)
-	{
-		isNeedScroll = needScroll;
-	}
-
-	void selectCurrentIndex();
-	void addThumb(QString &imageFullPath);
-	void abort();
-	void selectThumbByRow(int row);
-	
-	int getNextRow();
-	int getPrevRow();
-	int getLastRow();
-	int getRandomRow();
-	int getCurrentRow();
-	QStringList getSelectedThumbsList();
-	QString getSingleSelectionFilename();
 
 protected:
 	void startDrag(Qt::DropActions);
@@ -103,22 +97,6 @@ protected:
 	void mousePressEvent(QMouseEvent *event);
 	
 private:
-	QFileInfo thumbFileInfo;
-	QFileInfoList thumbFileInfoList;
-	QImage emptyImg;
-	QModelIndex currentIndex;
-	QImageReader imageInfoReader;
-	QWidget *mainWindow;
-	QMap<QString, DuplicateImage> dupImageHashes;
-	
-	bool abortOp;
-	int newIndex;
-	bool isNeedScroll;
-	int currentRow;
-	bool scrolledForward;
-	int thumbsRangeFirst;
-	int thumbsRangeLast;
-
 	void initThumbs();
 	void findDupes(bool resetCounters);
 	void updateFoundDupesState(int duplicates, int filesScanned, int originalImages);
@@ -127,6 +105,23 @@ private:
 	bool isThumbVisible(QModelIndex idx);
 	void updateThumbsCount();
 	void updateExifInfo(QString imageFullPath);
+	
+	QFileInfo thumbFileInfo;
+	QFileInfoList thumbFileInfoList;
+	QImage emptyImg;
+	QModelIndex currentIndex;
+	QImageReader imageInfoReader;
+	QWidget *mainWindow;
+	QMap<QString, DuplicateImage> dupImageHashes;
+	MetadataCache *mdCache;
+	ImageView *imageView;
+	bool abortOp;
+	int newIndex;
+	bool isNeedScroll;
+	int currentRow;
+	bool scrolledForward;
+	int thumbsRangeFirst;
+	int thumbsRangeLast;
 
 signals:
 	void setStatus(QString state);

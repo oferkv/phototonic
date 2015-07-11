@@ -18,18 +18,19 @@
 
 #include <QGraphicsDropShadowEffect>
 #include <math.h>
+#include <exiv2/exiv2.hpp>
 #include "global.h"
 #include "imageview.h"
-#include "thumbview.h"
 
 #define CLIPBOARD_IMAGE_NAME		"clipboard.png"
 #define ROUND(x) ((int) ((x) + 0.5))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
-ImageView::ImageView(QWidget *parent) : QWidget(parent)
+ImageView::ImageView(QWidget *parent, MetadataCache *mdCache) : QWidget(parent)
 {
-	mainWindow = parent;
+	this->mainWindow = parent;
+	this->mdCache = mdCache;
 	cursorIsHidden = false;
 	moveImageLocked = false;
 	mirrorLayout = LayNone;
@@ -238,30 +239,10 @@ void ImageView::centerImage(QSize &imgSize)
 		imageLabel->move(newX, newY);
 }
 
-void ImageView::rotateByExifRotation(QImage &image, const QString &imageFullPath)
+void ImageView::rotateByExifRotation(QImage &image, QString &imageFullPath)
 {
 	QTransform trans;
-	Exiv2::Image::AutoPtr exifImage;
-
-	try {
-		exifImage = Exiv2::ImageFactory::open(imageFullPath.toStdString());
-		exifImage->readMetadata();
-	}
-	catch (Exiv2::Error &error) {
-		return;
-	}
-
-	Exiv2::ExifData &exifData = exifImage->exifData();
-	long orientation = 1;
-
-	if (!exifData.empty()) {
-		try {
-			orientation = exifData["Exif.Image.Orientation"].value().toLong();
-		}
-		catch (Exiv2::Error &error) {
-			return;
-		}
-	}
+	int orientation = mdCache->getImageOrientation(imageFullPath);
 
 	switch(orientation) {
 		case 2:
@@ -386,7 +367,7 @@ void ImageView::mirror()
 	displayImage = mirrorImage;
 }
 
-static inline int bound0_255(int val)
+static inline int bound0To255(int val)
 {
 	return ((val > 255)? 255 : (val < 0)? 0 : val);
 }
@@ -395,19 +376,21 @@ static inline int hslValue(double n1, double n2, double hue)
 {
 	double value;
 
-	if (hue > 255)
+	if (hue > 255) {
 		hue -= 255;
-	else if (hue < 0)
+	} else if (hue < 0) {
 		hue += 255;
+	}
 
-	if (hue < 42.5)
+	if (hue < 42.5) {
 		value = n1 + (n2 - n1) * (hue / 42.5);
-	else if (hue < 127.5)
+	} else if (hue < 127.5) {
 		value = n2;
-	else if (hue < 170)
+	} else if (hue < 170) {
 		value = n1 + (n2 - n1) * ((170 - hue) / 42.5);
-	else
+	} else {
 		value = n1;
+	}
 
 	return ROUND(value * 255.0);
 }
@@ -434,24 +417,26 @@ void rgbToHsl(int r, int g, int b, unsigned char *hue, unsigned char *sat, unsig
 	} else {
 		delta = (max - min);
 
-		if (l < 128)
+		if (l < 128) {
 			s = 255 * (double) delta / (double) (max + min);
-		else
+		} else {
 			s = 255 * (double) delta / (double) (511 - max - min);
+		}
 
-		if (r == max)
+		if (r == max) {
 			h = (g - b) / (double) delta;
-		else if (g == max)
+		} else if (g == max) {
 			h = 2 + (b - r) / (double) delta;
-		else
+		} else {
 			h = 4 + (r - g) / (double) delta;
+		}
 
 		h = h * 42.5;
-
-		if (h < 0)
+		if (h < 0) {
 			h += 255;
-		else if (h > 255)
+		} else if (h > 255) {
 			h -= 255;
+		}
 	}
 
 	*hue = ROUND(h);
@@ -494,8 +479,9 @@ void ImageView::colorize()
 	static unsigned char contrastTransform[256];	
 	static unsigned char brightTransform[256];
 
-	if (displayImage.format() == QImage::Format_Indexed8)
+	if (displayImage.format() == QImage::Format_Indexed8) {
 		displayImage = displayImage.convertToFormat(QImage::Format_RGB32);
+	}
 
 	int i;
 	float contrast = ((float)GData::contrastVal / 100.0);
@@ -522,17 +508,17 @@ void ImageView::colorize()
 			g = qGreen(line[x]);
 			b = qBlue(line[x]);
 
-			r = bound0_255((r * (GData::redVal + 100)) / 100);
-			g = bound0_255((g * (GData::greenVal + 100)) / 100);
-			b = bound0_255((b * (GData::blueVal + 100)) / 100);
+			r = bound0To255((r * (GData::redVal + 100)) / 100);
+			g = bound0To255((g * (GData::greenVal + 100)) / 100);
+			b = bound0To255((b * (GData::blueVal + 100)) / 100);
 
-			r = bound0_255(contrastTransform[r]);
-			g = bound0_255(contrastTransform[g]);
-			b = bound0_255(contrastTransform[b]);
+			r = bound0To255(contrastTransform[r]);
+			g = bound0To255(contrastTransform[g]);
+			b = bound0To255(contrastTransform[b]);
 
-			r = bound0_255(brightTransform[r]);
-			g = bound0_255(brightTransform[g]);
-			b = bound0_255(brightTransform[b]);
+			r = bound0To255(brightTransform[r]);
+			g = bound0To255(brightTransform[g]);
+			b = bound0To255(brightTransform[b]);
 
 			rgbToHsl(r, g, b, &h, &s, &l);
 								
@@ -541,8 +527,8 @@ void ImageView::colorize()
 			else
 				h += GData::hueVal;
 
-			s = bound0_255(((s * GData::saturationVal) / 100));
-			l = bound0_255(((l * GData::lightnessVal) / 100));
+			s = bound0To255(((s * GData::saturationVal) / 100));
+			l = bound0To255(((l * GData::lightnessVal) / 100));
 
 			hslToRgb(h, s, l, &hr, &hg, &hb);
 
@@ -557,22 +543,26 @@ void ImageView::colorize()
 
 void ImageView::refresh()
 {
-	if (isAnimation)
+	if (isAnimation) {
 		return;
+	}
 
-	if (GData::scaledWidth)
+	if (GData::scaledWidth) {
 		displayImage = origImage.scaled(GData::scaledWidth, GData::scaledHeight,
 											Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-	else
+	} else {
 		displayImage = origImage;
+	}
 
 	transform();
 
-	if (GData::colorsActive || GData::keepTransform)
+	if (GData::colorsActive || GData::keepTransform) {
 		colorize();
+	}
 
-	if (mirrorLayout)
+	if (mirrorLayout) {
 		mirror();
+	}
 
 	displayPixmap = QPixmap::fromImage(displayImage);
 	imageLabel->setPixmap(displayPixmap);
@@ -582,10 +572,11 @@ void ImageView::refresh()
 void ImageView::reload()
 {
 	if (GData::enableImageInfoFS) {
-		if (currentImageFullPath.isEmpty())
+		if (currentImageFullPath.isEmpty()) {
 			setInfo("Clipboard");
-		else
+		} else {
 			setInfo(QFileInfo(currentImageFullPath).fileName());
+		}
 	}
 
 	if (!GData::keepTransform) {
@@ -613,8 +604,9 @@ void ImageView::reload()
 
 	isAnimation = GData::enableAnimations? imageReader.supportsAnimation() : false;
 	if (isAnimation) {
-		if (anim)
+		if (anim) {
 			delete anim;
+		}
 		anim = new QMovie(currentImageFullPath);
 		imageLabel->setMovie(anim);
 		anim->start();
@@ -623,10 +615,12 @@ void ImageView::reload()
 			origImage.load(currentImageFullPath);
 			displayImage = origImage;
 			transform();
-			if (GData::colorsActive || GData::keepTransform)
+			if (GData::colorsActive || GData::keepTransform) {
 				colorize();
-			if (mirrorLayout)
+			}
+			if (mirrorLayout) {
 				mirror();
+			}
 			displayPixmap = QPixmap::fromImage(displayImage);
 		} else {
 			displayPixmap = QIcon::fromTheme("image-missing", 
@@ -669,8 +663,9 @@ void ImageView::loadImage(QString imageFileName)
 	tempDisableResize = false;
 	currentImageFullPath = imageFileName;
 
-	if (!GData::keepZoomFactor)
+	if (!GData::keepZoomFactor) {
 		GData::imageZoomFactor = 1.0;
+	}
 
 	QApplication::processEvents();
 	reload();
