@@ -304,98 +304,94 @@
 <context>
     <name>ImageTags</name>
     <message>
-        <location filename="../tags.cpp" line="49"/>
+        <location filename="../tags.cpp" line="58"/>
         <source>Tag</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tags.cpp" line="53"/>
+        <location filename="../tags.cpp" line="62"/>
         <source>Untag</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tags.cpp" line="56"/>
+        <location filename="../tags.cpp" line="72"/>
         <source>Clear Filters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tags.cpp" line="60"/>
+        <location filename="../tags.cpp" line="65"/>
         <source>New Tag</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tags.cpp" line="64"/>
+        <location filename="../tags.cpp" line="69"/>
         <source>Remove Tag</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tags.cpp" line="180"/>
-        <location filename="../tags.cpp" line="488"/>
+        <location filename="../tags.cpp" line="160"/>
+        <location filename="../tags.cpp" line="444"/>
+        <location filename="../tags.cpp" line="453"/>
         <source>Error</source>
         <translation type="unfinished">Błąd</translation>
     </message>
     <message>
-        <location filename="../tags.cpp" line="180"/>
+        <location filename="../tags.cpp" line="160"/>
         <source>Failed to save tags to </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tags.cpp" line="217"/>
-        <source>Tags for selected images</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tags.cpp" line="274"/>
-        <source>Filter </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tags.cpp" line="274"/>
-        <source> by tags</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tags.cpp" line="390"/>
+        <location filename="../tags.cpp" line="346"/>
         <source>Tagging </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tags.cpp" line="395"/>
+        <location filename="../tags.cpp" line="349"/>
         <source>Untagging </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tags.cpp" line="479"/>
+        <location filename="../tags.cpp" line="435"/>
         <source>Add a new tag</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tags.cpp" line="480"/>
+        <location filename="../tags.cpp" line="436"/>
         <source>Enter new tag name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tags.cpp" line="488"/>
+        <location filename="../tags.cpp" line="444"/>
         <source>No name entered</source>
         <translation type="unfinished">Nie wprowadzono nazwy</translation>
     </message>
     <message>
-        <location filename="../tags.cpp" line="504"/>
+        <location filename="../tags.cpp" line="453"/>
+        <source>Tag </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tags.cpp" line="453"/>
+        <source> already exists</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tags.cpp" line="471"/>
         <source>Remove selected tags(s)?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tags.cpp" line="505"/>
+        <location filename="../tags.cpp" line="472"/>
         <source>Remove tag</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tags.cpp" line="510"/>
+        <location filename="../tags.cpp" line="477"/>
         <source>Yes</source>
         <translation type="unfinished">Tak</translation>
     </message>
     <message>
-        <location filename="../tags.cpp" line="511"/>
+        <location filename="../tags.cpp" line="478"/>
         <source>Cancel</source>
         <translation type="unfinished">Zrezygnuj</translation>
     </message>
@@ -407,34 +403,39 @@
         <translation type="vanished">Nowy obrazek</translation>
     </message>
     <message>
-        <location filename="../imageview.cpp" line="607"/>
+        <location filename="../imageview.cpp" line="600"/>
         <source>Clipboard</source>
         <translation>Schowek</translation>
     </message>
     <message>
-        <location filename="../imageview.cpp" line="794"/>
+        <location filename="../imageview.cpp" line="751"/>
+        <source>Selection size: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../imageview.cpp" line="799"/>
         <source>No selection</source>
         <translation>Brak zaznaczenia</translation>
     </message>
     <message>
-        <location filename="../imageview.cpp" line="794"/>
+        <location filename="../imageview.cpp" line="799"/>
         <source>Hold down the Ctrl key and select a region using the mouse.</source>
         <translation>Przytrzymaj klawisz Ctrl i zaznacz rejon używając mysz.</translation>
     </message>
     <message>
-        <location filename="../imageview.cpp" line="944"/>
-        <location filename="../imageview.cpp" line="994"/>
+        <location filename="../imageview.cpp" line="946"/>
+        <location filename="../imageview.cpp" line="992"/>
         <source>Failed to save image.</source>
         <translation>Nie udało się zapisać obrazka.</translation>
     </message>
     <message>
-        <location filename="../imageview.cpp" line="957"/>
+        <location filename="../imageview.cpp" line="959"/>
         <source>Failed to save Exif metadata.</source>
         <translation>Nie udało się zapisać metadanych Exif.</translation>
     </message>
     <message>
-        <location filename="../imageview.cpp" line="962"/>
-        <location filename="../imageview.cpp" line="1012"/>
+        <location filename="../imageview.cpp" line="964"/>
+        <location filename="../imageview.cpp" line="1005"/>
         <source>Image saved.</source>
         <translation>Obrazek zapisany.</translation>
     </message>
@@ -443,14 +444,14 @@
         <translation type="vanished">Przytrzymaj klawisz Ctrl i zaznacz rejon używając mysz</translation>
     </message>
     <message>
-        <location filename="../imageview.cpp" line="927"/>
+        <location filename="../imageview.cpp" line="929"/>
         <source>Saving...</source>
         <translation>Zapisywanie...</translation>
     </message>
     <message>
-        <location filename="../imageview.cpp" line="944"/>
-        <location filename="../imageview.cpp" line="957"/>
-        <location filename="../imageview.cpp" line="994"/>
+        <location filename="../imageview.cpp" line="946"/>
+        <location filename="../imageview.cpp" line="959"/>
+        <location filename="../imageview.cpp" line="992"/>
         <source>Error</source>
         <translation>Błąd</translation>
     </message>
@@ -467,12 +468,12 @@
         <translation type="vanished">Obrazek zapisany</translation>
     </message>
     <message>
-        <location filename="../imageview.cpp" line="974"/>
+        <location filename="../imageview.cpp" line="976"/>
         <source>Save image as</source>
         <translation>Zapisz obrazek jako</translation>
     </message>
     <message>
-        <location filename="../imageview.cpp" line="976"/>
+        <location filename="../imageview.cpp" line="978"/>
         <source>Images</source>
         <translation>Obrazki</translation>
     </message>
@@ -515,19 +516,19 @@
 <context>
     <name>Phototonic</name>
     <message>
-        <location filename="../mainwindow.cpp" line="128"/>
+        <location filename="../mainwindow.cpp" line="129"/>
         <source>Image Info</source>
         <translation>Info o Obrazku</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="211"/>
         <location filename="../mainwindow.cpp" line="212"/>
+        <location filename="../mainwindow.cpp" line="213"/>
         <source>Zoom</source>
         <translation>Powiększenie</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="234"/>
         <location filename="../mainwindow.cpp" line="235"/>
+        <location filename="../mainwindow.cpp" line="236"/>
         <source>Transform</source>
         <translation>Przekształcenie</translation>
     </message>
@@ -536,52 +537,52 @@
         <translation type="vanished">Lustro</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="286"/>
+        <location filename="../mainwindow.cpp" line="288"/>
         <source>Top</source>
         <translation>Górny</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="291"/>
+        <location filename="../mainwindow.cpp" line="293"/>
         <source>Bottom</source>
         <translation>Dolny</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="296"/>
+        <location filename="../mainwindow.cpp" line="298"/>
         <source>Close Image</source>
         <translation>Zamknij Obrazek</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="300"/>
+        <location filename="../mainwindow.cpp" line="302"/>
         <source>Full Screen</source>
         <translation>Pełny Ekran</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="305"/>
+        <location filename="../mainwindow.cpp" line="307"/>
         <source>Preferences</source>
         <translation>Preferencje</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="310"/>
+        <location filename="../mainwindow.cpp" line="312"/>
         <source>Exit</source>
         <translation>Wyjście</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="314"/>
+        <location filename="../mainwindow.cpp" line="316"/>
         <source>Enlarge Thumbnails</source>
         <translation>Powiększ Miniatury</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="321"/>
+        <location filename="../mainwindow.cpp" line="323"/>
         <source>Shrink Thumbnails</source>
         <translation>Zmniejsz Miniatury</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="328"/>
+        <location filename="../mainwindow.cpp" line="330"/>
         <source>Cut</source>
         <translation>Wytnij</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="334"/>
+        <location filename="../mainwindow.cpp" line="336"/>
         <source>Copy</source>
         <translation>Skopiuj</translation>
     </message>
@@ -590,28 +591,28 @@
         <translation type="vanished">Skopiuj/Przenieś do...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2224"/>
+        <location filename="../mainwindow.cpp" line="2219"/>
         <source>Docks and Toolbars</source>
         <translation>Doki i Paski narzędzi</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="223"/>
         <location filename="../mainwindow.cpp" line="224"/>
+        <location filename="../mainwindow.cpp" line="225"/>
         <source>Mirroring</source>
         <translation>Lustro</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="348"/>
+        <location filename="../mainwindow.cpp" line="350"/>
         <source>Delete</source>
         <translation>Usuń</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="353"/>
+        <location filename="../mainwindow.cpp" line="355"/>
         <source>Save</source>
         <translation>Zapisz</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="357"/>
+        <location filename="../mainwindow.cpp" line="359"/>
         <source>Save As</source>
         <translation>Zapisz Jako</translation>
     </message>
@@ -624,105 +625,105 @@
         <translation type="vanished">Wklej Obrazek</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="366"/>
-        <location filename="../mainwindow.cpp" line="3182"/>
+        <location filename="../mainwindow.cpp" line="368"/>
+        <location filename="../mainwindow.cpp" line="3165"/>
         <source>Rename</source>
         <translation>Zmień nazwę</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="370"/>
+        <location filename="../mainwindow.cpp" line="372"/>
         <source>Select All</source>
         <translation>Wybierz Wszystko</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="374"/>
-        <location filename="../mainwindow.cpp" line="1076"/>
+        <location filename="../mainwindow.cpp" line="376"/>
+        <location filename="../mainwindow.cpp" line="1078"/>
         <source>About</source>
         <translation>O</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="380"/>
+        <location filename="../mainwindow.cpp" line="382"/>
         <source>Name</source>
         <translation>Nazwa</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="382"/>
+        <location filename="../mainwindow.cpp" line="384"/>
         <source>Time</source>
         <translation>Czas</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="384"/>
+        <location filename="../mainwindow.cpp" line="386"/>
         <source>Size</source>
         <translation>Rozmiar</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="386"/>
+        <location filename="../mainwindow.cpp" line="388"/>
         <source>Type</source>
         <translation>Rodzaj</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="388"/>
+        <location filename="../mainwindow.cpp" line="390"/>
         <source>Reverse</source>
         <translation>Odwrotność</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="411"/>
+        <location filename="../mainwindow.cpp" line="413"/>
         <source>Show Hidden Files</source>
         <translation>Pokaż Ukryte Pliki</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="417"/>
+        <location filename="../mainwindow.cpp" line="419"/>
         <source>Show Labels</source>
         <translation>Pokaż Etykiety</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="424"/>
+        <location filename="../mainwindow.cpp" line="426"/>
         <source>Small Icons</source>
         <translation>Małe ikony</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="430"/>
+        <location filename="../mainwindow.cpp" line="432"/>
         <source>Hide Docks Title Bar</source>
         <translatorcomment>Ukryj pasek tytułowy doków</translatorcomment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="436"/>
+        <location filename="../mainwindow.cpp" line="438"/>
         <source>Show Toolbar</source>
         <translation>Pokaż pasek narzędzi</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="442"/>
+        <location filename="../mainwindow.cpp" line="444"/>
         <source>Classic Thumbs</source>
         <translation>Klasyczne Miniatury</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="444"/>
+        <location filename="../mainwindow.cpp" line="446"/>
         <source>Compact</source>
         <translation>Zwarty</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="446"/>
+        <location filename="../mainwindow.cpp" line="448"/>
         <source>Squarish</source>
         <translation>Kwadratowy</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="458"/>
+        <location filename="../mainwindow.cpp" line="460"/>
         <source>Reload</source>
         <translation>Wczytaj ponownie</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="463"/>
+        <location filename="../mainwindow.cpp" line="465"/>
         <source>Include Sub-folders</source>
         <translation>Uwzględnij Podkatalogi</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="469"/>
+        <location filename="../mainwindow.cpp" line="471"/>
         <source>Paste Here</source>
         <translation>Wklej Tutaj</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="475"/>
+        <location filename="../mainwindow.cpp" line="477"/>
         <source>New Folder</source>
         <translation>Nowy Katalog</translation>
     </message>
@@ -731,12 +732,12 @@
         <translation type="vanished">Zarządzaj</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="480"/>
+        <location filename="../mainwindow.cpp" line="482"/>
         <source>Back</source>
         <translation>Powrót</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="486"/>
+        <location filename="../mainwindow.cpp" line="488"/>
         <source>Forward</source>
         <translation>Naprzód</translation>
     </message>
@@ -745,80 +746,80 @@
         <translation type="vanished">W górę</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="497"/>
+        <location filename="../mainwindow.cpp" line="499"/>
         <source>Home</source>
         <translation>Domowy</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="502"/>
-        <location filename="../mainwindow.cpp" line="2739"/>
+        <location filename="../mainwindow.cpp" line="504"/>
+        <location filename="../mainwindow.cpp" line="2717"/>
         <source>Slide Show</source>
         <translation>Pokaz Slajdów</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="507"/>
+        <location filename="../mainwindow.cpp" line="509"/>
         <source>Next</source>
         <translation>Następny</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="512"/>
+        <location filename="../mainwindow.cpp" line="514"/>
         <source>Previous</source>
         <translation>Poprzedni</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="517"/>
+        <location filename="../mainwindow.cpp" line="519"/>
         <source>First</source>
         <translation>Pierwszy</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="522"/>
+        <location filename="../mainwindow.cpp" line="524"/>
         <source>Last</source>
         <translation>Ostatni</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="527"/>
+        <location filename="../mainwindow.cpp" line="529"/>
         <source>Random</source>
         <translation>Losowy</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="531"/>
+        <location filename="../mainwindow.cpp" line="533"/>
         <source>Open</source>
         <translation>Otwórz</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="541"/>
-        <location filename="../mainwindow.cpp" line="542"/>
+        <location filename="../mainwindow.cpp" line="543"/>
+        <location filename="../mainwindow.cpp" line="544"/>
         <source>Open With...</source>
         <translation>Otwórz Z...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="612"/>
+        <location filename="../mainwindow.cpp" line="614"/>
         <source>Scale Image</source>
         <translation>Skaluj Obrazek</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="956"/>
+        <location filename="../mainwindow.cpp" line="958"/>
         <source>Tags</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1111"/>
+        <location filename="../mainwindow.cpp" line="1113"/>
         <source>Failed to start external application.</source>
         <translation>Nieudany start zewnętrznej aplikacji.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1135"/>
+        <location filename="../mainwindow.cpp" line="1137"/>
         <source>Invalid selection.</source>
         <translation>Nieprawidłowe zaznaczenie.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1337"/>
+        <location filename="../mainwindow.cpp" line="1339"/>
         <source>Failed to copy or move image.</source>
         <translation>Nie udało się skopiować lub przenieść obrazka.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1386"/>
-        <location filename="../mainwindow.cpp" line="1394"/>
+        <location filename="../mainwindow.cpp" line="1388"/>
+        <location filename="../mainwindow.cpp" line="1396"/>
         <source>Zoom %1%</source>
         <translation>Powiększenie %1%</translation>
     </message>
@@ -827,21 +828,21 @@
         <translation type="vanished">Obrót %1u00B0</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1660"/>
-        <location filename="../mainwindow.cpp" line="3058"/>
+        <location filename="../mainwindow.cpp" line="1662"/>
+        <location filename="../mainwindow.cpp" line="3041"/>
         <source>Copied</source>
         <translation>Skopiowano</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1660"/>
-        <location filename="../mainwindow.cpp" line="3058"/>
+        <location filename="../mainwindow.cpp" line="1662"/>
+        <location filename="../mainwindow.cpp" line="3041"/>
         <source>Moved</source>
         <translation>Przeniesiono</translation>
     </message>
     <message numerus="yes">
-        <location filename="../mainwindow.cpp" line="1661"/>
+        <location filename="../mainwindow.cpp" line="1663"/>
         <location filename="../mainwindow.cpp" line="1857"/>
-        <location filename="../mainwindow.cpp" line="3059"/>
+        <location filename="../mainwindow.cpp" line="3042"/>
         <source>%n image(s)</source>
         <translation>
             <numerusform>%n obrazka</numerusform>
@@ -850,7 +851,7 @@
         </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1723"/>
+        <location filename="../mainwindow.cpp" line="1726"/>
         <source>Permanently delete</source>
         <translation>Trwale usunięte</translation>
     </message>
@@ -865,103 +866,103 @@
         <translation>Usunięto</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1894"/>
+        <location filename="../mainwindow.cpp" line="1889"/>
         <source>Invalid Path:</source>
         <translation>Nieprawidłowa ścieżka:</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2724"/>
+        <location filename="../mainwindow.cpp" line="2703"/>
         <source>Failed to open file &quot;%1&quot;: file not found.</source>
         <translation>Nie udało się otworzyć pliku &quot;%1&quot;: plik nie znaleziony.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2768"/>
+        <location filename="../mainwindow.cpp" line="2745"/>
         <source>Stop Slide Show</source>
         <translation>Zatrzymaj Pokaz Slajdów</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="3014"/>
+        <location filename="../mainwindow.cpp" line="2997"/>
         <source>Can not move or copy images to this folder.</source>
         <translation>Nie można przenieść lub skopiować obrazków do tego katalogu.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="3020"/>
+        <location filename="../mainwindow.cpp" line="3003"/>
         <source>Destination folder is same as source.</source>
         <translation>Katalog docelowy jest taki sam jak źródłowy.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="3028"/>
+        <location filename="../mainwindow.cpp" line="3011"/>
         <source>Move &quot;%1&quot; to &quot;%2&quot;?</source>
         <translation type="unfinished">Przenieść „%1” do „%2”?</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="3037"/>
+        <location filename="../mainwindow.cpp" line="3020"/>
         <source>Failed to move folder.</source>
         <translation>Nie udało się przenieść katalogu.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="3139"/>
+        <location filename="../mainwindow.cpp" line="3122"/>
         <source>Failed to open folder:</source>
         <translation>Nie udało się otworzyć katalogu:</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="3171"/>
+        <location filename="../mainwindow.cpp" line="3154"/>
         <source>Duplicate images in %1</source>
         <translation>Duplikaty obrazków w %1</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="3195"/>
-        <location filename="../mainwindow.cpp" line="3368"/>
+        <location filename="../mainwindow.cpp" line="3178"/>
+        <location filename="../mainwindow.cpp" line="3352"/>
         <source>Invalid name entered.</source>
         <translation>Wprowadzono nieprawidłową nazwę.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="3206"/>
+        <location filename="../mainwindow.cpp" line="3189"/>
         <source>Failed to rename folder.</source>
         <translation>Nie udało się zmienić nazwy katalogu.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="3253"/>
+        <location filename="../mainwindow.cpp" line="3236"/>
         <source>Enter a new name for &quot;%1&quot;:</source>
         <translation>Wprowadź nową nazwę dla „%1”:</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="3266"/>
+        <location filename="../mainwindow.cpp" line="3249"/>
         <source>No name entered.</source>
         <translation>Nie wprowadzono nazwy.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="3295"/>
+        <location filename="../mainwindow.cpp" line="3279"/>
         <source>Failed to rename image.</source>
         <translation>Nie można zmienić nazwy obrazka.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="3311"/>
+        <location filename="../mainwindow.cpp" line="3295"/>
         <source>Permanently delete &quot;%1&quot; and all of its contents?</source>
         <translation>Trwale usunąć „%1&quot; i całą jego zawartość?</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="3334"/>
+        <location filename="../mainwindow.cpp" line="3318"/>
         <source>Failed to delete folder.</source>
         <translation>Nie udało się usunąć katalogu.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="3338"/>
+        <location filename="../mainwindow.cpp" line="3322"/>
         <source>Removed &quot;%1&quot;</source>
         <translation>Usunięty „%1”</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="3379"/>
+        <location filename="../mainwindow.cpp" line="3363"/>
         <source>Failed to create new folder.</source>
         <translation>Nie udało się stworzyć nowego katalogu.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="3384"/>
+        <location filename="../mainwindow.cpp" line="3368"/>
         <source>Created &quot;%1&quot;</source>
         <translation>Stworzony „%1”</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="3425"/>
+        <location filename="../mainwindow.cpp" line="3409"/>
         <source>Cannot perform action with temporary image.</source>
         <translation>Nie można wykonać akcji z tymczasowym obrazkiem.</translation>
     </message>
@@ -974,118 +975,118 @@
         <translation type="vanished">Otwórz Z</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="545"/>
+        <location filename="../mainwindow.cpp" line="547"/>
         <source>Manage External Applications</source>
         <translation>Zarządzaj Zewnętrznymi Aplikacjami</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="549"/>
+        <location filename="../mainwindow.cpp" line="551"/>
         <source>Add Bookmark</source>
         <translation>Dodaj zakładkę</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="554"/>
+        <location filename="../mainwindow.cpp" line="556"/>
         <source>Remove Bookmark</source>
         <translation>Usuń zakładkę</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="558"/>
+        <location filename="../mainwindow.cpp" line="560"/>
         <source>Zoom Out</source>
         <translation>Pomniejsz</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="563"/>
+        <location filename="../mainwindow.cpp" line="565"/>
         <source>Zoom In</source>
         <translation>Powiększ</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="568"/>
+        <location filename="../mainwindow.cpp" line="570"/>
         <source>Reset Zoom</source>
         <translation>Zresetuj Powiększenie</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="573"/>
-        <location filename="../mainwindow.cpp" line="1410"/>
+        <location filename="../mainwindow.cpp" line="575"/>
+        <location filename="../mainwindow.cpp" line="1412"/>
         <source>Original Size</source>
         <translation>Oryginalny Rozmiar</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="578"/>
+        <location filename="../mainwindow.cpp" line="580"/>
         <source>Keep Zoom</source>
         <translation>Zachowaj Powiększenie</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="583"/>
+        <location filename="../mainwindow.cpp" line="585"/>
         <source>Rotate 90 degree CCW</source>
         <translation>Obróć 90 stopni w lewo</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="588"/>
+        <location filename="../mainwindow.cpp" line="590"/>
         <source>Rotate 90 degree CW</source>
         <translation>Obróć 90 stopni w prawo</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="593"/>
+        <location filename="../mainwindow.cpp" line="595"/>
         <source>Flip Horizontally</source>
         <translation>Obróć Poziomo</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="598"/>
+        <location filename="../mainwindow.cpp" line="600"/>
         <source>Flip Vertically</source>
         <translation>Obróć Pionowo</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="603"/>
+        <location filename="../mainwindow.cpp" line="605"/>
         <source>Cropping</source>
         <translation>Przycinanie</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="608"/>
+        <location filename="../mainwindow.cpp" line="610"/>
         <source>Crop to Selection</source>
         <translation>Przytnij do wyboru</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="617"/>
+        <location filename="../mainwindow.cpp" line="619"/>
         <source>Rotate 1 degree CCW</source>
         <translation>Obróć 1 stopień w lewo</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="621"/>
+        <location filename="../mainwindow.cpp" line="623"/>
         <source>Rotate 1 degree CW</source>
         <translation>Obróć 1 stopień w prawo</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="625"/>
+        <location filename="../mainwindow.cpp" line="627"/>
         <source>Colors</source>
         <translation>Kolory</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="630"/>
+        <location filename="../mainwindow.cpp" line="632"/>
         <source>Find Duplicate Images</source>
         <translation>Znajdź duplikaty obrazków</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="636"/>
+        <location filename="../mainwindow.cpp" line="638"/>
         <source>Disable</source>
         <translation>Wyłącz</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="638"/>
+        <location filename="../mainwindow.cpp" line="640"/>
         <source>Dual</source>
         <translation>Podwójne</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="640"/>
+        <location filename="../mainwindow.cpp" line="642"/>
         <source>Triple</source>
         <translation>Potrójne</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="642"/>
+        <location filename="../mainwindow.cpp" line="644"/>
         <source>Dual Vertical</source>
         <translation>Podwójne Pionowe</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="644"/>
+        <location filename="../mainwindow.cpp" line="646"/>
         <source>Quad</source>
         <translation>Poczwórne</translation>
     </message>
@@ -1094,27 +1095,27 @@
         <translation type="vanished">Zachowaj Przekształcenia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="664"/>
+        <location filename="../mainwindow.cpp" line="666"/>
         <source>Move Left</source>
         <translation>Przenieś w Lewo</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="667"/>
+        <location filename="../mainwindow.cpp" line="669"/>
         <source>Move Right</source>
         <translation>Przenieś w Prawo</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="670"/>
+        <location filename="../mainwindow.cpp" line="672"/>
         <source>Move Up</source>
         <translation>Przenieś w Górę</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="673"/>
+        <location filename="../mainwindow.cpp" line="675"/>
         <source>Move Down</source>
         <translation>Przenieś w Dół</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="677"/>
+        <location filename="../mainwindow.cpp" line="679"/>
         <source>Invert Selection</source>
         <translation>Odwróć Zaznaczenie</translation>
     </message>
@@ -1123,7 +1124,7 @@
         <translation type="vanished">Plik</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="781"/>
+        <location filename="../mainwindow.cpp" line="783"/>
         <source>Edit</source>
         <translation>Edycja</translation>
     </message>
@@ -1132,14 +1133,14 @@
         <translation type="vanished">Idź</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="263"/>
         <location filename="../mainwindow.cpp" line="264"/>
-        <location filename="../mainwindow.cpp" line="811"/>
+        <location filename="../mainwindow.cpp" line="265"/>
+        <location filename="../mainwindow.cpp" line="813"/>
         <source>View</source>
         <translation>Widok</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="730"/>
+        <location filename="../mainwindow.cpp" line="732"/>
         <source>Sort By</source>
         <translation>Sortuj Według</translation>
     </message>
@@ -1148,37 +1149,37 @@
         <translation type="vanished">Pomoc</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="791"/>
+        <location filename="../mainwindow.cpp" line="793"/>
         <source>Navigation</source>
         <translation>Nawigacja</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="818"/>
+        <location filename="../mainwindow.cpp" line="820"/>
         <source>Filter</source>
         <translation>Filtr</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="881"/>
+        <location filename="../mainwindow.cpp" line="883"/>
         <source>Initializing...</source>
         <translation>Inicjalizowanie...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="895"/>
+        <location filename="../mainwindow.cpp" line="897"/>
         <source>File System</source>
         <translation>System Plików</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1055"/>
+        <location filename="../mainwindow.cpp" line="1057"/>
         <source>&lt;p&gt;Image viewer and organizer&lt;/p&gt;</source>
         <translation>&lt;p&gt;Przeglądarka obrazków i organizator&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1057"/>
+        <location filename="../mainwindow.cpp" line="1059"/>
         <source>Home page</source>
         <translation>Strona domowa</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1058"/>
+        <location filename="../mainwindow.cpp" line="1060"/>
         <source>Bug reports</source>
         <translation>Raporty błędów</translation>
     </message>
@@ -1191,27 +1192,27 @@
         <translation type="vanished">Pokaż Schowek</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="691"/>
+        <location filename="../mainwindow.cpp" line="693"/>
         <source>&amp;File</source>
         <translation>&amp;Plik</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="699"/>
+        <location filename="../mainwindow.cpp" line="701"/>
         <source>&amp;Edit</source>
         <translation>&amp;Edycja</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="715"/>
+        <location filename="../mainwindow.cpp" line="717"/>
         <source>&amp;Go</source>
         <translation>&amp;Idź</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="724"/>
+        <location filename="../mainwindow.cpp" line="726"/>
         <source>&amp;View</source>
         <translation>&amp;Widok</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="757"/>
+        <location filename="../mainwindow.cpp" line="759"/>
         <source>&amp;Help</source>
         <translation>&amp;Pomoc</translation>
     </message>
@@ -1224,30 +1225,30 @@
         <translation type="vanished">Tłumacze:&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="3239"/>
+        <location filename="../mainwindow.cpp" line="3222"/>
         <source>Invalid selection</source>
         <translation>Nieprawidłowe zaznaczenie</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1111"/>
-        <location filename="../mainwindow.cpp" line="1337"/>
-        <location filename="../mainwindow.cpp" line="1623"/>
-        <location filename="../mainwindow.cpp" line="1636"/>
+        <location filename="../mainwindow.cpp" line="1113"/>
+        <location filename="../mainwindow.cpp" line="1339"/>
+        <location filename="../mainwindow.cpp" line="1625"/>
+        <location filename="../mainwindow.cpp" line="1638"/>
         <location filename="../mainwindow.cpp" line="1748"/>
         <location filename="../mainwindow.cpp" line="1829"/>
-        <location filename="../mainwindow.cpp" line="1894"/>
-        <location filename="../mainwindow.cpp" line="2724"/>
-        <location filename="../mainwindow.cpp" line="3014"/>
+        <location filename="../mainwindow.cpp" line="1889"/>
+        <location filename="../mainwindow.cpp" line="2703"/>
+        <location filename="../mainwindow.cpp" line="2997"/>
+        <location filename="../mainwindow.cpp" line="3003"/>
         <location filename="../mainwindow.cpp" line="3020"/>
-        <location filename="../mainwindow.cpp" line="3037"/>
-        <location filename="../mainwindow.cpp" line="3139"/>
-        <location filename="../mainwindow.cpp" line="3195"/>
-        <location filename="../mainwindow.cpp" line="3206"/>
-        <location filename="../mainwindow.cpp" line="3266"/>
-        <location filename="../mainwindow.cpp" line="3295"/>
-        <location filename="../mainwindow.cpp" line="3334"/>
-        <location filename="../mainwindow.cpp" line="3368"/>
-        <location filename="../mainwindow.cpp" line="3379"/>
+        <location filename="../mainwindow.cpp" line="3122"/>
+        <location filename="../mainwindow.cpp" line="3178"/>
+        <location filename="../mainwindow.cpp" line="3189"/>
+        <location filename="../mainwindow.cpp" line="3249"/>
+        <location filename="../mainwindow.cpp" line="3279"/>
+        <location filename="../mainwindow.cpp" line="3318"/>
+        <location filename="../mainwindow.cpp" line="3352"/>
+        <location filename="../mainwindow.cpp" line="3363"/>
         <source>Error</source>
         <translation>Błąd</translation>
     </message>
@@ -1256,7 +1257,7 @@
         <translation type="vanished">Nie udało się skopiować lub przenieść obrazka</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1623"/>
+        <location filename="../mainwindow.cpp" line="1625"/>
         <source>Can not copy or move to </source>
         <translation>Nie można skopiować lub przenieść do </translation>
     </message>
@@ -1277,7 +1278,7 @@
         <translation type="vanished"> obrazki</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1724"/>
+        <location filename="../mainwindow.cpp" line="1727"/>
         <source>Delete image</source>
         <translation>Usuń obrazek</translation>
     </message>
@@ -1291,16 +1292,16 @@
         <translation>Nie udało się usunąć obrazka</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1492"/>
+        <location filename="../mainwindow.cpp" line="1494"/>
         <location filename="../mainwindow.cpp" line="1785"/>
         <source>No selection</source>
         <translation>Brak zaznaczenia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1444"/>
-        <location filename="../mainwindow.cpp" line="1453"/>
-        <location filename="../mainwindow.cpp" line="1510"/>
-        <location filename="../mainwindow.cpp" line="1519"/>
+        <location filename="../mainwindow.cpp" line="1446"/>
+        <location filename="../mainwindow.cpp" line="1455"/>
+        <location filename="../mainwindow.cpp" line="1512"/>
+        <location filename="../mainwindow.cpp" line="1521"/>
         <source>Rotation %1°</source>
         <translation type="unfinished">Obrót %1°</translation>
     </message>
@@ -1315,63 +1316,63 @@
         <translation>Trwale usunąć zaznaczone obrazki?</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="340"/>
+        <location filename="../mainwindow.cpp" line="342"/>
         <source>Copy to...</source>
         <translation>Skopiuj do...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="344"/>
+        <location filename="../mainwindow.cpp" line="346"/>
         <source>Move to...</source>
         <translation>Przenieś do...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="361"/>
+        <location filename="../mainwindow.cpp" line="363"/>
         <source>Copy Image Data</source>
         <translation>Skopiuj dane obrazka</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="363"/>
+        <location filename="../mainwindow.cpp" line="365"/>
         <source>Paste Image Data</source>
         <translation>Wklej dane obrazka</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="492"/>
+        <location filename="../mainwindow.cpp" line="494"/>
         <source>Go Up</source>
         <translation>Idź do góry</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="536"/>
+        <location filename="../mainwindow.cpp" line="538"/>
         <source>Load Clipboard</source>
         <translation>Wczytaj schowek</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="659"/>
+        <location filename="../mainwindow.cpp" line="661"/>
         <source>Lock Transformations</source>
         <translation>Zablokuj przekształcenia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="681"/>
+        <location filename="../mainwindow.cpp" line="683"/>
         <source>Filter by Name</source>
         <translation>Filtruj wg nazwy</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="684"/>
+        <location filename="../mainwindow.cpp" line="686"/>
         <source>Set Path</source>
         <translatorcomment>Ustaw ścieżkę</translatorcomment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="753"/>
+        <location filename="../mainwindow.cpp" line="755"/>
         <source>&amp;Tools</source>
         <translation>&amp;Narzędzia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="835"/>
+        <location filename="../mainwindow.cpp" line="837"/>
         <source>Image</source>
         <translation>Obrazek</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="933"/>
+        <location filename="../mainwindow.cpp" line="935"/>
         <source>Bookmarks</source>
         <translation>Zakładki</translation>
     </message>
@@ -1392,27 +1393,27 @@
         <translation type="vanished">Powiększenie</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1402"/>
+        <location filename="../mainwindow.cpp" line="1404"/>
         <source>Zoom Reset</source>
         <translation>Reset powiększenia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1417"/>
+        <location filename="../mainwindow.cpp" line="1419"/>
         <source>Zoom Locked</source>
         <translation>Powiększenie zablokowane</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1419"/>
+        <location filename="../mainwindow.cpp" line="1421"/>
         <source>Zoom Unlocked</source>
         <translation>Powiększenie odblokowane</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1427"/>
+        <location filename="../mainwindow.cpp" line="1429"/>
         <source>Transformations Locked</source>
         <translation>Przekształcenia zablokowane</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1432"/>
+        <location filename="../mainwindow.cpp" line="1434"/>
         <source>Transformations Unlocked</source>
         <translation>Przekształcenia odblokowane</translation>
     </message>
@@ -1421,52 +1422,52 @@
         <translation type="vanished">Obrót</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1460"/>
+        <location filename="../mainwindow.cpp" line="1462"/>
         <source>Flipped Vertically</source>
         <translation>Odwrócenie w pionie</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1460"/>
+        <location filename="../mainwindow.cpp" line="1462"/>
         <source>Unflipped Vertically</source>
         <translation>Cofnij odwrócenie w pionie</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1467"/>
+        <location filename="../mainwindow.cpp" line="1469"/>
         <source>Flipped Horizontally</source>
         <translation>Odwrócenie w poziomie</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1467"/>
+        <location filename="../mainwindow.cpp" line="1469"/>
         <source>Unflipped Horizontally</source>
         <translation>Cofnij odwrócenie w poziomie</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1563"/>
+        <location filename="../mainwindow.cpp" line="1565"/>
         <source>Mirroring Disabled</source>
         <translation>Lustro wyłączone</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1570"/>
+        <location filename="../mainwindow.cpp" line="1572"/>
         <source>Mirroring: Dual</source>
         <translation>Lustro:podwójne </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1577"/>
+        <location filename="../mainwindow.cpp" line="1579"/>
         <source>Mirroring: Triple</source>
         <translation>Lustro: potrójne</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1584"/>
+        <location filename="../mainwindow.cpp" line="1586"/>
         <source>Mirroring: Dual Vertical</source>
         <translation>Lustro: podwójne pionowe</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1591"/>
+        <location filename="../mainwindow.cpp" line="1593"/>
         <source>Mirroring: Quad</source>
         <translation>Lustro: poczwórne</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1636"/>
+        <location filename="../mainwindow.cpp" line="1638"/>
         <source>Can not copy or move to the same folder</source>
         <translation>Nie można skopiować lub przenieść do tego samego katalogu</translation>
     </message>
@@ -1475,34 +1476,35 @@
         <translation type="vanished">obrazek(i)</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1728"/>
+        <location filename="../mainwindow.cpp" line="1731"/>
         <location filename="../mainwindow.cpp" line="1798"/>
-        <location filename="../mainwindow.cpp" line="3319"/>
+        <location filename="../mainwindow.cpp" line="3303"/>
         <source>Yes</source>
         <translation>Tak</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1729"/>
+        <location filename="../mainwindow.cpp" line="1732"/>
         <location filename="../mainwindow.cpp" line="1799"/>
-        <location filename="../mainwindow.cpp" line="3320"/>
+        <location filename="../mainwindow.cpp" line="3304"/>
         <source>Cancel</source>
         <translation>Zrezygnuj</translation>
     </message>
     <message>
+        <location filename="../mainwindow.cpp" line="1745"/>
         <source>Deleted </source>
-        <translation type="vanished">Usunięte </translation>
+        <translation>Usunięte </translation>
     </message>
     <message>
         <source>Invalid Path: </source>
         <translation type="vanished">Nieprawidłowa Ścieżka: </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2208"/>
+        <location filename="../mainwindow.cpp" line="2203"/>
         <source>Viewer</source>
         <translation>Przeglądarka</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2566"/>
+        <location filename="../mainwindow.cpp" line="2554"/>
         <source>No images</source>
         <translation>Brak obrazków</translation>
     </message>
@@ -1515,7 +1517,7 @@
         <translation type="vanished">, plik nie znaleziony</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2740"/>
+        <location filename="../mainwindow.cpp" line="2718"/>
         <source>Slide show stopped</source>
         <translation>Pokaz slajdów zatrzymany</translation>
     </message>
@@ -1524,7 +1526,7 @@
         <translation type="vanished">Zakończ Pokaz Slajdów</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="2769"/>
+        <location filename="../mainwindow.cpp" line="2746"/>
         <source>Slide show started</source>
         <translation>Pokaz slajdów rozpoczęty</translation>
     </message>
@@ -1545,7 +1547,7 @@
         <translation type="vanished">do</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="3029"/>
+        <location filename="../mainwindow.cpp" line="3012"/>
         <source>Move folder</source>
         <translation>Przenieś katalog</translation>
     </message>
@@ -1554,7 +1556,7 @@
         <translation type="vanished">Nie udało się przenieść katalogu</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="3039"/>
+        <location filename="../mainwindow.cpp" line="3022"/>
         <source>Folder moved</source>
         <translation>Katalog przeniesiony</translation>
     </message>
@@ -1567,7 +1569,7 @@
         <translation type="vanished">Zmień nazwę </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="3184"/>
+        <location filename="../mainwindow.cpp" line="3167"/>
         <source>New name:</source>
         <translation>Nowa nazwa:</translation>
     </message>
@@ -1580,7 +1582,7 @@
         <translation type="vanished">Nie udało się zmienić nazwy katalogu</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="3251"/>
+        <location filename="../mainwindow.cpp" line="3234"/>
         <source>Rename Image</source>
         <translation>Zmień nazwę Obrazka</translation>
     </message>
@@ -1601,7 +1603,7 @@
         <translation type="vanished"> i całą jego zawartość?</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="3315"/>
+        <location filename="../mainwindow.cpp" line="3299"/>
         <source>Delete folder</source>
         <translation>Usuń katalog</translation>
     </message>
@@ -1614,12 +1616,12 @@
         <translation type="vanished">Usunięty </translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="3356"/>
+        <location filename="../mainwindow.cpp" line="3340"/>
         <source>New Sub folder</source>
         <translation>Nowy Podkatalog</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="3357"/>
+        <location filename="../mainwindow.cpp" line="3341"/>
         <source>New folder name:</source>
         <translation>Nazwa nowego katalogu:</translation>
     </message>
@@ -1636,7 +1638,7 @@
         <translation type="vanished">Uruchomienie managera plików...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="3425"/>
+        <location filename="../mainwindow.cpp" line="3409"/>
         <source>Warning</source>
         <translation>Ostrzeżenie</translation>
     </message>
@@ -1884,15 +1886,19 @@
         <translation type="vanished">Obróć według orientacji Exif</translation>
     </message>
     <message>
-        <location filename="../dialogs.cpp" line="349"/>
         <source>Show image file name in full screen mode</source>
-        <translation>Pokaż nazwę pliku obrazka w trybie pełnoekranowym</translation>
+        <translation type="vanished">Pokaż nazwę pliku obrazka w trybie pełnoekranowym</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="309"/>
         <location filename="../dialogs.cpp" line="371"/>
         <source>Background color:</source>
         <translation>Kolor tła:</translation>
+    </message>
+    <message>
+        <location filename="../dialogs.cpp" line="349"/>
+        <source>Show image file name in viewer</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="395"/>
@@ -2052,37 +2058,37 @@
         <translation type="vanished"> z </translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="248"/>
+        <location filename="../thumbview.cpp" line="249"/>
         <source>File name</source>
         <translation>Nazwa pliku</translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="252"/>
+        <location filename="../thumbview.cpp" line="253"/>
         <source>Location</source>
         <translation>Położenie</translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="265"/>
+        <location filename="../thumbview.cpp" line="266"/>
         <source>Format</source>
         <translation>Format</translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="269"/>
+        <location filename="../thumbview.cpp" line="270"/>
         <source>Resolution</source>
         <translation>Rozdzielczość</translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="275"/>
+        <location filename="../thumbview.cpp" line="276"/>
         <source>Megapixel</source>
         <translation>Megapikseli</translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="306"/>
+        <location filename="../thumbview.cpp" line="299"/>
         <source>Selected %1 of%2</source>
         <translation>Wybrane %1 z%2</translation>
     </message>
     <message numerus="yes">
-        <location filename="../thumbview.cpp" line="308"/>
+        <location filename="../thumbview.cpp" line="301"/>
         <source> %n image(s)</source>
         <translation>
             <numerusform> %n obrazek</numerusform>
@@ -2095,12 +2101,12 @@
         <translation type="vanished">Wybrane %1 z %2</translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="670"/>
+        <location filename="../thumbview.cpp" line="684"/>
         <source>Scanned %1, displaying %2 (%3 and %4)</source>
         <translation>Przeskanowanych %1, wyświetlonych %2 (%3 i %4)</translation>
     </message>
     <message numerus="yes">
-        <location filename="../thumbview.cpp" line="673"/>
+        <location filename="../thumbview.cpp" line="687"/>
         <source>%n original(s)</source>
         <translation>
             <numerusform>%n oryginał</numerusform>
@@ -2109,7 +2115,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../thumbview.cpp" line="674"/>
+        <location filename="../thumbview.cpp" line="688"/>
         <source>%n duplicate(s)</source>
         <translation>
             <numerusform> %n duplikat</numerusform>
@@ -2118,29 +2124,29 @@
         </translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="256"/>
+        <location filename="../thumbview.cpp" line="257"/>
         <source>Size</source>
         <translation>Rozmiar</translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="246"/>
+        <location filename="../thumbview.cpp" line="247"/>
         <source>General</source>
         <translation>Ogólne</translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="260"/>
+        <location filename="../thumbview.cpp" line="261"/>
         <source>Modified</source>
         <translation>Zmodyfikowany</translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="283"/>
+        <location filename="../thumbview.cpp" line="284"/>
         <source>Error</source>
         <translation>Błąd</translation>
     </message>
     <message numerus="yes">
-        <location filename="../thumbview.cpp" line="462"/>
-        <location filename="../thumbview.cpp" line="671"/>
-        <location filename="../thumbview.cpp" line="672"/>
+        <location filename="../thumbview.cpp" line="468"/>
+        <location filename="../thumbview.cpp" line="685"/>
+        <location filename="../thumbview.cpp" line="686"/>
         <source>%n image(s)</source>
         <translation>
             <numerusform>%n obrazek</numerusform>
@@ -2157,7 +2163,7 @@
         </translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="575"/>
+        <location filename="../thumbview.cpp" line="586"/>
         <source>Searching duplicate images...</source>
         <translation>Wyszukiwanie duplikatów obrazków...</translation>
     </message>
@@ -2198,7 +2204,7 @@
         </translation>
     </message>
     <message>
-        <location filename="../thumbview.cpp" line="464"/>
+        <location filename="../thumbview.cpp" line="470"/>
         <source>No images</source>
         <translation>Brak obrazków</translation>
     </message>

@@ -63,7 +63,7 @@ ImageView::ImageView(QWidget *parent, MetadataCache *mdCache) : QWidget(parent)
 	this->setLayout(scrollLayout);
 
 	infoLabel = new QLabel(this);
-	infoLabel->setVisible(false);
+	infoLabel->setVisible(GData::enableImageInfoFS);
 	infoLabel->setMargin(3);
 	infoLabel->move(10, 10);
 	infoLabel->setStyleSheet("QLabel { background-color : black; color : white; border-radius: 3px} ");
@@ -572,7 +572,9 @@ void ImageView::refresh()
 void ImageView::reload()
 {
 	if (GData::enableImageInfoFS) {
-		if (currentImageFullPath.isEmpty()) {
+		if (currentImageFullPath.left(1) == ":") {
+			setInfo("No Image");
+		} else if (currentImageFullPath.isEmpty()) { 
 			setInfo("Clipboard");
 		} else {
 			setInfo(QFileInfo(currentImageFullPath).fileName());
@@ -741,8 +743,16 @@ void ImageView::mouseReleaseEvent(QMouseEvent *event)
 {
 	if (event->button() == Qt::LeftButton) {
 		setMouseMoveData(false, 0, 0);
-		while (QApplication::overrideCursor())
+		while (QApplication::overrideCursor()) {
 			QApplication::restoreOverrideCursor();
+		}
+
+		if (cropBand->isVisible()) {
+			setFeedback(tr("Selection size: ")
+			+ QString::number(cropBand->width())
+			+ "x"
+			+ QString::number(cropBand->height()));
+		}
 	}
 
 	QWidget::mouseReleaseEvent(event);
@@ -844,8 +854,7 @@ void ImageView::keyMoveEvent(int direction)
 	int newY = layoutY = imageLabel->pos().y();
 	bool needToMove = false;
 
-	switch (direction)
-	{
+	switch (direction) {
 		case MoveLeft:
 			newX += 50;
 			break;
@@ -860,34 +869,32 @@ void ImageView::keyMoveEvent(int direction)
 			break;
 	}
 
-	if (imageLabel->size().width() > size().width())
-	{
-		if (newX > 0)
+	if (imageLabel->size().width() > size().width()) {
+		if (newX > 0) {
 			newX = 0;
-		else if (newX < (size().width() - imageLabel->size().width()))
+		} else if (newX < (size().width() - imageLabel->size().width())) {
 			newX = (size().width() - imageLabel->size().width());
+		}			
 		needToMove = true;
-	}
-	else
+	} else {
 		newX = layoutX;
-
-	if (imageLabel->size().height() > size().height())
-	{
-		if (newY > 0)
-			newY = 0;
-		else if (newY < (size().height() - imageLabel->size().height()))
-			newY = (size().height() - imageLabel->size().height());
-		needToMove = true;
 	}
-	else
-		newY = layoutY;
 
-	if (needToMove)
-	{
+	if (imageLabel->size().height() > size().height()) {
+		if (newY > 0) {
+			newY = 0;
+		} else if (newY < (size().height() - imageLabel->size().height())) {
+			newY = (size().height() - imageLabel->size().height());
+		}
+		needToMove = true;
+	} else {
+		newY = layoutY;
+	}
+
+	if (needToMove) {
 		int i;
 
-		switch (direction)
-		{
+		switch (direction) {
 			case MoveLeft:
 				for (i = imageLabel->pos().x(); i <= newX; ++i)
 					imageLabel->move(newX, newY);

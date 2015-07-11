@@ -36,8 +36,9 @@ private:
 
 public:
 	void updateImageTags(QString &imageFileName, QSet<QString> tags);
-	bool addTagToImage(QString &imageFileName, QString &tagName);
+	void addTagToImage(QString &imageFileName, QString &tagName);
 	bool removeTagFromImage(QString &imageFileName, const QString &tagName);
+	void removeImage(QString &imageFileName);
 	QSet<QString> &getImageTags(QString &imageFileName);
 	void setImageTags(const QString &imageFileName, QSet<QString> tags);
 	void clear();

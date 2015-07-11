@@ -30,6 +30,11 @@ bool MetadataCache::removeTagFromImage(QString &imageFileName, const QString &ta
 	return imageTagsCache[imageFileName].tags.remove(tagName);
 }
 
+void MetadataCache::removeImage(QString &imageFileName)
+{
+	imageTagsCache.remove(imageFileName);
+}
+
 QSet<QString>& MetadataCache::getImageTags(QString &imageFileName)
 {
 	return imageTagsCache[imageFileName].tags ;
@@ -52,14 +57,13 @@ void MetadataCache::setImageTags(const QString &imageFileName, QSet<QString> tag
 	imageTagsCache.insert(imageFileName, imageMetadata);
 }
 
-bool MetadataCache::addTagToImage(QString &imageFileName, QString &tagName)
+void MetadataCache::addTagToImage(QString &imageFileName, QString &tagName)
 {
 	if (imageTagsCache[imageFileName].tags.contains(tagName)) {
-		return false;
+		return;
 	}
 	
 	imageTagsCache[imageFileName].tags.insert(tagName);
-	return true;
 }
 
 void MetadataCache::clear()

@@ -346,7 +346,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	enableExifCb->setChecked(GData::exifRotationEnabled);
 
 	// Image Info
-	imageInfoCb = new QCheckBox(tr("Show image file name in full screen mode"), this);
+	imageInfoCb = new QCheckBox(tr("Show image file name in viewer"), this);
 	imageInfoCb->setChecked(GData::enableImageInfoFS);
 
 	// Viewer options
