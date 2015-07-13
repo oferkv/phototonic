@@ -546,6 +546,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
    	okButton->setIcon(QIcon::fromTheme("dialog-ok"));
     okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	connect(okButton, SIGNAL(clicked()), this, SLOT(saveSettings()));
+    okButton->setDefault(true);
 	QPushButton *closeButton = new QPushButton(tr("Cancel"));
    	closeButton->setIcon(QIcon::fromTheme("dialog-cancel"));
 	closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -698,6 +699,7 @@ CropDialog::CropDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
 	QPushButton *okButton = new QPushButton(tr("OK"));
 	okButton->setIcon(QIcon::fromTheme("dialog-ok"));
 	connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
+    okButton->setDefault(true);
 	buttonsHbox->addWidget(resetButton, 0, Qt::AlignLeft);
 	buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);
 
@@ -823,6 +825,7 @@ ResizeDialog::ResizeDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	QPushButton *okButton = new QPushButton(tr("Scale"));
 	okButton->setIcon(QIcon::fromTheme("dialog-ok"));
 	connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
+    okButton->setDefault(true);
 	QPushButton *cancelButton = new QPushButton(tr("Cancel"));
 	cancelButton->setIcon(QIcon::fromTheme("dialog-cancel"));
     connect(cancelButton, SIGNAL(clicked()), this, SLOT(abort()));
@@ -1018,6 +1021,7 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
 	buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);
+    okButton->setDefault(true);
 
 	/* hue saturation */
 	QLabel *hueLab = new QLabel(tr("Hue"));
@@ -1412,6 +1416,7 @@ CopyMoveToDialog::CopyMoveToDialog(QWidget *parent, QString thumbsPath, bool mov
     QPushButton *okButton = new QPushButton(tr("OK"));
    	okButton->setIcon(QIcon::fromTheme("dialog-ok"));
     okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    okButton->setDefault(true);
 
 	connect(okButton, SIGNAL(clicked()), this, SLOT(copyOrMove()));
 

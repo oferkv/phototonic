@@ -1053,7 +1053,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.6.11</h2>"
+	QString aboutString = "<h2>Phototonic v1.6.12</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -3417,13 +3417,15 @@ bool Phototonic::removeDirOp(QString dirToDelete)
 	Q_FOREACH(QFileInfo info, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden |
 					QDir::AllDirs | QDir::Files, QDir::DirsFirst))
 	{
-		if (info.isDir())
+		if (info.isDir()) {
 			ok = removeDirOp(info.absoluteFilePath());
-		else 
+		} else {
 			ok = QFile::remove(info.absoluteFilePath());
+		}
 
-		if (!ok)
+		if (!ok) {
 			return ok;
+		}
 	}
 	ok = dir.rmdir(dirToDelete);
 
@@ -3472,6 +3474,7 @@ void Phototonic::setInterfaceEnabled(bool enable)
 	thumbView->setEnabled(enable);
 	fsTree->setEnabled(enable);
 	bookmarks->setEnabled(enable);
+	thumbView->imageTags->setEnabled(enable);
 	menuBar()->setEnabled(enable);
 	editToolBar->setEnabled(enable);
 	goToolBar->setEnabled(enable);
@@ -3479,8 +3482,9 @@ void Phototonic::setInterfaceEnabled(bool enable)
 	interfaceDisabled = !enable;
 
 	if (enable) {
-		if (isFullScreen())
+		if (isFullScreen()) {
 			imageView->setCursorHiding(true);
+		}
 		updateActions();
 	} else {
 		imageView->setCursorHiding(false);
