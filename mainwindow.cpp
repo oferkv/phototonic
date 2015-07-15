@@ -1053,7 +1053,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.6.12</h2>"
+	QString aboutString = "<h2>Phototonic v1.6.13</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -1214,25 +1214,25 @@ void Phototonic::chooseExternalApp()
 
 void Phototonic::showSettings()
 {
-	if (GData::slideShowActive)
+	if (GData::slideShowActive) {
 		slideShow();
+	}
+
 	imageView->setCursorHiding(false);
 	
 	SettingsDialog *dialog = new SettingsDialog(this);
-	if (dialog->exec())
-	{
+	if (dialog->exec()) {
 		imageView->setPalette(QPalette(GData::backgroundColor));
 		thumbView->setThumbColors();
 		GData::imageZoomFactor = 1.0;
 		imageView->infoLabel->setVisible(GData::enableImageInfoFS);
 
-		if (GData::layoutMode == imageViewIdx)
-		{
+		if (GData::layoutMode == imageViewIdx) {
 			imageView->reload();
 			needThumbsRefresh = true;
-		}
-		else
+		} else {
 			refreshThumbs(false);
+		}
 	}
 
 	if (isFullScreen())

@@ -384,49 +384,49 @@ void ThumbView::loadVisibleThumbs(int scrollBarValue)
 	lastScrollBarValue = scrollBarValue;
 
 Start:
-	int first = getFirstVisibleThumb();
-	int last = getLastVisibleThumb();
-	if (abortOp || first < 0 || last < 0) 
-		return;
-
-	if (scrolledForward)
-	{
-		last += ((last - first) * (GData::thumbPagesReadahead + 1));
-		if (last >= thumbViewModel->rowCount())
-			last = thumbViewModel->rowCount() - 1;
-	}
-	else
-	{
-		first -= (last - first) * (GData::thumbPagesReadahead + 1);
-		if (first < 0)
-			first = 0;
-
-		last += 10;
-		if (last >= thumbViewModel->rowCount())
-			last = thumbViewModel->rowCount() - 1;
-	}
-
-	if (thumbsRangeFirst == first && thumbsRangeLast == last) {
+	int firstVisible = getFirstVisibleThumb();
+	int lastVisible = getLastVisibleThumb();
+	if (abortOp || firstVisible < 0 || lastVisible < 0) {
 		return;
 	}
 
-	thumbsRangeFirst = first;
-	thumbsRangeLast = last;
+	if (scrolledForward) {
+		lastVisible += ((lastVisible - firstVisible) * (GData::thumbPagesReadahead + 1));
+		if (lastVisible >= thumbViewModel->rowCount()) {
+			lastVisible = thumbViewModel->rowCount() - 1;
+		}
+	} else {
+		firstVisible -= (lastVisible - firstVisible) * (GData::thumbPagesReadahead + 1);
+		if (firstVisible < 0) {
+			firstVisible = 0;
+		}
+
+		lastVisible += 10;
+		if (lastVisible >= thumbViewModel->rowCount()) {
+			lastVisible = thumbViewModel->rowCount() - 1;
+		}
+	}
+
+	if (thumbsRangeFirst == firstVisible && thumbsRangeLast == lastVisible) {
+		return;
+	}
+
+	thumbsRangeFirst = firstVisible;
+	thumbsRangeLast = lastVisible;
 
 	loadThumbsRange();
-	if (!abortOp)
+	if (!abortOp) {
 		goto Start;
+	}
 }
 
 int ThumbView::getFirstVisibleThumb()
 {
 	QModelIndex idx;
 
-	for (int currThumb = 0; currThumb < thumbViewModel->rowCount(); ++currThumb)
-	{
+	for (int currThumb = 0; currThumb < thumbViewModel->rowCount(); ++currThumb) {
 		idx = thumbViewModel->indexFromItem(thumbViewModel->item(currThumb));
-		if (viewport()->rect().contains(QPoint(0, visualRect(idx).y() + visualRect(idx).height() + 1)))
-		{
+		if (viewport()->rect().contains(QPoint(0, visualRect(idx).y() + visualRect(idx).height() + 1))) {
 			return idx.row();
 		}
 	}
@@ -438,11 +438,9 @@ int ThumbView::getLastVisibleThumb()
 {
 	QModelIndex idx;
 
-	for (int currThumb = thumbViewModel->rowCount() -1; currThumb >= 0 ; --currThumb)
-	{
+	for (int currThumb = thumbViewModel->rowCount() -1; currThumb >= 0 ; --currThumb) {
 		idx = thumbViewModel->indexFromItem(thumbViewModel->item(currThumb));
-		if (viewport()->rect().contains(QPoint(0, visualRect(idx).y() + visualRect(idx).height() + 1)))
-		{
+		if (viewport()->rect().contains(QPoint(0, visualRect(idx).y() + visualRect(idx).height() + 1))) {
 			return idx.row();
 		}
 	}
@@ -452,8 +450,7 @@ int ThumbView::getLastVisibleThumb()
 
 bool ThumbView::isThumbVisible(QModelIndex idx)
 {
-	if (viewport()->rect().contains(QPoint(0, visualRect(idx).y() + visualRect(idx).height() + 1)))
-	{
+	if (viewport()->rect().contains(QPoint(0, visualRect(idx).y() + visualRect(idx).height() + 1))) {
 		return true;
 	}
 
@@ -476,10 +473,11 @@ void ThumbView::updateThumbsCount()
 void ThumbView::loadPrepare()
 {
 	float thumbAspect = 1.33;
-	if (GData::thumbsLayout == Compact)
+	if (GData::thumbsLayout == Compact) {
 		thumbAspect = 1.77;
-	else if (GData::thumbsLayout == Squares)
+	} else if (GData::thumbsLayout == Squares) {
 		thumbAspect = 2;
+	}
 
 	thumbHeight = (GData::thumbsLayout == Squares)? thumbSize * thumbAspect : thumbSize;
 	thumbWidth = (GData::thumbsLayout == Squares)? thumbSize * thumbAspect : thumbHeight * thumbAspect;
@@ -622,18 +620,18 @@ void ThumbView::initThumbs()
 	emit showBusy(true);
 	emptyPixMap = QPixmap::fromImage(emptyImg).scaled(thumbWidth, thumbHeight);
 
-	if (GData::thumbsLayout == Squares)
+	if (GData::thumbsLayout == Squares) {
 		hintSize = QSize(thumbWidth / 2, thumbWidth / 2);
-	else if (GData::thumbsLayout == Classic)
+	} else if (GData::thumbsLayout == Classic) {
 		hintSize = QSize(thumbWidth, thumbHeight + 
-							(GData::showLabels? QFontMetrics(font()).height() + 5 : 0));
+						(GData::showLabels? QFontMetrics(font()).height() + 5 : 0));
+	}
 
 	for (fileIndex = 0; fileIndex < thumbFileInfoList.size(); ++fileIndex) {
 		thumbFileInfo = thumbFileInfoList.at(fileIndex);
 
 		mdCache->loadImageMetadata(thumbFileInfo.filePath());
-		if (imageTags->folderFilteringActive &&
-				imageTags->isImageFilteredOut(thumbFileInfo.filePath())) {
+		if (imageTags->folderFilteringActive && imageTags->isImageFilteredOut(thumbFileInfo.filePath())) {
 			continue;
 		}
 		
@@ -641,13 +639,19 @@ void ThumbView::initThumbs()
 		thumbIitem->setData(false, LoadedRole);
 		thumbIitem->setData(fileIndex, SortRole);
 		thumbIitem->setData(thumbFileInfo.filePath(), FileNameRole);
-		if (GData::thumbsLayout != Squares && GData::showLabels)
+
+		if (GData::thumbsLayout != Squares && GData::showLabels) {
 			thumbIitem->setData(thumbFileInfo.fileName(), Qt::DisplayRole);
-		if (GData::thumbsLayout == Compact)
+		}
+
+		if (GData::thumbsLayout == Compact) {
 			thumbIitem->setIcon(emptyPixMap);
+		}
+
 		thumbIitem->setTextAlignment(Qt::AlignTop | Qt::AlignHCenter);
-		if (GData::thumbsLayout != Compact)
+		if (GData::thumbsLayout != Compact) {
 			thumbIitem->setSizeHint(hintSize);
+		}
 
 		thumbViewModel->appendRow(thumbIitem);
 
@@ -756,7 +760,7 @@ void ThumbView::loadThumbsRange()
 	static QImage thumb;
 	int currThumb;
 
-	if (inProgress) {	
+	if (inProgress) {
 		abortOp = true;
 		QTimer::singleShot(0, this, SLOT(loadThumbsRange()));
 		return;
@@ -768,8 +772,10 @@ void ThumbView::loadThumbsRange()
 	for (	scrolledForward? currThumb = thumbsRangeFirst : currThumb = thumbsRangeLast;
 			(scrolledForward? currThumb <= thumbsRangeLast : currThumb >= thumbsRangeFirst);
 			scrolledForward? ++currThumb : --currThumb) {
-		if (abortOp || thumbViewModel->rowCount() != currRowCount)
+
+		if (abortOp || thumbViewModel->rowCount() != currRowCount || currThumb < 0) {
 			break;
+		}
 
 		if (thumbViewModel->item(currThumb)->data(LoadedRole).toBool())
 			continue;
@@ -921,3 +927,4 @@ void ThumbView::setImageView(ImageView *imageView)
 {
 	this->imageView  = imageView;
 }
+
