@@ -82,6 +82,9 @@ namespace GData
 	extern int blueVal;
 	extern bool colorsActive;
 	extern bool colorizeEnabled;
+	extern bool rNegateEnabled;
+	extern bool gNegateEnabled;
+	extern bool bNegateEnabled;
 	extern bool hueRedChannel;
 	extern bool hueGreenChannel;
 	extern bool hueBlueChannel;

@@ -18,8 +18,6 @@
 
 #include "thumbview.h"
 
-#define BAD_IMG_SZ	64
-
 ThumbView::ThumbView(QWidget *parent, MetadataCache *mdCache) : QListView(parent)
 {
 	this->mdCache = mdCache;

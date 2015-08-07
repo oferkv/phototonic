@@ -65,6 +65,9 @@ namespace GData
 	int blueVal;
 	bool colorsActive;
 	bool colorizeEnabled;
+	bool rNegateEnabled;
+	bool gNegateEnabled;
+	bool bNegateEnabled;
 	bool hueRedChannel;
 	bool hueGreenChannel;
 	bool hueBlueChannel;

@@ -29,6 +29,8 @@
 #include "tags.h"
 #include "mdcache.h"
 
+#define BAD_IMG_SZ	64
+
 class ImageTags;
 
 struct DuplicateImage

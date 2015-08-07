@@ -180,6 +180,9 @@ public slots:
 	void ok();
 	void reset();
 	void enableColorize(int state);
+	void redNegative(int state);
+	void greenNegative(int state);
+	void blueNegative(int state);
 	void setRedChannel();
 	void setGreenChannel();
 	void setBlueChannel();
@@ -199,6 +202,9 @@ private:
 	QSlider *redSlide;
 	QSlider *greenSlide;
 	QSlider *blueSlide;
+	QCheckBox *rNegateCb;
+	QCheckBox *gNegateCb;
+	QCheckBox *bNegateCb;
 };
 
 class AppMgmtDialog : public QDialog

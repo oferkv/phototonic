@@ -488,12 +488,13 @@ void ImageView::colorize()
 	float brightness = ((float)GData::brightVal / 100.0);
 	
 	for(i = 0; i < 256; ++i) {
-		if (i < (int)(128.0f + 128.0f * tan(contrast)) && i > (int)(128.0f - 128.0f * tan(contrast)))
+		if (i < (int)(128.0f + 128.0f * tan(contrast)) && i > (int)(128.0f - 128.0f * tan(contrast))) {
 			contrastTransform[i] = (i - 128) / tan(contrast) + 128;
-		else if (i >= (int)(128.0f + 128.0f * tan(contrast)))
+		} else if (i >= (int)(128.0f + 128.0f * tan(contrast))) {
 			contrastTransform[i] = 255;
-		else
+		} else {
 			contrastTransform[i] = 0;
+		}
 	}
 
 	for (i = 0; i < 256; ++i) {
@@ -501,35 +502,29 @@ void ImageView::colorize()
 	}
 
 	for(y = 0; y < displayImage.height(); ++y) {
+
 		line = (QRgb *)displayImage.scanLine(y);
- 
 		for(x = 0; x < displayImage.width(); ++x) {
-			r = qRed(line[x]);
-			g = qGreen(line[x]);
-			b = qBlue(line[x]);
+			r = GData::rNegateEnabled? bound0To255(255 - qRed(line[x])) : qRed(line[x]);
+			g = GData::gNegateEnabled? bound0To255(255 - qGreen(line[x])) : qGreen(line[x]);
+			b = GData::bNegateEnabled? bound0To255(255 - qBlue(line[x])) : qBlue(line[x]);
 
 			r = bound0To255((r * (GData::redVal + 100)) / 100);
 			g = bound0To255((g * (GData::greenVal + 100)) / 100);
 			b = bound0To255((b * (GData::blueVal + 100)) / 100);
 
-			r = bound0To255(contrastTransform[r]);
-			g = bound0To255(contrastTransform[g]);
-			b = bound0To255(contrastTransform[b]);
-
 			r = bound0To255(brightTransform[r]);
 			g = bound0To255(brightTransform[g]);
 			b = bound0To255(brightTransform[b]);
 
-			rgbToHsl(r, g, b, &h, &s, &l);
-								
-			if (GData::colorizeEnabled)
-				h = GData::hueVal;
-			else
-				h += GData::hueVal;
+			r = bound0To255(contrastTransform[r]);
+			g = bound0To255(contrastTransform[g]);
+			b = bound0To255(contrastTransform[b]);
 
+			rgbToHsl(r, g, b, &h, &s, &l);
+			h = GData::colorizeEnabled? GData::hueVal : h + GData::hueVal;
 			s = bound0To255(((s * GData::saturationVal) / 100));
 			l = bound0To255(((l * GData::lightnessVal) / 100));
-
 			hslToRgb(h, s, l, &hr, &hg, &hb);
 
 			r = GData::hueRedChannel? hr : qRed(line[x]);

@@ -1039,6 +1039,18 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	colorizeCb->setCheckState(GData::colorizeEnabled? Qt::Checked : Qt::Unchecked);
 	connect(colorizeCb, SIGNAL(stateChanged(int)), this, SLOT(enableColorize(int)));	
 
+	rNegateCb = new QCheckBox(tr("Negative"), this);
+	rNegateCb->setCheckState(GData::rNegateEnabled? Qt::Checked : Qt::Unchecked);
+	connect(rNegateCb, SIGNAL(stateChanged(int)), this, SLOT(redNegative(int)));	
+
+	gNegateCb = new QCheckBox(tr("Negative"), this);
+	gNegateCb->setCheckState(GData::gNegateEnabled? Qt::Checked : Qt::Unchecked);
+	connect(gNegateCb, SIGNAL(stateChanged(int)), this, SLOT(greenNegative(int)));	
+
+	bNegateCb = new QCheckBox(tr("Negative"), this);
+	bNegateCb->setCheckState(GData::bNegateEnabled? Qt::Checked : Qt::Unchecked);
+	connect(bNegateCb, SIGNAL(stateChanged(int)), this, SLOT(blueNegative(int)));	
+
 	saturationSlide = new QSlider(Qt::Horizontal);
 	saturationSlide->setTickPosition(QSlider::TicksAbove);
 	saturationSlide->setTickInterval(25);
@@ -1147,10 +1159,13 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 	QGridLayout *channelMixbox = new QGridLayout;
 	channelMixbox->addWidget(redLab, 1, 0, 1, 1);
 	channelMixbox->addWidget(redSlide,	1, 1, 1, 1);
+	channelMixbox->addWidget(rNegateCb, 1, 2, 1, 1);
 	channelMixbox->addWidget(greenLab, 2, 0, 1, 1);
 	channelMixbox->addWidget(greenSlide, 2, 1, 1, 1);
+	channelMixbox->addWidget(gNegateCb, 2, 2, 1, 1);
 	channelMixbox->addWidget(blueLab, 3, 0, 1, 1);
 	channelMixbox->addWidget(blueSlide,	3, 1, 1, 1);
+	channelMixbox->addWidget(bNegateCb, 3, 2, 1, 1);
 	channelMixbox->setColumnMinimumWidth(0, 70);
 
 	QGroupBox *channelMixGroup = new QGroupBox(tr("Color Balance"));
@@ -1210,6 +1225,9 @@ void ColorsDialog::reset()
 {
 	hueSlide->setValue(0);
 	colorizeCb->setChecked(false);
+	rNegateCb->setChecked(false);
+	gNegateCb->setChecked(false);
+	bNegateCb->setChecked(false);
 	saturationSlide->setValue(0);
 	lightnessSlide->setValue(0);
 	redB->setChecked(true);
@@ -1232,6 +1250,24 @@ void ColorsDialog::reset()
 void ColorsDialog::enableColorize(int state)
 {
 	GData::colorizeEnabled = state;
+	imageView->refresh();
+}
+
+void ColorsDialog::redNegative(int state)
+{
+	GData::rNegateEnabled = state;
+	imageView->refresh();
+}
+
+void ColorsDialog::greenNegative(int state)
+{
+	GData::gNegateEnabled = state;
+	imageView->refresh();
+}
+
+void ColorsDialog::blueNegative(int state)
+{
+	GData::bNegateEnabled = state;
 	imageView->refresh();
 }
 
