@@ -502,8 +502,9 @@ void ImageView::colorize()
 	unsigned char h, s, l;
 	static unsigned char contrastTransform[256];	
 	static unsigned char brightTransform[256];
+	bool hasAlpha = displayImage.hasAlphaChannel();
 
-	if (displayImage.format() == QImage::Format_Indexed8) {
+	if (displayImage.colorCount()) {
 		displayImage = displayImage.convertToFormat(QImage::Format_RGB32);
 	}
 
@@ -555,7 +556,11 @@ void ImageView::colorize()
 			g = GData::hueGreenChannel? hg : qGreen(line[x]);
 			b = GData::hueBlueChannel? hb: qBlue(line[x]);
 
-			line[x] = qRgb(r, g, b);
+			if (hasAlpha) {
+				line[x] = qRgba(r, g, b, qAlpha(line[x]));
+			} else {
+				line[x] = qRgb(r, g, b);
+			}
 		}
 	}
 }
@@ -590,6 +595,7 @@ void ImageView::refresh()
 
 void ImageView::reload()
 {
+	isAnimation = false;
 	if (GData::enableImageInfoFS) {
 		if (currentImageFullPath.left(1) == ":") {
 			setInfo("No Image");
@@ -617,21 +623,25 @@ void ImageView::reload()
 		imageLabel->setPixmap(displayPixmap);
 		pasteImage();
 		mainWindow->setWindowTitle(tr("Clipboard") + " - Phototonic");
-		isAnimation = false;
 		return;
 	}
 
 	imageReader.setFileName(currentImageFullPath);
 
-	isAnimation = GData::enableAnimations? imageReader.supportsAnimation() : false;
-	if (isAnimation) {
+	if (GData::enableAnimations && imageReader.supportsAnimation()) {
 		if (anim) {
 			delete anim;
 		}
 		anim = new QMovie(currentImageFullPath);
-		imageLabel->setMovie(anim);
-		anim->start();
-	} else {
+
+		if (anim->frameCount() > 1) {
+			isAnimation = true;
+			imageLabel->setMovie(anim);
+			anim->start();
+		}
+	}
+
+	if (!isAnimation) {
 		if (imageReader.size().isValid()) {
 			origImage.load(currentImageFullPath);
 			displayImage = origImage;
