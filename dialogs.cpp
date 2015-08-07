@@ -274,7 +274,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	// Zoom large images
 	QGroupBox *fitLargeGroupBox = new QGroupBox(tr("Fit Large Images"));
 	fitLargeRadios[0] = new QRadioButton(tr("Disable"));
-	fitLargeRadios[1] = new QRadioButton(tr("By width and height"));
+	fitLargeRadios[1] = new QRadioButton(tr("By width or height"));
 	fitLargeRadios[2] = new QRadioButton(tr("By width"));
 	fitLargeRadios[3] = new QRadioButton(tr("By height"));
 	fitLargeRadios[4] = new QRadioButton(tr("Stretch disproportionately"));
@@ -291,7 +291,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent)
 	// Zoom small images
 	QGroupBox *fitSmallGroupBox = new QGroupBox(tr("Fit Small Images"));
 	fitSmallRadios[0] = new QRadioButton(tr("Disable"));
-	fitSmallRadios[1] = new QRadioButton(tr("By width and height"));
+	fitSmallRadios[1] = new QRadioButton(tr("By width or height"));
 	fitSmallRadios[2] = new QRadioButton(tr("By width"));
 	fitSmallRadios[3] = new QRadioButton(tr("By height"));
 	fitSmallRadios[4] = new QRadioButton(tr("Stretch disproportionately"));
