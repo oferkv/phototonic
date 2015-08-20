@@ -1,4 +1,87 @@
-commit b95a6e735ed808e2fe4eae58cf0e81ae0c0916e4 (HEAD -> master, origin/master, origin/HEAD)
+commit c38aeae79cff211b51d7bf2503483f7dbc9af413
+Author: dglava <dinomol@mail.com>
+Date:   Mon Aug 17 17:41:29 2015 +0200
+
+    Added bs, hr and sr translations
+
+commit affa7c3369f450701839b8f5bb3f37a1a83639a1
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Fri Aug 7 20:57:43 2015 +0300
+
+    Version adjust
+
+commit e262112e5a4ee611f87bbb9bf5871655d069b49a
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Fri Aug 7 20:56:32 2015 +0300
+
+    Fixed colors manipulations for images with alpha channel and non animated GIF images
+
+commit 4d4450dcebbcc6473a34c1163cd5ff73c2b0e1d1
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Fri Aug 7 14:41:16 2015 +0300
+
+    Minor fixes to image resize method
+
+commit aed89a8fa6023a9ddd2e7d4cd94429100a755e53
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Fri Aug 7 12:12:55 2015 +0300
+
+    Added Negativity settings to colors dialog
+
+commit a80cc079866c3435a65e79a95d4da717fa228712
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Wed Jul 15 22:16:13 2015 +0300
+
+    Fix issue with thumbs loading while changing preloading thumb pages amount settings.
+
+commit ddc7c67fc61da688e4155ff1be97765474fc5c5c
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Mon Jul 13 22:55:15 2015 +0300
+
+    Set default button in some dialogs, fix tags disabling when interface disabled.
+
+commit 7f60847c448946e9a83667ed36d1d87361c962a9
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Sat Jul 11 20:06:18 2015 +0300
+
+    Fix issue with crop size feedback
+
+commit 2cc6e4ebc861930bd490d5bc303ff478ecfb3416
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Sat Jul 11 19:49:59 2015 +0300
+
+    Improvements to image feedback and multi tag loading
+
+commit cce5a97883d13f31442e8488048ffee231328fab
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Sat Jul 11 18:00:10 2015 +0300
+
+    Image metadata cache implementation
+
+commit ae6c6f80aed31cfa0a774acf1081522da5826762
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Fri Jul 10 15:18:29 2015 +0300
+
+    Following bug fixes:
+    Small fixes to image extensions
+    Fixed issue with thumb label appearing after rename when labers are not displayed
+    Remove debugging info
+    Now checking that not adding an image tag that already exists
+
+commit 5d906772f61e8680d344f826028c6b6caeddb33c
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Mon Jul 6 22:01:08 2015 +0300
+
+    Added temporary debug to exiv orientation reading
+
+commit c9427078ea5335a76e006c1924f50fbd2ef458a5
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Sat Jul 4 19:42:55 2015 +0300
+
+    Fix tag addition issue when no tags present
+    Update changelog
+
+commit b95a6e735ed808e2fe4eae58cf0e81ae0c0916e4
 Author: Ofer Kashayov <oferkv@gmail.com>
 Date:   Sat Jul 4 13:46:29 2015 +0300
 

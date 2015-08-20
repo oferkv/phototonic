@@ -55,5 +55,8 @@
 		<file>translations/phototonic_ru.qm</file>
 		<file>translations/phototonic_cs.qm</file>
 		<file>translations/phototonic_fr.qm</file>
+		<file>translations/phototonic_bs.qm</file>
+		<file>translations/phototonic_hr.qm</file>
+		<file>translations/phototonic_sr.qm</file>
 	</qresource>
 </RCC>
