@@ -99,7 +99,7 @@
         <location filename="../dialogs.cpp" line="1046"/>
         <location filename="../dialogs.cpp" line="1050"/>
         <source>Negative</source>
-        <translation type="unfinished"></translation>
+        <translation>Négatif</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1069"/>
@@ -293,94 +293,94 @@
     <message>
         <location filename="../tags.cpp" line="58"/>
         <source>Tag</source>
-        <translation type="unfinished"></translation>
+        <translation>Taguer</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="62"/>
         <source>Untag</source>
-        <translation type="unfinished"></translation>
+        <translation>Détaguer</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="72"/>
         <source>Clear Filters</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer les filtres</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="65"/>
         <source>New Tag</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouveau tag</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="69"/>
         <source>Remove Tag</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer le tag</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="160"/>
         <location filename="../tags.cpp" line="444"/>
         <location filename="../tags.cpp" line="453"/>
         <source>Error</source>
-        <translation type="unfinished">Erreur</translation>
+        <translation>Erreur</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="160"/>
         <source>Failed to save tags to </source>
-        <translation type="unfinished"></translation>
+        <translation>Échec de la sauvegarde des tags vers </translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="346"/>
         <source>Tagging </source>
-        <translation type="unfinished"></translation>
+        <translation>Tague </translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="349"/>
         <source>Untagging </source>
-        <translation type="unfinished"></translation>
+        <translation>Détague </translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="435"/>
         <source>Add a new tag</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter un nouveau tag</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="436"/>
         <source>Enter new tag name</source>
-        <translation type="unfinished"></translation>
+        <translation>Entrer le nouveau nom du tag</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="444"/>
         <source>No name entered</source>
-        <translation type="unfinished">Aucun nom saisi</translation>
+        <translation>Aucun nom saisi</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="453"/>
         <source>Tag </source>
-        <translation type="unfinished"></translation>
+        <translation>Le tag </translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="453"/>
         <source> already exists</source>
-        <translation type="unfinished"></translation>
+        <translation> existe déjà</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="471"/>
         <source>Remove selected tags(s)?</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer le(s) tag(s) sélectionné(s) ?</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="472"/>
         <source>Remove tag</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer le tag</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="477"/>
         <source>Yes</source>
-        <translation type="unfinished">Oui</translation>
+        <translation>Oui</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="478"/>
         <source>Cancel</source>
-        <translation type="unfinished">Annuler</translation>
+        <translation>Annuler</translation>
     </message>
 </context>
 <context>
@@ -393,7 +393,7 @@
     <message>
         <location filename="../imageview.cpp" line="780"/>
         <source>Selection size: </source>
-        <translation type="unfinished"></translation>
+        <translation>Sélection de la taille : </translation>
     </message>
     <message>
         <location filename="../imageview.cpp" line="828"/>
@@ -892,7 +892,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="958"/>
         <source>Tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Tags</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1446"/>
@@ -1620,7 +1620,7 @@
     <message>
         <location filename="../dialogs.cpp" line="1555"/>
         <source>Cancel</source>
-        <translation type="unfinished">Annuler</translation>
+        <translation>Annuler</translation>
     </message>
 </context>
 <context>
@@ -1783,12 +1783,12 @@
         <location filename="../dialogs.cpp" line="277"/>
         <location filename="../dialogs.cpp" line="294"/>
         <source>By width or height</source>
-        <translation type="unfinished"></translation>
+        <translation>Par largeur ou hauteur</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="349"/>
         <source>Show image file name in viewer</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher le nom de l&apos;image dans la visionneuse</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="395"/>
@@ -1829,8 +1829,8 @@
         <translation type="vanished">Afficher le nom du fichier de l&apos;image en mode plein écran</translation>
     </message>
     <message>
-        <source>	Label color: </source>
-        <translation type="vanished">	Couleur du label : </translation>
+        <source>        Label color: </source>
+        <translation type="vanished">        Couleur du label : </translation>
     </message>
     <message>
         <source>Background image: </source>
@@ -1896,7 +1896,7 @@
     <message>
         <location filename="../dialogs.cpp" line="527"/>
         <source>Delete confirmation</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer la confirmation</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="531"/>
