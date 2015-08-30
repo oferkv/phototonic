@@ -1025,8 +1025,6 @@
         <translation>Rotacija %1°</translation>
     </message>
     <message>
-        <source>Rotation %1Â°</source>
-        <translation>Rotacija %1Â°</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1462"/>
