@@ -648,7 +648,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="499"/>
         <source>Home</source>
-        <translation>Почетак</translation>
+        <translation>Почетна</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="504"/>
@@ -659,27 +659,27 @@
     <message>
         <location filename="../mainwindow.cpp" line="509"/>
         <source>Next</source>
-        <translation>Следећи</translation>
+        <translation>Следећa</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="514"/>
         <source>Previous</source>
-        <translation>Прошли</translation>
+        <translation>Прошла</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="519"/>
         <source>First</source>
-        <translation>Први</translation>
+        <translation>Прва</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="524"/>
         <source>Last</source>
-        <translation>Задњи</translation>
+        <translation>Задња</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="529"/>
         <source>Random</source>
-        <translation>Насумично</translation>
+        <translation>Насумична</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="533"/>
@@ -796,7 +796,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="638"/>
         <source>Disable</source>
-        <translation>Искључи</translation>
+        <translation>Искључено</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="640"/>
@@ -1023,11 +1023,11 @@
         <location filename="../mainwindow.cpp" line="1512"/>
         <location filename="../mainwindow.cpp" line="1521"/>
         <source>Rotation %1°</source>
-        <translation type="unfinished"></translation>
+        <translation>Ротација %1°</translation>
     </message>
     <message>
         <source>Rotation %1Â°</source>
-        <translation type="vanished">Ротација %1Â°</translation>
+        <translation>Ротација %1Â°</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1462"/>
@@ -1430,7 +1430,7 @@
         <location filename="../dialogs.cpp" line="276"/>
         <location filename="../dialogs.cpp" line="293"/>
         <source>Disable</source>
-        <translation>Искључи</translation>
+        <translation>Искључено</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="277"/>
@@ -1548,7 +1548,7 @@
         <location filename="../dialogs.cpp" line="474"/>
         <source>Default, or specified by command line argument</source>
         <translatorcomment>Поправити</translatorcomment>
-        <translation>Стандардни, или спецификован командном линијом аргумент</translation>
+        <translation>Стандардни, или командном линиjom одређени аргумент</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="475"/>
