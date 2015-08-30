@@ -1053,7 +1053,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.6.20</h2>"
+	QString aboutString = "<h2>Phototonic v1.6.26</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -1065,13 +1065,16 @@ void Phototonic::about()
 		+ QString::fromUtf8("<tr><td></td><td>Thomas L\u00FCbking (thomas.luebking@gmail.com)</td></tr>")
 		+ "<tr><td></td><td>Tung Le</td></tr>"
 		+ "<tr><td></td><td>Peter Mattern</td></tr>"
+		+ QString::fromUtf8("<tr><td>Bosnian:</td><td>Dino Duratovi\u0107 (dinomol@mail.com)</td></tr>")
+		+ QString::fromUtf8("<tr><td>Croatian:</td><td>Dino Duratovi\u0107 (dinomol@mail.com)</td></tr>")
 		+ "<tr><td>Czech:</td><td>Pavel Fric (pavelfric@seznam.cz)</td></tr>"
 		+ "<tr><td>French:</td><td>Adrien Daugabel (adrien.d@mageialinux-online.org)</td></tr>"
 		+ "<tr><td></td><td>David Geiger (david.david@mageialinux-online.org)</td></tr>"
 		+ QString::fromUtf8("<tr><td></td><td>R\u00E9mi Verschelde (akien@mageia.org)</td></tr>")
 		+ "<tr><td>German:</td><td>Jonathan Hooverman (jonathan.hooverman@gmail.com)</td></tr>"
 		+ QString::fromUtf8("<tr><td>Polish:</td><td>Robert Wojew\u00F3dzki (robwoj44@poczta.onet.pl)</td></tr>")
-		+ "<tr><td>Russian:</td><td>Ilya Alexandrovich (yast4ik@gmail.com)</td></tr></table>"
+		+ "<tr><td>Russian:</td><td>Ilya Alexandrovich (yast4ik@gmail.com)</td></tr>"
+		+ QString::fromUtf8("<tr><td>Serbian:</td><td>Dino Duratovi\u0107 (dinomol@mail.com)</td></tr></table>")
 		+ "<p>Phototonic is licensed under the GNU General Public License version 3</p>"
 		+ "<p>Copyright &copy; 2013-2015 Ofer Kashayov</p>";
 
