@@ -2645,8 +2645,8 @@ void Phototonic::showViewer()
 			shouldMaximize = isMaximized();
 			showFullScreen();
 			imageView->setCursorHiding(true);
+			QApplication::processEvents();
 		}
-		imageView->adjustSize();
 
 		updateActions();
 	}

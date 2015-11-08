@@ -540,13 +540,13 @@ void ThumbView::loadPrepare()
 
 void ThumbView::load()
 {
+	emit showBusy(true);
 	loadPrepare();
 	initThumbs();
 	updateThumbsCount();
 	loadVisibleThumbs();
 
 	if (GData::includeSubFolders) {
-		emit showBusy(true);
 		QDirIterator iterator(GData::currentViewDir, QDirIterator::Subdirectories);
 		while (iterator.hasNext()) {
 			iterator.next();
@@ -569,8 +569,8 @@ void ThumbView::load()
 	}
 
 finish:
-	busy = false;
 	emit showBusy(false);
+	busy = false;
 	return;
 }
 
@@ -615,7 +615,6 @@ void ThumbView::initThumbs()
 	static QSize hintSize;
 	int processEventsCounter = 0;
 
-	emit showBusy(true);
 	emptyPixMap = QPixmap::fromImage(emptyImg).scaled(thumbWidth, thumbHeight);
 
 	if (GData::thumbsLayout == Squares) {
@@ -670,8 +669,6 @@ void ThumbView::initThumbs()
 	if (thumbFileInfoList.size() && selectionModel()->selectedIndexes().size() == 0) {
 		selectThumbByRow(0);
 	}
-
-	emit showBusy(false);
 }
 
 void ThumbView::selectThumbByRow(int row)
@@ -745,6 +742,7 @@ void ThumbView::findDupes(bool resetCounters)
 			break;
 		}
 	}
+
 	updateFoundDupesState(foundDups, totalFiles, originalImages);
 }
 
@@ -755,8 +753,9 @@ void ThumbView::loadThumbsRange()
 	static QSize currThumbSize;
 	static int currRowCount;
 	static QString imageFileName;
-	static QImage thumb;
+	QImage thumb;
 	int currThumb;
+	bool imageReadOk;
 
 	if (inProgress) {
 		abortOp = true;
@@ -775,27 +774,33 @@ void ThumbView::loadThumbsRange()
 			break;
 		}
 
-		if (thumbViewModel->item(currThumb)->data(LoadedRole).toBool())
+		if (thumbViewModel->item(currThumb)->data(LoadedRole).toBool()) {
 			continue;
+		}
 
 		imageFileName = thumbViewModel->item(currThumb)->data(FileNameRole).toString();
 		thumbReader.setFileName(imageFileName);
 		currThumbSize = thumbReader.size();
+		imageReadOk = false;
 
 		if (currThumbSize.isValid()) {
 			if (!GData::noEnlargeSmallThumb
-				|| (currThumbSize.width() > thumbWidth || currThumbSize.height() > thumbHeight)) {
+				|| (currThumbSize.width() > thumbWidth || currThumbSize.height() > thumbHeight))
+			{
 				currThumbSize.scale(QSize(thumbWidth, thumbHeight), Qt::KeepAspectRatio);
 			}
 
 			thumbReader.setScaledSize(currThumbSize);
-			thumb = thumbReader.read();
+			imageReadOk = thumbReader.read(&thumb);
+		}
 
+		if (imageReadOk) {
 			if (GData::exifThumbRotationEnabled) {
 				imageView->rotateByExifRotation(thumb, imageFileName);
 				currThumbSize = thumb.size();
 				currThumbSize.scale(QSize(thumbWidth, thumbHeight), Qt::KeepAspectRatio);
 			}
+			
 			thumbViewModel->item(currThumb)->setIcon(QPixmap::fromImage(thumb));
 		} else {
 			thumbViewModel->item(currThumb)->setIcon(QIcon::fromTheme("image-missing",

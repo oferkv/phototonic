@@ -124,10 +124,11 @@ static inline int calcZoom(int size)
 void ImageView::resizeImage()
 {
 	static bool busy = false;
-	if (busy || (!imageLabel->pixmap() && !anim))
+	if (busy || (!imageLabel->pixmap() && !anim)) {
 		return;
+	}
 	busy = true;
-
+	
 	int imageViewWidth = this->size().width();
 	int imageViewHeight = this->size().height();
 	QSize imgSize = isAnimation? anim->currentPixmap().size() : imageLabel->pixmap()->size();
@@ -627,7 +628,6 @@ void ImageView::reload()
 	}
 
 	imageReader.setFileName(currentImageFullPath);
-
 	if (GData::enableAnimations && imageReader.supportsAnimation()) {
 		if (anim) {
 			delete anim;
@@ -642,8 +642,7 @@ void ImageView::reload()
 	}
 
 	if (!isAnimation) {
-		if (imageReader.size().isValid()) {
-			origImage.load(currentImageFullPath);
+		if (imageReader.size().isValid() && imageReader.read(&origImage)) {
 			displayImage = origImage;
 			transform();
 			if (GData::colorsActive || GData::keepTransform) {
@@ -656,6 +655,7 @@ void ImageView::reload()
 		} else {
 			displayPixmap = QIcon::fromTheme("image-missing", 
 										QIcon(":/images/error_image.png")).pixmap(128, 128);
+			setInfo(imageReader.errorString());
 		}
 
 		imageLabel->setPixmap(displayPixmap);
