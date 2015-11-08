@@ -1,3 +1,47 @@
+commit 9b51c8857782a428c2c24d0685d09e986d08c3d2 (HEAD -> master, origin/master, origin/HEAD)
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Sun Nov 8 19:55:16 2015 +0200
+
+    Fix zoom issues
+
+commit 041b3605a69c514fbf7dd23d51b3f2d6134754c2
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Sun Nov 8 19:22:43 2015 +0200
+
+    Better image read error handling
+
+commit 3a05fa31b12013e05967e86738180bee83306d37
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Sun Aug 30 22:08:52 2015 +0300
+
+    Updated translations
+
+commit 1da9f25ca63040eca41765a7a06af146c4968553
+Author: dglava <dinomol@mail.com>
+Date:   Sun Aug 30 19:49:20 2015 +0200
+
+    Remove useless lines
+
+commit 904c43796bc94df1883bdc568d032edc50ecfb7d
+Author: dglava <dinomol@mail.com>
+Date:   Sun Aug 30 19:08:58 2015 +0200
+
+    Updated bs, hr and sr translations
+
+commit 1eb6636349468050787bb9232c8b26e36c0cd932
+Author: SARL ENR 68 <david@david.david>
+Date:   Fri Aug 28 18:22:01 2015 +0200
+
+    Update French translation
+    
+    - by Geiger David <david.david@mageialinux-online.org>
+
+commit 3c36007cdb330b8ca77cbee3647fdc32dad9e93a
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Thu Aug 20 20:57:40 2015 +0300
+
+    Updated translations and change log
+
 commit c38aeae79cff211b51d7bf2503483f7dbc9af413
 Author: dglava <dinomol@mail.com>
 Date:   Mon Aug 17 17:41:29 2015 +0200
