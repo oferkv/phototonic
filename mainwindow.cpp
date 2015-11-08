@@ -1053,7 +1053,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.6.26</h2>"
+	QString aboutString = "<h2>Phototonic v1.6.28</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -1385,7 +1385,18 @@ void Phototonic::thumbsZoomOut()
 
 void Phototonic::zoomOut()
 {
-	GData::imageZoomFactor -= (GData::imageZoomFactor <= 0.25)? 0 : 0.25;
+	if (GData::imageZoomFactor <= 1.0 && GData::imageZoomFactor > 0.25) {
+		GData::imageZoomFactor -= 0.25;
+	} else if (GData::imageZoomFactor <= 4.0 && GData::imageZoomFactor >= 1.0) {
+
+		GData::imageZoomFactor -= 0.50;
+	} else if (GData::imageZoomFactor <= 8.0 && GData::imageZoomFactor >= 4.0) {
+		GData::imageZoomFactor -= 1.0;
+	} else {
+		imageView->setFeedback(tr("Minimum zoom"));
+		return;
+	}
+
 	imageView->tempDisableResize = false;
 	imageView->resizeImage();
 	imageView->setFeedback(tr("Zoom %1%").arg(QString::number(GData::imageZoomFactor * 100)));
@@ -1393,7 +1404,17 @@ void Phototonic::zoomOut()
 
 void Phototonic::zoomIn()
 {
-	GData::imageZoomFactor += (GData::imageZoomFactor >= 3.50)? 0 : 0.25;
+	if (GData::imageZoomFactor < 1.0 && GData::imageZoomFactor >= 0.25) {
+		GData::imageZoomFactor += 0.25;
+	} else if (GData::imageZoomFactor < 4.0 && GData::imageZoomFactor >= 1.0) {
+		GData::imageZoomFactor += 0.50;
+	} else if (GData::imageZoomFactor < 8.0 && GData::imageZoomFactor >= 4.0) {
+		GData::imageZoomFactor += 1.00;
+	} else {
+		imageView->setFeedback(tr("Maximum zoom"));
+		return;
+	}
+
 	imageView->tempDisableResize = false;
 	imageView->resizeImage();
 	imageView->setFeedback(tr("Zoom %1%").arg(QString::number(GData::imageZoomFactor * 100)));
