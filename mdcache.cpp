@@ -37,7 +37,7 @@ void MetadataCache::removeImage(QString &imageFileName)
 
 QSet<QString>& MetadataCache::getImageTags(QString &imageFileName)
 {
-	return imageTagsCache[imageFileName].tags ;
+	return imageTagsCache[imageFileName].tags;
 }
 
 int MetadataCache::getImageOrientation(QString &imageFileName)
@@ -80,12 +80,20 @@ bool MetadataCache::loadImageMetadata(const QString &imageFullPath)
 	try {
 		exifImage = Exiv2::ImageFactory::open(imageFullPath.toStdString());
 		exifImage->readMetadata();
+	} catch (Exiv2::Error &error) {
+		return false;
+	}
 
+	try {
 		Exiv2::ExifData &exifData = exifImage->exifData();
 		if (!exifData.empty()) {
 			orientation = exifData["Exif.Image.Orientation"].value().toLong();
 		}
+	} catch (Exiv2::Error &error) {
 
+	}
+
+	try {
 		Exiv2::IptcData &iptcData = exifImage->iptcData();
 		if (!iptcData.empty()) {
 			QString key;
@@ -98,14 +106,11 @@ bool MetadataCache::loadImageMetadata(const QString &imageFullPath)
 				}
 	        }
 	    }
-    }
+	} catch (Exiv2::Error &error) {
 
-    catch (Exiv2::Error &error) {
-		return false;
 	}
 
 	ImageMetadata imageMetadata;
-
 	if (tags.size()) {
 		imageMetadata.tags = tags;
 	}

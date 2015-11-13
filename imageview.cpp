@@ -134,7 +134,7 @@ void ImageView::resizeImage()
 	QSize imgSize = isAnimation? anim->currentPixmap().size() : imageLabel->pixmap()->size();
 
 	if (tempDisableResize) {
-		imgSize.scale(calcZoom(imgSize.width()), calcZoom(imgSize.height()), Qt::KeepAspectRatio);
+		imgSize.scale(imgSize.width(), imgSize.height(), Qt::KeepAspectRatio);
 	} else {
 		switch(GData::zoomInFlags) {
 			case Disable:

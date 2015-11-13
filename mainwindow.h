@@ -296,7 +296,7 @@ private:
 	QWidget *tagsDockEmptyWidget;
 	QWidget *iiDockEmptyWidget;
 	QWidget *pvDockEmptyWidget;
-	QVBoxLayout *imageViewContainer;
+	QVBoxLayout *imageViewLayout;
 	bool interfaceDisabled;
 	MetadataCache *mdCache;
 

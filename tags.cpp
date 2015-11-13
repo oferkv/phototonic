@@ -30,12 +30,13 @@ ImageTags::ImageTags(QWidget *parent, ThumbView *thumbView, MetadataCache *mdCac
 	tagsTree->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	this->thumbView = thumbView;
 	this->mdCache = mdCache;
+	negateFilterEnabled = false;
 
 	tabs = new QTabBar(this);
-	tabs->addTab("Set Tags");
-  	tabs->addTab("Filter");
-  	tabs->setTabIcon(0, QIcon(":/images/tag_blue.png"));
-  	tabs->setTabIcon(1, QIcon(":/images/filter_off.png"));
+	tabs->addTab(tr("Image Tags"));
+  	tabs->addTab(tr("Filter"));
+  	tabs->setTabIcon(0, QIcon(":/images/tag_yellow.png"));
+  	tabs->setTabIcon(1, QIcon(":/images/tag_filter_off.png"));
 	connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(tabsChanged(int)));
 
 	QVBoxLayout *mainLayout = new QVBoxLayout;
@@ -70,8 +71,12 @@ ImageTags::ImageTags(QWidget *parent, ThumbView *thumbView, MetadataCache *mdCac
 	removeTagAction->setIcon(QIcon::fromTheme("edit-delete", QIcon(":/images/delete.png")));
 
 	clearTagsFilterAction = new QAction(tr("Clear Filters"), this);
-	clearTagsFilterAction->setIcon(QIcon::fromTheme("edit-clear"));
+	clearTagsFilterAction->setIcon(QIcon(":/images/tag_filter_off.png"));
 	connect(clearTagsFilterAction, SIGNAL(triggered()), this, SLOT(clearTagFilters()));
+
+	negateAction = new QAction(tr("Negate"), this);
+	negateAction->setCheckable(true);
+	connect(negateAction, SIGNAL(triggered()), this, SLOT(negateFilter()));
 
 	tagsMenu = new QMenu("");
 	tagsMenu->addAction(addToSelectionAction);
@@ -81,6 +86,7 @@ ImageTags::ImageTags(QWidget *parent, ThumbView *thumbView, MetadataCache *mdCac
 	tagsMenu->addAction(removeTagAction);
 	tagsMenu->addSeparator();
 	tagsMenu->addAction(clearTagsFilterAction);
+	tagsMenu->addAction(negateAction);
 }
 
 void ImageTags::redrawTree()
@@ -98,15 +104,28 @@ void ImageTags::showMenu(QPoint pt)
     tagsMenu->popup(tagsTree->viewport()->mapToGlobal(pt));
 }
 
-void ImageTags::setTagIcon(QTreeWidgetItem *tagItem, Qt::CheckState status)
+void ImageTags::setTagIcon(QTreeWidgetItem *tagItem, TagIcons icon)
 {
-	if (status == Qt::Unchecked) {
-	  	tagItem->setIcon(0, QIcon(":/images/tag_grey.png"));
-  	} else if (status == Qt::Checked) {
-	  	tagItem->setIcon(0, QIcon(":/images/tag_yellow.png"));
-  	} else {
-		tagItem->setIcon(0, QIcon(":/images/tag_multi.png"));
-  	}
+	switch (icon) {
+		case TagIconDisabled:
+		  	tagItem->setIcon(0, QIcon(":/images/tag_grey.png"));
+		  	break;
+		case TagIconEnabled:
+		  	tagItem->setIcon(0, QIcon(":/images/tag_yellow.png"));
+		  	break;
+		case TagIconMultiple:
+			tagItem->setIcon(0, QIcon(":/images/tag_multi.png"));
+		  	break;
+		case TagIconFilterEnabled:
+			tagItem->setIcon(0, QIcon(":/images/tag_filter_on.png"));
+		  	break;
+		case TagIconFilterDisabled:
+			tagItem->setIcon(0, QIcon(":/images/tag_filter_off.png"));
+		  	break;
+		case TagIconFilterNegate:
+			tagItem->setIcon(0, QIcon(":/images/tag_filter_negate.png"));
+		  	break;
+	}
 }
 
 void ImageTags::addTag(QString tagName, bool tagChecked)
@@ -115,7 +134,7 @@ void ImageTags::addTag(QString tagName, bool tagChecked)
 
     tagItem->setText(0, tagName);
 	tagItem->setCheckState(0, tagChecked? Qt::Checked : Qt::Unchecked);
-	setTagIcon(tagItem, tagChecked? Qt::Checked : Qt::Unchecked);
+	setTagIcon(tagItem, tagChecked? TagIconEnabled : TagIconDisabled);
 	tagsTree->addTopLevelItem(tagItem);
 }
 
@@ -197,23 +216,24 @@ void ImageTags::showSelectedImagesTags()
         if (selectedThumbsNum == 0) {
         	(*it)->setCheckState(0, Qt::Unchecked);
         	(*it)->setFlags((*it)->flags() & ~Qt::ItemIsUserCheckable);
-        	setTagIcon(*it, Qt::Unchecked);
+        	setTagIcon(*it, TagIconDisabled);
 		} else if (tagCountTotal ==  selectedThumbsNum) {
         	(*it)->setCheckState(0, Qt::Checked);
 			(*it)->setFlags((*it)->flags() | Qt::ItemIsUserCheckable);
-        	setTagIcon(*it, Qt::Checked);
+        	setTagIcon(*it, TagIconEnabled);
        	} else if (tagCountTotal) {
 			(*it)->setCheckState(0, Qt::PartiallyChecked);
 			(*it)->setFlags((*it)->flags() | Qt::ItemIsUserCheckable);
-        	setTagIcon(*it, Qt::PartiallyChecked);
+        	setTagIcon(*it, TagIconMultiple);
 		} else {
         	(*it)->setCheckState(0, Qt::Unchecked);
 			(*it)->setFlags((*it)->flags() | Qt::ItemIsUserCheckable);
-        	setTagIcon(*it, Qt::Unchecked);
+        	setTagIcon(*it, TagIconDisabled);
 		}
         ++it;
     }
 
+   	tabs->setTabIcon(0, selectedThumbsNum? QIcon(":/images/tag_yellow.png") : QIcon(":/images/tag_grey.png"));
 	addToSelectionAction->setEnabled(selectedThumbsNum? true : false);
 	removeFromSelectionAction->setEnabled(selectedThumbsNum? true : false);
 
@@ -237,10 +257,10 @@ void ImageTags::showTagsFilter()
 		(*it)->setFlags((*it)->flags() | Qt::ItemIsUserCheckable);
         if (imageFilteringTags.contains(tagName)) {
         	(*it)->setCheckState(0, Qt::Checked);
-        	setTagIcon(*it, Qt::Checked);
+        	setTagIcon(*it, negateFilterEnabled? TagIconFilterNegate : TagIconFilterEnabled);
 		} else {
         	(*it)->setCheckState(0, Qt::Unchecked);
-        	setTagIcon(*it, Qt::Unchecked);
+        	setTagIcon(*it, TagIconFilterDisabled);
        	} 
         ++it;
     }
@@ -269,21 +289,21 @@ void ImageTags::setActiveViewMode(TagsDisplayMode mode)
 	addToSelectionAction->setVisible(currentDisplayMode == SelectionTagsDisplay);
 	removeFromSelectionAction->setVisible(currentDisplayMode == SelectionTagsDisplay);
 	clearTagsFilterAction->setVisible(currentDisplayMode == FolderTagsDisplay);
+	negateAction->setVisible(currentDisplayMode == FolderTagsDisplay);
 }
 
 bool ImageTags::isImageFilteredOut(QString imageFileName)
 {
 	QSet<QString> imageTags = mdCache->getImageTags(imageFileName);
 
-	QSetIterator<QString> folderCheckedTagsIt(imageFilteringTags);
-	while (folderCheckedTagsIt.hasNext()) {
-		QString checkedTag = folderCheckedTagsIt.next();
-	    if (imageTags.contains(checkedTag)) {
-			return false;
+	QSetIterator<QString> filteredTagsIt(imageFilteringTags);
+	while (filteredTagsIt.hasNext()) {
+	    if (imageTags.contains(filteredTagsIt.next())) {
+			return negateFilterEnabled? true : false;
 		}
 	}
 
-	return true;
+	return negateFilterEnabled? false : true;
 }
 
 void ImageTags::resetTagsState()
@@ -292,14 +312,15 @@ void ImageTags::resetTagsState()
 	mdCache->clear();
 }
 
-QSet<QString> ImageTags::getCheckedTags()
+QSet<QString> ImageTags::getCheckedTags(Qt::CheckState tagState)
 {
 	QSet<QString> checkedTags;
-
     QTreeWidgetItemIterator it(tagsTree);
+
     while (*it) {
-        if ((*it)->checkState(0))
+        if ((*it)->checkState(0) == tagState) {
 	        checkedTags.insert((*it)->text(0));
+        }
         ++it;
     }
 
@@ -308,13 +329,17 @@ QSet<QString> ImageTags::getCheckedTags()
 
 void ImageTags::applyTagFiltering()
 {
-	imageFilteringTags = getCheckedTags();
+	imageFilteringTags = getCheckedTags(Qt::Checked);
 	if (imageFilteringTags.size()) {
 		folderFilteringActive = true;
-	 	tabs->setTabIcon(1, QIcon(":/images/filter_on.png"));
+		if (negateFilterEnabled) {
+		 	tabs->setTabIcon(1, QIcon(":/images/tag_filter_negate.png"));
+	 	} else {
+		 	tabs->setTabIcon(1, QIcon(":/images/tag_filter_on.png"));
+	 	}
 	} else {
 		folderFilteringActive = false;
-	 	tabs->setTabIcon(1, QIcon(":/images/filter_off.png"));
+	 	tabs->setTabIcon(1, QIcon(":/images/tag_filter_off.png"));
 	}
 	
 	emit reloadThumbs();
@@ -339,7 +364,7 @@ void ImageTags::applyUserAction(QList<QTreeWidgetItem *> tagsList)
 		QString imageName = currentSelectedImages[i]; 
 		for (int i = tagsList.size() - 1; i > -1; --i) {
 			Qt::CheckState tagState = tagsList.at(i)->checkState(0);
-			setTagIcon(tagsList.at(i), tagState);
+			setTagIcon(tagsList.at(i), (tagState == Qt::Checked? TagIconEnabled : TagIconDisabled));
 			QString tagName = tagsList.at(i)->text(0);
 
 			if (tagState == Qt::Checked) {
@@ -388,10 +413,7 @@ void ImageTags::tagClicked(QTreeWidgetItem *item, int)
 {
 	if (item == lastChangedTagItem) {
 		if (currentDisplayMode == FolderTagsDisplay) {
-
-			if (imageFilteringTags.size() != getCheckedTags().size()) {
-				applyTagFiltering();
-			}
+			applyTagFiltering();
 		} else {
 			applyUserAction(item);
 		}
@@ -426,6 +448,12 @@ void ImageTags::clearTagFilters()
     }
 
 	imageFilteringTags.clear();
+	applyTagFiltering();
+}
+
+void ImageTags::negateFilter()
+{	
+	negateFilterEnabled = negateAction->isChecked();
 	applyTagFiltering();
 }
 
@@ -467,7 +495,6 @@ void ImageTags::removeTag()
 	}
 
 	QMessageBox msgBox;
-
 	msgBox.setText(tr("Remove selected tags(s)?"));
 	msgBox.setWindowTitle(tr("Remove tag"));
 	msgBox.setIcon(QMessageBox::Warning);

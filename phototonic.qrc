@@ -45,9 +45,9 @@
 		<file>images/tag_multi.png</file>
 		<file>images/tag_yellow.png</file>
 		<file>images/new_tag.png</file>
-		<file>images/tag_blue.png</file>
-		<file>images/filter_on.png</file>
-		<file>images/filter_off.png</file>
+		<file>images/tag_filter_on.png</file>
+		<file>images/tag_filter_negate.png</file>
+		<file>images/tag_filter_off.png</file>
 		<file>images/busy.gif</file>
 		<file>images/duplicates.png</file>
 		<file>translations/phototonic_pl.qm</file>

@@ -32,6 +32,16 @@ enum TagsDisplayMode
 	SelectionTagsDisplay
 };
 
+enum TagIcons
+{
+	TagIconDisabled,
+	TagIconEnabled,
+	TagIconMultiple,
+	TagIconFilterDisabled,
+	TagIconFilterEnabled,
+	TagIconFilterNegate
+};
+
 class ImageTags : public QWidget
 {
 	Q_OBJECT
@@ -56,8 +66,8 @@ public:
 private:
 	void readImageFileTags(QSet<QString> &tags, const QString &imageFullPath);
 	bool writeTagsToImage(QString &imageFileName, QSet<QString> &tags);
-	QSet<QString> getCheckedTags();
-	void setTagIcon(QTreeWidgetItem *tagItem, Qt::CheckState status);
+	QSet<QString> getCheckedTags(Qt::CheckState tagState);
+	void setTagIcon(QTreeWidgetItem *tagItem, TagIcons icon);
 	void setActiveViewMode(TagsDisplayMode mode);
 	void applyUserAction(QTreeWidgetItem *item);
 	void applyUserAction(QList<QTreeWidgetItem *> tagsList);
@@ -68,10 +78,12 @@ private:
 	QAction *addToSelectionAction;
 	QAction *removeFromSelectionAction;
 	QAction *clearTagsFilterAction;
+	QAction *negateAction;
 	QTreeWidgetItem *lastChangedTagItem;
 	ThumbView *thumbView;
 	QTabBar *tabs;
-	MetadataCache *mdCache;	
+	MetadataCache *mdCache;
+	bool negateFilterEnabled;
 
 private slots:
 	void tagClicked(QTreeWidgetItem *item, int column);
@@ -81,6 +93,7 @@ private slots:
 	void addNewTag();
 	void addTagsToSelection();
 	void clearTagFilters();
+	void negateFilter();
 	void removeTagsFromSelection();
 	void tabsChanged(int index);
 

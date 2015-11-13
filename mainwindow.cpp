@@ -26,6 +26,7 @@
 Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 {
 	GData::appSettings = new QSettings("phototonic", "phototonic_103");
+	setDockOptions(QMainWindow::AllowNestedDocks);
 	readSettings();
 	createThumbView();
 	createActions();
@@ -40,20 +41,12 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	loadShortcuts();
 	setupDocks();
 
-	connect(qApp, SIGNAL(focusChanged(QWidget*, QWidget*)), 
-				this, SLOT(updateActions()));
+	connect(qApp, SIGNAL(focusChanged(QWidget*, QWidget*)), this, SLOT(updateActions()));
 
 	restoreGeometry(GData::appSettings->value("Geometry").toByteArray());
 	restoreState(GData::appSettings->value("WindowState").toByteArray());
 	setWindowIcon(QIcon(":/images/phototonic.png"));
-
-	mainLayout = new QHBoxLayout;
-	mainLayout->setContentsMargins(0, 0, 0, 0);
-	mainLayout->setSpacing(0);
-	mainLayout->addWidget(thumbView);
-	QWidget *centralWidget = new QWidget;
-	centralWidget->setLayout(mainLayout);
-	setCentralWidget(centralWidget);
+	setCentralWidget(thumbView);
 
 	handleStartupArgs();
 
@@ -896,7 +889,6 @@ void Phototonic::createFSTree()
 {
 	fsDock = new QDockWidget(tr("File System"), this);
 	fsDock->setObjectName("File System");
-
 	fsTree = new FSTree(fsDock);
 	fsDock->setWidget(fsTree);
 	connect(fsDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setFsDockVisibility()));	
@@ -1053,7 +1045,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.6.29</h2>"
+	QString aboutString = "<h2>Phototonic v1.7.1</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -1439,10 +1431,11 @@ void Phototonic::origZoom()
 void Phototonic::keepZoom()
 {
 	GData::keepZoomFactor = keepZoomAct->isChecked();
-	if (GData::keepZoomFactor)
+	if (GData::keepZoomFactor) {
 		imageView->setFeedback(tr("Zoom Locked"));
-	else
+	} else {
 		imageView->setFeedback(tr("Zoom Unlocked"));
+	}
 }
 
 void Phototonic::keepTransformClicked()
@@ -2227,11 +2220,11 @@ void Phototonic::setupDocks()
 	pvDock = new QDockWidget(tr("Viewer"), this);
 	pvDock->setObjectName("Viewer");
 
-	imageViewContainer = new QVBoxLayout;
-	imageViewContainer->setContentsMargins(0, 0, 0, 0);
-	imageViewContainer->addWidget(imageView);
+	imageViewLayout = new QVBoxLayout;
+	imageViewLayout->setContentsMargins(0, 0, 0, 0);
+	imageViewLayout->addWidget(imageView);
 	QWidget *imageViewContainerWidget = new QWidget;
-	imageViewContainerWidget->setLayout(imageViewContainer);
+	imageViewContainerWidget->setLayout(imageViewLayout);
 	
 	pvDock->setWidget(imageViewContainerWidget);
 	connect(pvDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setPvDockVisibility()));	
@@ -2525,19 +2518,6 @@ void Phototonic::newImage()
 
 void Phototonic::setDocksVisibility(bool visible)
 {
-	if (!visible) {
-		fsDock->setMaximumHeight(fsDock->height());
-		bmDock->setMaximumHeight(bmDock->height());
-		tagsDock->setMaximumHeight(tagsDock->height());
-		iiDock->setMaximumHeight(iiDock->height());
-		pvDock->setMaximumHeight(pvDock->height());
-		fsDock->setMaximumWidth(fsDock->width());
-		bmDock->setMaximumWidth(bmDock->width());
-		tagsDock->setMaximumWidth(tagsDock->width());
-		iiDock->setMaximumWidth(iiDock->width());
-		pvDock->setMaximumWidth(pvDock->width());
-	}
-
 	fsDock->setVisible(visible? GData::fsDockVisible : false);
 	bmDock->setVisible(visible? GData::bmDockVisible : false);
 	tagsDock->setVisible(visible? GData::tagsDockVisible : false);
@@ -2657,10 +2637,10 @@ void Phototonic::showViewer()
 		GData::appSettings->setValue("Geometry", saveGeometry());
 		GData::appSettings->setValue("WindowState", saveState());
 
-		imageViewContainer->removeWidget(imageView);
-		mainLayout->addWidget(imageView);
+		imageViewLayout->removeWidget(imageView);
 		imageView->setVisible(true);
-		thumbView->setVisible(false);
+		takeCentralWidget();
+		setCentralWidget(imageView);
 		setDocksVisibility(false);
 		if (GData::isFullScreen == true) {
 			shouldMaximize = isMaximized();
@@ -2925,12 +2905,12 @@ void Phototonic::hideViewer()
 		imageView->setCursorHiding(false);
 	}
 
-	QApplication::processEvents();
-
 	GData::layoutMode = thumbViewIdx;
-	mainLayout->removeWidget(imageView);
+	takeCentralWidget();
+	setCentralWidget(thumbView);
+	imageViewLayout->addWidget(imageView);
+	QApplication::processEvents();
 	
-	imageViewContainer->addWidget(imageView);
 	setDocksVisibility(true);
 	while (QApplication::overrideCursor()) {
 		QApplication::restoreOverrideCursor();
@@ -2941,30 +2921,16 @@ void Phototonic::hideViewer()
 	}
 
 	thumbView->setResizeMode(QListView::Fixed);
-	thumbView->setVisible(true);
 	for (int i = 0; i <= 100 && qApp->hasPendingEvents(); ++i) {
 		QApplication::processEvents();
 	}
 	setThumbviewWindowTitle();
 
-	fsDock->setMaximumHeight(QWIDGETSIZE_MAX);
-	bmDock->setMaximumHeight(QWIDGETSIZE_MAX);
-	tagsDock->setMaximumHeight(QWIDGETSIZE_MAX);
-	iiDock->setMaximumHeight(QWIDGETSIZE_MAX);
-	pvDock->setMaximumHeight(QWIDGETSIZE_MAX);
-	fsDock->setMaximumWidth(QWIDGETSIZE_MAX);
-	bmDock->setMaximumWidth(QWIDGETSIZE_MAX);
-	tagsDock->setMaximumWidth(QWIDGETSIZE_MAX);
-	iiDock->setMaximumWidth(QWIDGETSIZE_MAX);
-	pvDock->setMaximumWidth(QWIDGETSIZE_MAX);
-
 	if (!cliFileName.isEmpty()) {
 		cliFileName = "";
-		if (!shouldMaximize) {
-			restoreGeometry(GData::appSettings->value("Geometry").toByteArray());
-		}
-		restoreState(GData::appSettings->value("WindowState").toByteArray());
 	}
+	restoreGeometry(GData::appSettings->value("Geometry").toByteArray());
+	restoreState(GData::appSettings->value("WindowState").toByteArray());
 
 	if (thumbView->thumbViewModel->rowCount() > 0) {
 		if (thumbView->setCurrentIndexByName(imageView->currentImageFullPath))
