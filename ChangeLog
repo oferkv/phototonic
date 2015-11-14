@@ -1,4 +1,34 @@
-commit 9b51c8857782a428c2c24d0685d09e986d08c3d2 (HEAD -> master, origin/master, origin/HEAD)
+commit 6fc85f96e081386c7d668f2db967f9c4c683852a (HEAD -> master, origin/master, origin/HEAD)
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Sat Nov 14 12:21:48 2015 +0200
+
+    Added better CLI arguments processing and option to select language from CLI
+
+commit b59d703aa3958c4c11f878a3f6b74a262678bade
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Sat Nov 14 10:17:50 2015 +0200
+
+    Czech translation update and Arch packagebuild.
+
+commit c3737334746d0bae2369b23d982ade5a981dcdd7
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Fri Nov 13 19:15:20 2015 +0200
+
+    Many changes, listed below:
+    - Changes to layout switching method, cleaned up messy code that toggles between viewer and thumbnails
+    - Fixed critical issue with tags, if exif data was missing, tags were not read correctly ebcause iptc data was ignored
+    - Added Negate option to reverse the tags filter actione
+    - Allowing now nested docks
+    - Enhancments to tags user experience
+    - Updated image tags icons
+
+commit c37070e4a068570d34ece8de1e48aa0882c80c5b (tag: v1.7)
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Sun Nov 8 20:03:52 2015 +0200
+
+    Update Czech translation
+
+commit 9b51c8857782a428c2c24d0685d09e986d08c3d2
 Author: Ofer Kashayov <oferkv@gmail.com>
 Date:   Sun Nov 8 19:55:16 2015 +0200
 
