@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2013-2014 Ofer Kashayov <oferkv@live.com>
+ *  Copyright (C) 2013-2015 Ofer Kashayov <oferkv@live.com>
  *  This file is part of Phototonic Image Viewer.
  *
  *  Phototonic is free software: you can redistribute it and/or modify
@@ -17,28 +17,55 @@
  */
 
 #include "mainwindow.h"
+#include <ostream>
 #include <QApplication>
+
+static void showHelp()
+{
+	std::cout << VERSION << ", image viewer and organizer." << std::endl;
+	std::cout << "Usage: phototonic [OPTION...] [FILE | DIRECTORY]" << std::endl << std::endl;
+	std::cout << "  -h, --help\t\t\tshow this help" << std::endl;
+	std::cout << "  -l, --lang=LANGUAGE\t\tuse a specific language" << std::endl;
+ 	std::cout << std::endl << "Report bugs to oferkv@gmail.com" << std::endl;
+}
 
 int main(int argc, char *argv[])
 {
     QApplication QApp(argc, argv);
-   	if (QCoreApplication::arguments().size() > 2)
-   	{
-		qDebug() << QObject::tr("Usage: phototonic [FILE or DIRECTORY]...");
-   		return -1;
+	QStringList args = QCoreApplication::arguments();
+	QString fileOrDirectory, language;
+
+	if (args.size() == 2) {
+		if (args.at(1)[0] == '-') {
+			showHelp();
+	   		return -1;
+		}
+		fileOrDirectory	= args.at(1);
+	} else if (args.size() == 3 || args.size() == 4) {
+		if ((args.at(1) != "-l" && args.at(1) != "--lang")) {
+			showHelp();
+	   		return -1;
+		}
+		language = args.at(2);
+
+		if (args.size() == 4) {
+			fileOrDirectory = args.at(3);
+		}
+	}
+
+	if (!language.size()) {
+		language = QLocale::system().name();
 	}
 
 	QTranslator qtTranslator;
-
-	qtTranslator.load("qt_" + QLocale::system().name(),
-					QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+	qtTranslator.load("qt_" + language, 	QLibraryInfo::location(QLibraryInfo::TranslationsPath));
 	QApp.installTranslator(&qtTranslator);
 
 	QTranslator phototonicTranslator;
-	phototonicTranslator.load(":/translations/phototonic_" + QLocale::system().name());
+	phototonicTranslator.load(":/translations/phototonic_" + language);
 	QApp.installTranslator(&phototonicTranslator);
 
-    Phototonic phototonic;
+    Phototonic phototonic(fileOrDirectory);
     phototonic.show();
     return QApp.exec();
 }

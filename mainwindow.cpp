@@ -23,7 +23,7 @@
 #define THUMB_SIZE_MIN	50
 #define THUMB_SIZE_MAX	300
 
-Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
+Phototonic::Phototonic(QString fileOrDirectory, QWidget *parent) : QMainWindow(parent)
 {
 	GData::appSettings = new QSettings("phototonic", "phototonic_103");
 	setDockOptions(QMainWindow::AllowNestedDocks);
@@ -48,7 +48,7 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	setWindowIcon(QIcon(":/images/phototonic.png"));
 	setCentralWidget(thumbView);
 
-	handleStartupArgs();
+	handleStartupArgs(fileOrDirectory);
 
 	copyMoveToDialog = 0;
 	colorsDialog = 0;
@@ -68,31 +68,26 @@ Phototonic::Phototonic(QWidget *parent) : QMainWindow(parent)
 	}
 }
 
-void Phototonic::handleStartupArgs()
+void Phototonic::handleStartupArgs(QString fileOrDirectory)
 {
 	cliImageLoaded = false;
-	if (QCoreApplication::arguments().size() == 2)
-	{
-		QFileInfo cliArg(QCoreApplication::arguments().at(1));
-		if (cliArg.isDir())
-		{
-			GData::currentViewDir = QCoreApplication::arguments().at(1);
+	if (fileOrDirectory.size()) {
+		QFileInfo cliFileOrDir(fileOrDirectory);
+		if (cliFileOrDir.isDir()) {
+			GData::currentViewDir = fileOrDirectory;
 			cliImageLoaded = false;
-		}
-		else
-		{
-			GData::currentViewDir = cliArg.absolutePath();
-			cliFileName = GData::currentViewDir + QDir::separator() + cliArg.fileName();
+		} else {
+			GData::currentViewDir = cliFileOrDir.absolutePath();
+			cliFileName = GData::currentViewDir + QDir::separator() + cliFileOrDir.fileName();
 			cliImageLoaded = true;
 			loadImagefromCli();
 		}
-	}
-	else
-	{
-		if (GData::startupDir == GData::specifiedDir)
+	} else {
+		if (GData::startupDir == GData::specifiedDir) {
 			GData::currentViewDir = GData::specifiedStartDir;
-		else if (GData::startupDir == GData::rememberLastDir)
+		} else if (GData::startupDir == GData::rememberLastDir) {
 			GData::currentViewDir = GData::appSettings->value("lastDir").toString();
+		}
 	}
 	selectCurrentViewDir();
 }
@@ -1045,7 +1040,7 @@ void Phototonic::showLabels()
 
 void Phototonic::about()
 {
-	QString aboutString = "<h2>Phototonic v1.7.1</h2>"
+	QString aboutString = "<h2>" + QString(VERSION) + "</h2>"
 		+ tr("<p>Image viewer and organizer</p>")
 		+ "Qt v" + QT_VERSION_STR
 		+ "<p><a href=\"http://oferkv.github.io/phototonic/\">" + tr("Home page") + "</a></p>"
@@ -2704,7 +2699,7 @@ void Phototonic::loadImagefromCli()
 	QFile imageFile(cliFileName);
 	if(!imageFile.exists()) {
 		QMessageBox msgBox;
-		msgBox.critical(this, tr("Error"), tr("Failed to open file \"%1\": file not found.").arg(cliFileName));
+		msgBox.critical(this, tr("Error"), tr("Failed to open file \"%1\", file not found.").arg(cliFileName));
 		cliFileName = "";
 		return;
 	}

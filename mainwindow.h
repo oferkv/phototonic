@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2013 Ofer Kashayov <oferkv@live.com>
+ *  Copyright (C) 2013-2015 Ofer Kashayov <oferkv@live.com>
  *  This file is part of Phototonic Image Viewer.
  *
  *  Phototonic is free software: you can redistribute it and/or modify
@@ -24,12 +24,14 @@
 #include "imageview.h"
 #include "dialogs.h"
 
+#define VERSION "Phototonic v1.7.1"
+
 class Phototonic : public QMainWindow
 {
 	Q_OBJECT
 
 public:
-	Phototonic(QWidget *parent = 0);
+	Phototonic(QString fileOrDirectory, QWidget *parent = 0);
 	QMenu *createPopupMenu();
 	
 	int copyCutCount;
@@ -330,7 +332,7 @@ private:
 	void deleteViewerImage();
 	void loadCurrentImage(int currentRow);
 	void selectCurrentViewDir();
-	void handleStartupArgs();
+	void handleStartupArgs(QString fileOrDirectory);
 	void addMenuSeparator(QWidget *widget);
 	void createImageView();
 	void createThumbView();
