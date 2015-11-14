@@ -325,12 +325,12 @@
     <message>
         <location filename="../tags.cpp" line="36"/>
         <source>Image Tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Značky obrázků</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="37"/>
         <source>Filter</source>
-        <translation type="unfinished">Filtr</translation>
+        <translation>Filtrovat</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="70"/>
@@ -340,7 +340,7 @@
     <message>
         <location filename="../tags.cpp" line="77"/>
         <source>Negate</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyloučit</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="179"/>
@@ -899,12 +899,12 @@
     <message>
         <location filename="../mainwindow.cpp" line="1388"/>
         <source>Minimum zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>Nejmenší zvětšení</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1406"/>
         <source>Maximum zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>Největší zvětšení</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1463"/>
