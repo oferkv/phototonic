@@ -208,6 +208,7 @@ void ImageTags::showSelectedImagesTags()
 		}
 	}
 
+	bool imagesTagged = false, imagesTaggedMixed = false;
 	QTreeWidgetItemIterator it(tagsTree);
     while (*it) {
     	QString tagName = (*it)->text(0);
@@ -221,10 +222,12 @@ void ImageTags::showSelectedImagesTags()
         	(*it)->setCheckState(0, Qt::Checked);
 			(*it)->setFlags((*it)->flags() | Qt::ItemIsUserCheckable);
         	setTagIcon(*it, TagIconEnabled);
+        	imagesTagged = true;
        	} else if (tagCountTotal) {
 			(*it)->setCheckState(0, Qt::PartiallyChecked);
 			(*it)->setFlags((*it)->flags() | Qt::ItemIsUserCheckable);
         	setTagIcon(*it, TagIconMultiple);
+        	imagesTaggedMixed = true;
 		} else {
         	(*it)->setCheckState(0, Qt::Unchecked);
 			(*it)->setFlags((*it)->flags() | Qt::ItemIsUserCheckable);
@@ -233,7 +236,14 @@ void ImageTags::showSelectedImagesTags()
         ++it;
     }
 
-   	tabs->setTabIcon(0, selectedThumbsNum? QIcon(":/images/tag_yellow.png") : QIcon(":/images/tag_grey.png"));
+	if (imagesTagged) {
+	   	tabs->setTabIcon(0, QIcon(":/images/tag_yellow.png"));	
+	} else if (imagesTaggedMixed) {
+	   	tabs->setTabIcon(0, QIcon(":/images/tag_multi.png"));	
+	} else {
+	   	tabs->setTabIcon(0, QIcon(":/images/tag_grey.png"));	
+	}
+
 	addToSelectionAction->setEnabled(selectedThumbsNum? true : false);
 	removeFromSelectionAction->setEnabled(selectedThumbsNum? true : false);
 

@@ -417,7 +417,7 @@ void Phototonic::createActions()
 	actSmallIcons->setChecked(GData::smallIcons);
 	connect(actSmallIcons, SIGNAL(triggered()), this, SLOT(setToolbarIconSize()));
 
-	actLockDocks = new QAction(tr("Hide Docks Title Bar"), this);
+	actLockDocks = new QAction(tr("Hide Dock Title Bars"), this);
 	actLockDocks->setObjectName("lockDocks");
 	actLockDocks->setCheckable(true);
 	actLockDocks->setChecked(GData::LockDocks);
