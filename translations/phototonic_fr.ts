@@ -313,12 +313,12 @@
     <message>
         <location filename="../tags.cpp" line="36"/>
         <source>Image Tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Tag de l&apos;image</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="37"/>
         <source>Filter</source>
-        <translation type="unfinished">Filtre</translation>
+        <translation>Filtre</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="70"/>
@@ -328,7 +328,7 @@
     <message>
         <location filename="../tags.cpp" line="77"/>
         <source>Negate</source>
-        <translation type="unfinished"></translation>
+        <translation>Annuler</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="179"/>
@@ -912,12 +912,12 @@
     <message>
         <location filename="../mainwindow.cpp" line="1388"/>
         <source>Minimum zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom minimum</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1406"/>
         <source>Maximum zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom maximum</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1463"/>
