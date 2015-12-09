@@ -1213,7 +1213,7 @@ void Phototonic::showSettings()
 	
 	SettingsDialog *dialog = new SettingsDialog(this);
 	if (dialog->exec()) {
-		imageView->setPalette(QPalette(GData::backgroundColor));
+		imageView->setBgColor();
 		thumbView->setThumbColors();
 		GData::imageZoomFactor = 1.0;
 		imageView->infoLabel->setVisible(GData::enableImageInfoFS);

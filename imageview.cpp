@@ -38,7 +38,7 @@ ImageView::ImageView(QWidget *parent, MetadataCache *mdCache) : QWidget(parent)
 	imageLabel->setScaledContents(true);
 	isAnimation = false;
 	anim = 0;
-	setPalette(QPalette(GData::backgroundColor));
+	setBgColor();
 
 	QHBoxLayout *mainLayout = new QHBoxLayout();
 	mainLayout->setContentsMargins(0, 0, 0, 0);
@@ -1076,5 +1076,16 @@ void ImageView::pasteImage()
 		origImage = QApplication::clipboard()->image();
 		refresh();
 	}
+}
+
+void ImageView::setBgColor()
+{
+	QString bgColor = "background: rgb(%1, %2, %3); ";
+	bgColor = bgColor.arg(GData::backgroundColor.red())
+						.arg(GData::backgroundColor.green())
+						.arg(GData::backgroundColor.blue());
+
+	QString ss = "QWidget { " + bgColor + " background-attachment: fixed; }";
+	setStyleSheet(ss);
 }
 

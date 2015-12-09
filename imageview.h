@@ -76,6 +76,7 @@ public:
 	void rotateByExifRotation(QImage &image, QString &imageFullPath);
 	void setInfo(QString infoString);
 	void setFeedback(QString feedbackString);
+	void setBgColor();
 
 public slots:
 	void monitorCursorState();
