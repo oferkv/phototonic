@@ -38,7 +38,6 @@ ImageView::ImageView(QWidget *parent, MetadataCache *mdCache) : QWidget(parent)
 	imageLabel->setScaledContents(true);
 	isAnimation = false;
 	anim = 0;
-	setBgColor();
 
 	QHBoxLayout *mainLayout = new QHBoxLayout();
 	mainLayout->setContentsMargins(0, 0, 0, 0);
@@ -55,6 +54,7 @@ ImageView::ImageView(QWidget *parent, MetadataCache *mdCache) : QWidget(parent)
 	scrlArea->setFrameStyle(0);
 	scrlArea->setLayout(mainLayout);
 	scrlArea->setWidgetResizable(true);
+	setBgColor();
 
 	QVBoxLayout *scrollLayout = new QVBoxLayout;
 	scrollLayout->setContentsMargins(0, 0, 0, 0);
@@ -1085,7 +1085,7 @@ void ImageView::setBgColor()
 						.arg(GData::backgroundColor.green())
 						.arg(GData::backgroundColor.blue());
 
-	QString ss = "QWidget { " + bgColor + " background-attachment: fixed; }";
-	setStyleSheet(ss);
+	QString ss = "QWidget { " + bgColor + " }";
+	scrlArea->setStyleSheet(ss);
 }
 
