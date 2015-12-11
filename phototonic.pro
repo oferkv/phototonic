@@ -4,10 +4,10 @@ INCLUDEPATH += .
 INCLUDEPATH += /usr/local/include
 LIBS += -L/usr/local/lib -lexiv2
 QT += widgets
-
 QMAKE_CXXFLAGS += $$(CXXFLAGS)
 QMAKE_CFLAGS += $$(CFLAGS)
 QMAKE_LFLAGS += $$(LDFLAGS)
+DEFINES += _GLIBCXX_USE_CXX11_ABI
 
 # Input
 HEADERS += dialogs.h mainwindow.h thumbview.h imageview.h croprubberband.h global.h infoview.h \
