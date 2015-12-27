@@ -99,7 +99,7 @@
         <location filename="../dialogs.cpp" line="1046"/>
         <location filename="../dialogs.cpp" line="1050"/>
         <source>Negative</source>
-        <translation type="unfinished"></translation>
+        <translation>Negativ</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="1069"/>
@@ -293,109 +293,109 @@
     <message>
         <location filename="../tags.cpp" line="59"/>
         <source>Tag</source>
-        <translation type="unfinished"></translation>
+        <translation>Tag</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="63"/>
         <source>Untag</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Untag</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="73"/>
         <source>Clear Filters</source>
-        <translation type="unfinished"></translation>
+        <translation>Filter zurücksetzen</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="66"/>
         <source>New Tag</source>
-        <translation type="unfinished"></translation>
+        <translation>Neuer Tag</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="36"/>
         <source>Image Tags</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Image Tags</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="37"/>
         <source>Filter</source>
-        <translation type="unfinished">Filter</translation>
+        <translation>Filter</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="70"/>
         <source>Remove Tag</source>
-        <translation type="unfinished"></translation>
+        <translation>Tag entfernen</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="77"/>
         <source>Negate</source>
-        <translation type="unfinished"></translation>
+        <translation>Umkehren</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="179"/>
         <location filename="../tags.cpp" line="482"/>
         <location filename="../tags.cpp" line="491"/>
         <source>Error</source>
-        <translation type="unfinished">Fehler</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="179"/>
         <source>Failed to save tags to </source>
-        <translation type="unfinished"></translation>
+        <translation>Speichern des Tags fehlgeschlagen</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="381"/>
         <source>Tagging </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tagging </translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="384"/>
         <source>Untagging </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Untagging </translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="473"/>
         <source>Add a new tag</source>
-        <translation type="unfinished"></translation>
+        <translation>Neuen Tag hinzufügen</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="474"/>
         <source>Enter new tag name</source>
-        <translation type="unfinished"></translation>
+        <translation>Namen des Tags eingeben</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="482"/>
         <source>No name entered</source>
-        <translation type="unfinished">Kein Name eingegeben</translation>
+        <translation>Kein Name eingegeben</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="491"/>
         <source>Tag </source>
-        <translation type="unfinished"></translation>
+        <translation>Tag</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="491"/>
         <source> already exists</source>
-        <translation type="unfinished"></translation>
+        <translation> existiert bereits</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="508"/>
         <source>Remove selected tags(s)?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgewählte(n) Tag(s) entfernen?</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="509"/>
         <source>Remove tag</source>
-        <translation type="unfinished"></translation>
+        <translation>Tag entfernen</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="514"/>
         <source>Yes</source>
-        <translation type="unfinished">Ja</translation>
+        <translation>Ja</translation>
     </message>
     <message>
         <location filename="../tags.cpp" line="515"/>
         <source>Cancel</source>
-        <translation type="unfinished">Abbrechen</translation>
+        <translation>Abbrechen</translation>
     </message>
 </context>
 <context>
@@ -408,7 +408,7 @@
     <message>
         <location filename="../imageview.cpp" line="780"/>
         <source>Selection size: </source>
-        <translation type="unfinished"></translation>
+        <translation>Größe auswählen:</translation>
     </message>
     <message>
         <location filename="../imageview.cpp" line="828"/>
@@ -599,7 +599,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="420"/>
         <source>Hide Dock Title Bars</source>
-        <translation type="unfinished"></translation>
+        <translation>Dock-Titelleiste verbergen</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="426"/>
@@ -609,7 +609,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="482"/>
         <source>Go Up</source>
-        <translation type="unfinished">Übergeordnetes Verzeichnis</translation>
+        <translation>Nach oben</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="526"/>
@@ -660,17 +660,17 @@
     <message>
         <location filename="../mainwindow.cpp" line="945"/>
         <source>Tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Tags</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1384"/>
         <source>Minimum zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>Kleinster Zoom</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1402"/>
         <source>Maximum zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>Größter Zoom</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1459"/>
@@ -683,7 +683,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="2703"/>
         <source>Failed to open file &quot;%1&quot;, file not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Öffnen der Datei fehlgeschlagen &quot;%1&quot;: Datei wurde nicht gefunden.</translation>
     </message>
     <message>
         <source>Failed to open file &quot;%1&quot;: file not found.</source>
@@ -1681,7 +1681,7 @@
     <message>
         <location filename="../dialogs.cpp" line="1555"/>
         <source>Cancel</source>
-        <translation type="unfinished">Abbrechen</translation>
+        <translation>Abbrechen</translation>
     </message>
 </context>
 <context>
@@ -1780,7 +1780,7 @@
         <location filename="../dialogs.cpp" line="277"/>
         <location filename="../dialogs.cpp" line="294"/>
         <source>By width or height</source>
-        <translation type="unfinished"></translation>
+        <translation>Nach Breite oder Höhe</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="331"/>
@@ -1930,7 +1930,7 @@
     <message>
         <location filename="../dialogs.cpp" line="349"/>
         <source>Show image file name in viewer</source>
-        <translation type="unfinished"></translation>
+        <translation>Dateiname im Betrachter anzeigen</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="395"/>
@@ -1975,7 +1975,7 @@
     <message>
         <location filename="../dialogs.cpp" line="527"/>
         <source>Delete confirmation</source>
-        <translation type="unfinished"></translation>
+        <translation>Löschen bestätigen</translation>
     </message>
     <message>
         <location filename="../dialogs.cpp" line="531"/>
