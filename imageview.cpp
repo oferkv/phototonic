@@ -138,7 +138,7 @@ void ImageView::resizeImage()
 	} else {
 		switch(GData::zoomInFlags) {
 			case Disable:
-				if (imgSize.width() < imageViewWidth && imgSize.height() < imageViewHeight) {
+				if (imgSize.width() <= imageViewWidth && imgSize.height() <= imageViewHeight) {
 					imgSize.scale(	calcZoom(imgSize.width()),
 									calcZoom(imgSize.height()),
 									Qt::KeepAspectRatio);
@@ -146,7 +146,7 @@ void ImageView::resizeImage()
 				break;
 				
 			case WidthNHeight:
-				if (imgSize.width() < imageViewWidth && imgSize.height() < imageViewHeight) {
+				if (imgSize.width() <= imageViewWidth && imgSize.height() <= imageViewHeight) {
 					imgSize.scale(	calcZoom(imageViewWidth),
 									calcZoom(imageViewHeight),
 									Qt::KeepAspectRatio);
@@ -154,7 +154,7 @@ void ImageView::resizeImage()
 				break;
 
 			case Width:
-				if (imgSize.width() < imageViewWidth) {
+				if (imgSize.width() <= imageViewWidth) {
 					imgSize.scale(	calcZoom(imageViewWidth), 
 									calcZoom(getHeightByWidth(	imgSize.width(),
 																imgSize.height(),
@@ -164,7 +164,7 @@ void ImageView::resizeImage()
 				break;
 				
 			case Height:
-				if (imgSize.height() < imageViewHeight) {
+				if (imgSize.height() <= imageViewHeight) {
 					imgSize.scale(	calcZoom(getWidthByHeight(	imgSize.height(), 
 																imgSize.width(),
 																imageViewHeight)),
@@ -175,10 +175,10 @@ void ImageView::resizeImage()
 
 			case Disprop:
 				int newWidth = imgSize.width(), newHeight = imgSize.height();
-				if (newWidth < imageViewWidth) {
+				if (newWidth <= imageViewWidth) {
 					newWidth = imageViewWidth;
 				}
-				if (newHeight < imageViewHeight) {
+				if (newHeight <= imageViewHeight) {
 					newHeight = imageViewHeight;
 				}
 				imgSize.scale(calcZoom(newWidth), calcZoom(newHeight), Qt::IgnoreAspectRatio);
@@ -203,7 +203,7 @@ void ImageView::resizeImage()
 				break;
 
 			case Width:
-				if (imgSize.width() > imageViewWidth) {
+				if (imgSize.width() >= imageViewWidth) {
 					imgSize.scale(	calcZoom(imageViewWidth), 
 									calcZoom(getHeightByWidth(	imgSize.width(), 
 																imgSize.height(), 
@@ -213,7 +213,7 @@ void ImageView::resizeImage()
 				break;
 				
 			case Height:
-				if (imgSize.height() > imageViewHeight) {
+				if (imgSize.height() >= imageViewHeight) {
 					imgSize.scale(	calcZoom(getWidthByHeight(	imgSize.height(),
 																imgSize.width(), 
 																imageViewHeight)),
@@ -224,10 +224,10 @@ void ImageView::resizeImage()
 
 			case Disprop:
 				int newWidth = imgSize.width(), newHeight = imgSize.height();
-				if (newWidth > imageViewWidth) {
+				if (newWidth >= imageViewWidth) {
 					newWidth = imageViewWidth;
 				}
-				if (newHeight > imageViewHeight) {
+				if (newHeight >= imageViewHeight) {
 					newHeight = imageViewHeight;
 				}
 				imgSize.scale(calcZoom(newWidth), calcZoom(newHeight), Qt::IgnoreAspectRatio);

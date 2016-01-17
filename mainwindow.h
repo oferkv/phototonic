@@ -24,7 +24,7 @@
 #include "imageview.h"
 #include "dialogs.h"
 
-#define VERSION "Phototonic v1.7.14"
+#define VERSION "Phototonic v1.7.19"
 
 class Phototonic : public QMainWindow
 {
