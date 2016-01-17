@@ -929,7 +929,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="2703"/>
         <source>Failed to open file &quot;%1&quot;, file not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Échec de l&apos;ouverture du fichier &quot;%1&quot;, fichier introuvable.</translation>
     </message>
     <message>
         <source>Failed to open file &quot;%1&quot;: file not found.</source>
@@ -1281,7 +1281,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="420"/>
         <source>Hide Dock Title Bars</source>
-        <translation type="unfinished"></translation>
+        <translation>Masquer les barres de titre du dock</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="482"/>
