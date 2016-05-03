@@ -851,28 +851,31 @@ void ImageView::mouseMoveEvent(QMouseEvent *event)
 			int newY = layoutY + (event->pos().y() - mouseY);
 			bool needToMove = false;
 
-			if (imageLabel->size().width() > size().width()) 	{
-				if (newX > 0)
+			if (imageLabel->size().width() > size().width()) {
+				if (newX > 0) {
 					newX = 0;
-				else if (newX < (size().width() - imageLabel->size().width()))
+				} else if (newX < (size().width() - imageLabel->size().width())) {
 					newX = (size().width() - imageLabel->size().width());
+				}
 				needToMove = true;
-			}
-			else
+			} else {
 				newX = layoutX;
+			}
 
 			if (imageLabel->size().height() > size().height()) {
-				if (newY > 0)
+				if (newY > 0) {
 					newY = 0;
-				else if (newY < (size().height() - imageLabel->size().height()))
+				} else if (newY < (size().height() - imageLabel->size().height())) {
 					newY = (size().height() - imageLabel->size().height());
+				}
 				needToMove = true;
-			}
-			else
+			} else {
 				newY = layoutY;
+			}
 
-			if (needToMove)
+			if (needToMove) {
 				imageLabel->move(newX, newY);
+			}
 		}
 	}
 }

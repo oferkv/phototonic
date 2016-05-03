@@ -60,8 +60,9 @@ Phototonic::Phototonic(QString fileOrDirectory, QWidget *parent) : QMainWindow(p
 	interfaceDisabled = false;
 
 	refreshThumbs(true);
-	if (GData::layoutMode == thumbViewIdx)
+	if (GData::layoutMode == thumbViewIdx) {
 		thumbView->setFocus(Qt::OtherFocusReason);
+	}
 
 	if (cliImageLoaded) {
 		QTimer::singleShot(100, this, SLOT(updateIndexByViewerImage()));
@@ -1373,12 +1374,11 @@ void Phototonic::thumbsZoomOut()
 
 void Phototonic::zoomOut()
 {
-	if (GData::imageZoomFactor <= 1.0 && GData::imageZoomFactor > 0.25) {
+	if (GData::imageZoomFactor <= 4.0 && GData::imageZoomFactor > 0.25) {
 		GData::imageZoomFactor -= 0.25;
-	} else if (GData::imageZoomFactor <= 4.0 && GData::imageZoomFactor >= 1.0) {
-
-		GData::imageZoomFactor -= 0.50;
 	} else if (GData::imageZoomFactor <= 8.0 && GData::imageZoomFactor >= 4.0) {
+		GData::imageZoomFactor -= 0.50;
+	} else if (GData::imageZoomFactor <= 16.0 && GData::imageZoomFactor >= 8.0) {
 		GData::imageZoomFactor -= 1.0;
 	} else {
 		imageView->setFeedback(tr("Minimum zoom"));
@@ -1392,11 +1392,11 @@ void Phototonic::zoomOut()
 
 void Phototonic::zoomIn()
 {
-	if (GData::imageZoomFactor < 1.0 && GData::imageZoomFactor >= 0.25) {
+	if (GData::imageZoomFactor < 4.0 && GData::imageZoomFactor >= 0.25) {
 		GData::imageZoomFactor += 0.25;
-	} else if (GData::imageZoomFactor < 4.0 && GData::imageZoomFactor >= 1.0) {
-		GData::imageZoomFactor += 0.50;
 	} else if (GData::imageZoomFactor < 8.0 && GData::imageZoomFactor >= 4.0) {
+		GData::imageZoomFactor += 0.50;
+	} else if (GData::imageZoomFactor < 16.0 && GData::imageZoomFactor >= 8.0) {
 		GData::imageZoomFactor += 1.00;
 	} else {
 		imageView->setFeedback(tr("Maximum zoom"));
