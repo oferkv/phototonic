@@ -1,4 +1,88 @@
-commit 6fc85f96e081386c7d668f2db967f9c4c683852a (HEAD -> master, origin/master, origin/HEAD)
+commit 4498ecf892b021687274153022562e52e58f9cee (HEAD -> master, origin/master, origin/HEAD)
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Tue May 3 18:57:43 2016 +0300
+
+    Minor changes to zoom in functionality
+
+commit 3cad33dd36df1c1b9e31d610f0d06763b4866b71
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Sun Jan 17 21:04:55 2016 +0200
+
+    Fix zoom failure when image same size of screen
+    Updated translations
+
+commit 345d361e320c0e663e7c35bf9ae725fe272fa4cb
+Author: daviddavid <geiger.david68210@gmail.com>
+Date:   Sat Jan 16 23:32:52 2016 +0100
+
+    Update French translation
+    
+    - by Geiger David <david.david@mageialinux-online.org>
+
+commit 26a615832a915a8d09f79294869fd0e963be71a2
+Author: Jonathan Hooverman <Jonathan.Hooverman@gmail.com>
+Date:   Sun Dec 27 12:55:56 2015 +0100
+
+    Updated German Translationn
+     Please enter the commit message for your changes. Lines starting
+
+commit 0eff863f1b6555cde1f152de76cef85bd0fa9263
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Fri Dec 11 17:36:46 2015 +0200
+
+    remove _GLIBCXX_USE_CXX11_ABI, update Arch pkg
+
+commit c1998178dfc49275c716250914ee1aac910ab908
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Fri Dec 11 11:15:52 2015 +0200
+
+    Add _GLIBCXX_USE_CXX11_ABI define
+
+commit 5c7e3239be38eba34fc53f73b1c0ec3008aaee92
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Thu Dec 10 22:08:57 2015 +0200
+
+    Fix issue with rubberband background being opaque
+
+commit 3a3c6fa67ab1f97d48b0f362a38a86fd6dcff49a
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Wed Dec 9 21:23:45 2015 +0200
+
+    Translations update
+
+commit 8be0fea7644d41ffe77e178bc0119f0dc37baf5a
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Wed Dec 9 21:19:17 2015 +0200
+
+    Fix bad bg color in KDE
+
+commit ac3f3c948e19956d2720d6a6e788c5a4d055ce0d
+Author: SARL ENR 68 <david@david.david>
+Date:   Tue Dec 8 22:18:17 2015 +0100
+
+    Update French translation
+    
+    - by Geiger David <david.david@mageialinux-online.org>
+
+commit 4a0d773701d7d19e4db63bb9c824a627da9cb08c
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Sat Nov 14 23:52:10 2015 +0200
+
+    Better feedback in tags dock when selecting images.
+
+commit 2b89e2272493d5e3c8310f06aeee2a70b5688663
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Sat Nov 14 12:50:49 2015 +0200
+
+    Updated about dialog
+
+commit 9e786bb046e45c5c4b4aa38dce6a14261c11cd08
+Author: Ofer Kashayov <oferkv@gmail.com>
+Date:   Sat Nov 14 12:23:25 2015 +0200
+
+    Changelog and version adjust
+
+commit 6fc85f96e081386c7d668f2db967f9c4c683852a
 Author: Ofer Kashayov <oferkv@gmail.com>
 Date:   Sat Nov 14 12:21:48 2015 +0200
 

@@ -1112,7 +1112,7 @@ void Phototonic::runExternalApp()
 	execCommand = GData::externalApps[((QAction*) sender())->text()];
 
 	if (GData::layoutMode == imageViewIdx) {
-		if (imageView->isNewImage()) 	{
+		if (imageView->isNewImage()) {
 			showNewImageWarning(this);
 			return;
 		}
@@ -1140,7 +1140,7 @@ void Phototonic::runExternalApp()
 			}
 		}
 		
-		execCommand += selectedFileNames;
+            execCommand += selectedFileNames;
 	}
 
 	QProcess *externalProcess = new QProcess();
@@ -1151,40 +1151,41 @@ void Phototonic::runExternalApp()
 
 void Phototonic::updateExternalApps()
 {
-	int actionNum = 0;
-	QMapIterator<QString, QString> eaIter(GData::externalApps);
+    int actionNum = 0;
+    QMapIterator<QString, QString> eaIter(GData::externalApps);
 
     QList<QAction*> actionList = openWithSubMenu->actions();
     if (!actionList.empty()) {
 
-    	for (int i = 0; i < actionList.size(); ++i)
-    	{
-      		QAction *action = actionList.at(i);
-      		if (action->isSeparator())
-      			break;
-			openWithSubMenu->removeAction(action);
-			imageView->removeAction(action);
-			delete action;
-   		}
+    	for (int i = 0; i < actionList.size(); ++i) {
+            QAction *action = actionList.at(i);
+            if (action->isSeparator()) {
+                    break;
+            }
+
+            openWithSubMenu->removeAction(action);
+            imageView->removeAction(action);
+            delete action;
+   	}
 
       	openWithSubMenu->clear();
     }
 
-	while (eaIter.hasNext())
-	{
-		++actionNum;
-		eaIter.next();
-		QAction *extAppAct = new QAction(eaIter.key(), this);
-		if (actionNum < 10)
-			extAppAct->setShortcut(QKeySequence("Alt+" + QString::number(actionNum)));
-		extAppAct->setIcon(QIcon::fromTheme(eaIter.key()));
-		connect(extAppAct, SIGNAL(triggered()), this, SLOT(runExternalApp()));
-		openWithSubMenu->addAction(extAppAct);
-		imageView->addAction(extAppAct);
-	}
+    while (eaIter.hasNext()) {
+        ++actionNum;
+        eaIter.next();
+        QAction *extAppAct = new QAction(eaIter.key(), this);
+        if (actionNum < 10) {
+            extAppAct->setShortcut(QKeySequence("Alt+" + QString::number(actionNum)));
+        }
+        extAppAct->setIcon(QIcon::fromTheme(eaIter.key()));
+        connect(extAppAct, SIGNAL(triggered()), this, SLOT(runExternalApp()));
+        openWithSubMenu->addAction(extAppAct);
+        imageView->addAction(extAppAct);
+    }
 
-	openWithSubMenu->addSeparator();
-	openWithSubMenu->addAction(chooseAppAct);
+    openWithSubMenu->addSeparator();
+    openWithSubMenu->addAction(chooseAppAct);
 }
 
 void Phototonic::chooseExternalApp()
