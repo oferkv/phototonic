@@ -16,9 +16,9 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "global.h"
+#include "Settings.h"
 
-namespace GData {
+namespace Settings {
     QSettings *appSettings;
     unsigned int layoutMode;
     unsigned int zoomInFlags;
@@ -26,7 +26,6 @@ namespace GData {
     QColor backgroundColor;
     QColor thumbsBackgroundColor;
     QColor thumbsTextColor;
-    unsigned int thumbsLayout;
     unsigned int thumbSpacing;
     unsigned int thumbPagesReadahead;
     bool exitInsteadOfClose;
@@ -49,7 +48,6 @@ namespace GData {
     int cropTopPercent;
     int cropWidthPercent;
     int cropHeightPercent;
-    bool noEnlargeSmallThumb;
     int slideShowDelay;
     bool slideShowRandom;
     bool slideShowActive;
@@ -72,9 +70,9 @@ namespace GData {
     bool hueBlueChannel;
     bool exifRotationEnabled;
     bool exifThumbRotationEnabled;
-    bool includeSubFolders;
+    bool includeSubDirectories;
     bool showHiddenFiles;
-    bool imageToolbarFullScreen;
+    bool showViewerToolbar;
     QMap<QString, QString> externalApps;
     QSet<QString> bookmarkPaths;
     QSet<QString> knownTags;
@@ -89,16 +87,13 @@ namespace GData {
     StartupDir startupDir;
     QString specifiedStartDir;
     bool enableImageInfoFS;
-    bool showLabels;
-    bool smallIcons;
-    bool LockDocks;
+    bool smallToolbarIcons;
+    bool hideDockTitlebars;
     bool tagsDockVisible;
-    bool fsDockVisible;
-    bool bmDockVisible;
-    bool iiDockVisible;
+    bool fileSystemDockVisible;
+    bool bookmarksDockVisible;
+    bool imageInfoDockVisible;
     QString currentViewDir;
-    bool pvDockVisible;
-    bool ivDockVisible;
     QString thumbsBackImage;
 }
 

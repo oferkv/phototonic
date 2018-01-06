@@ -48,8 +48,6 @@ public:
 
     void addTag(QString tagName, bool tagChecked);
 
-    void readImageTagsToCache(const QString &imageFullPath);
-
     void showTagsFilter();
 
     void showSelectedImagesTags();
@@ -69,8 +67,6 @@ public:
     TagsDisplayMode currentDisplayMode;
 
 private:
-    void readImageFileTags(QSet<QString> &tags, const QString &imageFullPath);
-
     bool writeTagsToImage(QString &imageFileName, QSet<QString> &tags);
 
     QSet<QString> getCheckedTags(Qt::CheckState tagState);
@@ -86,15 +82,15 @@ private:
     void redrawTree();
 
     QSet<QString> imageFilteringTags;
-    QAction *addTagAction;
+    QAction *actionAddTag;
     QAction *addToSelectionAction;
     QAction *removeFromSelectionAction;
-    QAction *clearTagsFilterAction;
+    QAction *actionClearTagsFilter;
     QAction *negateAction;
     QTreeWidgetItem *lastChangedTagItem;
     ThumbView *thumbView;
     QTabBar *tabs;
-    MetadataCache *mdCache;
+    MetadataCache *metadataCache;
     bool negateFilterEnabled;
 
 private slots:

@@ -17,7 +17,7 @@
  */
 
 #include <exiv2/exiv2.hpp>
-#include "global.h"
+#include "Settings.h"
 #include "mdcache.h"
 
 void MetadataCache::updateImageTags(QString &imageFileName, QSet<QString> tags) {
@@ -93,7 +93,7 @@ bool MetadataCache::loadImageMetadata(const QString &imageFullPath) {
                 if (iptcIt->tagName() == "Keywords") {
                     QString tagName = QString::fromUtf8(iptcIt->toString().c_str());
                     tags.insert(tagName);
-                    GData::knownTags.insert(tagName);
+                    Settings::knownTags.insert(tagName);
                 }
             }
         }

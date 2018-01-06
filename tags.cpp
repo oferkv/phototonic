@@ -17,7 +17,7 @@
  */
 
 #include "tags.h"
-#include "global.h"
+#include "Settings.h"
 #include "dialogs.h"
 
 ImageTags::ImageTags(QWidget *parent, ThumbView *thumbView, MetadataCache *mdCache) : QWidget(parent) {
@@ -28,7 +28,7 @@ ImageTags::ImageTags(QWidget *parent, ThumbView *thumbView, MetadataCache *mdCac
     tagsTree->header()->close();
     tagsTree->setSelectionMode(QAbstractItemView::ExtendedSelection);
     this->thumbView = thumbView;
-    this->mdCache = mdCache;
+    this->metadataCache = mdCache;
     negateFilterEnabled = false;
 
     tabs = new QTabBar(this);
@@ -62,16 +62,16 @@ ImageTags::ImageTags(QWidget *parent, ThumbView *thumbView, MetadataCache *mdCac
     removeFromSelectionAction = new QAction(tr("Untag"), this);
     connect(removeFromSelectionAction, SIGNAL(triggered()), this, SLOT(removeTagsFromSelection()));
 
-    addTagAction = new QAction(tr("New Tag"), this);
-    addTagAction->setIcon(QIcon(":/images/new_tag.png"));
-    connect(addTagAction, SIGNAL(triggered()), this, SLOT(addNewTag()));
+    actionAddTag = new QAction(tr("New Tag"), this);
+    actionAddTag->setIcon(QIcon(":/images/new_tag.png"));
+    connect(actionAddTag, SIGNAL(triggered()), this, SLOT(addNewTag()));
 
     removeTagAction = new QAction(tr("Remove Tag"), this);
     removeTagAction->setIcon(QIcon::fromTheme("edit-delete", QIcon(":/images/delete.png")));
 
-    clearTagsFilterAction = new QAction(tr("Clear Filters"), this);
-    clearTagsFilterAction->setIcon(QIcon(":/images/tag_filter_off.png"));
-    connect(clearTagsFilterAction, SIGNAL(triggered()), this, SLOT(clearTagFilters()));
+    actionClearTagsFilter = new QAction(tr("Clear Filters"), this);
+    actionClearTagsFilter->setIcon(QIcon(":/images/tag_filter_off.png"));
+    connect(actionClearTagsFilter, SIGNAL(triggered()), this, SLOT(clearTagFilters()));
 
     negateAction = new QAction(tr("Negate"), this);
     negateAction->setCheckable(true);
@@ -81,10 +81,10 @@ ImageTags::ImageTags(QWidget *parent, ThumbView *thumbView, MetadataCache *mdCac
     tagsMenu->addAction(addToSelectionAction);
     tagsMenu->addAction(removeFromSelectionAction);
     tagsMenu->addSeparator();
-    tagsMenu->addAction(addTagAction);
+    tagsMenu->addAction(actionAddTag);
     tagsMenu->addAction(removeTagAction);
     tagsMenu->addSeparator();
-    tagsMenu->addAction(clearTagsFilterAction);
+    tagsMenu->addAction(actionClearTagsFilter);
     tagsMenu->addAction(negateAction);
 }
 
@@ -189,14 +189,14 @@ void ImageTags::showSelectedImagesTags() {
     int selectedThumbsNum = selectedThumbs.size();
     QMap<QString, int> tagsCount;
     for (int i = 0; i < selectedThumbsNum; ++i) {
-        QSetIterator<QString> imageTagsIter(mdCache->getImageTags(selectedThumbs[i]));
+        QSetIterator<QString> imageTagsIter(metadataCache->getImageTags(selectedThumbs[i]));
         while (imageTagsIter.hasNext()) {
             QString imageTag = imageTagsIter.next();
             tagsCount[imageTag]++;
 
-            if (!GData::knownTags.contains(imageTag)) {
+            if (!Settings::knownTags.contains(imageTag)) {
                 addTag(imageTag, true);
-                GData::knownTags.insert(imageTag);
+                Settings::knownTags.insert(imageTag);
             }
         }
     }
@@ -273,7 +273,7 @@ void ImageTags::showTagsFilter() {
 
 void ImageTags::populateTagsTree() {
     tagsTree->clear();
-    QSetIterator<QString> knownTagsIt(GData::knownTags);
+    QSetIterator<QString> knownTagsIt(Settings::knownTags);
     while (knownTagsIt.hasNext()) {
         QString tag = knownTagsIt.next();
         addTag(tag, false);
@@ -284,16 +284,16 @@ void ImageTags::populateTagsTree() {
 
 void ImageTags::setActiveViewMode(TagsDisplayMode mode) {
     currentDisplayMode = mode;
-    addTagAction->setVisible(currentDisplayMode == SelectionTagsDisplay);
+    actionAddTag->setVisible(currentDisplayMode == SelectionTagsDisplay);
     removeTagAction->setVisible(currentDisplayMode == SelectionTagsDisplay);
     addToSelectionAction->setVisible(currentDisplayMode == SelectionTagsDisplay);
     removeFromSelectionAction->setVisible(currentDisplayMode == SelectionTagsDisplay);
-    clearTagsFilterAction->setVisible(currentDisplayMode == FolderTagsDisplay);
+    actionClearTagsFilter->setVisible(currentDisplayMode == FolderTagsDisplay);
     negateAction->setVisible(currentDisplayMode == FolderTagsDisplay);
 }
 
 bool ImageTags::isImageFilteredOut(QString imageFileName) {
-    QSet<QString> imageTags = mdCache->getImageTags(imageFileName);
+    QSet<QString> imageTags = metadataCache->getImageTags(imageFileName);
 
     QSetIterator<QString> filteredTagsIt(imageFilteringTags);
     while (filteredTagsIt.hasNext()) {
@@ -307,7 +307,7 @@ bool ImageTags::isImageFilteredOut(QString imageFileName) {
 
 void ImageTags::resetTagsState() {
     tagsTree->clear();
-    mdCache->clear();
+    metadataCache->clear();
 }
 
 QSet<QString> ImageTags::getCheckedTags(Qt::CheckState tagState) {
@@ -363,15 +363,15 @@ void ImageTags::applyUserAction(QList<QTreeWidgetItem *> tagsList) {
 
             if (tagState == Qt::Checked) {
                 dialog->opLabel->setText(tr("Tagging ") + imageName);
-                mdCache->addTagToImage(imageName, tagName);
+                metadataCache->addTagToImage(imageName, tagName);
             } else {
                 dialog->opLabel->setText(tr("Untagging ") + imageName);
-                mdCache->removeTagFromImage(imageName, tagName);
+                metadataCache->removeTagFromImage(imageName, tagName);
             }
         }
 
-        if (!writeTagsToImage(imageName, mdCache->getImageTags(imageName))) {
-            mdCache->removeImage(imageName);
+        if (!writeTagsToImage(imageName, metadataCache->getImageTags(imageName))) {
+            metadataCache->removeImage(imageName);
         }
 
         ++processEventsCounter;
@@ -459,7 +459,7 @@ void ImageTags::addNewTag() {
         return;
     }
 
-    QSetIterator<QString> knownTagsIt(GData::knownTags);
+    QSetIterator<QString> knownTagsIt(Settings::knownTags);
     while (knownTagsIt.hasNext()) {
         QString tag = knownTagsIt.next();
         if (newTagName == tag) {
@@ -470,7 +470,7 @@ void ImageTags::addNewTag() {
     }
 
     addTag(newTagName, false);
-    GData::knownTags.insert(newTagName);
+    Settings::knownTags.insert(newTagName);
     redrawTree();
 }
 
@@ -497,7 +497,7 @@ void ImageTags::removeTag() {
     for (int i = tagsTree->selectedItems().size() - 1; i > -1; --i) {
 
         QString tagName = tagsTree->selectedItems().at(i)->text(0);
-        GData::knownTags.remove(tagName);
+        Settings::knownTags.remove(tagName);
 
         if (imageFilteringTags.contains(tagName)) {
             imageFilteringTags.remove(tagName);

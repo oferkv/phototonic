@@ -21,7 +21,7 @@
 
 #include <QtWidgets>
 #include <exiv2/exiv2.hpp>
-#include "global.h"
+#include "Settings.h"
 #include "fstree.h"
 #include "bookmarks.h"
 #include "infoview.h"
@@ -46,12 +46,6 @@ public:
         FileNameRole = Qt::UserRole + 1,
         SortRole,
         LoadedRole
-    };
-
-    enum ThumbnailLayouts {
-        Classic,
-        Compact,
-        Squares
     };
 
     ThumbView(QWidget *parent, MetadataCache *mdCache);
@@ -107,8 +101,6 @@ public:
     QString recentThumb;
     QDir::SortFlags thumbsSortFlags;
     int thumbSize;
-    int thumbWidth;
-    int thumbHeight;
     QString filterStr;
     bool busy;
 
@@ -129,8 +121,6 @@ private:
     int getFirstVisibleThumb();
 
     int getLastVisibleThumb();
-
-    bool isThumbVisible(QModelIndex idx);
 
     void updateThumbsCount();
 

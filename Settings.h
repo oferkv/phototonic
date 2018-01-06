@@ -26,7 +26,7 @@
 #include <QAction>
 #include <QSet>
 
-namespace GData {
+namespace Settings {
     enum StartupDir {
         defaultDir = 0,
         rememberLastDir,
@@ -40,7 +40,6 @@ namespace GData {
     extern QColor backgroundColor;
     extern QColor thumbsBackgroundColor;
     extern QColor thumbsTextColor;
-    extern unsigned int thumbsLayout;
     extern unsigned int thumbSpacing;
     extern unsigned int thumbPagesReadahead;
     extern bool exitInsteadOfClose;
@@ -63,13 +62,10 @@ namespace GData {
     extern int cropTopPercent;
     extern int cropWidthPercent;
     extern int cropHeightPercent;
-    extern bool noEnlargeSmallThumb;
     extern int slideShowDelay;
     extern bool slideShowRandom;
     extern bool slideShowActive;
     extern QMap<QString, QAction *> actionKeys;
-    extern bool hueSatEnabled;
-    extern bool brightContrastEnabled;
     extern int hueVal;
     extern int saturationVal;
     extern int lightnessVal;
@@ -88,9 +84,9 @@ namespace GData {
     extern bool hueBlueChannel;
     extern bool exifRotationEnabled;
     extern bool exifThumbRotationEnabled;
-    extern bool includeSubFolders;
+    extern bool includeSubDirectories;
     extern bool showHiddenFiles;
-    extern bool imageToolbarFullScreen;
+    extern bool showViewerToolbar;
     extern QMap<QString, QString> externalApps;
     extern QSet<QString> bookmarkPaths;
     extern QSet<QString> knownTags;
@@ -105,15 +101,12 @@ namespace GData {
     extern StartupDir startupDir;
     extern QString specifiedStartDir;
     extern bool enableImageInfoFS;
-    extern bool showLabels;
-    extern bool smallIcons;
-    extern bool LockDocks;
-    extern bool fsDockVisible;
-    extern bool bmDockVisible;
+    extern bool smallToolbarIcons;
+    extern bool hideDockTitlebars;
+    extern bool fileSystemDockVisible;
+    extern bool bookmarksDockVisible;
     extern bool tagsDockVisible;
-    extern bool iiDockVisible;
-    extern bool pvDockVisible;
-    extern bool ivDockVisible;
+    extern bool imageInfoDockVisible;
     extern QString thumbsBackImage;
     extern QString currentViewDir;
 }

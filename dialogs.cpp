@@ -17,7 +17,7 @@
  */
 
 #include "dialogs.h"
-#include "global.h"
+#include "Settings.h"
 
 CpMvDialog::CpMvDialog(QWidget *parent) : QDialog(parent) {
     abortOp = false;
@@ -94,48 +94,48 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
     show();
 
     if (pasteInCurrDir) {
-        for (tn = 0; tn < GData::copyCutFileList.size(); ++tn) {
-            sourceFile = GData::copyCutFileList[tn];
+        for (tn = 0; tn < Settings::copyCutFileList.size(); ++tn) {
+            sourceFile = Settings::copyCutFileList[tn];
             fileInfo = QFileInfo(sourceFile);
             currFile = fileInfo.fileName();
             destFile = destDir + QDir::separator() + currFile;
 
-            opLabel->setText((GData::copyOp ? tr("Copying \"%1\" to \"%2\".") : tr("Moving \"%1\" to \"%2\"."))
+            opLabel->setText((Settings::copyOp ? tr("Copying \"%1\" to \"%2\".") : tr("Moving \"%1\" to \"%2\"."))
                                      .arg(sourceFile).arg(destFile));
             QApplication::processEvents();
 
-            res = cpMvFile(GData::copyOp, currFile, sourceFile, destFile, destDir);
+            res = cpMvFile(Settings::copyOp, currFile, sourceFile, destFile, destDir);
 
             if (!res || abortOp) {
                 break;
             } else {
-                GData::copyCutFileList[tn] = destFile;
+                Settings::copyCutFileList[tn] = destFile;
             }
         }
     } else {
         QList<int> rowList;
-        for (tn = GData::copyCutIdxList.size() - 1; tn >= 0; --tn) {
-            sourceFile = thumbView->thumbViewModel->item(GData::copyCutIdxList[tn].row())->
+        for (tn = Settings::copyCutIdxList.size() - 1; tn >= 0; --tn) {
+            sourceFile = thumbView->thumbViewModel->item(Settings::copyCutIdxList[tn].row())->
                     data(thumbView->FileNameRole).toString();
             fileInfo = QFileInfo(sourceFile);
             currFile = fileInfo.fileName();
             destFile = destDir + QDir::separator() + currFile;
 
-            opLabel->setText((GData::copyOp ?
+            opLabel->setText((Settings::copyOp ?
                               tr("Copying \"%1\" to \"%2\".")
                                             : tr("Moving \"%1\" to \"%2\".")).arg(sourceFile).arg(destFile));
             QApplication::processEvents();
 
-            res = cpMvFile(GData::copyOp, currFile, sourceFile, destFile, destDir);
+            res = cpMvFile(Settings::copyOp, currFile, sourceFile, destFile, destDir);
 
             if (!res || abortOp) {
                 break;
             }
 
-            rowList.append(GData::copyCutIdxList[tn].row());
+            rowList.append(Settings::copyCutIdxList[tn].row());
         }
 
-        if (!GData::copyOp) {
+        if (!Settings::copyOp) {
             qSort(rowList);
             for (int t = rowList.size() - 1; t >= 0; --t)
                 thumbView->thumbViewModel->removeRow(rowList.at(t));
@@ -143,7 +143,7 @@ void CpMvDialog::exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDi
         latestRow = rowList.at(0);
     }
 
-    nfiles = GData::copyCutIdxList.size();
+    nfiles = Settings::copyCutIdxList.size();
     close();
 }
 
@@ -208,7 +208,7 @@ void ShortcutsTableView::keyPressEvent(QKeyEvent *e) {
         return;
     }
 
-    QMapIterator<QString, QAction *> it(GData::actionKeys);
+    QMapIterator<QString, QAction *> it(Settings::actionKeys);
     while (it.hasNext()) {
         it.next();
         if (it.value()->shortcut().toString() == keySeqText) {
@@ -222,14 +222,14 @@ void ShortcutsTableView::keyPressEvent(QKeyEvent *e) {
     QStandardItemModel *mod = (QStandardItemModel *) model();
     int row = selectedIndexes().first().row();
     mod->item(row, 1)->setText(keySeqText);
-    GData::actionKeys.value(mod->item(row, 2)->text())->setShortcut(QKeySequence(keySeqText));
+    Settings::actionKeys.value(mod->item(row, 2)->text())->setShortcut(QKeySequence(keySeqText));
 }
 
 void ShortcutsTableView::clearShortcut() {
     if (selectedEntry.isValid()) {
         QStandardItemModel *mod = (QStandardItemModel *) model();
         mod->item(selectedEntry.row(), 1)->setText("");
-        GData::actionKeys.value(mod->item(selectedEntry.row(), 2)->text())->setShortcut(QKeySequence(""));
+        Settings::actionKeys.value(mod->item(selectedEntry.row(), 2)->text())->setShortcut(QKeySequence(""));
     }
 }
 
@@ -259,7 +259,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     }
     fitLargeVbox->addStretch(1);
     fitLargeGroupBox->setLayout(fitLargeVbox);
-    fitLargeRadios[GData::zoomOutFlags]->setChecked(true);
+    fitLargeRadios[Settings::zoomOutFlags]->setChecked(true);
 
     // Zoom small images
     QGroupBox *fitSmallGroupBox = new QGroupBox(tr("Fit Small Images"));
@@ -275,7 +275,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     }
     fitSmallVbox->addStretch(1);
     fitSmallGroupBox->setLayout(fitSmallVbox);
-    fitSmallRadios[GData::zoomInFlags]->setChecked(true);
+    fitSmallRadios[Settings::zoomInFlags]->setChecked(true);
 
     // imageView background color
     QLabel *backgroundColorLab = new QLabel(tr("Background color:"));
@@ -286,24 +286,24 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     bgColBox->addWidget(backgroundColorButton);
     bgColBox->addStretch(1);
     connect(backgroundColorButton, SIGNAL(clicked()), this, SLOT(pickColor()));
-    setButtonBgColor(GData::backgroundColor, backgroundColorButton);
+    setButtonBgColor(Settings::backgroundColor, backgroundColorButton);
     backgroundColorButton->setAutoFillBackground(true);
-    bgColor = GData::backgroundColor;
+    bgColor = Settings::backgroundColor;
 
     // Exit when opening image
     exitCliCb = new
             QCheckBox(tr("Exit instead of closing, when image is loaded from command line"), this);
-    exitCliCb->setChecked(GData::exitInsteadOfClose);
+    exitCliCb->setChecked(Settings::exitInsteadOfClose);
 
     // Wrap image list
     wrapListCb = new QCheckBox(tr("Wrap image list when reaching last or first image"), this);
-    wrapListCb->setChecked(GData::wrapImageList);
+    wrapListCb->setChecked(Settings::wrapImageList);
 
     // Save quality
     QLabel *saveQualityLab = new QLabel(tr("Default quality when saving images:"));
     saveQualitySpin = new QSpinBox;
     saveQualitySpin->setRange(0, 100);
-    saveQualitySpin->setValue(GData::defaultSaveQuality);
+    saveQualitySpin->setValue(Settings::defaultSaveQuality);
     QHBoxLayout *saveQualityHbox = new QHBoxLayout;
     saveQualityHbox->addWidget(saveQualityLab);
     saveQualityHbox->addWidget(saveQualitySpin);
@@ -311,15 +311,15 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
 
     // Enable animations
     enableAnimCb = new QCheckBox(tr("Enable GIF animation"), this);
-    enableAnimCb->setChecked(GData::enableAnimations);
+    enableAnimCb->setChecked(Settings::enableAnimations);
 
     // Enable image Exif rotation
     enableExifCb = new QCheckBox(tr("Rotate image according to Exif orientation"), this);
-    enableExifCb->setChecked(GData::exifRotationEnabled);
+    enableExifCb->setChecked(Settings::exifRotationEnabled);
 
     // Image Info
     imageInfoCb = new QCheckBox(tr("Show image file name in viewer"), this);
-    imageInfoCb->setChecked(GData::enableImageInfoFS);
+    imageInfoCb->setChecked(Settings::enableImageInfoFS);
 
     // Viewer options
     QVBoxLayout *viewerOptsBox = new QVBoxLayout;
@@ -347,9 +347,9 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     bgThumbColBox->addWidget(bgThumbTxtLab);
     bgThumbColBox->addWidget(colThumbButton);
     connect(colThumbButton, SIGNAL(clicked()), this, SLOT(pickThumbsColor()));
-    setButtonBgColor(GData::thumbsBackgroundColor, colThumbButton);
+    setButtonBgColor(Settings::thumbsBackgroundColor, colThumbButton);
     colThumbButton->setAutoFillBackground(true);
-    thumbBgColor = GData::thumbsBackgroundColor;
+    thumbBgColor = Settings::thumbsBackgroundColor;
 
     // thumbView text color
     QLabel *txtThumbTxtLab = new QLabel("\t" + tr("Label color:"));
@@ -359,9 +359,9 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     bgThumbColBox->addWidget(colThumbTextButton);
     bgThumbColBox->addStretch(1);
     connect(colThumbTextButton, SIGNAL(clicked()), this, SLOT(pickThumbsTextColor()));
-    setButtonBgColor(GData::thumbsTextColor, colThumbTextButton);
+    setButtonBgColor(Settings::thumbsTextColor, colThumbTextButton);
     colThumbTextButton->setAutoFillBackground(true);
-    thumbTextColor = GData::thumbsTextColor;
+    thumbTextColor = Settings::thumbsTextColor;
 
     // thumbview background image
     QLabel *thumbsBackImageLab = new QLabel(tr("Background image:"));
@@ -380,35 +380,30 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     thumbsBackImageEditBox->addWidget(thumbsBackImageEdit);
     thumbsBackImageEditBox->addWidget(chooseThumbsBackImageButton);
     thumbsBackImageEditBox->addStretch(1);
-    thumbsBackImageEdit->setText(GData::thumbsBackImage);
+    thumbsBackImageEdit->setText(Settings::thumbsBackImage);
 
     // Thumbnail spacing
     QLabel *thumbSpacingLab = new QLabel(tr("Add space between thumbnails:"));
     thumbSpacingSpin = new QSpinBox;
     thumbSpacingSpin->setRange(0, 15);
-    thumbSpacingSpin->setValue(GData::thumbSpacing);
+    thumbSpacingSpin->setValue(Settings::thumbSpacing);
     QHBoxLayout *thumbSpacingHbox = new QHBoxLayout;
     thumbSpacingHbox->addWidget(thumbSpacingLab);
     thumbSpacingHbox->addWidget(thumbSpacingSpin);
     thumbSpacingHbox->addStretch(1);
 
-    // Do not enlarge small thumbs
-    noSmallThumbCb = new
-            QCheckBox(tr("Show original size of images smaller than the thumbnail size"), this);
-    noSmallThumbCb->setChecked(GData::noEnlargeSmallThumb);
-
     // Thumbnail pages to read ahead
     QLabel *thumbPagesLab = new QLabel(tr("Number of thumbnail pages to read ahead:"));
     thumbPagesSpin = new QSpinBox;
     thumbPagesSpin->setRange(1, 10);
-    thumbPagesSpin->setValue(GData::thumbPagesReadahead);
+    thumbPagesSpin->setValue(Settings::thumbPagesReadahead);
     QHBoxLayout *thumbPagesHbox = new QHBoxLayout;
     thumbPagesHbox->addWidget(thumbPagesLab);
     thumbPagesHbox->addWidget(thumbPagesSpin);
     thumbPagesHbox->addStretch(1);
 
     enableThumbExifCb = new QCheckBox(tr("Rotate thumbnails according to Exif orientation"), this);
-    enableThumbExifCb->setChecked(GData::exifThumbRotationEnabled);
+    enableThumbExifCb->setChecked(Settings::exifThumbRotationEnabled);
 
     // Thumbnail options
     QVBoxLayout *thumbsOptsBox = new QVBoxLayout;
@@ -417,14 +412,13 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     thumbsOptsBox->addLayout(thumbSpacingHbox);
     thumbsOptsBox->addWidget(enableThumbExifCb);
     thumbsOptsBox->addLayout(thumbPagesHbox);
-    thumbsOptsBox->addWidget(noSmallThumbCb);
     thumbsOptsBox->addStretch(1);
 
     // Slide show delay
     QLabel *slideDelayLab = new QLabel(tr("Delay between slides in seconds:"));
     slideDelaySpin = new QSpinBox;
     slideDelaySpin->setRange(1, 3600);
-    slideDelaySpin->setValue(GData::slideShowDelay);
+    slideDelaySpin->setValue(Settings::slideShowDelay);
     QHBoxLayout *slideDelayHbox = new QHBoxLayout;
     slideDelayHbox->addWidget(slideDelayLab);
     slideDelayHbox->addWidget(slideDelaySpin);
@@ -432,7 +426,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
 
     // Slide show random
     slideRandomCb = new QCheckBox(tr("Show random images"), this);
-    slideRandomCb->setChecked(GData::slideShowRandom);
+    slideRandomCb->setChecked(Settings::slideShowRandom);
 
     // Slide show options
     QVBoxLayout *slideShowVbox = new QVBoxLayout;
@@ -441,11 +435,11 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     slideShowVbox->addStretch(1);
 
     // Startup directory
-    QGroupBox *startupDirGroupBox = new QGroupBox(tr("Startup folder"));
-    startupDirRadios[GData::defaultDir] =
+    QGroupBox *startupDirGroupBox = new QGroupBox(tr("Startup Directory"));
+    startupDirRadios[Settings::defaultDir] =
             new QRadioButton(tr("Default, or specified by command line argument"));
-    startupDirRadios[GData::rememberLastDir] = new QRadioButton(tr("Remember last"));
-    startupDirRadios[GData::specifiedDir] = new QRadioButton(tr("Specify:"));
+    startupDirRadios[Settings::rememberLastDir] = new QRadioButton(tr("Remember last"));
+    startupDirRadios[Settings::specifiedDir] = new QRadioButton(tr("Specify:"));
 
     startupDirEdit = new QLineEdit;
     startupDirEdit->setClearButtonEnabled(true);
@@ -473,30 +467,30 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     startupDirVbox->addStretch(1);
     startupDirGroupBox->setLayout(startupDirVbox);
 
-    if (GData::startupDir == GData::specifiedDir)
-        startupDirRadios[GData::specifiedDir]->setChecked(true);
-    else if (GData::startupDir == GData::rememberLastDir)
-        startupDirRadios[GData::rememberLastDir]->setChecked(true);
+    if (Settings::startupDir == Settings::specifiedDir)
+        startupDirRadios[Settings::specifiedDir]->setChecked(true);
+    else if (Settings::startupDir == Settings::rememberLastDir)
+        startupDirRadios[Settings::rememberLastDir]->setChecked(true);
     else
-        startupDirRadios[GData::defaultDir]->setChecked(true);
-    startupDirEdit->setText(GData::specifiedStartDir);
+        startupDirRadios[Settings::defaultDir]->setChecked(true);
+    startupDirEdit->setText(Settings::specifiedStartDir);
 
     // Keyboard shortcuts widgets
     ShortcutsTableView *keysTable = new ShortcutsTableView();
-    QMapIterator<QString, QAction *> it(GData::actionKeys);
+    QMapIterator<QString, QAction *> it(Settings::actionKeys);
     while (it.hasNext()) {
         it.next();
-        keysTable->addRow(it.key(), GData::actionKeys.value(it.key())->text(),
-                          GData::actionKeys.value(it.key())->shortcut().toString());
+        keysTable->addRow(it.key(), Settings::actionKeys.value(it.key())->text(),
+                          Settings::actionKeys.value(it.key())->shortcut().toString());
     }
 
     // Mouse settings
     reverseMouseCb = new QCheckBox(tr("Swap mouse left-click and middle-click actions"), this);
-    reverseMouseCb->setChecked(GData::reverseMouseBehavior);
+    reverseMouseCb->setChecked(Settings::reverseMouseBehavior);
 
     // Delete confirmation setting
     deleteConfirmCb = new QCheckBox(tr("Delete confirmation"), this);
-    deleteConfirmCb->setChecked(GData::deleteConfirm);
+    deleteConfirmCb->setChecked(Settings::deleteConfirm);
 
     // Keyboard and mouse
     QGroupBox *keyboardGrp = new QGroupBox(tr("Keyboard Shortcuts"));
@@ -555,46 +549,45 @@ void SettingsDialog::saveSettings() {
 
     for (i = 0; i < nZoomRadios; ++i) {
         if (fitLargeRadios[i]->isChecked()) {
-            GData::zoomOutFlags = i;
-            GData::appSettings->setValue("zoomOutFlags", (int) GData::zoomOutFlags);
+            Settings::zoomOutFlags = i;
+            Settings::appSettings->setValue("zoomOutFlags", (int) Settings::zoomOutFlags);
             break;
         }
     }
 
     for (i = 0; i < nZoomRadios; ++i) {
         if (fitSmallRadios[i]->isChecked()) {
-            GData::zoomInFlags = i;
-            GData::appSettings->setValue("zoomInFlags", (int) GData::zoomInFlags);
+            Settings::zoomInFlags = i;
+            Settings::appSettings->setValue("zoomInFlags", (int) Settings::zoomInFlags);
             break;
         }
     }
 
-    GData::backgroundColor = bgColor;
-    GData::thumbsBackgroundColor = thumbBgColor;
-    GData::thumbsTextColor = thumbTextColor;
-    GData::thumbsBackImage = thumbsBackImageEdit->text();
-    GData::thumbSpacing = thumbSpacingSpin->value();
-    GData::thumbPagesReadahead = thumbPagesSpin->value();
-    GData::exitInsteadOfClose = exitCliCb->isChecked();
-    GData::wrapImageList = wrapListCb->isChecked();
-    GData::defaultSaveQuality = saveQualitySpin->value();
-    GData::noEnlargeSmallThumb = noSmallThumbCb->isChecked();
-    GData::slideShowDelay = slideDelaySpin->value();
-    GData::slideShowRandom = slideRandomCb->isChecked();
-    GData::enableAnimations = enableAnimCb->isChecked();
-    GData::exifRotationEnabled = enableExifCb->isChecked();
-    GData::exifThumbRotationEnabled = enableThumbExifCb->isChecked();
-    GData::enableImageInfoFS = imageInfoCb->isChecked();
-    GData::reverseMouseBehavior = reverseMouseCb->isChecked();
-    GData::deleteConfirm = deleteConfirmCb->isChecked();
+    Settings::backgroundColor = bgColor;
+    Settings::thumbsBackgroundColor = thumbBgColor;
+    Settings::thumbsTextColor = thumbTextColor;
+    Settings::thumbsBackImage = thumbsBackImageEdit->text();
+    Settings::thumbSpacing = thumbSpacingSpin->value();
+    Settings::thumbPagesReadahead = thumbPagesSpin->value();
+    Settings::exitInsteadOfClose = exitCliCb->isChecked();
+    Settings::wrapImageList = wrapListCb->isChecked();
+    Settings::defaultSaveQuality = saveQualitySpin->value();
+    Settings::slideShowDelay = slideDelaySpin->value();
+    Settings::slideShowRandom = slideRandomCb->isChecked();
+    Settings::enableAnimations = enableAnimCb->isChecked();
+    Settings::exifRotationEnabled = enableExifCb->isChecked();
+    Settings::exifThumbRotationEnabled = enableThumbExifCb->isChecked();
+    Settings::enableImageInfoFS = imageInfoCb->isChecked();
+    Settings::reverseMouseBehavior = reverseMouseCb->isChecked();
+    Settings::deleteConfirm = deleteConfirmCb->isChecked();
 
     if (startupDirRadios[0]->isChecked())
-        GData::startupDir = GData::defaultDir;
+        Settings::startupDir = Settings::defaultDir;
     else if (startupDirRadios[1]->isChecked())
-        GData::startupDir = GData::rememberLastDir;
+        Settings::startupDir = Settings::rememberLastDir;
     else {
-        GData::startupDir = GData::specifiedDir;
-        GData::specifiedStartDir = startupDirEdit->text();
+        Settings::startupDir = Settings::specifiedDir;
+        Settings::specifiedStartDir = startupDirEdit->text();
     }
 
     accept();
@@ -605,7 +598,7 @@ void SettingsDialog::abort() {
 }
 
 void SettingsDialog::pickColor() {
-    QColor userColor = QColorDialog::getColor(GData::backgroundColor, this);
+    QColor userColor = QColorDialog::getColor(Settings::backgroundColor, this);
     if (userColor.isValid()) {
         setButtonBgColor(userColor, backgroundColorButton);
         bgColor = userColor;
@@ -619,7 +612,7 @@ void SettingsDialog::setButtonBgColor(QColor &color, QToolButton *button) {
 }
 
 void SettingsDialog::pickThumbsColor() {
-    QColor userColor = QColorDialog::getColor(GData::thumbsBackgroundColor, this);
+    QColor userColor = QColorDialog::getColor(Settings::thumbsBackgroundColor, this);
     if (userColor.isValid()) {
         setButtonBgColor(userColor, colThumbButton);
         thumbBgColor = userColor;
@@ -627,7 +620,7 @@ void SettingsDialog::pickThumbsColor() {
 }
 
 void SettingsDialog::pickThumbsTextColor() {
-    QColor userColor = QColorDialog::getColor(GData::thumbsTextColor, this);
+    QColor userColor = QColorDialog::getColor(Settings::thumbsTextColor, this);
     if (userColor.isValid()) {
         setButtonBgColor(userColor, colThumbTextButton);
         thumbTextColor = userColor;
@@ -651,8 +644,8 @@ CropDialog::CropDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
     setWindowTitle(tr("Cropping"));
     setWindowIcon(QIcon(":/images/crop.png"));
     resize(350, 100);
-    if (GData::dialogLastX)
-        move(GData::dialogLastX, GData::dialogLastY);
+    if (Settings::dialogLastX)
+        move(Settings::dialogLastX, Settings::dialogLastY);
     imageView = imageView_;
 
     QHBoxLayout *buttonsHbox = new QHBoxLayout;
@@ -748,16 +741,16 @@ CropDialog::CropDialog(QWidget *parent, ImageView *imageView_) : QDialog(parent)
 }
 
 void CropDialog::applyCrop(int) {
-    GData::cropLeftPercent = leftSpin->value();
-    GData::cropTopPercent = topSpin->value();
-    GData::cropWidthPercent = rightSpin->value();
-    GData::cropHeightPercent = bottomSpin->value();
+    Settings::cropLeftPercent = leftSpin->value();
+    Settings::cropTopPercent = topSpin->value();
+    Settings::cropWidthPercent = rightSpin->value();
+    Settings::cropHeightPercent = bottomSpin->value();
     imageView->refresh();
 }
 
 void CropDialog::ok() {
-    GData::dialogLastX = pos().x();
-    GData::dialogLastY = pos().y();
+    Settings::dialogLastX = pos().x();
+    Settings::dialogLastY = pos().y();
     accept();
 }
 
@@ -773,8 +766,8 @@ ResizeDialog::ResizeDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
     setWindowIcon(QIcon::fromTheme("transform-scale", QIcon(":/images/phototonic.png")));
     newWidth = newHeight = 0;
 
-    if (GData::dialogLastX)
-        move(GData::dialogLastX, GData::dialogLastY);
+    if (Settings::dialogLastX)
+        move(Settings::dialogLastX, Settings::dialogLastY);
     imageView = imageView_;
 
     width = lastWidth = imageView->getImageWidthPreCropped();
@@ -928,8 +921,8 @@ void ResizeDialog::adjustSizes() {
 
 void ResizeDialog::ok() {
     if (newWidth || newHeight) {
-        GData::scaledWidth = newWidth;
-        GData::scaledHeight = newHeight;
+        Settings::scaledWidth = newWidth;
+        Settings::scaledHeight = newHeight;
         imageView->refresh();
     }
     accept();
@@ -971,19 +964,19 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
     connect(hueSlide, SIGNAL(valueChanged(int)), this, SLOT(applyColors(int)));
 
     colorizeCb = new QCheckBox(tr("Colorize"), this);
-    colorizeCb->setCheckState(GData::colorizeEnabled ? Qt::Checked : Qt::Unchecked);
+    colorizeCb->setCheckState(Settings::colorizeEnabled ? Qt::Checked : Qt::Unchecked);
     connect(colorizeCb, SIGNAL(stateChanged(int)), this, SLOT(enableColorize(int)));
 
     rNegateCb = new QCheckBox(tr("Negative"), this);
-    rNegateCb->setCheckState(GData::rNegateEnabled ? Qt::Checked : Qt::Unchecked);
+    rNegateCb->setCheckState(Settings::rNegateEnabled ? Qt::Checked : Qt::Unchecked);
     connect(rNegateCb, SIGNAL(stateChanged(int)), this, SLOT(redNegative(int)));
 
     gNegateCb = new QCheckBox(tr("Negative"), this);
-    gNegateCb->setCheckState(GData::gNegateEnabled ? Qt::Checked : Qt::Unchecked);
+    gNegateCb->setCheckState(Settings::gNegateEnabled ? Qt::Checked : Qt::Unchecked);
     connect(gNegateCb, SIGNAL(stateChanged(int)), this, SLOT(greenNegative(int)));
 
     bNegateCb = new QCheckBox(tr("Negative"), this);
-    bNegateCb->setCheckState(GData::bNegateEnabled ? Qt::Checked : Qt::Unchecked);
+    bNegateCb->setCheckState(Settings::bNegateEnabled ? Qt::Checked : Qt::Unchecked);
     connect(bNegateCb, SIGNAL(stateChanged(int)), this, SLOT(blueNegative(int)));
 
     saturationSlide = new QSlider(Qt::Horizontal);
@@ -1003,17 +996,17 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
     QHBoxLayout *channelsHbox = new QHBoxLayout;
     redB = new QCheckBox(tr("Red"));
     redB->setCheckable(true);
-    redB->setChecked(GData::hueRedChannel);
+    redB->setChecked(Settings::hueRedChannel);
     connect(redB, SIGNAL(clicked()), this, SLOT(setRedChannel()));
     channelsHbox->addWidget(redB, 0, Qt::AlignLeft);
     greenB = new QCheckBox(tr("Green"));
     greenB->setCheckable(true);
-    greenB->setChecked(GData::hueGreenChannel);
+    greenB->setChecked(Settings::hueGreenChannel);
     connect(greenB, SIGNAL(clicked()), this, SLOT(setGreenChannel()));
     channelsHbox->addWidget(greenB, 0, Qt::AlignLeft);
     blueB = new QCheckBox(tr("Blue"));
     blueB->setCheckable(true);
-    blueB->setChecked(GData::hueBlueChannel);
+    blueB->setChecked(Settings::hueBlueChannel);
     connect(blueB, SIGNAL(clicked()), this, SLOT(setBlueChannel()));
     channelsHbox->addWidget(blueB, 0, Qt::AlignLeft);
     channelsHbox->addStretch(1);
@@ -1120,37 +1113,37 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageView *imageView_) : QDialog(par
 
 void ColorsDialog::applyColors(int) {
     if (brightSlide->value() >= 0)
-        GData::brightVal = (brightSlide->value() * 500 / 100) + 100;
+        Settings::brightVal = (brightSlide->value() * 500 / 100) + 100;
     else
-        GData::brightVal = brightSlide->value() + 100;
+        Settings::brightVal = brightSlide->value() + 100;
 
     if (contrastSlide->value() >= 0)
-        GData::contrastVal = (contrastSlide->value() * 79 / 100) + 78;
+        Settings::contrastVal = (contrastSlide->value() * 79 / 100) + 78;
     else
-        GData::contrastVal = contrastSlide->value() + 79;
+        Settings::contrastVal = contrastSlide->value() + 79;
 
-    GData::hueVal = hueSlide->value() * 127 / 100;
+    Settings::hueVal = hueSlide->value() * 127 / 100;
 
     if (saturationSlide->value() >= 0)
-        GData::saturationVal = (saturationSlide->value() * 500 / 100) + 100;
+        Settings::saturationVal = (saturationSlide->value() * 500 / 100) + 100;
     else
-        GData::saturationVal = saturationSlide->value() + 100;
+        Settings::saturationVal = saturationSlide->value() + 100;
 
     if (lightnessSlide->value() >= 0)
-        GData::lightnessVal = (lightnessSlide->value() * 200 / 100) + 100;
+        Settings::lightnessVal = (lightnessSlide->value() * 200 / 100) + 100;
     else
-        GData::lightnessVal = lightnessSlide->value() + 100;
+        Settings::lightnessVal = lightnessSlide->value() + 100;
 
-    GData::redVal = redSlide->value();
-    GData::greenVal = greenSlide->value();
-    GData::blueVal = blueSlide->value();
+    Settings::redVal = redSlide->value();
+    Settings::greenVal = greenSlide->value();
+    Settings::blueVal = blueSlide->value();
 
     imageView->refresh();
 }
 
 void ColorsDialog::ok() {
-    GData::dialogLastX = pos().x();
-    GData::dialogLastY = pos().y();
+    Settings::dialogLastX = pos().x();
+    Settings::dialogLastY = pos().y();
     accept();
 }
 
@@ -1165,9 +1158,9 @@ void ColorsDialog::reset() {
     redB->setChecked(true);
     greenB->setChecked(true);
     blueB->setChecked(true);
-    GData::hueRedChannel = true;
-    GData::hueGreenChannel = true;
-    GData::hueBlueChannel = true;
+    Settings::hueRedChannel = true;
+    Settings::hueGreenChannel = true;
+    Settings::hueBlueChannel = true;
 
     contrastSlide->setValue(0);
     brightSlide->setValue(0);
@@ -1180,37 +1173,37 @@ void ColorsDialog::reset() {
 }
 
 void ColorsDialog::enableColorize(int state) {
-    GData::colorizeEnabled = state;
+    Settings::colorizeEnabled = state;
     imageView->refresh();
 }
 
 void ColorsDialog::redNegative(int state) {
-    GData::rNegateEnabled = state;
+    Settings::rNegateEnabled = state;
     imageView->refresh();
 }
 
 void ColorsDialog::greenNegative(int state) {
-    GData::gNegateEnabled = state;
+    Settings::gNegateEnabled = state;
     imageView->refresh();
 }
 
 void ColorsDialog::blueNegative(int state) {
-    GData::bNegateEnabled = state;
+    Settings::bNegateEnabled = state;
     imageView->refresh();
 }
 
 void ColorsDialog::setRedChannel() {
-    GData::hueRedChannel = redB->isChecked();
+    Settings::hueRedChannel = redB->isChecked();
     imageView->refresh();
 }
 
 void ColorsDialog::setGreenChannel() {
-    GData::hueGreenChannel = greenB->isChecked();
+    Settings::hueGreenChannel = greenB->isChecked();
     imageView->refresh();
 }
 
 void ColorsDialog::setBlueChannel() {
-    GData::hueBlueChannel = blueB->isChecked();
+    Settings::hueBlueChannel = blueB->isChecked();
     imageView->refresh();
 }
 
@@ -1271,7 +1264,7 @@ AppMgmtDialog::AppMgmtDialog(QWidget *parent) : QDialog(parent) {
 
     // Load external apps list
     QString key, val;
-    QMapIterator<QString, QString> it(GData::externalApps);
+    QMapIterator<QString, QString> it(Settings::externalApps);
     while (it.hasNext()) {
         it.next();
         key = it.key();
@@ -1282,10 +1275,10 @@ AppMgmtDialog::AppMgmtDialog(QWidget *parent) : QDialog(parent) {
 
 void AppMgmtDialog::ok() {
     int row = appsTableModel->rowCount();
-    GData::externalApps.clear();
+    Settings::externalApps.clear();
     for (int i = 0; i < row; ++i) {
         if (!appsTableModel->itemFromIndex(appsTableModel->index(i, 1))->text().isEmpty()) {
-            GData::externalApps[appsTableModel->itemFromIndex(appsTableModel->index(i, 0))->text()] =
+            Settings::externalApps[appsTableModel->itemFromIndex(appsTableModel->index(i, 0))->text()] =
                     appsTableModel->itemFromIndex(appsTableModel->index(i, 1))->text();
         }
     }
@@ -1391,7 +1384,7 @@ CopyMoveToDialog::CopyMoveToDialog(QWidget *parent, QString thumbsPath, bool mov
     setLayout(mainVbox);
 
     // Load paths list
-    QSetIterator<QString> it(GData::bookmarkPaths);
+    QSetIterator<QString> it(Settings::bookmarkPaths);
     while (it.hasNext()) {
         QStandardItem *item = new QStandardItem(QIcon(":/images/bookmarks.png"), it.next());
         pathsTableModel->insertRow(pathsTableModel->rowCount(), item);
@@ -1412,9 +1405,9 @@ void CopyMoveToDialog::pathDoubleClick(const QModelIndex &) {
 }
 
 void CopyMoveToDialog::savePaths() {
-    GData::bookmarkPaths.clear();
+    Settings::bookmarkPaths.clear();
     for (int i = 0; i < pathsTableModel->rowCount(); ++i) {
-        GData::bookmarkPaths.insert
+        Settings::bookmarkPaths.insert
                 (pathsTableModel->itemFromIndex(pathsTableModel->index(i, 0))->text());
     }
 }

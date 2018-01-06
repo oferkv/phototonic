@@ -91,7 +91,7 @@ void FSTree::dropEvent(QDropEvent *event) {
 
 void FSTree::setModelFlags() {
     fsModel->setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
-    if (GData::showHiddenFiles)
+    if (Settings::showHiddenFiles)
         fsModel->setFilter(fsModel->filter() | QDir::Hidden);
 }
 

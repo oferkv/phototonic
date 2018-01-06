@@ -116,7 +116,6 @@ private:
     QCheckBox *enableExifCb;
     QCheckBox *enableThumbExifCb;
     QCheckBox *imageInfoCb;
-    QCheckBox *noSmallThumbCb;
     QCheckBox *reverseMouseCb;
     QCheckBox *deleteConfirmCb;
     QSpinBox *slideDelaySpin;

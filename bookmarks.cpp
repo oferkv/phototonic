@@ -39,7 +39,7 @@ BookMarks::BookMarks(QWidget *parent) : QTreeWidget(parent) {
 
 void BookMarks::reloadBookmarks() {
     clear();
-    QSetIterator<QString> it(GData::bookmarkPaths);
+    QSetIterator<QString> it(Settings::bookmarkPaths);
     while (it.hasNext()) {
         QString itemPath = it.next();
         QTreeWidgetItem *item = new QTreeWidgetItem(this);
@@ -56,7 +56,7 @@ void BookMarks::resizeTreeColumn(const QModelIndex &) {
 
 void BookMarks::removeBookmark() {
     if (selectedItems().size() == 1) {
-        GData::bookmarkPaths.remove(selectedItems().at(0)->toolTip(0));
+        Settings::bookmarkPaths.remove(selectedItems().at(0)->toolTip(0));
         reloadBookmarks();
     }
 }

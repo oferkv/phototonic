@@ -30,11 +30,12 @@ class Phototonic : public QMainWindow {
 Q_OBJECT
 
 public:
+
+    int copyCutCount;
+
     Phototonic(QString fileOrDirectory, QWidget *parent = 0);
 
     QMenu *createPopupMenu();
-
-    int copyCutCount;
 
 protected:
     void mouseDoubleClickEvent(QMouseEvent *event);
@@ -55,8 +56,6 @@ public slots:
 
     void loadImagefromThumb(const QModelIndex &idx);
 
-    void updateViewerImageBySelection(const QItemSelection &selection);
-
     void loadImagefromCli();
 
     void hideViewer();
@@ -67,7 +66,7 @@ private slots:
 
     void about();
 
-    void sortThumbnains();
+    void sortThumbnails();
 
     void reload();
 
@@ -205,17 +204,9 @@ private slots:
 
     void goBottom();
 
-    void setClassicThumbs();
-
-    void setCompactThumbs();
-
-    void setSquarishThumbs();
-
     void showHiddenFiles();
 
-    void toggleImageToolbar();
-
-    void showLabels();
+    void toggleImageViewerToolbar();
 
     void setToolbarIconSize();
 
@@ -245,8 +236,6 @@ private slots:
 
     void setIiDockVisibility();
 
-    void setPvDockVisibility();
-
     void lockDocks();
 
     void cleanupCropDialog();
@@ -263,10 +252,8 @@ private slots:
 
     void moveImagesTo();
 
-
 private:
     QString cliFileName;
-    QMenuBar *thumbsMenuBar;
     QMenu *fileMenu;
     QMenu *editMenu;
     QMenu *goMenu;
@@ -277,7 +264,6 @@ private:
     QMenu *zoomSubMenu;
     QMenu *transformSubMenu;
     QMenu *viewSubMenu;
-    QMenu *imageFileSubMenu;
     QMenu *MirroringSubMenu;
     QMenu *openWithSubMenu;
 
@@ -303,19 +289,18 @@ private:
     QAction *removeBookmarkAction;
 
     QActionGroup *sortTypesGroup;
-    QActionGroup *thumbLayoutsGroup;
-    QAction *actName;
-    QAction *actTime;
-    QAction *actSize;
-    QAction *actType;
-    QAction *actReverse;
-    QAction *refreshAction;
-    QAction *subFoldersAction;
-    QAction *fullScreenAct;
-    QAction *thumbsGoTopAct;
-    QAction *thumbsGoBottomAct;
-    QAction *closeImageAct;
-    QAction *settingsAction;
+    QAction *actionSortByName;
+    QAction *actionSortByTime;
+    QAction *actionSortBySize;
+    QAction *actionSortByType;
+    QAction *actionSortReverse;
+    QAction *actionRefresh;
+    QAction *actionIncludeSubDirectories;
+    QAction *actionFullScreen;
+    QAction *actionThumbsGoToTop;
+    QAction *actionThumbsGoToBottom;
+    QAction *actionCloseImage;
+    QAction *actionSettings;
     QAction *thumbsZoomInAct;
     QAction *thumbsZoomOutAct;
     QAction *zoomSubMenuAct;
@@ -349,18 +334,14 @@ private:
     QAction *moveUpAct;
     QAction *moveDownAct;
 
-    QAction *actClassic;
-    QAction *actCompact;
-    QAction *actSquarish;
-    QAction *aboutAction;
-    QAction *actShowHidden;
-    QAction *actShowLabels;
-    QAction *actSmallIcons;
-    QAction *actLockDocks;
-    QAction *actShowViewerToolbars;
+    QAction *actionAbout;
+    QAction *actionShowHiddenFiles;
+    QAction *actionSmallToolbarIcons;
+    QAction *actionLockDocks;
+    QAction *actionShowViewerToolbar;
 
-    QAction *pasteAction;
-    QAction *createDirAction;
+    QAction *actionPaste;
+    QAction *actionCreateDirectory;
 
     QAction *goBackAction;
     QAction *goFrwdAction;
@@ -385,14 +366,13 @@ private:
     QLineEdit *pathBar;
     QLineEdit *filterBar;
     QLabel *stateLabel;
-    QDockWidget *fsDock;
-    QDockWidget *bmDock;
+    QDockWidget *fileSystemDock;
+    QDockWidget *bookmarksDock;
     QDockWidget *tagsDock;
-    QDockWidget *pvDock;
-    FSTree *fsTree;
+    FSTree *fileSystemTree;
     BookMarks *bookmarks;
     QHBoxLayout *mainLayout;
-    QDockWidget *iiDock;
+    QDockWidget *imageInfoDock;
     ThumbView *thumbView;
     ImageView *imageView;
     QList<QString> pathHistory;
@@ -402,12 +382,10 @@ private:
     QWidget *bmDockOrigWidget;
     QWidget *tagsDockOrigWidget;
     QWidget *iiDockOrigWidget;
-    QWidget *pvDockOrigWidget;
     QWidget *fsDockEmptyWidget;
     QWidget *bmDockEmptyWidget;
     QWidget *tagsDockEmptyWidget;
     QWidget *iiDockEmptyWidget;
-    QWidget *pvDockEmptyWidget;
     QVBoxLayout *imageViewLayout;
     bool interfaceDisabled;
     MetadataCache *mdCache;
@@ -422,7 +400,6 @@ private:
     bool initComplete;
     bool needThumbsRefresh;
     bool cliImageLoaded;
-    bool thumbViewBusy;
     bool shouldMaximize;
 
     bool editToolBarVisible;
@@ -464,9 +441,7 @@ private:
 
     void createStatusBar();
 
-    void setfsModelFlags();
-
-    void createFSTree();
+    void createFileSystemTree();
 
     void createBookmarks();
 

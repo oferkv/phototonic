@@ -17,7 +17,7 @@
  */
 
 #include <QtWidgets>
-#include "global.h"
+#include "Settings.h"
 
 #ifndef FSTREE_H
 #define FSTREE_H

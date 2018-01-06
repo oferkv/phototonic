@@ -18,7 +18,7 @@
 
 #include <QGraphicsDropShadowEffect>
 #include <exiv2/exiv2.hpp>
-#include "global.h"
+#include "Settings.h"
 #include "imageview.h"
 
 #define CLIPBOARD_IMAGE_NAME        "clipboard.png"
@@ -61,7 +61,7 @@ ImageView::ImageView(QWidget *parent, MetadataCache *mdCache) : QWidget(parent) 
     this->setLayout(scrollLayout);
 
     infoLabel = new QLabel(this);
-    infoLabel->setVisible(GData::enableImageInfoFS);
+    infoLabel->setVisible(Settings::enableImageInfoFS);
     infoLabel->setMargin(3);
     infoLabel->move(10, 10);
     infoLabel->setStyleSheet("QLabel { background-color : black; color : white; border-radius: 3px} ");
@@ -81,20 +81,20 @@ ImageView::ImageView(QWidget *parent, MetadataCache *mdCache) : QWidget(parent) 
     mouseMovementTimer = new QTimer(this);
     connect(mouseMovementTimer, SIGNAL(timeout()), this, SLOT(monitorCursorState()));
 
-    GData::cropLeft = GData::cropTop = GData::cropWidth = GData::cropHeight = 0;
-    GData::cropLeftPercent = GData::cropTopPercent = GData::cropWidthPercent = GData::cropHeightPercent = 0;
+    Settings::cropLeft = Settings::cropTop = Settings::cropWidth = Settings::cropHeight = 0;
+    Settings::cropLeftPercent = Settings::cropTopPercent = Settings::cropWidthPercent = Settings::cropHeightPercent = 0;
 
-    GData::hueVal = 0;
-    GData::saturationVal = 100;
-    GData::lightnessVal = 100;
-    GData::hueRedChannel = true;
-    GData::hueGreenChannel = true;
-    GData::hueBlueChannel = true;
+    Settings::hueVal = 0;
+    Settings::saturationVal = 100;
+    Settings::lightnessVal = 100;
+    Settings::hueRedChannel = true;
+    Settings::hueGreenChannel = true;
+    Settings::hueBlueChannel = true;
 
-    GData::contrastVal = 78;
-    GData::brightVal = 100;
+    Settings::contrastVal = 78;
+    Settings::brightVal = 100;
 
-    GData::dialogLastX = GData::dialogLastY = 0;
+    Settings::dialogLastX = Settings::dialogLastY = 0;
 
     newImage = false;
     cropBand = 0;
@@ -113,7 +113,7 @@ static unsigned int getWidthByHeight(int imgHeight, int imgWidth, int newHeight)
 }
 
 static inline int calcZoom(int size) {
-    return size * GData::imageZoomFactor;
+    return size * Settings::imageZoomFactor;
 }
 
 void ImageView::resizeImage() {
@@ -130,7 +130,7 @@ void ImageView::resizeImage() {
     if (tempDisableResize) {
         imgSize.scale(imgSize.width(), imgSize.height(), Qt::KeepAspectRatio);
     } else {
-        switch (GData::zoomInFlags) {
+        switch (Settings::zoomInFlags) {
             case Disable:
                 if (imgSize.width() <= imageViewWidth && imgSize.height() <= imageViewHeight) {
                     imgSize.scale(calcZoom(imgSize.width()),
@@ -179,7 +179,7 @@ void ImageView::resizeImage() {
                 break;
         }
 
-        switch (GData::zoomOutFlags) {
+        switch (Settings::zoomOutFlags) {
             case Disable:
                 if (imgSize.width() >= imageViewWidth || imgSize.height() >= imageViewHeight) {
                     imgSize.scale(calcZoom(imgSize.width()),
@@ -292,38 +292,38 @@ void ImageView::rotateByExifRotation(QImage &image, QString &imageFullPath) {
 }
 
 void ImageView::transform() {
-    if (GData::exifRotationEnabled) {
+    if (Settings::exifRotationEnabled) {
         rotateByExifRotation(displayImage, currentImageFullPath);
     }
 
-    if (GData::rotation) {
+    if (Settings::rotation) {
         QTransform trans;
-        trans.rotate(GData::rotation);
+        trans.rotate(Settings::rotation);
         displayImage = displayImage.transformed(trans, Qt::SmoothTransformation);
     }
 
-    if (GData::flipH || GData::flipV) {
-        displayImage = displayImage.mirrored(GData::flipH, GData::flipV);
+    if (Settings::flipH || Settings::flipV) {
+        displayImage = displayImage.mirrored(Settings::flipH, Settings::flipV);
     }
 
     int cropLeftPercentPixels = 0, cropTopPercentPixels = 0, cropWidthPercentPixels = 0, cropHeightPercentPixels = 0;
     bool croppingOn = false;
-    if (GData::cropLeftPercent || GData::cropTopPercent
-        || GData::cropWidthPercent || GData::cropHeightPercent) {
+    if (Settings::cropLeftPercent || Settings::cropTopPercent
+        || Settings::cropWidthPercent || Settings::cropHeightPercent) {
         croppingOn = true;
-        cropLeftPercentPixels = (displayImage.width() * GData::cropLeftPercent) / 100;
-        cropTopPercentPixels = (displayImage.height() * GData::cropTopPercent) / 100;
-        cropWidthPercentPixels = (displayImage.width() * GData::cropWidthPercent) / 100;
-        cropHeightPercentPixels = (displayImage.height() * GData::cropHeightPercent) / 100;
+        cropLeftPercentPixels = (displayImage.width() * Settings::cropLeftPercent) / 100;
+        cropTopPercentPixels = (displayImage.height() * Settings::cropTopPercent) / 100;
+        cropWidthPercentPixels = (displayImage.width() * Settings::cropWidthPercent) / 100;
+        cropHeightPercentPixels = (displayImage.height() * Settings::cropHeightPercent) / 100;
     }
 
-    if (GData::cropLeft || GData::cropTop || GData::cropWidth || GData::cropHeight) {
+    if (Settings::cropLeft || Settings::cropTop || Settings::cropWidth || Settings::cropHeight) {
         displayImage = displayImage.copy(
-                GData::cropLeft + cropLeftPercentPixels,
-                GData::cropTop + cropTopPercentPixels,
-                displayImage.width() - GData::cropLeft - GData::cropWidth - cropLeftPercentPixels -
+                Settings::cropLeft + cropLeftPercentPixels,
+                Settings::cropTop + cropTopPercentPixels,
+                displayImage.width() - Settings::cropLeft - Settings::cropWidth - cropLeftPercentPixels -
                 cropWidthPercentPixels,
-                displayImage.height() - GData::cropTop - GData::cropHeight - cropTopPercentPixels -
+                displayImage.height() - Settings::cropTop - Settings::cropHeight - cropTopPercentPixels -
                 cropHeightPercentPixels);
     } else {
         if (croppingOn) {
@@ -495,8 +495,8 @@ void ImageView::colorize() {
     }
 
     int i;
-    float contrast = ((float) GData::contrastVal / 100.0);
-    float brightness = ((float) GData::brightVal / 100.0);
+    float contrast = ((float) Settings::contrastVal / 100.0);
+    float brightness = ((float) Settings::brightVal / 100.0);
 
     for (i = 0; i < 256; ++i) {
         if (i < (int) (128.0f + 128.0f * tan(contrast)) && i > (int) (128.0f - 128.0f * tan(contrast))) {
@@ -516,13 +516,13 @@ void ImageView::colorize() {
 
         line = (QRgb *) displayImage.scanLine(y);
         for (x = 0; x < displayImage.width(); ++x) {
-            r = GData::rNegateEnabled ? bound0To255(255 - qRed(line[x])) : qRed(line[x]);
-            g = GData::gNegateEnabled ? bound0To255(255 - qGreen(line[x])) : qGreen(line[x]);
-            b = GData::bNegateEnabled ? bound0To255(255 - qBlue(line[x])) : qBlue(line[x]);
+            r = Settings::rNegateEnabled ? bound0To255(255 - qRed(line[x])) : qRed(line[x]);
+            g = Settings::gNegateEnabled ? bound0To255(255 - qGreen(line[x])) : qGreen(line[x]);
+            b = Settings::bNegateEnabled ? bound0To255(255 - qBlue(line[x])) : qBlue(line[x]);
 
-            r = bound0To255((r * (GData::redVal + 100)) / 100);
-            g = bound0To255((g * (GData::greenVal + 100)) / 100);
-            b = bound0To255((b * (GData::blueVal + 100)) / 100);
+            r = bound0To255((r * (Settings::redVal + 100)) / 100);
+            g = bound0To255((g * (Settings::greenVal + 100)) / 100);
+            b = bound0To255((b * (Settings::blueVal + 100)) / 100);
 
             r = bound0To255(brightTransform[r]);
             g = bound0To255(brightTransform[g]);
@@ -533,14 +533,14 @@ void ImageView::colorize() {
             b = bound0To255(contrastTransform[b]);
 
             rgbToHsl(r, g, b, &h, &s, &l);
-            h = GData::colorizeEnabled ? GData::hueVal : h + GData::hueVal;
-            s = bound0To255(((s * GData::saturationVal) / 100));
-            l = bound0To255(((l * GData::lightnessVal) / 100));
+            h = Settings::colorizeEnabled ? Settings::hueVal : h + Settings::hueVal;
+            s = bound0To255(((s * Settings::saturationVal) / 100));
+            l = bound0To255(((l * Settings::lightnessVal) / 100));
             hslToRgb(h, s, l, &hr, &hg, &hb);
 
-            r = GData::hueRedChannel ? hr : qRed(line[x]);
-            g = GData::hueGreenChannel ? hg : qGreen(line[x]);
-            b = GData::hueBlueChannel ? hb : qBlue(line[x]);
+            r = Settings::hueRedChannel ? hr : qRed(line[x]);
+            g = Settings::hueGreenChannel ? hg : qGreen(line[x]);
+            b = Settings::hueBlueChannel ? hb : qBlue(line[x]);
 
             if (hasAlpha) {
                 line[x] = qRgba(r, g, b, qAlpha(line[x]));
@@ -556,8 +556,8 @@ void ImageView::refresh() {
         return;
     }
 
-    if (GData::scaledWidth) {
-        displayImage = origImage.scaled(GData::scaledWidth, GData::scaledHeight,
+    if (Settings::scaledWidth) {
+        displayImage = origImage.scaled(Settings::scaledWidth, Settings::scaledHeight,
                                         Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     } else {
         displayImage = origImage;
@@ -565,7 +565,7 @@ void ImageView::refresh() {
 
     transform();
 
-    if (GData::colorsActive || GData::keepTransform) {
+    if (Settings::colorsActive || Settings::keepTransform) {
         colorize();
     }
 
@@ -601,7 +601,7 @@ QImage createImageWithOverlay(const QImage &baseImage, const QImage &overlayImag
 
 void ImageView::reload() {
     isAnimation = false;
-    if (GData::enableImageInfoFS) {
+    if (Settings::enableImageInfoFS) {
         if (currentImageFullPath.left(1) == ":") {
             setInfo("No Image");
         } else if (currentImageFullPath.isEmpty()) {
@@ -611,13 +611,13 @@ void ImageView::reload() {
         }
     }
 
-    if (!GData::keepTransform) {
-        GData::cropLeftPercent = GData::cropTopPercent = GData::cropWidthPercent = GData::cropHeightPercent = 0;
-        GData::rotation = 0;
-        GData::flipH = GData::flipV = false;
+    if (!Settings::keepTransform) {
+        Settings::cropLeftPercent = Settings::cropTopPercent = Settings::cropWidthPercent = Settings::cropHeightPercent = 0;
+        Settings::rotation = 0;
+        Settings::flipH = Settings::flipV = false;
     }
-    GData::scaledWidth = GData::scaledHeight = 0;
-    GData::cropLeft = GData::cropTop = GData::cropWidth = GData::cropHeight = 0;
+    Settings::scaledWidth = Settings::scaledHeight = 0;
+    Settings::cropLeft = Settings::cropTop = Settings::cropWidth = Settings::cropHeight = 0;
 
     if (newImage || currentImageFullPath.isEmpty()) {
         newImage = true;
@@ -632,7 +632,7 @@ void ImageView::reload() {
     }
 
     imageReader.setFileName(currentImageFullPath);
-    if (GData::enableAnimations && imageReader.supportsAnimation()) {
+    if (Settings::enableAnimations && imageReader.supportsAnimation()) {
         if (anim) {
             delete anim;
         }
@@ -649,7 +649,7 @@ void ImageView::reload() {
         if (imageReader.size().isValid() && imageReader.read(&origImage)) {
             displayImage = origImage;
             transform();
-            if (GData::colorsActive || GData::keepTransform) {
+            if (Settings::colorsActive || Settings::keepTransform) {
                 colorize();
             }
             if (mirrorLayout) {
@@ -694,8 +694,8 @@ void ImageView::loadImage(QString imageFileName) {
     tempDisableResize = false;
     currentImageFullPath = imageFileName;
 
-    if (!GData::keepZoomFactor) {
-        GData::imageZoomFactor = 1.0;
+    if (!Settings::keepZoomFactor) {
+        Settings::imageZoomFactor = 1.0;
     }
 
     QApplication::processEvents();
@@ -802,13 +802,13 @@ void ImageView::cropToSelection() {
         int cropHeight = displayPixmap.height() - bandBR.y();
 
         if (cropLeft > 0)
-            GData::cropLeft += cropLeft;
+            Settings::cropLeft += cropLeft;
         if (cropTop > 0)
-            GData::cropTop += cropTop;
+            Settings::cropTop += cropTop;
         if (cropWidth > 0)
-            GData::cropWidth += cropWidth;
+            Settings::cropWidth += cropWidth;
         if (cropHeight > 0)
-            GData::cropHeight += cropHeight;
+            Settings::cropHeight += cropHeight;
 
         cropBand->hide();
         refresh();
@@ -953,7 +953,7 @@ void ImageView::saveImage() {
 
     QImageReader imgReader(currentImageFullPath);
     if (!displayPixmap.save(currentImageFullPath, imgReader.format().toUpper(),
-                            GData::defaultSaveQuality)) {
+                            Settings::defaultSaveQuality)) {
         QMessageBox msgBox;
         msgBox.critical(this, tr("Error"), tr("Failed to save image."));
         return;
@@ -996,7 +996,7 @@ void ImageView::saveImageAs() {
         }
 
 
-        if (!displayPixmap.save(fileName, 0, GData::defaultSaveQuality)) {
+        if (!displayPixmap.save(fileName, 0, Settings::defaultSaveQuality)) {
             QMessageBox msgBox;
             msgBox.critical(this, tr("Error"), tr("Failed to save image."));
         } else {
@@ -1054,9 +1054,9 @@ void ImageView::pasteImage() {
 
 void ImageView::setBgColor() {
     QString bgColor = "background: rgb(%1, %2, %3); ";
-    bgColor = bgColor.arg(GData::backgroundColor.red())
-            .arg(GData::backgroundColor.green())
-            .arg(GData::backgroundColor.blue());
+    bgColor = bgColor.arg(Settings::backgroundColor.red())
+            .arg(Settings::backgroundColor.green())
+            .arg(Settings::backgroundColor.blue());
 
     QString ss = "QWidget { " + bgColor + " }";
     scrlArea->setStyleSheet(ss);

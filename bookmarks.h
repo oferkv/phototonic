@@ -20,7 +20,7 @@
 #define BOOKMARKS_H
 
 #include <QtWidgets>
-#include "global.h"
+#include "Settings.h"
 
 class BookMarks : public QTreeWidget {
 Q_OBJECT
