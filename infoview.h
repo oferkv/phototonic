@@ -21,25 +21,29 @@
 
 #include <QtWidgets>
 
-class InfoView : public QTableView
-{
-	Q_OBJECT
+class InfoView : public QTableView {
+Q_OBJECT
 
 public:
-	InfoView(QWidget *parent);
-	void clear();
-	void addEntry(QString &key, QString &value);
-	void addTitleEntry(QString title);
+    InfoView(QWidget *parent);
+
+    void clear();
+
+    void addEntry(QString &key, QString &value);
+
+    void addTitleEntry(QString title);
 
 public slots:
-	void showInfoViewMenu(QPoint pt);
-	void copyEntry();
+
+    void showInfoViewMenu(QPoint pt);
+
+    void copyEntry();
 
 private:
-	QStandardItemModel *infoModel;
-	QModelIndex selectedEntry;
-	QMenu *infoMenu;
-	QAction *copyAction;
+    QStandardItemModel *infoModel;
+    QModelIndex selectedEntry;
+    QMenu *infoMenu;
+    QAction *copyAction;
 
 };
 

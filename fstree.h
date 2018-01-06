@@ -22,35 +22,40 @@
 #ifndef FSTREE_H
 #define FSTREE_H
 
-class FSModel : public QFileSystemModel
-{
+class FSModel : public QFileSystemModel {
 public:
-	bool hasChildren(const QModelIndex &parent) const;
+    bool hasChildren(const QModelIndex &parent) const;
 };
 
-class FSTree : public QTreeView
-{
-	Q_OBJECT
+class FSTree : public QTreeView {
+Q_OBJECT
 
 public:
-	FSTree(QWidget *parent);
-	FSModel *fsModel;
-	QModelIndex getCurrentIndex();
-	void setModelFlags();
+    FSTree(QWidget *parent);
+
+    FSModel *fsModel;
+
+    QModelIndex getCurrentIndex();
+
+    void setModelFlags();
 
 protected:
-	void dragEnterEvent(QDragEnterEvent *event);
-	void dragMoveEvent(QDragMoveEvent *event);
-	void dropEvent(QDropEvent *event);
+    void dragEnterEvent(QDragEnterEvent *event);
+
+    void dragMoveEvent(QDragMoveEvent *event);
+
+    void dropEvent(QDropEvent *event);
 
 signals:
-	void dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvDirPath);
+
+    void dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvDirPath);
 
 private:
-	QModelIndex dndOrigSelection;
+    QModelIndex dndOrigSelection;
 
 private slots:
-	void resizeTreeColumn(const QModelIndex &);
+
+    void resizeTreeColumn(const QModelIndex &);
 };
 
 #endif // FSTREE_H

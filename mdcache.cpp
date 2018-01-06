@@ -20,109 +20,100 @@
 #include "global.h"
 #include "mdcache.h"
 
-void MetadataCache::updateImageTags(QString &imageFileName, QSet<QString> tags)
-{
-	imageTagsCache[imageFileName].tags = tags;
+void MetadataCache::updateImageTags(QString &imageFileName, QSet<QString> tags) {
+    imageTagsCache[imageFileName].tags = tags;
 }
 
-bool MetadataCache::removeTagFromImage(QString &imageFileName, const QString &tagName)
-{
-	return imageTagsCache[imageFileName].tags.remove(tagName);
+bool MetadataCache::removeTagFromImage(QString &imageFileName, const QString &tagName) {
+    return imageTagsCache[imageFileName].tags.remove(tagName);
 }
 
-void MetadataCache::removeImage(QString &imageFileName)
-{
-	imageTagsCache.remove(imageFileName);
+void MetadataCache::removeImage(QString &imageFileName) {
+    imageTagsCache.remove(imageFileName);
 }
 
-QSet<QString>& MetadataCache::getImageTags(QString &imageFileName)
-{
-	return imageTagsCache[imageFileName].tags;
+QSet<QString> &MetadataCache::getImageTags(QString &imageFileName) {
+    return imageTagsCache[imageFileName].tags;
 }
 
-int MetadataCache::getImageOrientation(QString &imageFileName)
-{
-	if (imageTagsCache.contains(imageFileName)|| loadImageMetadata(imageFileName)) {
-		return imageTagsCache[imageFileName].orientation;
-	} 
+int MetadataCache::getImageOrientation(QString &imageFileName) {
+    if (imageTagsCache.contains(imageFileName) || loadImageMetadata(imageFileName)) {
+        return imageTagsCache[imageFileName].orientation;
+    }
 
-	return 0;
+    return 0;
 }
 
-void MetadataCache::setImageTags(const QString &imageFileName, QSet<QString> tags)
-{
-	ImageMetadata imageMetadata;
+void MetadataCache::setImageTags(const QString &imageFileName, QSet<QString> tags) {
+    ImageMetadata imageMetadata;
 
-	imageMetadata.tags = tags;
-	imageTagsCache.insert(imageFileName, imageMetadata);
+    imageMetadata.tags = tags;
+    imageTagsCache.insert(imageFileName, imageMetadata);
 }
 
-void MetadataCache::addTagToImage(QString &imageFileName, QString &tagName)
-{
-	if (imageTagsCache[imageFileName].tags.contains(tagName)) {
-		return;
-	}
-	
-	imageTagsCache[imageFileName].tags.insert(tagName);
+void MetadataCache::addTagToImage(QString &imageFileName, QString &tagName) {
+    if (imageTagsCache[imageFileName].tags.contains(tagName)) {
+        return;
+    }
+
+    imageTagsCache[imageFileName].tags.insert(tagName);
 }
 
-void MetadataCache::clear()
-{
-	imageTagsCache.clear();
+void MetadataCache::clear() {
+    imageTagsCache.clear();
 }
 
-bool MetadataCache::loadImageMetadata(const QString &imageFullPath)
-{
-	Exiv2::Image::AutoPtr exifImage;
-	QSet<QString> tags;
-	long orientation = 0;
+bool MetadataCache::loadImageMetadata(const QString &imageFullPath) {
+    Exiv2::Image::AutoPtr exifImage;
+    QSet<QString> tags;
+    long orientation = 0;
 
-	try {
-		exifImage = Exiv2::ImageFactory::open(imageFullPath.toStdString());
-		exifImage->readMetadata();
-	} catch (Exiv2::Error &error) {
-		return false;
-	}
+    try {
+        exifImage = Exiv2::ImageFactory::open(imageFullPath.toStdString());
+        exifImage->readMetadata();
+    } catch (Exiv2::Error &error) {
+        return false;
+    }
 
-	try {
-		Exiv2::ExifData &exifData = exifImage->exifData();
-		if (!exifData.empty()) {
-			orientation = exifData["Exif.Image.Orientation"].value().toLong();
-		}
-	} catch (Exiv2::Error &error) {
+    try {
+        Exiv2::ExifData &exifData = exifImage->exifData();
+        if (!exifData.empty()) {
+            orientation = exifData["Exif.Image.Orientation"].value().toLong();
+        }
+    } catch (Exiv2::Error &error) {
 
-	}
+    }
 
-	try {
-		Exiv2::IptcData &iptcData = exifImage->iptcData();
-		if (!iptcData.empty()) {
-			QString key;
-			Exiv2::IptcData::iterator end = iptcData.end();
-			for (Exiv2::IptcData::iterator iptcIt = iptcData.begin(); iptcIt != end; ++iptcIt) {
-				if (iptcIt->tagName() == "Keywords") {
-					QString tagName = QString::fromUtf8(iptcIt->toString().c_str());
-					tags.insert(tagName);
-					GData::knownTags.insert(tagName);
-				}
-	        }
-	    }
-	} catch (Exiv2::Error &error) {
+    try {
+        Exiv2::IptcData &iptcData = exifImage->iptcData();
+        if (!iptcData.empty()) {
+            QString key;
+            Exiv2::IptcData::iterator end = iptcData.end();
+            for (Exiv2::IptcData::iterator iptcIt = iptcData.begin(); iptcIt != end; ++iptcIt) {
+                if (iptcIt->tagName() == "Keywords") {
+                    QString tagName = QString::fromUtf8(iptcIt->toString().c_str());
+                    tags.insert(tagName);
+                    GData::knownTags.insert(tagName);
+                }
+            }
+        }
+    } catch (Exiv2::Error &error) {
 
-	}
+    }
 
-	ImageMetadata imageMetadata;
-	if (tags.size()) {
-		imageMetadata.tags = tags;
-	}
+    ImageMetadata imageMetadata;
+    if (tags.size()) {
+        imageMetadata.tags = tags;
+    }
 
-	if (orientation) {
-		imageMetadata.orientation = orientation;
-	}
+    if (orientation) {
+        imageMetadata.orientation = orientation;
+    }
 
-	if (tags.size() || orientation) {
-		imageTagsCache.insert(imageFullPath, imageMetadata);
-	}
+    if (tags.size() || orientation) {
+        imageTagsCache.insert(imageFullPath, imageMetadata);
+    }
 
-	return true;
+    return true;
 }
 

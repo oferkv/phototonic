@@ -23,108 +23,137 @@
 #include "croprubberband.h"
 #include "mdcache.h"
 
-class ImageView : public QWidget
-{
-    Q_OBJECT
+class ImageView : public QWidget {
+Q_OBJECT
 
 public:
-	bool tempDisableResize;
-	int mirrorLayout;
-	QString currentImageFullPath;
-	QMenu *ImagePopUpMenu;
-	QScrollArea *scrlArea;
-	QLabel *infoLabel;
-	CropRubberBand *cropBand;
+    bool tempDisableResize;
+    int mirrorLayout;
+    QString currentImageFullPath;
+    QMenu *ImagePopUpMenu;
+    QScrollArea *scrlArea;
+    QLabel *infoLabel;
+    CropRubberBand *cropBand;
 
-	enum ZoomMethods
-	{
-		Disable = 0,
-		WidthNHeight,
-		Width,
-		Height,
-		Disprop
-	};
+    enum ZoomMethods {
+        Disable = 0,
+        WidthNHeight,
+        Width,
+        Height,
+        Disprop
+    };
 
-	enum MirrorLayouts
-	{
-		LayNone = 0,
-		LayDual,
-		LayTriple,
-		LayQuad,
-		LayVDual
-	};
+    enum MirrorLayouts {
+        LayNone = 0,
+        LayDual,
+        LayTriple,
+        LayQuad,
+        LayVDual
+    };
 
-	enum Movement
-	{
-		MoveUp = 0,
-		MoveDown,
-		MoveLeft,
-		MoveRight
-	};
+    enum Movement {
+        MoveUp = 0,
+        MoveDown,
+        MoveLeft,
+        MoveRight
+    };
 
-	ImageView(QWidget *parent, MetadataCache *mdCache);
-	void loadImage(QString imageFileName);
-	void resizeImage();
-	void setCursorHiding(bool hide);
-	void refresh();
-	void refreshColors();
-	void reload();
-	int getImageWidthPreCropped();
-	int getImageHeightPreCropped();
-	bool isNewImage();
-	void keyMoveEvent(int direction);
-	void rotateByExifRotation(QImage &image, QString &imageFullPath);
-	void setInfo(QString infoString);
-	void setFeedback(QString feedbackString);
-	void setBgColor();
+    ImageView(QWidget *parent, MetadataCache *mdCache);
+
+    void loadImage(QString imageFileName);
+
+    void resizeImage();
+
+    void setCursorHiding(bool hide);
+
+    void refresh();
+
+    void refreshColors();
+
+    void reload();
+
+    int getImageWidthPreCropped();
+
+    int getImageHeightPreCropped();
+
+    bool isNewImage();
+
+    void keyMoveEvent(int direction);
+
+    void rotateByExifRotation(QImage &image, QString &imageFullPath);
+
+    void setInfo(QString infoString);
+
+    void setFeedback(QString feedbackString);
+
+    void setBgColor();
 
 public slots:
-	void monitorCursorState();
-	void saveImage();
-	void saveImageAs();
-	void copyImage();
-	void pasteImage();
-	void cropToSelection();
+
+    void monitorCursorState();
+
+    void saveImage();
+
+    void saveImageAs();
+
+    void copyImage();
+
+    void pasteImage();
+
+    void cropToSelection();
 
 private slots:
-	void unsetFeedback();
+
+    void unsetFeedback();
 
 protected:
-	void resizeEvent(QResizeEvent *event);
-	void showEvent(QShowEvent *event);
-	void mouseMoveEvent(QMouseEvent *event);
-	void contextMenuEvent(QContextMenuEvent *event);
-	void mouseDoubleClickEvent(QMouseEvent *event);
-	void mousePressEvent(QMouseEvent *event);
-	void mouseReleaseEvent(QMouseEvent *event);
+    void resizeEvent(QResizeEvent *event);
+
+    void showEvent(QShowEvent *event);
+
+    void mouseMoveEvent(QMouseEvent *event);
+
+    void contextMenuEvent(QContextMenuEvent *event);
+
+    void mouseDoubleClickEvent(QMouseEvent *event);
+
+    void mousePressEvent(QMouseEvent *event);
+
+    void mouseReleaseEvent(QMouseEvent *event);
 
 private:
-	QWidget *mainWindow;
-	QImageReader imageReader;
-	QLabel *imageLabel;
-	QPixmap displayPixmap;
-	QImage origImage;
-	QImage displayImage;
-	QImage mirrorImage;
-	QTimer *mouseMovementTimer;
-	QMovie *anim;
-	bool newImage;
-	bool cursorIsHidden;
-	bool moveImageLocked;
-	int mouseX;
-	int mouseY;
-	int layoutX;
-	int layoutY;
-	bool isAnimation;
-	QLabel *feedbackLabel;
-	QPoint cropOrigin;
-	MetadataCache *mdCache;
+    QWidget *mainWindow;
+    QImageReader imageReader;
+    QLabel *imageLabel;
+    QPixmap displayPixmap;
+    QImage origImage;
+    QImage displayImage;
+    QImage mirrorImage;
+    QTimer *mouseMovementTimer;
+    QMovie *anim;
+    bool newImage;
+    bool cursorIsHidden;
+    bool moveImageLocked;
+    int mouseX;
+    int mouseY;
+    int layoutX;
+    int layoutY;
+    bool isAnimation;
+    QLabel *feedbackLabel;
+    QPoint cropOrigin;
+    MetadataCache *mdCache;
+    int barsX;
+    int barsY;
 
-	void setMouseMoveData(bool lockMove, int lMouseX, int lMouseY);
-	void centerImage(QSize &imgSize);
-	void transform();
-	void mirror();
-	void colorize();
+    void setMouseMoveData(bool lockMove, int lMouseX, int lMouseY);
+
+    void centerImage(QSize &imgSize);
+
+    void transform();
+
+    void mirror();
+
+    void colorize();
 };
 
 #endif // IMAGEVIEW_H

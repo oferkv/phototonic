@@ -25,251 +25,286 @@
 
 int cpMvFile(bool isCopy, QString &srcFile, QString &srcPath, QString &dstPath, QString &dstDir);
 
-class CpMvDialog : public QDialog
-{
-    Q_OBJECT
+class CpMvDialog : public QDialog {
+Q_OBJECT
 
 public slots:
-	void abort();
+
+    void abort();
 
 public:
     CpMvDialog(QWidget *parent);
-	void exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDir);
-	int nfiles;
-	int latestRow;
+
+    void exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDir);
+
+    int nfiles;
+    int latestRow;
 
 private:
-	QLabel *opLabel;
-	QPushButton *cancelButton;
-	QFileInfo *dirInfo;
-	bool abortOp;
+    QLabel *opLabel;
+    QPushButton *cancelButton;
+    QFileInfo *dirInfo;
+    bool abortOp;
 };
 
-class ShortcutsTableView : public QTableView
-{
-	Q_OBJECT
+class ShortcutsTableView : public QTableView {
+Q_OBJECT
 
 public:
-	ShortcutsTableView();
-	void addRow(QString action, QString description, QString shortcut);
+    ShortcutsTableView();
+
+    void addRow(QString action, QString description, QString shortcut);
 
 public slots:
-	void showShortcutsTableMenu(QPoint pt);
-	void clearShortcut();
+
+    void showShortcutsTableMenu(QPoint pt);
+
+    void clearShortcut();
 
 protected:
-	void keyPressEvent(QKeyEvent *e);
+    void keyPressEvent(QKeyEvent *e);
 
 private:
-	QStandardItemModel *keysModel;
-	QModelIndex selectedEntry;
-	QMenu *shortcutsMenu;
-	QAction *clearAction;
+    QStandardItemModel *keysModel;
+    QModelIndex selectedEntry;
+    QMenu *shortcutsMenu;
+    QAction *clearAction;
 };
 
-class SettingsDialog : public QDialog
-{
-    Q_OBJECT
+class SettingsDialog : public QDialog {
+Q_OBJECT
 
 public:
-	static int const nZoomRadios = 5;
+    static int const nZoomRadios = 5;
+
     SettingsDialog(QWidget *parent);
 
 private slots:
-	void pickColor();
-	void pickThumbsColor();
-	void pickThumbsTextColor();
-	void pickStartupDir();
-	void pickBgImage();
+
+    void pickColor();
+
+    void pickThumbsColor();
+
+    void pickThumbsTextColor();
+
+    void pickStartupDir();
+
+    void pickBgImage();
 
 public slots:
-	void abort();
-	void saveSettings();
+
+    void abort();
+
+    void saveSettings();
 
 private:
-	QRadioButton *fitLargeRadios[nZoomRadios];
-	QRadioButton *fitSmallRadios[nZoomRadios];
-	QCheckBox *compactLayoutCb;
-	QToolButton *backgroundColorButton;
+    QRadioButton *fitLargeRadios[nZoomRadios];
+    QRadioButton *fitSmallRadios[nZoomRadios];
+    QCheckBox *compactLayoutCb;
+    QToolButton *backgroundColorButton;
     QToolButton *colThumbButton;
     QToolButton *colThumbTextButton;
-	QSpinBox *thumbSpacingSpin;
-	QSpinBox *thumbPagesSpin;
-	QSpinBox *saveQualitySpin;
-	QColor bgColor;
-	QColor thumbBgColor;
-	QColor thumbTextColor;
-	QCheckBox *exitCliCb;
-	QCheckBox *wrapListCb;
-	QCheckBox *enableAnimCb;
-	QCheckBox *enableExifCb;
-	QCheckBox *enableThumbExifCb;
-	QCheckBox *imageInfoCb;
-	QCheckBox *noSmallThumbCb;
-	QCheckBox *reverseMouseCb;
-	QCheckBox *deleteConfirmCb;
-	QSpinBox *slideDelaySpin;
-	QCheckBox *slideRandomCb;
-	QRadioButton *startupDirRadios[3];
-	QLineEdit *startupDirEdit;
-	QLineEdit *thumbsBackImageEdit;
+    QSpinBox *thumbSpacingSpin;
+    QSpinBox *thumbPagesSpin;
+    QSpinBox *saveQualitySpin;
+    QColor bgColor;
+    QColor thumbBgColor;
+    QColor thumbTextColor;
+    QCheckBox *exitCliCb;
+    QCheckBox *wrapListCb;
+    QCheckBox *enableAnimCb;
+    QCheckBox *enableExifCb;
+    QCheckBox *enableThumbExifCb;
+    QCheckBox *imageInfoCb;
+    QCheckBox *noSmallThumbCb;
+    QCheckBox *reverseMouseCb;
+    QCheckBox *deleteConfirmCb;
+    QSpinBox *slideDelaySpin;
+    QCheckBox *slideRandomCb;
+    QRadioButton *startupDirRadios[3];
+    QLineEdit *startupDirEdit;
+    QLineEdit *thumbsBackImageEdit;
 
-	void setButtonBgColor(QColor &color, QToolButton *button);
+    void setButtonBgColor(QColor &color, QToolButton *button);
 };
 
-class CropDialog : public QDialog
-{
-    Q_OBJECT
+class CropDialog : public QDialog {
+Q_OBJECT
 
 public:
     CropDialog(QWidget *parent, ImageView *imageView);
 
 public slots:
-	void ok();
-	void reset();
-	void applyCrop(int);
+
+    void ok();
+
+    void reset();
+
+    void applyCrop(int);
 
 private:
-	QSpinBox *topSpin;
-	QSpinBox *bottomSpin;
-	QSpinBox *leftSpin;
-	QSpinBox *rightSpin;
-	ImageView *imageView;
+    QSpinBox *topSpin;
+    QSpinBox *bottomSpin;
+    QSpinBox *leftSpin;
+    QSpinBox *rightSpin;
+    ImageView *imageView;
 };
 
-class ResizeDialog : public QDialog
-{
-    Q_OBJECT
+class ResizeDialog : public QDialog {
+Q_OBJECT
 
 public:
     ResizeDialog(QWidget *parent, ImageView *imageView);
 
 public slots:
-	void ok();
-	void abort();
-	void setAspectLock();
-	void setUnits();
-	void adjustSizes();
-	
+
+    void ok();
+
+    void abort();
+
+    void setAspectLock();
+
+    void setUnits();
+
+    void adjustSizes();
+
 private:
-	int width;
-	int height;
-	int lastWidth;
-	int lastHeight;
-	bool aspectLocked;
-	bool pixelUnits;
-	int newWidth;
-	int newHeight;
-	
-	QSpinBox *widthSpin;
-	QSpinBox *heightSpin;
-	QRadioButton *pixelsRadio;
-	QRadioButton *percentRadio;
-	QLabel *newSizePixelsLab;
-	ImageView *imageView;
+    int width;
+    int height;
+    int lastWidth;
+    int lastHeight;
+    bool aspectLocked;
+    bool pixelUnits;
+    int newWidth;
+    int newHeight;
+
+    QSpinBox *widthSpin;
+    QSpinBox *heightSpin;
+    QRadioButton *pixelsRadio;
+    QRadioButton *percentRadio;
+    QLabel *newSizePixelsLab;
+    ImageView *imageView;
 };
 
-class ColorsDialog : public QDialog
-{
-    Q_OBJECT
+class ColorsDialog : public QDialog {
+Q_OBJECT
 
 public:
     ColorsDialog(QWidget *parent, ImageView *imageView);
 
 public slots:
-	void ok();
-	void reset();
-	void enableColorize(int state);
-	void redNegative(int state);
-	void greenNegative(int state);
-	void blueNegative(int state);
-	void setRedChannel();
-	void setGreenChannel();
-	void setBlueChannel();
-	void applyColors(int value);
+
+    void ok();
+
+    void reset();
+
+    void enableColorize(int state);
+
+    void redNegative(int state);
+
+    void greenNegative(int state);
+
+    void blueNegative(int state);
+
+    void setRedChannel();
+
+    void setGreenChannel();
+
+    void setBlueChannel();
+
+    void applyColors(int value);
 
 private:
-	ImageView *imageView;
-	QSlider *hueSlide;
-	QCheckBox *colorizeCb;
-	QSlider *saturationSlide;
-	QSlider *lightnessSlide;
-	QCheckBox *redB;
-	QCheckBox *greenB;
-	QCheckBox *blueB;
-	QSlider *brightSlide;
-	QSlider *contrastSlide;
-	QSlider *redSlide;
-	QSlider *greenSlide;
-	QSlider *blueSlide;
-	QCheckBox *rNegateCb;
-	QCheckBox *gNegateCb;
-	QCheckBox *bNegateCb;
+    ImageView *imageView;
+    QSlider *hueSlide;
+    QCheckBox *colorizeCb;
+    QSlider *saturationSlide;
+    QSlider *lightnessSlide;
+    QCheckBox *redB;
+    QCheckBox *greenB;
+    QCheckBox *blueB;
+    QSlider *brightSlide;
+    QSlider *contrastSlide;
+    QSlider *redSlide;
+    QSlider *greenSlide;
+    QSlider *blueSlide;
+    QCheckBox *rNegateCb;
+    QCheckBox *gNegateCb;
+    QCheckBox *bNegateCb;
 };
 
-class AppMgmtDialog : public QDialog
-{
-    Q_OBJECT
+class AppMgmtDialog : public QDialog {
+Q_OBJECT
 
 public:
     AppMgmtDialog(QWidget *parent);
 
 public slots:
-	void ok();
+
+    void ok();
 
 private slots:
-	void add();
-	void remove();
-	void entry();
+
+    void add();
+
+    void remove();
+
+    void entry();
 
 private:
-	QTableView *appsTable;
-	QStandardItemModel *appsTableModel;
+    QTableView *appsTable;
+    QStandardItemModel *appsTableModel;
 
-	void addTableModelItem(QStandardItemModel *model, QString &key, QString &val);
+    void addTableModelItem(QStandardItemModel *model, QString &key, QString &val);
 };
 
-class CopyMoveToDialog : public QDialog
-{
-    Q_OBJECT
+class CopyMoveToDialog : public QDialog {
+Q_OBJECT
 
 public:
     CopyMoveToDialog(QWidget *parent, QString thumbsPath, bool move);
-	QString selectedPath;
-	bool copyOp;
+
+    QString selectedPath;
+    bool copyOp;
 
 private slots:
-	void copyOrMove();
-	void justClose();
-	void add();
-	void remove();
-	void selection(const QItemSelection&, const QItemSelection&);
-	void pathDoubleClick(const QModelIndex &idx);
+
+    void copyOrMove();
+
+    void justClose();
+
+    void add();
+
+    void remove();
+
+    void selection(const QItemSelection &, const QItemSelection &);
+
+    void pathDoubleClick(const QModelIndex &idx);
 
 private:
-	QTableView *pathsTable;
-	QStandardItemModel *pathsTableModel;
-	QString currentPath;
-	QLabel *destinationLab;
+    QTableView *pathsTable;
+    QStandardItemModel *pathsTableModel;
+    QString currentPath;
+    QLabel *destinationLab;
 
-	void savePaths();
+    void savePaths();
 };
 
-class ProgressDialog : public QDialog
-{
-    Q_OBJECT
+class ProgressDialog : public QDialog {
+Q_OBJECT
 
 public slots:
-	void abort();
+
+    void abort();
 
 public:
-	QLabel *opLabel;
-	bool abortOp;
-	
+    QLabel *opLabel;
+    bool abortOp;
+
     ProgressDialog(QWidget *parent);
 
 private:
-	QPushButton *cancelButton;
+    QPushButton *cancelButton;
 };
 
 #endif // DIALOGS_H

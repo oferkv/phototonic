@@ -21,14 +21,14 @@
 
 #include <QtWidgets>
 
-class CropRubberBand : public QWidget
-{
+class CropRubberBand : public QWidget {
 public:
-  CropRubberBand(QWidget *parent = 0);
+    CropRubberBand(QWidget *parent = 0);
 
 private:
-  QRubberBand *rubberband;
-  void resizeEvent(QResizeEvent *);
+    QRubberBand *rubberband;
+
+    void resizeEvent(QResizeEvent *);
 };
 
 #endif // CROPRUBBERBAND_H

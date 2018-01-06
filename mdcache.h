@@ -21,29 +21,35 @@
 
 #include <QtWidgets>
 
-class ImageMetadata
-{
+class ImageMetadata {
 public:
-	QSet<QString> tags;
-	int orientation;
+    QSet<QString> tags;
+    int orientation;
 };
 
-class MetadataCache
-{
+class MetadataCache {
 
 private:
-	QMap<QString, ImageMetadata> imageTagsCache;
+    QMap<QString, ImageMetadata> imageTagsCache;
 
 public:
-	void updateImageTags(QString &imageFileName, QSet<QString> tags);
-	void addTagToImage(QString &imageFileName, QString &tagName);
-	bool removeTagFromImage(QString &imageFileName, const QString &tagName);
-	void removeImage(QString &imageFileName);
-	QSet<QString> &getImageTags(QString &imageFileName);
-	void setImageTags(const QString &imageFileName, QSet<QString> tags);
-	void clear();
-	bool loadImageMetadata(const QString &imageFullPath);
-	int getImageOrientation(QString &imageFileName);
+    void updateImageTags(QString &imageFileName, QSet<QString> tags);
+
+    void addTagToImage(QString &imageFileName, QString &tagName);
+
+    bool removeTagFromImage(QString &imageFileName, const QString &tagName);
+
+    void removeImage(QString &imageFileName);
+
+    QSet<QString> &getImageTags(QString &imageFileName);
+
+    void setImageTags(const QString &imageFileName, QSet<QString> tags);
+
+    void clear();
+
+    bool loadImageMetadata(const QString &imageFullPath);
+
+    int getImageOrientation(QString &imageFileName);
 
 };
 

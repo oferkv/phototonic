@@ -18,85 +18,80 @@
 
 #include "fstree.h"
 
-bool FSModel::hasChildren(const QModelIndex &parent) const
-{
-	if (parent.column() > 0)
-		return false;
+bool FSModel::hasChildren(const QModelIndex &parent) const {
+    if (parent.column() > 0)
+        return false;
 
-	if (!parent.isValid()) // drives
-		return true;
+    if (!parent.isValid()) // drives
+        return true;
 
-	// return false if item cant have children
-	if (parent.flags() &  Qt::ItemNeverHasChildren) {
-		return false;
-	}
+    // return false if item cant have children
+    if (parent.flags() & Qt::ItemNeverHasChildren) {
+        return false;
+    }
 
-	// return if at least one child exists
-	return QDirIterator(filePath(parent), filter() | QDir::NoDotAndDotDot, QDirIterator::NoIteratorFlags).hasNext();
+    // return if at least one child exists
+    return QDirIterator(filePath(parent), filter() | QDir::NoDotAndDotDot, QDirIterator::NoIteratorFlags).hasNext();
 }
 
-FSTree::FSTree(QWidget *parent) : QTreeView(parent)
-{
-	setAcceptDrops(true);
-	setDragEnabled(true);
-	setDragDropMode(QAbstractItemView::InternalMove);
+FSTree::FSTree(QWidget *parent) : QTreeView(parent) {
+    setAcceptDrops(true);
+    setDragEnabled(true);
+    setDragDropMode(QAbstractItemView::InternalMove);
 
-	fsModel = new FSModel();
-	fsModel->setRootPath("");
-	setModelFlags();
+    fsModel = new FSModel();
+    fsModel->setRootPath("");
+    setModelFlags();
 
-	setModel(fsModel);
+    setModel(fsModel);
 
-	for (int i = 1; i <= 3; ++i) {
-		hideColumn(i);
-	}
-	setHeaderHidden(true);
+    for (int i = 1; i <= 3; ++i) {
+        hideColumn(i);
+    }
+    setHeaderHidden(true);
 
-	connect(this, SIGNAL(expanded(const QModelIndex &)),
-								this, SLOT(resizeTreeColumn(const QModelIndex &)));
-	connect(this, SIGNAL(collapsed(const QModelIndex &)),
-								this, SLOT(resizeTreeColumn(const QModelIndex &)));
+    connect(this, SIGNAL(expanded(
+                                 const QModelIndex &)),
+            this, SLOT(resizeTreeColumn(
+                               const QModelIndex &)));
+    connect(this, SIGNAL(collapsed(
+                                 const QModelIndex &)),
+            this, SLOT(resizeTreeColumn(
+                               const QModelIndex &)));
 }
 
-QModelIndex FSTree::getCurrentIndex()
-{
-	return selectedIndexes().first();
+QModelIndex FSTree::getCurrentIndex() {
+    return selectedIndexes().first();
 }
 
-void FSTree::resizeTreeColumn(const QModelIndex &)
-{
-	resizeColumnToContents(0);
+void FSTree::resizeTreeColumn(const QModelIndex &) {
+    resizeColumnToContents(0);
 }
 
-void FSTree::dragEnterEvent(QDragEnterEvent *event)
-{
-	QModelIndexList selectedDirs = selectionModel()->selectedRows();
-	if (selectedDirs.size() > 0) {
-		dndOrigSelection = selectedDirs[0];
-		event->acceptProposedAction();
-	}
+void FSTree::dragEnterEvent(QDragEnterEvent *event) {
+    QModelIndexList selectedDirs = selectionModel()->selectedRows();
+    if (selectedDirs.size() > 0) {
+        dndOrigSelection = selectedDirs[0];
+        event->acceptProposedAction();
+    }
 }
 
-void FSTree::dragMoveEvent(QDragMoveEvent *event)
-{
-	setCurrentIndex(indexAt(event->pos()));
+void FSTree::dragMoveEvent(QDragMoveEvent *event) {
+    setCurrentIndex(indexAt(event->pos()));
 }
 
-void FSTree::dropEvent(QDropEvent *event)
-{
-	if (event->source())
-	{
-		QString fstreeStr="FSTree";
-		bool dirOp = (event->source()->metaObject()->className() == fstreeStr);
-		emit dropOp(event->keyboardModifiers(), dirOp, event->mimeData()->urls().at(0).toLocalFile());
-		setCurrentIndex(dndOrigSelection);
-	}
+void FSTree::dropEvent(QDropEvent *event) {
+    if (event->source()) {
+        QString fstreeStr = "FSTree";
+        bool dirOp = (event->source()->metaObject()->className() == fstreeStr);
+        emit dropOp(event->keyboardModifiers(), dirOp, event->mimeData()->urls().at(0).toLocalFile());
+        setCurrentIndex(dndOrigSelection);
+    }
 }
 
-void FSTree::setModelFlags()
-{
-	fsModel->setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
-	if (GData::showHiddenFiles)
-		fsModel->setFilter(fsModel->filter() | QDir::Hidden);
+void FSTree::setModelFlags() {
+    fsModel->setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
+    if (GData::showHiddenFiles)
+        fsModel->setFilter(fsModel->filter() | QDir::Hidden);
 }
 

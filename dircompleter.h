@@ -21,15 +21,16 @@
 
 #include <QCompleter>
 
-class DirCompleter : public QCompleter
-{
-	Q_OBJECT
+class DirCompleter : public QCompleter {
+Q_OBJECT
 public:
-	DirCompleter(QObject *parent = 0);
-	QString pathFromIndex(const QModelIndex &index) const;
+    DirCompleter(QObject *parent = 0);
+
+    QString pathFromIndex(const QModelIndex &index) const;
 
 public slots:
-	QStringList splitPath(const QString &path) const;
+
+    QStringList splitPath(const QString &path) const;
 };
 
 #endif // DIRCOMPLETER_H

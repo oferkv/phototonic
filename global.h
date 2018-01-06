@@ -26,98 +26,96 @@
 #include <QAction>
 #include <QSet>
 
-namespace GData
-{
-	enum StartupDir
-	{
-		defaultDir = 0,
-		rememberLastDir,
-		specifiedDir
-	};
-	
-	extern QSettings *appSettings;
-	extern unsigned int layoutMode;
-	extern unsigned int zoomInFlags;
-	extern unsigned int zoomOutFlags;
-	extern QColor backgroundColor;
-	extern QColor thumbsBackgroundColor;
-	extern QColor thumbsTextColor;
-	extern unsigned int thumbsLayout;
-	extern unsigned int thumbSpacing;
-	extern unsigned int thumbPagesReadahead;
-	extern bool exitInsteadOfClose;
-	extern bool wrapImageList;
-	extern bool enableAnimations;
-	extern float imageZoomFactor;
-	extern bool keepZoomFactor;
-	extern int rotation;
-	extern bool keepTransform;
-	extern bool flipH;
-	extern bool flipV;
-	extern int scaledWidth;
-	extern int scaledHeight;
-	extern int defaultSaveQuality;
-	extern int cropLeft;
-	extern int cropTop;
-	extern int cropWidth;
-	extern int cropHeight;
-	extern int cropLeftPercent;
-	extern int cropTopPercent;
-	extern int cropWidthPercent;
-	extern int cropHeightPercent;
-	extern bool noEnlargeSmallThumb;
-	extern int slideShowDelay;
-	extern bool slideShowRandom;
-	extern bool slideShowActive;
-	extern QMap<QString, QAction *> actionKeys;
-	extern bool hueSatEnabled;
-	extern bool brightContrastEnabled;
-	extern int hueVal;
-	extern int saturationVal;
-	extern int lightnessVal;
-	extern int contrastVal;
-	extern int brightVal;
-	extern int redVal;
-	extern int greenVal;
-	extern int blueVal;
-	extern bool colorsActive;
-	extern bool colorizeEnabled;
-	extern bool rNegateEnabled;
-	extern bool gNegateEnabled;
-	extern bool bNegateEnabled;
-	extern bool hueRedChannel;
-	extern bool hueGreenChannel;
-	extern bool hueBlueChannel;
-	extern bool exifRotationEnabled;
-	extern bool exifThumbRotationEnabled;
-	extern bool includeSubFolders;
-	extern bool showHiddenFiles;
-	extern bool imageToolbarFullScreen;
-	extern QMap<QString, QString> externalApps;
-	extern QSet<QString> bookmarkPaths;
-	extern QSet<QString> knownTags;
-	extern bool reverseMouseBehavior;
-	extern bool deleteConfirm;
-	extern QModelIndexList copyCutIdxList;
-	extern bool copyOp;
-	extern QStringList copyCutFileList;
-	extern bool isFullScreen;
-	extern int dialogLastX;
-	extern int dialogLastY;
-	extern StartupDir startupDir;
-	extern QString specifiedStartDir;
-	extern bool enableImageInfoFS;
-	extern bool showLabels;
-	extern bool smallIcons;
-	extern bool LockDocks;
-	extern bool fsDockVisible;
-	extern bool bmDockVisible;
-	extern bool tagsDockVisible;
-	extern bool iiDockVisible;
-	extern bool pvDockVisible;
-	extern bool ivDockVisible;
-	extern QString thumbsBackImage;
-	extern QString currentViewDir;
+namespace GData {
+    enum StartupDir {
+        defaultDir = 0,
+        rememberLastDir,
+        specifiedDir
+    };
+
+    extern QSettings *appSettings;
+    extern unsigned int layoutMode;
+    extern unsigned int zoomInFlags;
+    extern unsigned int zoomOutFlags;
+    extern QColor backgroundColor;
+    extern QColor thumbsBackgroundColor;
+    extern QColor thumbsTextColor;
+    extern unsigned int thumbsLayout;
+    extern unsigned int thumbSpacing;
+    extern unsigned int thumbPagesReadahead;
+    extern bool exitInsteadOfClose;
+    extern bool wrapImageList;
+    extern bool enableAnimations;
+    extern float imageZoomFactor;
+    extern bool keepZoomFactor;
+    extern int rotation;
+    extern bool keepTransform;
+    extern bool flipH;
+    extern bool flipV;
+    extern int scaledWidth;
+    extern int scaledHeight;
+    extern int defaultSaveQuality;
+    extern int cropLeft;
+    extern int cropTop;
+    extern int cropWidth;
+    extern int cropHeight;
+    extern int cropLeftPercent;
+    extern int cropTopPercent;
+    extern int cropWidthPercent;
+    extern int cropHeightPercent;
+    extern bool noEnlargeSmallThumb;
+    extern int slideShowDelay;
+    extern bool slideShowRandom;
+    extern bool slideShowActive;
+    extern QMap<QString, QAction *> actionKeys;
+    extern bool hueSatEnabled;
+    extern bool brightContrastEnabled;
+    extern int hueVal;
+    extern int saturationVal;
+    extern int lightnessVal;
+    extern int contrastVal;
+    extern int brightVal;
+    extern int redVal;
+    extern int greenVal;
+    extern int blueVal;
+    extern bool colorsActive;
+    extern bool colorizeEnabled;
+    extern bool rNegateEnabled;
+    extern bool gNegateEnabled;
+    extern bool bNegateEnabled;
+    extern bool hueRedChannel;
+    extern bool hueGreenChannel;
+    extern bool hueBlueChannel;
+    extern bool exifRotationEnabled;
+    extern bool exifThumbRotationEnabled;
+    extern bool includeSubFolders;
+    extern bool showHiddenFiles;
+    extern bool imageToolbarFullScreen;
+    extern QMap<QString, QString> externalApps;
+    extern QSet<QString> bookmarkPaths;
+    extern QSet<QString> knownTags;
+    extern bool reverseMouseBehavior;
+    extern bool deleteConfirm;
+    extern QModelIndexList copyCutIdxList;
+    extern bool copyOp;
+    extern QStringList copyCutFileList;
+    extern bool isFullScreen;
+    extern int dialogLastX;
+    extern int dialogLastY;
+    extern StartupDir startupDir;
+    extern QString specifiedStartDir;
+    extern bool enableImageInfoFS;
+    extern bool showLabels;
+    extern bool smallIcons;
+    extern bool LockDocks;
+    extern bool fsDockVisible;
+    extern bool bmDockVisible;
+    extern bool tagsDockVisible;
+    extern bool iiDockVisible;
+    extern bool pvDockVisible;
+    extern bool ivDockVisible;
+    extern QString thumbsBackImage;
+    extern QString currentViewDir;
 }
 
 #endif // GLOBAL_H
