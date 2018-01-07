@@ -9,11 +9,11 @@ QMAKE_CFLAGS += $$(CFLAGS)
 QMAKE_LFLAGS += $$(LDFLAGS)
 
 # Input
-HEADERS += dialogs.h Phototonic.h thumbview.h imageview.h croprubberband.h Settings.h infoview.h \
-			fstree.h bookmarks.h dircompleter.h tags.h mdcache.h
-SOURCES += dialogs.cpp main.cpp Phototonic.cpp thumbview.cpp imageview.cpp croprubberband.cpp \
-			Settings.cpp infoview.cpp fstree.cpp bookmarks.cpp dircompleter.cpp tags.cpp \
-			mdcache.cpp
+HEADERS += Dialogs.h Phototonic.h ThumbsViewer.h ImageViewer.h CropRubberband.h Settings.h InfoViewer.h \
+			FileSystemTree.h Bookmarks.h DirCompleter.h Tags.h MetadataCache.h
+SOURCES += Dialogs.cpp main.cpp Phototonic.cpp ThumbsViewer.cpp ImageViewer.cpp CropRubberband.cpp \
+			Settings.cpp InfoViewer.cpp FileSystemTree.cpp Bookmarks.cpp DirCompleter.cpp Tags.cpp \
+			MetadataCache.cpp
 RESOURCES += phototonic.qrc
 
 target.path = /usr/bin/

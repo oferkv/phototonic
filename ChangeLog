@@ -395,7 +395,7 @@ commit 792c3f69696da17eaa5c48600f9bfc9409d62572
 Author: Krzysztof Pyrkosz <pyrkosz@o2.pl>
 Date:   Sat Feb 7 13:08:33 2015 +0100
 
-    Fixes #179: fix drive handling in FSModel
+    Fixes #179: fix drive handling in FileSystemModel
 
 commit 70404e664fd3f04ed69181627cbadf12f9c37496
 Author: Krzysztof Pyrkosz <pyrkosz@o2.pl>
@@ -986,7 +986,7 @@ commit 592a897c7ab0e44ac9c572874eb8ed4dac555db2
 Author: oferkv <oferkv@gmail.com>
 Date:   Fri Sep 5 20:27:26 2014 +0300
 
-    Add rename action to imageView
+    Add rename action to imageViewer
 
 commit 6f5cd1ddb2a407db30b312ad74a42f66c9128db5
 Author: oferkv <oferkv@gmail.com>

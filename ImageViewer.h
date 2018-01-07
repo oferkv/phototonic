@@ -16,14 +16,14 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef IMAGEVIEW_H
-#define IMAGEVIEW_H
+#ifndef IMAGE_VIEWER_H
+#define IMAGE_VIEWER_H
 
 #include <QtWidgets>
-#include "croprubberband.h"
-#include "mdcache.h"
+#include "CropRubberband.h"
+#include "MetadataCache.h"
 
-class ImageView : public QWidget {
+class ImageViewer : public QWidget {
 Q_OBJECT
 
 public:
@@ -58,7 +58,7 @@ public:
         MoveRight
     };
 
-    ImageView(QWidget *parent, MetadataCache *mdCache);
+    ImageViewer(QWidget *parent, MetadataCache *metadataCache);
 
     void loadImage(QString imageFileName);
 
@@ -141,9 +141,7 @@ private:
     bool isAnimation;
     QLabel *feedbackLabel;
     QPoint cropOrigin;
-    MetadataCache *mdCache;
-    int barsX;
-    int barsY;
+    MetadataCache *metadataCache;
 
     void setMouseMoveData(bool lockMove, int lMouseX, int lMouseY);
 
@@ -156,5 +154,5 @@ private:
     void colorize();
 };
 
-#endif // IMAGEVIEW_H
+#endif // IMAGE_VIEWER_H
 

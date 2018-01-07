@@ -20,12 +20,12 @@
 #define DIALOGS_H
 
 #include <QtWidgets>
-#include "thumbview.h"
-#include "imageview.h"
+#include "ThumbsViewer.h"
+#include "ImageViewer.h"
 
-int cpMvFile(bool isCopy, QString &srcFile, QString &srcPath, QString &dstPath, QString &dstDir);
+int copyMoveFile(bool isCopy, QString &srcFile, QString &srcPath, QString &dstPath, QString &dstDir);
 
-class CpMvDialog : public QDialog {
+class CopyMoveDialog : public QDialog {
 Q_OBJECT
 
 public slots:
@@ -33,17 +33,16 @@ public slots:
     void abort();
 
 public:
-    CpMvDialog(QWidget *parent);
+    CopyMoveDialog(QWidget *parent);
 
-    void exec(ThumbView *thumbView, QString &destDir, bool pasteInCurrDir);
+    void exec(ThumbsViewer *thumbView, QString &destDir, bool pasteInCurrDir);
 
-    int nfiles;
+    int nFiles;
     int latestRow;
 
 private:
     QLabel *opLabel;
     QPushButton *cancelButton;
-    QFileInfo *dirInfo;
     bool abortOp;
 };
 
@@ -100,29 +99,27 @@ public slots:
 private:
     QRadioButton *fitLargeRadios[nZoomRadios];
     QRadioButton *fitSmallRadios[nZoomRadios];
-    QCheckBox *compactLayoutCb;
     QToolButton *backgroundColorButton;
-    QToolButton *colThumbButton;
+    QToolButton *thumbsColorPickerButton;
     QToolButton *colThumbTextButton;
-    QSpinBox *thumbSpacingSpin;
-    QSpinBox *thumbPagesSpin;
-    QSpinBox *saveQualitySpin;
-    QColor bgColor;
-    QColor thumbBgColor;
-    QColor thumbTextColor;
-    QCheckBox *exitCliCb;
-    QCheckBox *wrapListCb;
-    QCheckBox *enableAnimCb;
-    QCheckBox *enableExifCb;
-    QCheckBox *enableThumbExifCb;
-    QCheckBox *imageInfoCb;
-    QCheckBox *reverseMouseCb;
-    QCheckBox *deleteConfirmCb;
-    QSpinBox *slideDelaySpin;
-    QCheckBox *slideRandomCb;
-    QRadioButton *startupDirRadios[3];
-    QLineEdit *startupDirEdit;
-    QLineEdit *thumbsBackImageEdit;
+    QSpinBox *thumbPagesSpinBox;
+    QSpinBox *saveQualitySpinBox;
+    QColor imageViewerBackgroundColor;
+    QColor thumbsBackgroundColor;
+    QColor thumbsTextColor;
+    QCheckBox *exitCliCheckBox;
+    QCheckBox *wrapListCheckBox;
+    QCheckBox *enableAnimCheckBox;
+    QCheckBox *enableExifCheckBox;
+    QCheckBox *enableThumbExifCheckBox;
+    QCheckBox *imageInfoCheckBox;
+    QCheckBox *reverseMouseCheckBox;
+    QCheckBox *deleteConfirmCheckBox;
+    QSpinBox *slideDelaySpinBox;
+    QCheckBox *slideRandomCheckBox;
+    QRadioButton *startupDirRadioButtons[3];
+    QLineEdit *startupDirLineEdit;
+    QLineEdit *thumbsBackgroundImageLineEdit;
 
     void setButtonBgColor(QColor &color, QToolButton *button);
 };
@@ -131,7 +128,7 @@ class CropDialog : public QDialog {
 Q_OBJECT
 
 public:
-    CropDialog(QWidget *parent, ImageView *imageView);
+    CropDialog(QWidget *parent, ImageViewer *imageViewer);
 
 public slots:
 
@@ -142,18 +139,18 @@ public slots:
     void applyCrop(int);
 
 private:
-    QSpinBox *topSpin;
-    QSpinBox *bottomSpin;
-    QSpinBox *leftSpin;
-    QSpinBox *rightSpin;
-    ImageView *imageView;
+    QSpinBox *topSpinBox;
+    QSpinBox *bottomSpinBox;
+    QSpinBox *leftSpinBox;
+    QSpinBox *rightSpinBox;
+    ImageViewer *imageViewer;
 };
 
 class ResizeDialog : public QDialog {
 Q_OBJECT
 
 public:
-    ResizeDialog(QWidget *parent, ImageView *imageView);
+    ResizeDialog(QWidget *parent, ImageViewer *imageViewer);
 
 public slots:
 
@@ -177,19 +174,19 @@ private:
     int newWidth;
     int newHeight;
 
-    QSpinBox *widthSpin;
-    QSpinBox *heightSpin;
-    QRadioButton *pixelsRadio;
-    QRadioButton *percentRadio;
-    QLabel *newSizePixelsLab;
-    ImageView *imageView;
+    QSpinBox *widthSpinBox;
+    QSpinBox *heightSpinBox;
+    QRadioButton *pixelsRadioButton;
+    QRadioButton *percentRadioButton;
+    QLabel *newSizePixelsLabel;
+    ImageViewer *imageViewer;
 };
 
 class ColorsDialog : public QDialog {
 Q_OBJECT
 
 public:
-    ColorsDialog(QWidget *parent, ImageView *imageView);
+    ColorsDialog(QWidget *parent, ImageViewer *imageViewer);
 
 public slots:
 
@@ -214,22 +211,22 @@ public slots:
     void applyColors(int value);
 
 private:
-    ImageView *imageView;
-    QSlider *hueSlide;
-    QCheckBox *colorizeCb;
-    QSlider *saturationSlide;
-    QSlider *lightnessSlide;
-    QCheckBox *redB;
-    QCheckBox *greenB;
-    QCheckBox *blueB;
-    QSlider *brightSlide;
-    QSlider *contrastSlide;
-    QSlider *redSlide;
-    QSlider *greenSlide;
-    QSlider *blueSlide;
-    QCheckBox *rNegateCb;
-    QCheckBox *gNegateCb;
-    QCheckBox *bNegateCb;
+    ImageViewer *imageViewer;
+    QSlider *hueSlider;
+    QCheckBox *colorizeCheckBox;
+    QSlider *saturationSlider;
+    QSlider *lightnessSlider;
+    QCheckBox *redCheckBox;
+    QCheckBox *greenCheckBox;
+    QCheckBox *blueCheckBox;
+    QSlider *brightSlider;
+    QSlider *contrastSlider;
+    QSlider *redSlider;
+    QSlider *greenSlider;
+    QSlider *blueSlider;
+    QCheckBox *rNegateCheckBox;
+    QCheckBox *gNegateCheckBox;
+    QCheckBox *bNegateCheckBox;
 };
 
 class AppMgmtDialog : public QDialog {
@@ -284,7 +281,7 @@ private:
     QTableView *pathsTable;
     QStandardItemModel *pathsTableModel;
     QString currentPath;
-    QLabel *destinationLab;
+    QLabel *destinationLabel;
 
     void savePaths();
 };

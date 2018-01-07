@@ -16,7 +16,7 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "croprubberband.h"
+#include "CropRubberband.h"
 
 CropRubberBand::CropRubberBand(QWidget *parent) : QWidget(parent) {
 

@@ -19,21 +19,21 @@
 #include <QtWidgets>
 #include "Settings.h"
 
-#ifndef FSTREE_H
-#define FSTREE_H
+#ifndef FILE_SYSTEM_TREE_H
+#define FILE_SYSTEM_TREE_H
 
-class FSModel : public QFileSystemModel {
+class FileSystemModel : public QFileSystemModel {
 public:
     bool hasChildren(const QModelIndex &parent) const;
 };
 
-class FSTree : public QTreeView {
+class FileSystemTree : public QTreeView {
 Q_OBJECT
 
 public:
-    FSTree(QWidget *parent);
+    FileSystemTree(QWidget *parent);
 
-    FSModel *fsModel;
+    FileSystemModel *fsModel;
 
     QModelIndex getCurrentIndex();
 
@@ -58,5 +58,5 @@ private slots:
     void resizeTreeColumn(const QModelIndex &);
 };
 
-#endif // FSTREE_H
+#endif // FILE_SYSTEM_TREE_H
 

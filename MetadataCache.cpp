@@ -18,7 +18,7 @@
 
 #include <exiv2/exiv2.hpp>
 #include "Settings.h"
-#include "mdcache.h"
+#include "MetadataCache.h"
 
 void MetadataCache::updateImageTags(QString &imageFileName, QSet<QString> tags) {
     imageTagsCache[imageFileName].tags = tags;

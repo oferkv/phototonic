@@ -16,8 +16,8 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GLOBAL_H
-#define GLOBAL_H
+#ifndef SETTINGS_H
+#define SETTINGS_H
 
 #include <QSettings>
 #include <QModelIndexList>
@@ -27,11 +27,16 @@
 #include <QSet>
 
 namespace Settings {
+
     enum StartupDir {
-        defaultDir = 0,
-        rememberLastDir,
-        specifiedDir
+        DefaultDir = 0,
+        RememberLastDir,
+        SpecifiedDir
     };
+
+    extern const char optionThumbsSortFlags[];
+    extern const char optionThumbsZoomLevel[];
+    extern const char optionFullScreenMode[];
 
     extern QSettings *appSettings;
     extern unsigned int layoutMode;
@@ -40,7 +45,6 @@ namespace Settings {
     extern QColor backgroundColor;
     extern QColor thumbsBackgroundColor;
     extern QColor thumbsTextColor;
-    extern unsigned int thumbSpacing;
     extern unsigned int thumbPagesReadahead;
     extern bool exitInsteadOfClose;
     extern bool wrapImageList;
@@ -111,5 +115,5 @@ namespace Settings {
     extern QString currentViewDir;
 }
 
-#endif // GLOBAL_H
+#endif // SETTINGS_H
 

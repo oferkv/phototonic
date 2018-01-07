@@ -21,10 +21,10 @@
 
 #include <QtWidgets>
 #include <exiv2/exiv2.hpp>
-#include "thumbview.h"
-#include "mdcache.h"
+#include "ThumbsViewer.h"
+#include "MetadataCache.h"
 
-class ThumbView;
+class ThumbsViewer;
 
 enum TagsDisplayMode {
     FolderTagsDisplay,
@@ -44,7 +44,7 @@ class ImageTags : public QWidget {
 Q_OBJECT
 
 public:
-    ImageTags(QWidget *parent, ThumbView *thumbView, MetadataCache *mdCache);
+    ImageTags(QWidget *parent, ThumbsViewer *thumbsViewer, MetadataCache *metadataCache);
 
     void addTag(QString tagName, bool tagChecked);
 
@@ -88,7 +88,7 @@ private:
     QAction *actionClearTagsFilter;
     QAction *negateAction;
     QTreeWidgetItem *lastChangedTagItem;
-    ThumbView *thumbView;
+    ThumbsViewer *thumbView;
     QTabBar *tabs;
     MetadataCache *metadataCache;
     bool negateFilterEnabled;

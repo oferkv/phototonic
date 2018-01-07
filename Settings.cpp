@@ -19,6 +19,11 @@
 #include "Settings.h"
 
 namespace Settings {
+
+    const char optionThumbsSortFlags[] = "optionThumbsSortFlags";
+    const char optionThumbsZoomLevel[] = "optionThumbsZoomLevel";
+    const char optionFullScreenMode[] = "optionFullScreenMode";
+
     QSettings *appSettings;
     unsigned int layoutMode;
     unsigned int zoomInFlags;
@@ -26,7 +31,6 @@ namespace Settings {
     QColor backgroundColor;
     QColor thumbsBackgroundColor;
     QColor thumbsTextColor;
-    unsigned int thumbSpacing;
     unsigned int thumbPagesReadahead;
     bool exitInsteadOfClose;
     bool wrapImageList;

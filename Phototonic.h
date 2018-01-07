@@ -20,9 +20,9 @@
 #define MAINWINDOW_H
 
 #include <QtWidgets>
-#include "thumbview.h"
-#include "imageview.h"
-#include "dialogs.h"
+#include "ThumbsViewer.h"
+#include "ImageViewer.h"
+#include "Dialogs.h"
 
 #define VERSION "Phototonic v1.7.21"
 
@@ -50,7 +50,7 @@ public slots:
 
     void setStatus(QString state);
 
-    void dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString cpMvDirPath);
+    void dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString copyMoveDirPath);
 
     void showViewer();
 
@@ -82,7 +82,7 @@ private slots:
 
     void renameDir();
 
-    void setThumbviewWindowTitle();
+    void setThumbsViewerWindowTitle();
 
     void rename();
 
@@ -118,7 +118,7 @@ private slots:
 
     void goHome();
 
-    void slideShow();
+    void toggleSlideShow();
 
     void slideShowHandler();
 
@@ -363,36 +363,35 @@ private:
     QAction *chooseAppAct;
     QAction *invertSelectionAct;
 
-    QLineEdit *pathBar;
-    QLineEdit *filterBar;
-    QLabel *stateLabel;
+    QLineEdit *pathLineEdit;
+    QLineEdit *filterLineEdit;
+    QLabel *statusLabel;
     QDockWidget *fileSystemDock;
     QDockWidget *bookmarksDock;
     QDockWidget *tagsDock;
-    FSTree *fileSystemTree;
+    FileSystemTree *fileSystemTree;
     BookMarks *bookmarks;
-    QHBoxLayout *mainLayout;
     QDockWidget *imageInfoDock;
-    ThumbView *thumbView;
-    ImageView *imageView;
-    QList<QString> pathHistory;
+    ThumbsViewer *thumbsViewer;
+    ImageViewer *imageViewer;
+    QList<QString> pathHistoryList;
     QTimer *SlideShowTimer;
     CopyMoveToDialog *copyMoveToDialog;
-    QWidget *fsDockOrigWidget;
-    QWidget *bmDockOrigWidget;
+    QWidget *fileSystemDockOrigWidget;
+    QWidget *bookmarksDockOrigWidget;
     QWidget *tagsDockOrigWidget;
-    QWidget *iiDockOrigWidget;
-    QWidget *fsDockEmptyWidget;
-    QWidget *bmDockEmptyWidget;
+    QWidget *imageInfoDockOrigWidget;
+    QWidget *fileSystemDockEmptyWidget;
+    QWidget *bookmarksDockEmptyWidget;
     QWidget *tagsDockEmptyWidget;
-    QWidget *iiDockEmptyWidget;
+    QWidget *imageInfoDockEmptyWidget;
     QVBoxLayout *imageViewLayout;
     bool interfaceDisabled;
-    MetadataCache *mdCache;
+    MetadataCache *metadataCache;
 
     enum CentralWidgets {
-        thumbViewIdx = 0,
-        imageViewIdx
+        ThumbViewWidget = 0,
+        ImageViewWidget
     };
 
     int currentHistoryIdx;
@@ -429,9 +428,9 @@ private:
 
     void addMenuSeparator(QWidget *widget);
 
-    void createImageView();
+    void createImageViewer();
 
-    void createThumbView();
+    void createThumbsViewer();
 
     void createActions();
 

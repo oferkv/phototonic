@@ -17,7 +17,7 @@
  */
 
 #include <QDirModel>
-#include "dircompleter.h"
+#include "DirCompleter.h"
 
 DirCompleter::DirCompleter(QObject *parent) : QCompleter(parent) {
     QDirModel *model = new QDirModel;

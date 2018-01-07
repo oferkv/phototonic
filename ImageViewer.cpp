@@ -19,16 +19,16 @@
 #include <QGraphicsDropShadowEffect>
 #include <exiv2/exiv2.hpp>
 #include "Settings.h"
-#include "imageview.h"
+#include "ImageViewer.h"
 
 #define CLIPBOARD_IMAGE_NAME        "clipboard.png"
 #define ROUND(x) ((int) ((x) + 0.5))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
-ImageView::ImageView(QWidget *parent, MetadataCache *mdCache) : QWidget(parent) {
+ImageViewer::ImageViewer(QWidget *parent, MetadataCache *metadataCache) : QWidget(parent) {
     this->mainWindow = parent;
-    this->mdCache = mdCache;
+    this->metadataCache = metadataCache;
     cursorIsHidden = false;
     moveImageLocked = false;
     mirrorLayout = LayNone;
@@ -116,7 +116,7 @@ static inline int calcZoom(int size) {
     return size * Settings::imageZoomFactor;
 }
 
-void ImageView::resizeImage() {
+void ImageViewer::resizeImage() {
     static bool busy = false;
     if (busy || (!imageLabel->pixmap() && !anim)) {
         return;
@@ -236,17 +236,17 @@ void ImageView::resizeImage() {
     busy = false;
 }
 
-void ImageView::resizeEvent(QResizeEvent *event) {
+void ImageViewer::resizeEvent(QResizeEvent *event) {
     QWidget::resizeEvent(event);
     resizeImage();
 }
 
-void ImageView::showEvent(QShowEvent *event) {
+void ImageViewer::showEvent(QShowEvent *event) {
     QWidget::showEvent(event);
     resizeImage();
 }
 
-void ImageView::centerImage(QSize &imgSize) {
+void ImageViewer::centerImage(QSize &imgSize) {
     int newX = (this->size().width() - imgSize.width()) / 2;
     int newY = (this->size().height() - imgSize.height()) / 2;
 
@@ -255,9 +255,9 @@ void ImageView::centerImage(QSize &imgSize) {
     }
 }
 
-void ImageView::rotateByExifRotation(QImage &image, QString &imageFullPath) {
+void ImageViewer::rotateByExifRotation(QImage &image, QString &imageFullPath) {
     QTransform trans;
-    int orientation = mdCache->getImageOrientation(imageFullPath);
+    int orientation = metadataCache->getImageOrientation(imageFullPath);
 
     switch (orientation) {
         case 2:
@@ -291,7 +291,7 @@ void ImageView::rotateByExifRotation(QImage &image, QString &imageFullPath) {
     }
 }
 
-void ImageView::transform() {
+void ImageViewer::transform() {
     if (Settings::exifRotationEnabled) {
         rotateByExifRotation(displayImage, currentImageFullPath);
     }
@@ -336,7 +336,7 @@ void ImageView::transform() {
     }
 }
 
-void ImageView::mirror() {
+void ImageViewer::mirror() {
     switch (mirrorLayout) {
         case LayDual: {
             mirrorImage = QImage(displayImage.width() * 2, displayImage.height(),
@@ -480,7 +480,7 @@ void hslToRgb(double h, double s, double l,
     }
 }
 
-void ImageView::colorize() {
+void ImageViewer::colorize() {
     int y, x;
     unsigned char hr, hg, hb;
     int r, g, b;
@@ -551,7 +551,7 @@ void ImageView::colorize() {
     }
 }
 
-void ImageView::refresh() {
+void ImageViewer::refresh() {
     if (isAnimation) {
         return;
     }
@@ -599,7 +599,7 @@ QImage createImageWithOverlay(const QImage &baseImage, const QImage &overlayImag
     return imageWithOverlay;
 }
 
-void ImageView::reload() {
+void ImageViewer::reload() {
     isAnimation = false;
     if (Settings::enableImageInfoFS) {
         if (currentImageFullPath.left(1) == ":") {
@@ -668,17 +668,17 @@ void ImageView::reload() {
     resizeImage();
 }
 
-void ImageView::setInfo(QString infoString) {
+void ImageViewer::setInfo(QString infoString) {
     infoLabel->setText(infoString);
     infoLabel->adjustSize();
 }
 
-void ImageView::unsetFeedback() {
+void ImageViewer::unsetFeedback() {
     feedbackLabel->setText("");
     feedbackLabel->setVisible(false);
 }
 
-void ImageView::setFeedback(QString feedbackString) {
+void ImageViewer::setFeedback(QString feedbackString) {
     feedbackLabel->setText(feedbackString);
     feedbackLabel->setVisible(true);
 
@@ -689,7 +689,7 @@ void ImageView::setFeedback(QString feedbackString) {
     QTimer::singleShot(3000, this, SLOT(unsetFeedback()));
 }
 
-void ImageView::loadImage(QString imageFileName) {
+void ImageViewer::loadImage(QString imageFileName) {
     newImage = false;
     tempDisableResize = false;
     currentImageFullPath = imageFileName;
@@ -702,7 +702,7 @@ void ImageView::loadImage(QString imageFileName) {
     reload();
 }
 
-void ImageView::monitorCursorState() {
+void ImageViewer::monitorCursorState() {
     static QPoint lastPos;
 
     if (QCursor::pos() != lastPos) {
@@ -719,7 +719,7 @@ void ImageView::monitorCursorState() {
     }
 }
 
-void ImageView::setCursorHiding(bool hide) {
+void ImageViewer::setCursorHiding(bool hide) {
     if (hide) {
         mouseMovementTimer->start(500);
     } else {
@@ -731,13 +731,13 @@ void ImageView::setCursorHiding(bool hide) {
     }
 }
 
-void ImageView::mouseDoubleClickEvent(QMouseEvent *event) {
+void ImageViewer::mouseDoubleClickEvent(QMouseEvent *event) {
     QWidget::mouseDoubleClickEvent(event);
     while (QApplication::overrideCursor())
         QApplication::restoreOverrideCursor();
 }
 
-void ImageView::mousePressEvent(QMouseEvent *event) {
+void ImageViewer::mousePressEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
 
         if (event->modifiers() == Qt::ControlModifier) {
@@ -759,7 +759,7 @@ void ImageView::mousePressEvent(QMouseEvent *event) {
     QWidget::mousePressEvent(event);
 }
 
-void ImageView::mouseReleaseEvent(QMouseEvent *event) {
+void ImageViewer::mouseReleaseEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
         setMouseMoveData(false, 0, 0);
         while (QApplication::overrideCursor()) {
@@ -777,7 +777,7 @@ void ImageView::mouseReleaseEvent(QMouseEvent *event) {
     QWidget::mouseReleaseEvent(event);
 }
 
-void ImageView::cropToSelection() {
+void ImageViewer::cropToSelection() {
     if (cropBand && cropBand->isVisible()) {
 
         QPoint bandTL = mapToGlobal(cropBand->geometry().topLeft());
@@ -818,7 +818,7 @@ void ImageView::cropToSelection() {
     }
 }
 
-void ImageView::setMouseMoveData(bool lockMove, int lMouseX, int lMouseY) {
+void ImageViewer::setMouseMoveData(bool lockMove, int lMouseX, int lMouseY) {
     moveImageLocked = lockMove;
     mouseX = lMouseX;
     mouseY = lMouseY;
@@ -826,7 +826,7 @@ void ImageView::setMouseMoveData(bool lockMove, int lMouseX, int lMouseY) {
     layoutY = imageLabel->pos().y();
 }
 
-void ImageView::mouseMoveEvent(QMouseEvent *event) {
+void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
     if (event->modifiers() == Qt::ControlModifier) {
         if (cropBand && cropBand->isVisible()) {
             cropBand->setGeometry(QRect(cropOrigin, event->pos()).normalized());
@@ -866,7 +866,7 @@ void ImageView::mouseMoveEvent(QMouseEvent *event) {
     }
 }
 
-void ImageView::keyMoveEvent(int direction) {
+void ImageViewer::keyMoveEvent(int direction) {
     int newX = layoutX = imageLabel->pos().x();
     int newY = layoutY = imageLabel->pos().y();
     bool needToMove = false;
@@ -932,7 +932,7 @@ void ImageView::keyMoveEvent(int direction) {
     }
 }
 
-void ImageView::saveImage() {
+void ImageViewer::saveImage() {
     Exiv2::Image::AutoPtr image;
     bool exifError = false;
 
@@ -973,7 +973,7 @@ void ImageView::saveImage() {
     setFeedback(tr("Image saved."));
 }
 
-void ImageView::saveImageAs() {
+void ImageViewer::saveImageAs() {
     Exiv2::Image::AutoPtr exifImage;
     Exiv2::Image::AutoPtr newExifImage;
     bool exifError = false;
@@ -1019,30 +1019,30 @@ void ImageView::saveImageAs() {
     }
 }
 
-void ImageView::contextMenuEvent(QContextMenuEvent *) {
+void ImageViewer::contextMenuEvent(QContextMenuEvent *) {
     while (QApplication::overrideCursor())
         QApplication::restoreOverrideCursor();
 
     ImagePopUpMenu->exec(QCursor::pos());
 }
 
-int ImageView::getImageWidthPreCropped() {
+int ImageViewer::getImageWidthPreCropped() {
     return origImage.width();
 }
 
-int ImageView::getImageHeightPreCropped() {
+int ImageViewer::getImageHeightPreCropped() {
     return origImage.height();
 }
 
-bool ImageView::isNewImage() {
+bool ImageViewer::isNewImage() {
     return newImage;
 }
 
-void ImageView::copyImage() {
+void ImageViewer::copyImage() {
     QApplication::clipboard()->setImage(displayImage);
 }
 
-void ImageView::pasteImage() {
+void ImageViewer::pasteImage() {
     if (isAnimation)
         return;
 
@@ -1052,7 +1052,7 @@ void ImageView::pasteImage() {
     }
 }
 
-void ImageView::setBgColor() {
+void ImageViewer::setBgColor() {
     QString bgColor = "background: rgb(%1, %2, %3); ";
     bgColor = bgColor.arg(Settings::backgroundColor.red())
             .arg(Settings::backgroundColor.green())

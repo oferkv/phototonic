@@ -16,12 +16,12 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef INFOVIEW_H
-#define INFOVIEW_H
+#ifndef INFO_VIEWER_H
+#define INFO_VIEWER_H
 
 #include <QtWidgets>
 
-class InfoView : public QTableView {
+class InfoView : public QWidget {
 Q_OBJECT
 
 public:
@@ -33,18 +33,28 @@ public:
 
     void addTitleEntry(QString title);
 
+
+signals:
+
+    void updateInfo(QItemSelection dummy);
+
 public slots:
 
     void showInfoViewMenu(QPoint pt);
 
     void copyEntry();
 
+private slots:
+
+    void filterItems();
+
 private:
-    QStandardItemModel *infoModel;
+    QTableView *infoViewerTable;
+    QStandardItemModel *imageInfoModel;
     QModelIndex selectedEntry;
     QMenu *infoMenu;
-    QAction *copyAction;
+    QLineEdit *filterLineEdit;
 
 };
 
-#endif // INFOVIEW_H
+#endif // INFO_VIEWER_H

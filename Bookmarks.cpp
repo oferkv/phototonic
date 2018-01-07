@@ -16,39 +16,12 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "fstree.h"
+#include "Bookmarks.h"
 
-bool FSModel::hasChildren(const QModelIndex &parent) const {
-    if (parent.column() > 0)
-        return false;
-
-    if (!parent.isValid()) // drives
-        return true;
-
-    // return false if item cant have children
-    if (parent.flags() & Qt::ItemNeverHasChildren) {
-        return false;
-    }
-
-    // return if at least one child exists
-    return QDirIterator(filePath(parent), filter() | QDir::NoDotAndDotDot, QDirIterator::NoIteratorFlags).hasNext();
-}
-
-FSTree::FSTree(QWidget *parent) : QTreeView(parent) {
+BookMarks::BookMarks(QWidget *parent) : QTreeWidget(parent) {
     setAcceptDrops(true);
-    setDragEnabled(true);
-    setDragDropMode(QAbstractItemView::InternalMove);
-
-    fsModel = new FSModel();
-    fsModel->setRootPath("");
-    setModelFlags();
-
-    setModel(fsModel);
-
-    for (int i = 1; i <= 3; ++i) {
-        hideColumn(i);
-    }
-    setHeaderHidden(true);
+    setDragEnabled(false);
+    setDragDropMode(QAbstractItemView::DropOnly);
 
     connect(this, SIGNAL(expanded(
                                  const QModelIndex &)),
@@ -58,40 +31,54 @@ FSTree::FSTree(QWidget *parent) : QTreeView(parent) {
                                  const QModelIndex &)),
             this, SLOT(resizeTreeColumn(
                                const QModelIndex &)));
+
+    setColumnCount(1);
+    setHeaderHidden(true);
+    reloadBookmarks();
 }
 
-QModelIndex FSTree::getCurrentIndex() {
-    return selectedIndexes().first();
+void BookMarks::reloadBookmarks() {
+    clear();
+    QSetIterator<QString> it(Settings::bookmarkPaths);
+    while (it.hasNext()) {
+        QString itemPath = it.next();
+        QTreeWidgetItem *item = new QTreeWidgetItem(this);
+        item->setText(0, QFileInfo(itemPath).fileName());
+        item->setIcon(0, QIcon(":/images/bookmarks.png"));
+        item->setToolTip(0, itemPath);
+        insertTopLevelItem(0, item);
+    }
 }
 
-void FSTree::resizeTreeColumn(const QModelIndex &) {
+void BookMarks::resizeTreeColumn(const QModelIndex &) {
     resizeColumnToContents(0);
 }
 
-void FSTree::dragEnterEvent(QDragEnterEvent *event) {
-    QModelIndexList selectedDirs = selectionModel()->selectedRows();
-    if (selectedDirs.size() > 0) {
-        dndOrigSelection = selectedDirs[0];
-        event->acceptProposedAction();
+void BookMarks::removeBookmark() {
+    if (selectedItems().size() == 1) {
+        Settings::bookmarkPaths.remove(selectedItems().at(0)->toolTip(0));
+        reloadBookmarks();
     }
 }
 
-void FSTree::dragMoveEvent(QDragMoveEvent *event) {
+void BookMarks::dragEnterEvent(QDragEnterEvent *event) {
+    QModelIndexList selectedDirs = selectionModel()->selectedRows();
+
+    if (selectedDirs.size() > 0) {
+        dndOrigSelection = selectedDirs[0];
+    }
+    event->acceptProposedAction();
+}
+
+void BookMarks::dragMoveEvent(QDragMoveEvent *event) {
     setCurrentIndex(indexAt(event->pos()));
 }
 
-void FSTree::dropEvent(QDropEvent *event) {
+void BookMarks::dropEvent(QDropEvent *event) {
     if (event->source()) {
-        QString fstreeStr = "FSTree";
+        QString fstreeStr("FileSystemTree");
         bool dirOp = (event->source()->metaObject()->className() == fstreeStr);
         emit dropOp(event->keyboardModifiers(), dirOp, event->mimeData()->urls().at(0).toLocalFile());
-        setCurrentIndex(dndOrigSelection);
     }
-}
-
-void FSTree::setModelFlags() {
-    fsModel->setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
-    if (Settings::showHiddenFiles)
-        fsModel->setFilter(fsModel->filter() | QDir::Hidden);
 }
 

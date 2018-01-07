@@ -22,12 +22,12 @@
 #include <QtWidgets>
 #include <exiv2/exiv2.hpp>
 #include "Settings.h"
-#include "fstree.h"
-#include "bookmarks.h"
-#include "infoview.h"
-#include "imageview.h"
-#include "tags.h"
-#include "mdcache.h"
+#include "FileSystemTree.h"
+#include "Bookmarks.h"
+#include "InfoViewer.h"
+#include "ImageViewer.h"
+#include "Tags.h"
+#include "MetadataCache.h"
 
 #define BAD_IMG_SZ    64
 
@@ -38,7 +38,7 @@ struct DuplicateImage {
     int duplicates;
 };
 
-class ThumbView : public QListView {
+class ThumbsViewer : public QListView {
 Q_OBJECT
 
 public:
@@ -48,7 +48,7 @@ public:
         LoadedRole
     };
 
-    ThumbView(QWidget *parent, MetadataCache *mdCache);
+    ThumbsViewer(QWidget *parent, MetadataCache *metadataCache);
 
     void loadPrepare();
 
@@ -58,13 +58,13 @@ public:
 
     void setThumbColors();
 
-    bool setCurrentIndexByName(QString &FileName);
+    bool setCurrentIndexByName(QString &fileName);
 
     bool setCurrentIndexByRow(int row);
 
     void setCurrentRow(int row);
 
-    void setImageviewWindowTitle();
+    void setImageViewerWindowTitle();
 
     void setNeedScroll(bool needScroll);
 
@@ -90,15 +90,13 @@ public:
 
     QString getSingleSelectionFilename();
 
-    void setImageView(ImageView *imageView);
+    void setImageView(ImageViewer *imageViewer);
 
     InfoView *infoView;
     ImageTags *imageTags;
     QDir *thumbsDir;
     QStringList *fileFilters;
-    QList<QStandardItem *> *thumbList;
-    QStandardItemModel *thumbViewModel;
-    QString recentThumb;
+    QStandardItemModel *thumbsViewerModel;
     QDir::SortFlags thumbsSortFlags;
     int thumbSize;
     QString filterStr;
@@ -124,7 +122,7 @@ private:
 
     void updateThumbsCount();
 
-    void updateExifInfo(QString imageFullPath);
+    void updateImageInfoViewer(QString imageFullPath);
 
     QFileInfo thumbFileInfo;
     QFileInfoList thumbFileInfoList;
@@ -133,10 +131,9 @@ private:
     QImageReader imageInfoReader;
     QWidget *mainWindow;
     QMap<QString, DuplicateImage> dupImageHashes;
-    MetadataCache *mdCache;
-    ImageView *imageView;
+    MetadataCache *metadataCache;
+    ImageViewer *imageViewer;
     bool abortOp;
-    int newIndex;
     bool isNeedScroll;
     int currentRow;
     bool scrolledForward;

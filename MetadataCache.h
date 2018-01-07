@@ -16,8 +16,8 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MDCACHE_H
-#define MDCACHE_H
+#ifndef META_DATA_CACHE_H
+#define META_DATA_CACHE_H
 
 #include <QtWidgets>
 
@@ -53,5 +53,5 @@ public:
 
 };
 
-#endif // MDCACHE_H
+#endif // META_DATA_CACHE_H
 

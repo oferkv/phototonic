@@ -16,23 +16,23 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "tags.h"
+#include "Tags.h"
 #include "Settings.h"
-#include "dialogs.h"
+#include "Dialogs.h"
 
-ImageTags::ImageTags(QWidget *parent, ThumbView *thumbView, MetadataCache *mdCache) : QWidget(parent) {
+ImageTags::ImageTags(QWidget *parent, ThumbsViewer *thumbsViewer, MetadataCache *metadataCache) : QWidget(parent) {
     tagsTree = new QTreeWidget;
     tagsTree->setColumnCount(2);
     tagsTree->setDragEnabled(false);
     tagsTree->setSortingEnabled(true);
     tagsTree->header()->close();
     tagsTree->setSelectionMode(QAbstractItemView::ExtendedSelection);
-    this->thumbView = thumbView;
-    this->metadataCache = mdCache;
+    this->thumbView = thumbsViewer;
+    this->metadataCache = metadataCache;
     negateFilterEnabled = false;
 
     tabs = new QTabBar(this);
-    tabs->addTab(tr("Image Tags"));
+    tabs->addTab(tr("Selection"));
     tabs->addTab(tr("Filter"));
     tabs->setTabIcon(0, QIcon(":/images/tag_yellow.png"));
     tabs->setTabIcon(1, QIcon(":/images/tag_filter_off.png"));
