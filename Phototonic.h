@@ -24,7 +24,7 @@
 #include "ImageViewer.h"
 #include "Dialogs.h"
 
-#define VERSION "Phototonic v1.7.21"
+#define VERSION "Phototonic v2.0.1"
 
 class Phototonic : public QMainWindow {
 Q_OBJECT
