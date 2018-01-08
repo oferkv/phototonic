@@ -520,37 +520,6 @@ void ThumbsViewer::load() {
     return;
 }
 
-void ThumbsViewer::loadDuplicates() {
-    loadPrepare();
-
-    emit showBusy(true);
-    emit setStatus(tr("Searching duplicate images..."));
-
-    dupImageHashes.clear();
-    findDupes(true);
-
-    if (Settings::includeSubDirectories) {
-        QDirIterator iterator(Settings::currentViewDir, QDirIterator::Subdirectories);
-        while (iterator.hasNext()) {
-            iterator.next();
-            if (iterator.fileInfo().isDir() && iterator.fileName() != "." && iterator.fileName() != "..") {
-                thumbsDir->setPath(iterator.filePath());
-
-                findDupes(false);
-                if (abortOp) {
-                    goto finish;
-                }
-            }
-            QApplication::processEvents();
-        }
-    }
-
-    finish:
-    busy = false;
-    emit showBusy(false);
-    return;
-}
-
 void ThumbsViewer::initThumbs() {
     thumbFileInfoList = thumbsDir->entryInfoList();
     static QStandardItem *thumbIitem;
@@ -602,73 +571,6 @@ void ThumbsViewer::initThumbs() {
 void ThumbsViewer::selectThumbByRow(int row) {
     setCurrentIndexByRow(row);
     selectCurrentIndex();
-}
-
-void ThumbsViewer::updateFoundDupesState(int duplicates, int filesScanned, int originalImages) {
-    QString state;
-    state = tr("Scanned %1, displaying %2 (%3 and %4)")
-            .arg(tr("%n image(s)", "", filesScanned))
-            .arg(tr("%n image(s)", "", originalImages + duplicates))
-            .arg(tr("%n original(s)", "", originalImages))
-            .arg(tr("%n duplicate(s)", "", duplicates));
-    emit setStatus(state);
-}
-
-void ThumbsViewer::findDupes(bool resetCounters) {
-    thumbFileInfoList = thumbsDir->entryInfoList();
-    int processEventsCounter = 0;
-    static int originalImages;
-    static int foundDups;
-    static int totalFiles;
-    if (resetCounters) {
-        originalImages = totalFiles = foundDups = 0;
-    }
-
-    for (int currThumb = 0; currThumb < thumbFileInfoList.size(); ++currThumb) {
-        thumbFileInfo = thumbFileInfoList.at(currThumb);
-        QCryptographicHash md5gen(QCryptographicHash::Md5);
-        QString currentFilePath = thumbFileInfo.filePath();
-
-        QFile file(currentFilePath);
-        if (!file.open(QIODevice::ReadOnly)) {
-            continue;
-        }
-        totalFiles++;
-
-        md5gen.addData(file.readAll());
-        file.close();
-        QString md5 = md5gen.result().toHex();
-
-        if (dupImageHashes.contains(md5)) {
-            if (dupImageHashes[md5].duplicates < 1) {
-                addThumb(dupImageHashes[md5].filePath);
-                originalImages++;
-            }
-
-            foundDups++;
-            dupImageHashes[md5].duplicates++;
-            addThumb(currentFilePath);
-        } else {
-            DuplicateImage dupImage;
-            dupImage.filePath = currentFilePath;
-            dupImage.duplicates = 0;
-            dupImageHashes.insert(md5, dupImage);
-        }
-
-        ++processEventsCounter;
-        if (processEventsCounter > 9) {
-            processEventsCounter = 0;
-            QApplication::processEvents();
-        }
-
-        updateFoundDupesState(foundDups, totalFiles, originalImages);
-
-        if (abortOp) {
-            break;
-        }
-    }
-
-    updateFoundDupesState(foundDups, totalFiles, originalImages);
 }
 
 void ThumbsViewer::loadThumbsRange() {

@@ -1645,7 +1645,7 @@
     </message>
 </context>
 <context>
-    <name>ShortcutsTableView</name>
+    <name>ShortcutsTable</name>
     <message>
         <location filename="../dialogs.cpp" line="170"/>
         <source>Action</source>

@@ -16,8 +16,8 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef PHOTOTONIC_H
+#define PHOTOTONIC_H
 
 #include <QtWidgets>
 #include "ThumbsViewer.h"
@@ -175,8 +175,6 @@ private slots:
     void freeRotateRight();
 
     void showColorsDialog();
-
-    void findDuplicateImages();
 
     void setMirrorDisabled();
 
@@ -355,7 +353,6 @@ private:
     QAction *lastImageAction;
     QAction *randomImageAction;
     QAction *openAction;
-    QAction *findDupesAction;
     QAction *filterImagesFocusAct;
     QAction *setPathFocusAct;
 
@@ -477,5 +474,5 @@ private:
     void setViewerKeyEventsEnabled(bool enabled);
 };
 
-#endif // MAINWINDOW_H
+#endif // PHOTOTONIC_H
 

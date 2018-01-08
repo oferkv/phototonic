@@ -46,30 +46,6 @@ private:
     bool abortOp;
 };
 
-class ShortcutsTableView : public QTableView {
-Q_OBJECT
-
-public:
-    ShortcutsTableView();
-
-    void addRow(QString action, QString description, QString shortcut);
-
-public slots:
-
-    void showShortcutsTableMenu(QPoint pt);
-
-    void clearShortcut();
-
-protected:
-    void keyPressEvent(QKeyEvent *e);
-
-private:
-    QStandardItemModel *keysModel;
-    QModelIndex selectedEntry;
-    QMenu *shortcutsMenu;
-    QAction *clearAction;
-};
-
 class SettingsDialog : public QDialog {
 Q_OBJECT
 
@@ -101,7 +77,7 @@ private:
     QRadioButton *fitSmallRadios[nZoomRadios];
     QToolButton *backgroundColorButton;
     QToolButton *thumbsColorPickerButton;
-    QToolButton *colThumbTextButton;
+    QToolButton *thumbsLabelColorButton;
     QSpinBox *thumbPagesSpinBox;
     QSpinBox *saveQualitySpinBox;
     QColor imageViewerBackgroundColor;
@@ -117,7 +93,7 @@ private:
     QCheckBox *deleteConfirmCheckBox;
     QSpinBox *slideDelaySpinBox;
     QCheckBox *slideRandomCheckBox;
-    QRadioButton *startupDirRadioButtons[3];
+    QRadioButton *startupDirectoryRadioButtons[3];
     QLineEdit *startupDirLineEdit;
     QLineEdit *thumbsBackgroundImageLineEdit;
 

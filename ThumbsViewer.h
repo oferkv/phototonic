@@ -16,8 +16,8 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef THUMBVIEW_H
-#define THUMBVIEW_H
+#ifndef THUMBS_VIEWER_H
+#define THUMBS_VIEWER_H
 
 #include <QtWidgets>
 #include <exiv2/exiv2.hpp>
@@ -32,11 +32,6 @@
 #define BAD_IMG_SZ    64
 
 class ImageTags;
-
-struct DuplicateImage {
-    QString filePath;
-    int duplicates;
-};
 
 class ThumbsViewer : public QListView {
 Q_OBJECT
@@ -53,8 +48,6 @@ public:
     void loadPrepare();
 
     void load();
-
-    void loadDuplicates();
 
     void setThumbColors();
 
@@ -112,10 +105,6 @@ protected:
 private:
     void initThumbs();
 
-    void findDupes(bool resetCounters);
-
-    void updateFoundDupesState(int duplicates, int filesScanned, int originalImages);
-
     int getFirstVisibleThumb();
 
     int getLastVisibleThumb();
@@ -130,7 +119,6 @@ private:
     QModelIndex currentIndex;
     QImageReader imageInfoReader;
     QWidget *mainWindow;
-    QMap<QString, DuplicateImage> dupImageHashes;
     MetadataCache *metadataCache;
     ImageViewer *imageViewer;
     bool abortOp;
@@ -159,5 +147,5 @@ private slots:
     void loadThumbsRange();
 };
 
-#endif // THUMBVIEW_H
+#endif // THUMBS_VIEWER_H
 

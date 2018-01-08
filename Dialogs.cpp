@@ -18,6 +18,7 @@
 
 #include "Dialogs.h"
 #include "Settings.h"
+#include "ShortcutsTable.h"
 
 CopyMoveDialog::CopyMoveDialog(QWidget *parent) : QDialog(parent) {
     abortOp = false;
@@ -148,99 +149,6 @@ void CopyMoveDialog::exec(ThumbsViewer *thumbView, QString &destDir, bool pasteI
     close();
 }
 
-ShortcutsTableView::ShortcutsTableView() {
-    keysModel = new QStandardItemModel();
-    keysModel->setHorizontalHeaderItem(0, new QStandardItem(tr("Action")));
-    keysModel->setHorizontalHeaderItem(1, new QStandardItem(tr("Shortcut")));
-    keysModel->setHorizontalHeaderItem(2, new QStandardItem(""));
-    setModel(keysModel);
-    setSelectionBehavior(QAbstractItemView::SelectRows);
-    setSelectionMode(QAbstractItemView::SingleSelection);
-    setEditTriggers(QAbstractItemView::NoEditTriggers);
-    verticalHeader()->hide();
-    verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
-    horizontalHeader()->setHighlightSections(false);
-    horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    setColumnHidden(2, true);
-
-    shortcutsMenu = new QMenu("");
-    clearAction = new QAction(tr("Delete shortcut"), this);
-    connect(clearAction, SIGNAL(triggered()), this, SLOT(clearShortcut()));
-    shortcutsMenu->addAction(clearAction);
-    setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(this, SIGNAL(customContextMenuRequested(QPoint)), SLOT(showShortcutsTableMenu(QPoint)));
-}
-
-void ShortcutsTableView::addRow(QString action, QString description, QString shortcut) {
-    keysModel->appendRow(QList<QStandardItem *>() << new QStandardItem(description) << new QStandardItem(shortcut)
-                                                  << new QStandardItem(action));
-}
-
-void ShortcutsTableView::keyPressEvent(QKeyEvent *e) {
-    if (!this->selectedIndexes().count()) {
-        return;
-    }
-    QString keySeqText;
-    QString keyText("");
-    QString modifierText("");
-
-    if (e->modifiers() & Qt::ShiftModifier)
-        modifierText += "Shift+";
-    if (e->modifiers() & Qt::ControlModifier)
-        modifierText += "Ctrl+";
-    if (e->modifiers() & Qt::AltModifier)
-        modifierText += "Alt+";
-
-    if ((e->key() >= Qt::Key_Shift && e->key() <= Qt::Key_ScrollLock)
-        || (e->key() >= Qt::Key_Super_L && e->key() <= Qt::Key_Direction_R)
-        || e->key() == Qt::Key_AltGr
-        || e->key() < 0) {
-        return;
-    }
-
-    keyText = QKeySequence(e->key()).toString();
-    keySeqText = modifierText + keyText;
-
-    if (e->modifiers() & Qt::AltModifier && (e->key() > Qt::Key_0 && e->key() <= Qt::Key_Colon)) {
-        QMessageBox msgBox;
-        msgBox.warning(this, tr("Set shortcut"),
-                       tr("\"%1\" is reserved for shortcuts to external applications.").arg(keySeqText));
-        return;
-    }
-
-    QMapIterator<QString, QAction *> it(Settings::actionKeys);
-    while (it.hasNext()) {
-        it.next();
-        if (it.value()->shortcut().toString() == keySeqText) {
-            QMessageBox msgBox;
-            msgBox.warning(this, tr("Set shortcut"),
-                           tr("\"%1\" is already assigned to \"%2\" action.").arg(keySeqText).arg(it.key()));
-            return;
-        }
-    }
-
-    QStandardItemModel *mod = (QStandardItemModel *) model();
-    int row = selectedIndexes().first().row();
-    mod->item(row, 1)->setText(keySeqText);
-    Settings::actionKeys.value(mod->item(row, 2)->text())->setShortcut(QKeySequence(keySeqText));
-}
-
-void ShortcutsTableView::clearShortcut() {
-    if (selectedEntry.isValid()) {
-        QStandardItemModel *mod = (QStandardItemModel *) model();
-        mod->item(selectedEntry.row(), 1)->setText("");
-        Settings::actionKeys.value(mod->item(selectedEntry.row(), 2)->text())->setShortcut(QKeySequence(""));
-    }
-}
-
-void ShortcutsTableView::showShortcutsTableMenu(QPoint pt) {
-    selectedEntry = indexAt(pt);
-    if (selectedEntry.isValid())
-        shortcutsMenu->popup(viewport()->mapToGlobal(pt));
-
-}
-
 SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     setWindowTitle(tr("Preferences"));
     setWindowIcon(QIcon::fromTheme("preferences-other", QIcon(":/images/phototonic.png")));
@@ -292,7 +200,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     imageViewerBackgroundColor = Settings::backgroundColor;
 
     // Exit when opening image
-    exitCliCheckBox = new QCheckBox(tr("Exit instead of closing, when image is loaded from command line"), this);
+    exitCliCheckBox = new QCheckBox(tr("Exit instead of close when image is loaded from command line"), this);
     exitCliCheckBox->setChecked(Settings::exitInsteadOfClose);
 
     // Wrap image list
@@ -343,28 +251,28 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     QLabel *thumbsBackgroundColorLabel = new QLabel(tr("Background color:"));
     thumbsColorPickerButton = new QToolButton();
     thumbsColorPickerButton->setFixedSize(48, 24);
-    QHBoxLayout *thumbsBackgroundColorHbox = new QHBoxLayout;
-    thumbsBackgroundColorHbox->addWidget(thumbsBackgroundColorLabel);
-    thumbsBackgroundColorHbox->addWidget(thumbsColorPickerButton);
+    QHBoxLayout *thumbsBackgroundColorLayout = new QHBoxLayout;
+    thumbsBackgroundColorLayout->addWidget(thumbsBackgroundColorLabel);
+    thumbsBackgroundColorLayout->addWidget(thumbsColorPickerButton);
     connect(thumbsColorPickerButton, SIGNAL(clicked()), this, SLOT(pickThumbsColor()));
     setButtonBgColor(Settings::thumbsBackgroundColor, thumbsColorPickerButton);
     thumbsColorPickerButton->setAutoFillBackground(true);
     thumbsBackgroundColor = Settings::thumbsBackgroundColor;
 
     // thumbsViewer text color
-    QLabel *txtThumbTxtLab = new QLabel("\t" + tr("Label color:"));
-    colThumbTextButton = new QToolButton();
-    colThumbTextButton->setFixedSize(48, 24);
-    thumbsBackgroundColorHbox->addWidget(txtThumbTxtLab);
-    thumbsBackgroundColorHbox->addWidget(colThumbTextButton);
-    thumbsBackgroundColorHbox->addStretch(1);
-    connect(colThumbTextButton, SIGNAL(clicked()), this, SLOT(pickThumbsTextColor()));
-    setButtonBgColor(Settings::thumbsTextColor, colThumbTextButton);
-    colThumbTextButton->setAutoFillBackground(true);
+    QLabel *thumbLabelColorLabel = new QLabel("\t" + tr("Label color:"));
+    thumbsLabelColorButton = new QToolButton();
+    thumbsLabelColorButton->setFixedSize(48, 24);
+    thumbsBackgroundColorLayout->addWidget(thumbLabelColorLabel);
+    thumbsBackgroundColorLayout->addWidget(thumbsLabelColorButton);
+    thumbsBackgroundColorLayout->addStretch(1);
+    connect(thumbsLabelColorButton, SIGNAL(clicked()), this, SLOT(pickThumbsTextColor()));
+    setButtonBgColor(Settings::thumbsTextColor, thumbsLabelColorButton);
+    thumbsLabelColorButton->setAutoFillBackground(true);
     thumbsTextColor = Settings::thumbsTextColor;
 
-    // thumbview background image
-    QLabel *thumbsBackImageLab = new QLabel(tr("Background image:"));
+    // thumbsViewer background image
+    QLabel *thumbsBackgroundImageLabel = new QLabel(tr("Background image:"));
     thumbsBackgroundImageLineEdit = new QLineEdit;
     thumbsBackgroundImageLineEdit->setClearButtonEnabled(true);
     thumbsBackgroundImageLineEdit->setMinimumWidth(200);
@@ -375,32 +283,32 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     chooseThumbsBackImageButton->setIconSize(QSize(16, 16));
     connect(chooseThumbsBackImageButton, SIGNAL(clicked()), this, SLOT(pickBgImage()));
 
-    QHBoxLayout *thumbsBackImageEditBox = new QHBoxLayout;
-    thumbsBackImageEditBox->addWidget(thumbsBackImageLab);
-    thumbsBackImageEditBox->addWidget(thumbsBackgroundImageLineEdit);
-    thumbsBackImageEditBox->addWidget(chooseThumbsBackImageButton);
-    thumbsBackImageEditBox->addStretch(1);
+    QHBoxLayout *thumbsBackgroundImageLayout = new QHBoxLayout;
+    thumbsBackgroundImageLayout->addWidget(thumbsBackgroundImageLabel);
+    thumbsBackgroundImageLayout->addWidget(thumbsBackgroundImageLineEdit);
+    thumbsBackgroundImageLayout->addWidget(chooseThumbsBackImageButton);
+    thumbsBackgroundImageLayout->addStretch(1);
     thumbsBackgroundImageLineEdit->setText(Settings::thumbsBackImage);
 
     // Thumbnail pages to read ahead
-    QLabel *thumbPagesLab = new QLabel(tr("Number of thumbnail pages to read ahead:"));
+    QLabel *thumbsPagesReadLabel = new QLabel(tr("Number of thumbnail pages to read ahead:"));
     thumbPagesSpinBox = new QSpinBox;
     thumbPagesSpinBox->setRange(1, 10);
     thumbPagesSpinBox->setValue(Settings::thumbPagesReadahead);
-    QHBoxLayout *thumbPagesHbox = new QHBoxLayout;
-    thumbPagesHbox->addWidget(thumbPagesLab);
-    thumbPagesHbox->addWidget(thumbPagesSpinBox);
-    thumbPagesHbox->addStretch(1);
+    QHBoxLayout *thumbPagesReadLayout = new QHBoxLayout;
+    thumbPagesReadLayout->addWidget(thumbsPagesReadLabel);
+    thumbPagesReadLayout->addWidget(thumbPagesSpinBox);
+    thumbPagesReadLayout->addStretch(1);
 
     enableThumbExifCheckBox = new QCheckBox(tr("Rotate thumbnails according to Exif orientation"), this);
     enableThumbExifCheckBox->setChecked(Settings::exifThumbRotationEnabled);
 
     // Thumbnail options
     QVBoxLayout *thumbsOptsBox = new QVBoxLayout;
-    thumbsOptsBox->addLayout(thumbsBackgroundColorHbox);
-    thumbsOptsBox->addLayout(thumbsBackImageEditBox);
+    thumbsOptsBox->addLayout(thumbsBackgroundColorLayout);
+    thumbsOptsBox->addLayout(thumbsBackgroundImageLayout);
     thumbsOptsBox->addWidget(enableThumbExifCheckBox);
-    thumbsOptsBox->addLayout(thumbPagesHbox);
+    thumbsOptsBox->addLayout(thumbPagesReadLayout);
     thumbsOptsBox->addStretch(1);
 
     // Slide show delay
@@ -408,27 +316,35 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     slideDelaySpinBox = new QSpinBox;
     slideDelaySpinBox->setRange(1, 3600);
     slideDelaySpinBox->setValue(Settings::slideShowDelay);
-    QHBoxLayout *slideDelayHbox = new QHBoxLayout;
-    slideDelayHbox->addWidget(slideDelayLab);
-    slideDelayHbox->addWidget(slideDelaySpinBox);
-    slideDelayHbox->addStretch(1);
+    QHBoxLayout *slideDelayLayout = new QHBoxLayout;
+    slideDelayLayout->addWidget(slideDelayLab);
+    slideDelayLayout->addWidget(slideDelaySpinBox);
+    slideDelayLayout->addStretch(1);
 
     // Slide show random
     slideRandomCheckBox = new QCheckBox(tr("Show random images"), this);
     slideRandomCheckBox->setChecked(Settings::slideShowRandom);
 
     // Slide show options
-    QVBoxLayout *slideShowVbox = new QVBoxLayout;
-    slideShowVbox->addLayout(slideDelayHbox);
-    slideShowVbox->addWidget(slideRandomCheckBox);
-    slideShowVbox->addStretch(1);
+    QVBoxLayout *slideShowLayout = new QVBoxLayout;
+    slideShowLayout->addLayout(slideDelayLayout);
+    slideShowLayout->addWidget(slideRandomCheckBox);
+    slideShowLayout->addStretch(1);
+
+    // Mouse settings
+    reverseMouseCheckBox = new QCheckBox(tr("Swap mouse left-click and middle-click actions"), this);
+    reverseMouseCheckBox->setChecked(Settings::reverseMouseBehavior);
+
+    // Delete confirmation setting
+    deleteConfirmCheckBox = new QCheckBox(tr("Delete confirmation"), this);
+    deleteConfirmCheckBox->setChecked(Settings::deleteConfirm);
 
     // Startup directory
-    QGroupBox *startupDirGroupBox = new QGroupBox(tr("Startup Directory"));
-    startupDirRadioButtons[Settings::DefaultDir] =
-            new QRadioButton(tr("Default, or specified by command line argument"));
-    startupDirRadioButtons[Settings::RememberLastDir] = new QRadioButton(tr("Remember last"));
-    startupDirRadioButtons[Settings::SpecifiedDir] = new QRadioButton(tr("Specify:"));
+    QGroupBox *startupDirGroupBox = new QGroupBox(tr("Startup Directory if not specified"));
+    startupDirectoryRadioButtons[Settings::DefaultDir] =
+            new QRadioButton(tr("Default"));
+    startupDirectoryRadioButtons[Settings::RememberLastDir] = new QRadioButton(tr("Remember last"));
+    startupDirectoryRadioButtons[Settings::SpecifiedDir] = new QRadioButton(tr("Specify:"));
 
     startupDirLineEdit = new QLineEdit;
     startupDirLineEdit->setClearButtonEnabled(true);
@@ -441,61 +357,58 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     chooseStartupDirButton->setIconSize(QSize(16, 16));
     connect(chooseStartupDirButton, SIGNAL(clicked()), this, SLOT(pickStartupDir()));
 
-    QHBoxLayout *startupDirEditBox = new QHBoxLayout;
-    startupDirEditBox->addWidget(startupDirRadioButtons[2]);
-    startupDirEditBox->addWidget(startupDirLineEdit);
-    startupDirEditBox->addWidget(chooseStartupDirButton);
-    startupDirEditBox->addStretch(1);
+    QHBoxLayout *startupDirectoryLayout = new QHBoxLayout;
+    startupDirectoryLayout->addWidget(startupDirectoryRadioButtons[2]);
+    startupDirectoryLayout->addWidget(startupDirLineEdit);
+    startupDirectoryLayout->addWidget(chooseStartupDirButton);
+    startupDirectoryLayout->addStretch(1);
 
-    QVBoxLayout *startupDirVbox = new QVBoxLayout;
+    QVBoxLayout *startupDirectoryMainLayout = new QVBoxLayout;
     for (int i = 0; i < 2; ++i) {
-        startupDirVbox->addWidget(startupDirRadioButtons[i]);
-        startupDirRadioButtons[i]->setChecked(false);
+        startupDirectoryMainLayout->addWidget(startupDirectoryRadioButtons[i]);
+        startupDirectoryRadioButtons[i]->setChecked(false);
     }
-    startupDirVbox->addLayout(startupDirEditBox);
-    startupDirVbox->addStretch(1);
-    startupDirGroupBox->setLayout(startupDirVbox);
+    startupDirectoryMainLayout->addLayout(startupDirectoryLayout);
+    startupDirectoryMainLayout->addStretch(1);
+    startupDirGroupBox->setLayout(startupDirectoryMainLayout);
 
-    if (Settings::startupDir == Settings::SpecifiedDir)
-        startupDirRadioButtons[Settings::SpecifiedDir]->setChecked(true);
-    else if (Settings::startupDir == Settings::RememberLastDir)
-        startupDirRadioButtons[Settings::RememberLastDir]->setChecked(true);
-    else
-        startupDirRadioButtons[Settings::DefaultDir]->setChecked(true);
+    if (Settings::startupDir == Settings::SpecifiedDir) {
+        startupDirectoryRadioButtons[Settings::SpecifiedDir]->setChecked(true);
+    } else if (Settings::startupDir == Settings::RememberLastDir) {
+        startupDirectoryRadioButtons[Settings::RememberLastDir]->setChecked(true);
+    } else {
+        startupDirectoryRadioButtons[Settings::DefaultDir]->setChecked(true);
+    }
     startupDirLineEdit->setText(Settings::specifiedStartDir);
 
-    // Keyboard shortcuts widgets
-    ShortcutsTableView *keysTable = new ShortcutsTableView();
-    QMapIterator<QString, QAction *> it(Settings::actionKeys);
-    while (it.hasNext()) {
-        it.next();
-        keysTable->addRow(it.key(), Settings::actionKeys.value(it.key())->text(),
-                          Settings::actionKeys.value(it.key())->shortcut().toString());
-    }
+    // Keyboard shortcuts
+    ShortcutsTable *shortcutsTable = new ShortcutsTable();
+    QString noFilter;
+    shortcutsTable->refreshShortcuts(noFilter);
+    QGroupBox *keyboardGroupBox = new QGroupBox(tr("Keyboard Shortcuts"));
+    QVBoxLayout *keyboardSettingsLayout = new QVBoxLayout;
 
-    // Mouse settings
-    reverseMouseCheckBox = new QCheckBox(tr("Swap mouse left-click and middle-click actions"), this);
-    reverseMouseCheckBox->setChecked(Settings::reverseMouseBehavior);
+    QHBoxLayout *filterShortcutsLayout = new QHBoxLayout;
+    QLineEdit *shortcutsFilterLineEdit = new QLineEdit;
+    shortcutsFilterLineEdit->setClearButtonEnabled(true);
+    connect(shortcutsFilterLineEdit, SIGNAL(textChanged(
+                                                    const QString&)), shortcutsTable, SLOT(refreshShortcuts(QString&)));
+    keyboardSettingsLayout->addWidget(new QLabel(tr("Find Shortcuts: ")));
+    keyboardSettingsLayout->addWidget(shortcutsFilterLineEdit);
 
-    // Delete confirmation setting
-    deleteConfirmCheckBox = new QCheckBox(tr("Delete confirmation"), this);
-    deleteConfirmCheckBox->setChecked(Settings::deleteConfirm);
+    keyboardSettingsLayout->addWidget(new QLabel(tr("Select an entry and press a key to set a new shortcut")));
+    keyboardSettingsLayout->addWidget(shortcutsTable);
+    keyboardSettingsLayout->addLayout(filterShortcutsLayout);
+    keyboardGroupBox->setLayout(keyboardSettingsLayout);
 
-    // Keyboard and mouse
-    QGroupBox *keyboardGrp = new QGroupBox(tr("Keyboard Shortcuts"));
-    QVBoxLayout *keyboardVbox = new QVBoxLayout;
-    keyboardVbox->addWidget(keysTable);
-    keyboardGrp->setLayout(keyboardVbox);
-
-    QVBoxLayout *generalVbox = new QVBoxLayout;
-    generalVbox->addWidget(keyboardGrp);
-    generalVbox->addWidget(reverseMouseCheckBox);
-    generalVbox->addWidget(deleteConfirmCheckBox);
-    generalVbox->addWidget(startupDirGroupBox);
-    generalVbox->addStretch(1);
+    QVBoxLayout *generalSettingsLayout = new QVBoxLayout;
+    generalSettingsLayout->addWidget(reverseMouseCheckBox);
+    generalSettingsLayout->addWidget(deleteConfirmCheckBox);
+    generalSettingsLayout->addWidget(startupDirGroupBox);
+    generalSettingsLayout->addStretch(1);
 
     /* Confirmation buttons */
-    QHBoxLayout *buttonsHbox = new QHBoxLayout;
+    QHBoxLayout *confirmSettingsLayout = new QHBoxLayout;
     QPushButton *okButton = new QPushButton(tr("OK"));
     okButton->setIcon(QIcon::fromTheme("dialog-ok"));
     okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -505,31 +418,35 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     closeButton->setIcon(QIcon::fromTheme("dialog-cancel"));
     closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(closeButton, SIGNAL(clicked()), this, SLOT(abort()));
-    buttonsHbox->addWidget(closeButton, 1, Qt::AlignRight);
-    buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);
+    confirmSettingsLayout->addWidget(closeButton, 1, Qt::AlignRight);
+    confirmSettingsLayout->addWidget(okButton, 0, Qt::AlignRight);
 
     /* Tabs */
-    QTabWidget *tabs = new QTabWidget;
+    QTabWidget *settingsTabs = new QTabWidget;
 
     QWidget *viewerSettings = new QWidget;
     viewerSettings->setLayout(viewerOptsBox);
-    tabs->addTab(viewerSettings, tr("Viewer"));
+    settingsTabs->addTab(viewerSettings, tr("Viewer"));
 
     QWidget *thumbSettings = new QWidget;
     thumbSettings->setLayout(thumbsOptsBox);
-    tabs->addTab(thumbSettings, tr("Thumbnails"));
+    settingsTabs->addTab(thumbSettings, tr("Thumbnails"));
 
     QWidget *slideSettings = new QWidget;
-    slideSettings->setLayout(slideShowVbox);
-    tabs->addTab(slideSettings, tr("Slide Show"));
+    slideSettings->setLayout(slideShowLayout);
+    settingsTabs->addTab(slideSettings, tr("Slide Show"));
+
+    QWidget *keyboardSettings = new QWidget;
+    keyboardSettings->setLayout(keyboardSettingsLayout);
+    settingsTabs->addTab(keyboardSettings, tr("Keyboard Shortcuts"));
 
     QWidget *generalSettings = new QWidget;
-    generalSettings->setLayout(generalVbox);
-    tabs->addTab(generalSettings, tr("General"));
+    generalSettings->setLayout(generalSettingsLayout);
+    settingsTabs->addTab(generalSettings, tr("General"));
 
     QVBoxLayout *mainVbox = new QVBoxLayout;
-    mainVbox->addWidget(tabs);
-    mainVbox->addLayout(buttonsHbox);
+    mainVbox->addWidget(settingsTabs);
+    mainVbox->addLayout(confirmSettingsLayout);
     setLayout(mainVbox);
 }
 
@@ -569,9 +486,9 @@ void SettingsDialog::saveSettings() {
     Settings::reverseMouseBehavior = reverseMouseCheckBox->isChecked();
     Settings::deleteConfirm = deleteConfirmCheckBox->isChecked();
 
-    if (startupDirRadioButtons[0]->isChecked())
+    if (startupDirectoryRadioButtons[0]->isChecked())
         Settings::startupDir = Settings::DefaultDir;
-    else if (startupDirRadioButtons[1]->isChecked())
+    else if (startupDirectoryRadioButtons[1]->isChecked())
         Settings::startupDir = Settings::RememberLastDir;
     else {
         Settings::startupDir = Settings::SpecifiedDir;
@@ -610,7 +527,7 @@ void SettingsDialog::pickThumbsColor() {
 void SettingsDialog::pickThumbsTextColor() {
     QColor userColor = QColorDialog::getColor(Settings::thumbsTextColor, this);
     if (userColor.isValid()) {
-        setButtonBgColor(userColor, colThumbTextButton);
+        setButtonBgColor(userColor, thumbsLabelColorButton);
         thumbsTextColor = userColor;
     }
 }

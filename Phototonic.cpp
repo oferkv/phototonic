@@ -278,7 +278,7 @@ void Phototonic::createActions() {
     actionThumbsGoToBottom->setIcon(QIcon::fromTheme("go-bottom", QIcon(":/images/bottom.png")));
     connect(actionThumbsGoToBottom, SIGNAL(triggered()), this, SLOT(goBottom()));
 
-    actionCloseImage = new QAction(tr("Close Image"), this);
+    actionCloseImage = new QAction(tr("Close Viewer"), this);
     actionCloseImage->setObjectName("closeImage");
     connect(actionCloseImage, SIGNAL(triggered()), this, SLOT(hideViewer()));
 
@@ -592,12 +592,6 @@ void Phototonic::createActions() {
     connect(colorsAct, SIGNAL(triggered()), this, SLOT(showColorsDialog()));
     colorsAct->setIcon(QIcon(":/images/colors.png"));
 
-    findDupesAction = new QAction(tr("Find Duplicate Images"), this);
-    findDupesAction->setObjectName("findDupes");
-    findDupesAction->setIcon(QIcon(":/images/duplicates.png"));
-    findDupesAction->setCheckable(true);
-    connect(findDupesAction, SIGNAL(triggered()), this, SLOT(findDuplicateImages()));
-
     mirrorDisabledAct = new QAction(tr("Disable"), this);
     mirrorDisabledAct->setObjectName("mirrorDisabled");
     mirrorDualAct = new QAction(tr("Dual"), this);
@@ -706,10 +700,7 @@ void Phototonic::createMenus() {
     viewMenu->addSeparator();
     viewMenu->addAction(actionRefresh);
 
-    toolsMenu = menuBar()->addMenu(tr("&Tools"));
-    toolsMenu->addAction(findDupesAction);
-
-    // thumbview context menu
+    // thumbs viewer context menu
     thumbsViewer->addAction(openAction);
     thumbsViewer->addAction(openWithMenuAct);
     thumbsViewer->addAction(cutAction);
@@ -751,11 +742,10 @@ void Phototonic::createToolBars() {
     pathLineEdit = new QLineEdit;
     pathLineEdit->setCompleter(new DirCompleter(pathLineEdit));
     pathLineEdit->setMinimumWidth(200);
-    pathLineEdit->setMaximumWidth(300);
+    pathLineEdit->setMaximumWidth(600);
     connect(pathLineEdit, SIGNAL(returnPressed()), this, SLOT(goPathBarDir()));
     goToolBar->addWidget(pathLineEdit);
     goToolBar->addAction(actionIncludeSubDirectories);
-    goToolBar->addAction(findDupesAction);
     connect(goToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setGoToolBarVisibility()));
 
     /* View */
@@ -934,7 +924,6 @@ void Phototonic::sortThumbnails() {
 }
 
 void Phototonic::reload() {
-    findDupesAction->setChecked(false);
     if (Settings::layoutMode == ThumbViewWidget) {
         refreshThumbs(false);
     } else {
@@ -943,7 +932,6 @@ void Phototonic::reload() {
 }
 
 void Phototonic::setIncludeSubFolders() {
-    findDupesAction->setChecked(false);
     Settings::includeSubDirectories = actionIncludeSubDirectories->isChecked();
     refreshThumbs(false);
 }
@@ -1728,7 +1716,6 @@ void Phototonic::deleteOp() {
 }
 
 void Phototonic::goTo(QString path) {
-    findDupesAction->setChecked(false);
     thumbsViewer->setNeedScroll(true);
     fileSystemTree->setCurrentIndex(fileSystemTree->fsModel->index(path));
     Settings::currentViewDir = path;
@@ -1736,7 +1723,6 @@ void Phototonic::goTo(QString path) {
 }
 
 void Phototonic::goSelectedDir(const QModelIndex &idx) {
-    findDupesAction->setChecked(false);
     thumbsViewer->setNeedScroll(true);
     Settings::currentViewDir = getSelectedPath();
     refreshThumbs(true);
@@ -1744,7 +1730,6 @@ void Phototonic::goSelectedDir(const QModelIndex &idx) {
 }
 
 void Phototonic::goPathBarDir() {
-    findDupesAction->setChecked(false);
     thumbsViewer->setNeedScroll(true);
 
     QDir checkPath(pathLineEdit->text());
@@ -2739,7 +2724,8 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString copyM
     }
 
     if (dirOp) {
-        QString dirOnly = copyMoveDirPath.right(copyMoveDirPath.size() - copyMoveDirPath.lastIndexOf(QDir::separator()) - 1);
+        QString dirOnly = copyMoveDirPath.right(
+                copyMoveDirPath.size() - copyMoveDirPath.lastIndexOf(QDir::separator()) - 1);
 
         QString question = tr("Move \"%1\" to \"%2\"?").arg(dirOnly).arg(destDir);
         int ret = QMessageBox::question(this, tr("Move folder"), question,
@@ -2854,19 +2840,11 @@ void Phototonic::reloadThumbsSlot() {
     }
 
     thumbsViewer->busy = true;
-
-    if (findDupesAction->isChecked()) {
-        thumbsViewer->loadDuplicates();
-    } else {
-        thumbsViewer->load();
-    }
+    thumbsViewer->load();
 }
 
 void Phototonic::setThumbsViewerWindowTitle() {
-    if (findDupesAction->isChecked())
-        setWindowTitle(tr("Duplicate images in %1").arg(Settings::currentViewDir) + " - Phototonic");
-    else
-        setWindowTitle(Settings::currentViewDir + " - Phototonic");
+    setWindowTitle(Settings::currentViewDir + " - Phototonic");
 }
 
 void Phototonic::renameDir() {
@@ -3179,8 +3157,3 @@ void Phototonic::addBookmark(QString path) {
     Settings::bookmarkPaths.insert(path);
     bookmarks->reloadBookmarks();
 }
-
-void Phototonic::findDuplicateImages() {
-    refreshThumbs(true);
-}
-
