@@ -73,7 +73,7 @@ void InfoView::clear() {
 }
 
 void InfoView::addEntry(QString &key, QString &value) {
-    if (!filterLineEdit->text().isEmpty() && !key.contains(filterLineEdit->text())) {
+    if (!filterLineEdit->text().isEmpty() && !key.toLower().contains(filterLineEdit->text().toLower())) {
         return;
     }
 

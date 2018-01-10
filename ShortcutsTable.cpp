@@ -26,7 +26,8 @@ ShortcutsTable::ShortcutsTable() {
     setSelectionMode(QAbstractItemView::SingleSelection);
     setEditTriggers(QAbstractItemView::NoEditTriggers);
     verticalHeader()->hide();
-    verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+    verticalHeader()->setDefaultSectionSize(verticalHeader()->minimumSectionSize());
     horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
     horizontalHeader()->setHighlightSections(false);
     horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -38,6 +39,7 @@ ShortcutsTable::ShortcutsTable() {
     shortcutsMenu->addAction(clearAction);
     setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this, SIGNAL(customContextMenuRequested(QPoint)), SLOT(showShortcutPopupMenu(QPoint)));
+    shortcutsFilter = "";
 }
 
 void ShortcutsTable::addRow(QString action, QString description, QString shortcut) {
@@ -98,8 +100,7 @@ void ShortcutsTable::keyPressEvent(QKeyEvent *keyEvent) {
     keysModel->item(row, 1)->setText(keySequenceText);
     Settings::actionKeys.value(keysModel->item(row, 2)->text())->setShortcut(QKeySequence(keySequenceText));
     if (needToRefreshShortCuts) {
-        QString noFilter;
-        refreshShortcuts(noFilter);
+        refreshShortcuts();
     }
 }
 
@@ -118,16 +119,22 @@ void ShortcutsTable::showShortcutPopupMenu(QPoint point) {
 
 }
 
-void ShortcutsTable::refreshShortcuts(QString filter) {
+void ShortcutsTable::setFilter(QString filter) {
+    this->shortcutsFilter = filter;
+    refreshShortcuts();
+}
+
+void ShortcutsTable::refreshShortcuts() {
     keysModel->clear();
     keysModel->setHorizontalHeaderItem(0, new QStandardItem(tr("Action")));
     keysModel->setHorizontalHeaderItem(1, new QStandardItem(tr("Shortcut")));
     QMapIterator<QString, QAction *> it(Settings::actionKeys);
     while (it.hasNext()) {
-        if (!filter.isEmpty() && filter != it.key()) {
+        it.next();
+        if (!shortcutsFilter.isEmpty()
+            && !Settings::actionKeys.value(it.key())->text().toLower().contains(shortcutsFilter.toLower())) {
             continue;
         }
-        it.next();
         addRow(it.key(), Settings::actionKeys.value(it.key())->text(),
                Settings::actionKeys.value(it.key())->shortcut().toString());
     }

@@ -8,8 +8,10 @@ public:
 
     void addRow(QString action, QString description, QString shortcut);
 
+    void refreshShortcuts();
+
 public slots:
-    void refreshShortcuts(QString filter);
+    void setFilter(QString filter);
 
     void showShortcutPopupMenu(QPoint point);
 
@@ -23,4 +25,6 @@ private:
     QModelIndex selectedEntry;
     QMenu *shortcutsMenu;
     QAction *clearAction;
+
+    QString shortcutsFilter;
 };

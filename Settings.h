@@ -29,8 +29,8 @@
 namespace Settings {
 
     enum StartupDir {
-        DefaultDir = 0,
-        RememberLastDir,
+        RememberLastDir = 0,
+        DefaultDir,
         SpecifiedDir
     };
 

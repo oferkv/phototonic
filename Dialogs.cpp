@@ -311,28 +311,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     thumbsOptsBox->addLayout(thumbPagesReadLayout);
     thumbsOptsBox->addStretch(1);
 
-    // Slide show delay
-    QLabel *slideDelayLab = new QLabel(tr("Delay between slides in seconds:"));
-    slideDelaySpinBox = new QSpinBox;
-    slideDelaySpinBox->setRange(1, 3600);
-    slideDelaySpinBox->setValue(Settings::slideShowDelay);
-    QHBoxLayout *slideDelayLayout = new QHBoxLayout;
-    slideDelayLayout->addWidget(slideDelayLab);
-    slideDelayLayout->addWidget(slideDelaySpinBox);
-    slideDelayLayout->addStretch(1);
-
-    // Slide show random
-    slideRandomCheckBox = new QCheckBox(tr("Show random images"), this);
-    slideRandomCheckBox->setChecked(Settings::slideShowRandom);
-
-    // Slide show options
-    QVBoxLayout *slideShowLayout = new QVBoxLayout;
-    slideShowLayout->addLayout(slideDelayLayout);
-    slideShowLayout->addWidget(slideRandomCheckBox);
-    slideShowLayout->addStretch(1);
-
     // Mouse settings
-    reverseMouseCheckBox = new QCheckBox(tr("Swap mouse left-click and middle-click actions"), this);
+    reverseMouseCheckBox = new QCheckBox(tr("Swap mouse double-click and middle-click actions"), this);
     reverseMouseCheckBox->setChecked(Settings::reverseMouseBehavior);
 
     // Delete confirmation setting
@@ -340,10 +320,9 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     deleteConfirmCheckBox->setChecked(Settings::deleteConfirm);
 
     // Startup directory
-    QGroupBox *startupDirGroupBox = new QGroupBox(tr("Startup Directory if not specified"));
-    startupDirectoryRadioButtons[Settings::DefaultDir] =
-            new QRadioButton(tr("Default"));
+    QGroupBox *startupDirGroupBox = new QGroupBox(tr("Startup directory if not specified by command line"));
     startupDirectoryRadioButtons[Settings::RememberLastDir] = new QRadioButton(tr("Remember last"));
+    startupDirectoryRadioButtons[Settings::DefaultDir] = new QRadioButton(tr("Default"));
     startupDirectoryRadioButtons[Settings::SpecifiedDir] = new QRadioButton(tr("Specify:"));
 
     startupDirLineEdit = new QLineEdit;
@@ -383,20 +362,20 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
 
     // Keyboard shortcuts
     ShortcutsTable *shortcutsTable = new ShortcutsTable();
-    QString noFilter;
-    shortcutsTable->refreshShortcuts(noFilter);
+    shortcutsTable->refreshShortcuts();
     QGroupBox *keyboardGroupBox = new QGroupBox(tr("Keyboard Shortcuts"));
     QVBoxLayout *keyboardSettingsLayout = new QVBoxLayout;
 
     QHBoxLayout *filterShortcutsLayout = new QHBoxLayout;
     QLineEdit *shortcutsFilterLineEdit = new QLineEdit;
     shortcutsFilterLineEdit->setClearButtonEnabled(true);
+    shortcutsFilterLineEdit->setPlaceholderText(tr("Filter Items"));
     connect(shortcutsFilterLineEdit, SIGNAL(textChanged(
-                                                    const QString&)), shortcutsTable, SLOT(refreshShortcuts(QString&)));
-    keyboardSettingsLayout->addWidget(new QLabel(tr("Find Shortcuts: ")));
-    keyboardSettingsLayout->addWidget(shortcutsFilterLineEdit);
-
+                                                    const QString&)), shortcutsTable,
+            SLOT(setFilter(
+                         const QString&)));
     keyboardSettingsLayout->addWidget(new QLabel(tr("Select an entry and press a key to set a new shortcut")));
+    keyboardSettingsLayout->addWidget(shortcutsFilterLineEdit);
     keyboardSettingsLayout->addWidget(shortcutsTable);
     keyboardSettingsLayout->addLayout(filterShortcutsLayout);
     keyboardGroupBox->setLayout(keyboardSettingsLayout);
@@ -405,6 +384,30 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     generalSettingsLayout->addWidget(reverseMouseCheckBox);
     generalSettingsLayout->addWidget(deleteConfirmCheckBox);
     generalSettingsLayout->addWidget(startupDirGroupBox);
+
+    // Slide show delay
+    QLabel *slideDelayLab = new QLabel(tr("Delay between slides in seconds:"));
+    slideDelaySpinBox = new QSpinBox;
+    slideDelaySpinBox->setRange(1, 3600);
+    slideDelaySpinBox->setValue(Settings::slideShowDelay);
+    QHBoxLayout *slideDelayLayout = new QHBoxLayout;
+    slideDelayLayout->addWidget(slideDelayLab);
+    slideDelayLayout->addWidget(slideDelaySpinBox);
+    slideDelayLayout->addStretch(1);
+
+    // Slide show random
+    slideRandomCheckBox = new QCheckBox(tr("Show random images"), this);
+    slideRandomCheckBox->setChecked(Settings::slideShowRandom);
+
+    // Slide show options
+    QVBoxLayout *slideshowLayout = new QVBoxLayout;
+    slideshowLayout->addLayout(slideDelayLayout);
+    slideshowLayout->addWidget(slideRandomCheckBox);
+    slideshowLayout->addStretch(1);
+
+    QGroupBox *slideshowGroupBox = new QGroupBox(tr("Slide Show"));
+    slideshowGroupBox->setLayout(slideshowLayout);
+    generalSettingsLayout->addWidget(slideshowGroupBox);
     generalSettingsLayout->addStretch(1);
 
     /* Confirmation buttons */
@@ -432,22 +435,18 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     thumbSettings->setLayout(thumbsOptsBox);
     settingsTabs->addTab(thumbSettings, tr("Thumbnails"));
 
-    QWidget *slideSettings = new QWidget;
-    slideSettings->setLayout(slideShowLayout);
-    settingsTabs->addTab(slideSettings, tr("Slide Show"));
+    QWidget *generalSettings = new QWidget;
+    generalSettings->setLayout(generalSettingsLayout);
+    settingsTabs->addTab(generalSettings, tr("General"));
 
     QWidget *keyboardSettings = new QWidget;
     keyboardSettings->setLayout(keyboardSettingsLayout);
     settingsTabs->addTab(keyboardSettings, tr("Keyboard Shortcuts"));
 
-    QWidget *generalSettings = new QWidget;
-    generalSettings->setLayout(generalSettingsLayout);
-    settingsTabs->addTab(generalSettings, tr("General"));
-
-    QVBoxLayout *mainVbox = new QVBoxLayout;
-    mainVbox->addWidget(settingsTabs);
-    mainVbox->addLayout(confirmSettingsLayout);
-    setLayout(mainVbox);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    mainLayout->addWidget(settingsTabs);
+    mainLayout->addLayout(confirmSettingsLayout);
+    setLayout(mainLayout);
 }
 
 void SettingsDialog::saveSettings() {
@@ -486,11 +485,11 @@ void SettingsDialog::saveSettings() {
     Settings::reverseMouseBehavior = reverseMouseCheckBox->isChecked();
     Settings::deleteConfirm = deleteConfirmCheckBox->isChecked();
 
-    if (startupDirectoryRadioButtons[0]->isChecked())
-        Settings::startupDir = Settings::DefaultDir;
-    else if (startupDirectoryRadioButtons[1]->isChecked())
+    if (startupDirectoryRadioButtons[Settings::RememberLastDir]->isChecked()) {
         Settings::startupDir = Settings::RememberLastDir;
-    else {
+    } else if (startupDirectoryRadioButtons[Settings::DefaultDir]->isChecked()) {
+        Settings::startupDir = Settings::DefaultDir;
+    } else {
         Settings::startupDir = Settings::SpecifiedDir;
         Settings::specifiedStartDir = startupDirLineEdit->text();
     }
