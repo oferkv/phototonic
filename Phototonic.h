@@ -22,7 +22,11 @@
 #include <QtWidgets>
 #include "ThumbsViewer.h"
 #include "ImageViewer.h"
-#include "Dialogs.h"
+#include "SettingsDialog.h"
+#include "CopyMoveToDialog.h"
+#include "CropDialog.h"
+#include "ColorsDialog.h"
+#include "ResizeDialog.h"
 
 #define VERSION "Phototonic v2.0.1"
 
@@ -164,7 +168,7 @@ private slots:
 
     void rotateRight();
 
-    void flipVert();
+    void flipVertical();
 
     void cropImage();
 
@@ -186,7 +190,7 @@ private slots:
 
     void setMirrorQuad();
 
-    void flipHoriz();
+    void flipHorizontal();
 
     void moveRight();
 

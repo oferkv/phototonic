@@ -18,7 +18,7 @@
 
 #include "Tags.h"
 #include "Settings.h"
-#include "Dialogs.h"
+#include "ProgressDialog.h"
 
 ImageTags::ImageTags(QWidget *parent, ThumbsViewer *thumbsViewer, MetadataCache *metadataCache) : QWidget(parent) {
     tagsTree = new QTreeWidget;
@@ -349,23 +349,23 @@ void ImageTags::applyUserAction(QTreeWidgetItem *item) {
 
 void ImageTags::applyUserAction(QList<QTreeWidgetItem *> tagsList) {
     int processEventsCounter = 0;
-    ProgressDialog *dialog = new ProgressDialog(this);
-    dialog->show();
+    ProgressDialog *progressDialog = new ProgressDialog(this);
+    progressDialog->show();
 
     QStringList currentSelectedImages = thumbView->getSelectedThumbsList();
-    for (int i = 0; i < currentSelectedImages.size(); ++i) {
+    for (int currentImage = 0; currentImage < currentSelectedImages.size(); ++currentImage) {
 
-        QString imageName = currentSelectedImages[i];
+        QString imageName = currentSelectedImages[currentImage];
         for (int i = tagsList.size() - 1; i > -1; --i) {
             Qt::CheckState tagState = tagsList.at(i)->checkState(0);
             setTagIcon(tagsList.at(i), (tagState == Qt::Checked ? TagIconEnabled : TagIconDisabled));
             QString tagName = tagsList.at(i)->text(0);
 
             if (tagState == Qt::Checked) {
-                dialog->opLabel->setText(tr("Tagging ") + imageName);
+                progressDialog->opLabel->setText(tr("Tagging ") + imageName);
                 metadataCache->addTagToImage(imageName, tagName);
             } else {
-                dialog->opLabel->setText(tr("Untagging ") + imageName);
+                progressDialog->opLabel->setText(tr("Untagging ") + imageName);
                 metadataCache->removeTagFromImage(imageName, tagName);
             }
         }
@@ -380,13 +380,13 @@ void ImageTags::applyUserAction(QList<QTreeWidgetItem *> tagsList) {
             QApplication::processEvents();
         }
 
-        if (dialog->abortOp) {
+        if (progressDialog->abortOp) {
             break;
         }
     }
 
-    dialog->close();
-    delete (dialog);
+    progressDialog->close();
+    delete (progressDialog);
 }
 
 void ImageTags::saveLastChangedTag(QTreeWidgetItem *item, int) {

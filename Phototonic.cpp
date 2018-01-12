@@ -19,6 +19,12 @@
 #include "DirCompleter.h"
 #include "Phototonic.h"
 #include "Settings.h"
+#include "CopyMoveDialog.h"
+#include "ResizeDialog.h"
+#include "CropDialog.h"
+#include "ColorsDialog.h"
+#include "ExternalAppsDialog.h"
+#include "ProgressDialog.h"
 
 #define THUMB_SIZE_MIN    50
 #define THUMB_SIZE_MAX    500
@@ -49,9 +55,9 @@ Phototonic::Phototonic(QString fileOrDirectory, QWidget *parent) : QMainWindow(p
 
     handleStartupArgs(fileOrDirectory);
 
-    copyMoveToDialog = 0;
-    colorsDialog = 0;
-    cropDialog = 0;
+    copyMoveToDialog = nullptr;
+    colorsDialog = nullptr;
+    cropDialog = nullptr;
     initComplete = true;
     thumbsViewer->busy = false;
     currentHistoryIdx = -1;
@@ -345,9 +351,9 @@ void Phototonic::createActions() {
     saveAsAction->setObjectName("saveAs");
     saveAsAction->setIcon(QIcon::fromTheme("document-save-as", QIcon(":/images/save_as.png")));
 
-    copyImageAction = new QAction(tr("Copy Image Data"), this);
+    copyImageAction = new QAction(tr("Copy Image"), this);
     copyImageAction->setObjectName("copyImage");
-    pasteImageAction = new QAction(tr("Paste Image Data"), this);
+    pasteImageAction = new QAction(tr("Paste Image"), this);
     pasteImageAction->setObjectName("pasteImage");
 
     renameAction = new QAction(tr("Rename"), this);
@@ -558,12 +564,12 @@ void Phototonic::createActions() {
     flipHAct = new QAction(tr("Flip Horizontally"), this);
     flipHAct->setObjectName("flipH");
     flipHAct->setIcon(QIcon::fromTheme("object-flip-horizontal", QIcon(":/images/flipH.png")));
-    connect(flipHAct, SIGNAL(triggered()), this, SLOT(flipHoriz()));
+    connect(flipHAct, SIGNAL(triggered()), this, SLOT(flipHorizontal()));
 
     flipVAct = new QAction(tr("Flip Vertically"), this);
     flipVAct->setObjectName("flipV");
     flipVAct->setIcon(QIcon::fromTheme("object-flip-vertical", QIcon(":/images/flipV.png")));
-    connect(flipVAct, SIGNAL(triggered()), this, SLOT(flipVert()));
+    connect(flipVAct, SIGNAL(triggered()), this, SLOT(flipVertical()));
 
     cropAct = new QAction(tr("Cropping"), this);
     cropAct->setObjectName("crop");
@@ -592,15 +598,15 @@ void Phototonic::createActions() {
     connect(colorsAct, SIGNAL(triggered()), this, SLOT(showColorsDialog()));
     colorsAct->setIcon(QIcon(":/images/colors.png"));
 
-    mirrorDisabledAct = new QAction(tr("Disable"), this);
+    mirrorDisabledAct = new QAction(tr("Disable Mirror"), this);
     mirrorDisabledAct->setObjectName("mirrorDisabled");
-    mirrorDualAct = new QAction(tr("Dual"), this);
+    mirrorDualAct = new QAction(tr("Dual Mirror"), this);
     mirrorDualAct->setObjectName("mirrorDual");
-    mirrorTripleAct = new QAction(tr("Triple"), this);
+    mirrorTripleAct = new QAction(tr("Triple Mirror"), this);
     mirrorTripleAct->setObjectName("mirrorTriple");
-    mirrorVDualAct = new QAction(tr("Dual Vertical"), this);
+    mirrorVDualAct = new QAction(tr("Dual Vertical Mirror"), this);
     mirrorVDualAct->setObjectName("mirrorVDual");
-    mirrorQuadAct = new QAction(tr("Quad"), this);
+    mirrorQuadAct = new QAction(tr("Quad Mirror"), this);
     mirrorQuadAct->setObjectName("mirrorQuad");
 
     mirrorDisabledAct->setCheckable(true);
@@ -620,16 +626,16 @@ void Phototonic::createActions() {
     keepTransformAct->setCheckable(true);
     connect(keepTransformAct, SIGNAL(triggered()), this, SLOT(keepTransformClicked()));
 
-    moveLeftAct = new QAction(tr("Move Left"), this);
+    moveLeftAct = new QAction(tr("Move Image Left"), this);
     moveLeftAct->setObjectName("moveLeft");
     connect(moveLeftAct, SIGNAL(triggered()), this, SLOT(moveLeft()));
-    moveRightAct = new QAction(tr("Move Right"), this);
+    moveRightAct = new QAction(tr("Move Image Right"), this);
     moveRightAct->setObjectName("moveRight");
     connect(moveRightAct, SIGNAL(triggered()), this, SLOT(moveRight()));
-    moveUpAct = new QAction(tr("Move Up"), this);
+    moveUpAct = new QAction(tr("Move Image Up"), this);
     moveUpAct->setObjectName("moveUp");
     connect(moveUpAct, SIGNAL(triggered()), this, SLOT(moveUp()));
-    moveDownAct = new QAction(tr("Move Down"), this);
+    moveDownAct = new QAction(tr("Move Image Down"), this);
     moveDownAct->setObjectName("moveDown");
     connect(moveDownAct, SIGNAL(triggered()), this, SLOT(moveDown()));
 
@@ -1074,16 +1080,16 @@ void Phototonic::updateExternalApps() {
 }
 
 void Phototonic::chooseExternalApp() {
-    AppMgmtDialog *dialog = new AppMgmtDialog(this);
+    ExternalAppsDialog *externalAppsDialog = new ExternalAppsDialog(this);
 
     if (Settings::slideShowActive) {
         toggleSlideShow();
     }
     imageViewer->setCursorHiding(false);
 
-    dialog->exec();
+    externalAppsDialog->exec();
     updateExternalApps();
-    delete (dialog);
+    delete (externalAppsDialog);
 
     if (isFullScreen()) {
         imageViewer->setCursorHiding(true);
@@ -1097,8 +1103,8 @@ void Phototonic::showSettings() {
 
     imageViewer->setCursorHiding(false);
 
-    SettingsDialog *dialog = new SettingsDialog(this);
-    if (dialog->exec()) {
+    SettingsDialog *settingsDialog = new SettingsDialog(this);
+    if (settingsDialog->exec()) {
         imageViewer->setBgColor();
         thumbsViewer->setThumbColors();
         Settings::imageZoomFactor = 1.0;
@@ -1115,7 +1121,7 @@ void Phototonic::showSettings() {
     if (isFullScreen()) {
         imageViewer->setCursorHiding(true);
     }
-    delete dialog;
+    delete settingsDialog;
 }
 
 void Phototonic::toggleFullScreen() {
@@ -1197,7 +1203,7 @@ void Phototonic::copyMoveImages(bool move) {
             QString fileName = fileInfo.fileName();
             QString destFile = copyMoveToDialog->selectedPath + QDir::separator() + fileInfo.fileName();
 
-            int res = copyMoveFile(copyMoveToDialog->copyOp, fileName, imageViewer->currentImageFullPath,
+            int res = CopyMoveDialog::copyMoveFile(copyMoveToDialog->copyOp, fileName, imageViewer->currentImageFullPath,
                                    destFile, copyMoveToDialog->selectedPath);
 
             if (!res) {
@@ -1304,8 +1310,9 @@ void Phototonic::keepTransformClicked() {
 
     if (Settings::keepTransform) {
         imageViewer->setFeedback(tr("Transformations Locked"));
-        if (cropDialog)
+        if (cropDialog) {
             cropDialog->applyCrop(0);
+        }
     } else {
         Settings::cropLeftPercent = Settings::cropTopPercent = Settings::cropWidthPercent = Settings::cropHeightPercent = 0;
         imageViewer->setFeedback(tr("Transformations Unlocked"));
@@ -1330,13 +1337,13 @@ void Phototonic::rotateRight() {
     imageViewer->setFeedback(tr("Rotation %1°").arg(QString::number(Settings::rotation)));
 }
 
-void Phototonic::flipVert() {
+void Phototonic::flipVertical() {
     Settings::flipV = !Settings::flipV;
     imageViewer->refresh();
     imageViewer->setFeedback(Settings::flipV ? tr("Flipped Vertically") : tr("Unflipped Vertically"));
 }
 
-void Phototonic::flipHoriz() {
+void Phototonic::flipHorizontal() {
     Settings::flipH = !Settings::flipH;
     imageViewer->refresh();
     imageViewer->setFeedback(Settings::flipH ? tr("Flipped Horizontally") : tr("Unflipped Horizontally"));
@@ -1501,14 +1508,14 @@ void Phototonic::pasteThumbs() {
         }
     }
 
-    CopyMoveDialog *dialog = new CopyMoveDialog(this);
-    dialog->exec(thumbsViewer, destDir, pasteInCurrDir);
+    CopyMoveDialog *copyMoveDialog = new CopyMoveDialog(this);
+    copyMoveDialog->exec(thumbsViewer, destDir, pasteInCurrDir);
     if (pasteInCurrDir) {
         for (int tn = 0; tn < Settings::copyCutFileList.size(); ++tn) {
             thumbsViewer->addThumb(Settings::copyCutFileList[tn]);
         }
     } else {
-        int row = dialog->latestRow;
+        int row = copyMoveDialog->latestRow;
         if (thumbsViewer->thumbsViewerModel->rowCount()) {
             if (row >= thumbsViewer->thumbsViewerModel->rowCount()) {
                 row = thumbsViewer->thumbsViewerModel->rowCount() - 1;
@@ -1520,9 +1527,9 @@ void Phototonic::pasteThumbs() {
     }
 
     QString state = QString((Settings::copyOp ? tr("Copied") : tr("Moved")) + " " +
-                            tr("%n image(s)", "", dialog->nFiles));
+                            tr("%n image(s)", "", copyMoveDialog->nFiles));
     setStatus(state);
-    delete (dialog);
+    delete (copyMoveDialog);
     selectCurrentViewDir();
 
     copyCutCount = 0;
@@ -1666,13 +1673,13 @@ void Phototonic::deleteOp() {
         QList<int> rows;
         int row;
 
-        ProgressDialog *dialog = new ProgressDialog(this);
-        dialog->show();
+        ProgressDialog *progressDialog = new ProgressDialog(this);
+        progressDialog->show();
 
         while ((indexesList = thumbsViewer->selectionModel()->selectedIndexes()).size()) {
             QString fileName = thumbsViewer->thumbsViewerModel->item(
                     indexesList.first().row())->data(thumbsViewer->FileNameRole).toString();
-            dialog->opLabel->setText("Deleting " + fileName);
+            progressDialog->opLabel->setText("Deleting " + fileName);
             ok = QFile::remove(fileName);
 
             ++nfiles;
@@ -1689,7 +1696,7 @@ void Phototonic::deleteOp() {
                 thumbsViewer->setRowHidden(0, false);
             }
 
-            if (dialog->abortOp) {
+            if (progressDialog->abortOp) {
                 break;
             }
         }
@@ -1707,8 +1714,8 @@ void Phototonic::deleteOp() {
             thumbsViewer->selectThumbByRow(row);
         }
 
-        dialog->close();
-        delete (dialog);
+        progressDialog->close();
+        delete (progressDialog);
 
         QString state = QString(tr("Deleted") + " " + tr("%n image(s)", "", nfiles));
         setStatus(state);

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2015 Thomas Lübking <thomas.luebking@gmail.com>
+ *  Copyright (C) 2013 Ofer Kashayov <oferkv@live.com>
  *  This file is part of Phototonic Image Viewer.
  *
  *  Phototonic is free software: you can redistribute it and/or modify
@@ -16,21 +16,32 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DIR_COMPLETER_H
-#define DIR_COMPLETER_H
+#ifndef CROP_DIALOG_H
+#define CROP_DIALOG_H
 
-#include <QCompleter>
+#include <QtWidgets/QWidget>
+#include "ImageViewer.h"
 
-class DirCompleter : public QCompleter {
-Q_OBJECT
+class CropDialog : public QDialog {
+    Q_OBJECT
+
 public:
-    DirCompleter(QObject *parent = 0);
-
-    QString pathFromIndex(const QModelIndex &index) const;
+    CropDialog(QWidget *parent, ImageViewer *imageViewer);
 
 public slots:
 
-    QStringList splitPath(const QString &path) const;
+    void ok();
+
+    void reset();
+
+    void applyCrop(int);
+
+private:
+    QSpinBox *topSpinBox;
+    QSpinBox *bottomSpinBox;
+    QSpinBox *leftSpinBox;
+    QSpinBox *rightSpinBox;
+    ImageViewer *imageViewer;
 };
 
-#endif // DIR_COMPLETER_H
+#endif // CROP_DIALOG_H

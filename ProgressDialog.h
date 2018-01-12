@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2015 Thomas Lübking <thomas.luebking@gmail.com>
+ *  Copyright (C) 2013-2018 Ofer Kashayov <oferkv@live.com>
  *  This file is part of Phototonic Image Viewer.
  *
  *  Phototonic is free software: you can redistribute it and/or modify
@@ -16,21 +16,29 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DIR_COMPLETER_H
-#define DIR_COMPLETER_H
+#ifndef PROGRESS_DIALOG_H
+#define PROGRESS_DIALOG_H
 
-#include <QCompleter>
+#include <QtWidgets/qlabel.h>
+#include <QtWidgets/QWidget>
+#include <QtWidgets>
+#include "Settings.h"
 
-class DirCompleter : public QCompleter {
-Q_OBJECT
-public:
-    DirCompleter(QObject *parent = 0);
-
-    QString pathFromIndex(const QModelIndex &index) const;
+class ProgressDialog : public QDialog {
+    Q_OBJECT
 
 public slots:
 
-    QStringList splitPath(const QString &path) const;
+    void abort();
+
+public:
+    QLabel *opLabel;
+    bool abortOp;
+
+    ProgressDialog(QWidget *parent);
+
+private:
+    QPushButton *cancelButton;
 };
 
-#endif // DIR_COMPLETER_H
+#endif // PROGRESS_DIALOG_H

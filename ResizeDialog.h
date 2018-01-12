@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018 Ofer Kashayov <oferkv@live.com>
+ *  Copyright (C) 2013-2018 Ofer Kashayov <oferkv@live.com>
  *  This file is part of Phototonic Image Viewer.
  *
  *  Phototonic is free software: you can redistribute it and/or modify
@@ -16,38 +16,45 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SHORTCUTS_TABLE_H
-#define SHORTCUTS_TABLE_H
+#ifndef RESIZE_DIALOG_H
+#define RESIZE_DIALOG_H
 
-#include <QtWidgets>
+#include "ImageViewer.h"
 
-class ShortcutsTable : public QTableView {
+class ResizeDialog : public QDialog {
     Q_OBJECT
 
 public:
-    ShortcutsTable();
-
-    void addRow(QString action, QString description, QString shortcut);
-
-    void refreshShortcuts();
+    ResizeDialog(QWidget *parent, ImageViewer *imageViewer);
 
 public slots:
-    void setFilter(QString filter);
 
-    void showShortcutPopupMenu(QPoint point);
+    void ok();
 
-    void clearSelectedShortcut();
+    void abort();
 
-protected:
-    void keyPressEvent(QKeyEvent *keyEvent);
+    void setAspectLock();
+
+    void setUnits();
+
+    void adjustSizes();
 
 private:
-    QStandardItemModel *keysModel;
-    QModelIndex selectedEntry;
-    QMenu *shortcutsMenu;
-    QAction *clearAction;
+    int width;
+    int height;
+    int lastWidth;
+    int lastHeight;
+    bool aspectLocked;
+    bool pixelUnits;
+    int newWidth;
+    int newHeight;
 
-    QString shortcutsFilter;
+    QSpinBox *widthSpinBox;
+    QSpinBox *heightSpinBox;
+    QRadioButton *pixelsRadioButton;
+    QRadioButton *percentRadioButton;
+    QLabel *newSizePixelsLabel;
+    ImageViewer *imageViewer;
 };
 
-#endif // SHORTCUTS_TABLE_H
+#endif // RESIZE_DIALOG_H
