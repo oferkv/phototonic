@@ -36,6 +36,7 @@ ImageTags::ImageTags(QWidget *parent, ThumbsViewer *thumbsViewer, MetadataCache 
     tabs->addTab(tr("Filter"));
     tabs->setTabIcon(0, QIcon(":/images/tag_yellow.png"));
     tabs->setTabIcon(1, QIcon(":/images/tag_filter_off.png"));
+    tabs->setExpanding(false);
     connect(tabs, SIGNAL(currentChanged(int)), this, SLOT(tabsChanged(int)));
 
     QVBoxLayout *mainLayout = new QVBoxLayout;

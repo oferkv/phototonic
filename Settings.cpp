@@ -32,7 +32,6 @@ namespace Settings {
     QColor thumbsBackgroundColor;
     QColor thumbsTextColor;
     unsigned int thumbPagesReadahead;
-    bool exitInsteadOfClose;
     bool wrapImageList;
     bool enableAnimations;
     float imageZoomFactor;

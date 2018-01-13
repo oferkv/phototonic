@@ -22,7 +22,6 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     setWindowTitle(tr("Preferences"));
     setWindowIcon(QIcon::fromTheme("preferences-other", QIcon(":/images/phototonic.png")));
 
-    // Image Viewer Options
     // Zoom large images
     QGroupBox *fitLargeGroupBox = new QGroupBox(tr("Fit Large Images"));
     fitLargeRadios[0] = new QRadioButton(tr("Disable"));
@@ -68,16 +67,12 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     backgroundColorButton->setAutoFillBackground(true);
     imageViewerBackgroundColor = Settings::backgroundColor;
 
-    // Exit when opening image
-    exitCliCheckBox = new QCheckBox(tr("Exit instead of close when image is loaded from command line"), this);
-    exitCliCheckBox->setChecked(Settings::exitInsteadOfClose);
-
     // Wrap image list
     wrapListCheckBox = new QCheckBox(tr("Wrap image list when reaching last or first image"), this);
     wrapListCheckBox->setChecked(Settings::wrapImageList);
 
     // Save quality
-    QLabel *saveQualityLabel = new QLabel(tr("Default quality when saving images:"));
+    QLabel *saveQualityLabel = new QLabel(tr("Default quality when saving:"));
     saveQualitySpinBox = new QSpinBox;
     saveQualitySpinBox->setRange(0, 100);
     saveQualitySpinBox->setValue(Settings::defaultSaveQuality);
@@ -91,7 +86,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     enableAnimCheckBox->setChecked(Settings::enableAnimations);
 
     // Enable image Exif rotation
-    enableExifCheckBox = new QCheckBox(tr("Rotate image according to Exif orientation"), this);
+    enableExifCheckBox = new QCheckBox(tr("Rotate image according to Exif orientation value"), this);
     enableExifCheckBox->setChecked(Settings::exifRotationEnabled);
 
     // Image Info
@@ -113,7 +108,6 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     viewerOptsBox->addWidget(wrapListCheckBox);
     viewerOptsBox->addWidget(enableAnimCheckBox);
     viewerOptsBox->addLayout(saveQualityHbox);
-    viewerOptsBox->addWidget(exitCliCheckBox);
     viewerOptsBox->addStretch(1);
 
     // thumbsViewer background color
@@ -169,7 +163,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     thumbPagesReadLayout->addWidget(thumbPagesSpinBox);
     thumbPagesReadLayout->addStretch(1);
 
-    enableThumbExifCheckBox = new QCheckBox(tr("Rotate thumbnails according to Exif orientation"), this);
+    enableThumbExifCheckBox = new QCheckBox(tr("Rotate thumbnail according to Exif orientation value"), this);
     enableThumbExifCheckBox->setChecked(Settings::exifThumbRotationEnabled);
 
     // Thumbnail options
@@ -232,7 +226,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     // Keyboard shortcuts
     ShortcutsTable *shortcutsTable = new ShortcutsTable();
     shortcutsTable->refreshShortcuts();
-    QGroupBox *keyboardGroupBox = new QGroupBox(tr("Keyboard Shortcuts"));
+    QGroupBox *keyboardGroupBox = new QGroupBox(tr("Keyboard"));
     QVBoxLayout *keyboardSettingsLayout = new QVBoxLayout;
 
     QHBoxLayout *filterShortcutsLayout = new QHBoxLayout;
@@ -309,7 +303,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
 
     QWidget *keyboardSettings = new QWidget;
     keyboardSettings->setLayout(keyboardSettingsLayout);
-    settingsTabs->addTab(keyboardSettings, tr("Keyboard Shortcuts"));
+    settingsTabs->addTab(keyboardSettings, tr("Keyboard"));
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(settingsTabs);
@@ -341,7 +335,6 @@ void SettingsDialog::saveSettings() {
     Settings::thumbsTextColor = thumbsTextColor;
     Settings::thumbsBackImage = thumbsBackgroundImageLineEdit->text();
     Settings::thumbPagesReadahead = thumbPagesSpinBox->value();
-    Settings::exitInsteadOfClose = exitCliCheckBox->isChecked();
     Settings::wrapImageList = wrapListCheckBox->isChecked();
     Settings::defaultSaveQuality = saveQualitySpinBox->value();
     Settings::slideShowDelay = slideDelaySpinBox->value();

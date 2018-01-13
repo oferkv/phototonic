@@ -46,7 +46,6 @@ namespace Settings {
     extern QColor thumbsBackgroundColor;
     extern QColor thumbsTextColor;
     extern unsigned int thumbPagesReadahead;
-    extern bool exitInsteadOfClose;
     extern bool wrapImageList;
     extern bool enableAnimations;
     extern float imageZoomFactor;

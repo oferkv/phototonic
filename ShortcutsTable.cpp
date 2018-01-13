@@ -81,16 +81,17 @@ void ShortcutsTable::keyPressEvent(QKeyEvent *keyEvent) {
         return;
     }
 
-    QStandardItemModel *keysModel = (QStandardItemModel *) model();
-
     QMapIterator<QString, QAction *> keysIterator(Settings::actionKeys);
     bool needToRefreshShortCuts = false;
     while (keysIterator.hasNext()) {
         keysIterator.next();
-        if (keysIterator.value()->shortcut().toString() == keySequenceText) {
-            QMessageBox msgBox;
-            msgBox.warning(this, tr("Set Shortcut"),
-                           tr("Removing \"%1\" from \"%2\" action.").arg(keySequenceText).arg(keysIterator.key()));
+
+        QAction tmpAction;
+        tmpAction.setShortcut(keySequenceText);
+        if (keysIterator.value()->shortcut().toString() == tmpAction.shortcut().toString()) {
+            if (!confirmOverwriteShortcut(keysIterator.value()->text(), keySequenceText)) {
+                return;
+            }
             Settings::actionKeys.value(keysIterator.key())->setShortcut(QKeySequence());
             needToRefreshShortCuts = true;
         }
@@ -102,6 +103,20 @@ void ShortcutsTable::keyPressEvent(QKeyEvent *keyEvent) {
     if (needToRefreshShortCuts) {
         refreshShortcuts();
     }
+}
+
+bool ShortcutsTable::confirmOverwriteShortcut(QString action, QString shortcut) {
+    QMessageBox msgBox;
+    msgBox.setText(tr("%1 already assigned to %2, reassign?").arg(shortcut).arg(action));
+    msgBox.setWindowTitle(tr("Overwrite Shortcut"));
+    msgBox.setIcon(QMessageBox::Warning);
+    msgBox.setWindowIcon(QIcon(":/images/tag.png"));
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+    msgBox.setDefaultButton(QMessageBox::Cancel);
+    msgBox.setButtonText(QMessageBox::Yes, tr("Yes"));
+    msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));
+
+    return (msgBox.exec() == QMessageBox::Yes);
 }
 
 void ShortcutsTable::clearSelectedShortcut() {

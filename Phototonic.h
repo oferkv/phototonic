@@ -58,9 +58,9 @@ public slots:
 
     void showViewer();
 
-    void loadImagefromThumb(const QModelIndex &idx);
+    void loadImageByThumb(const QModelIndex &idx);
 
-    void loadImagefromCli();
+    void loadImageBromCliArguments();
 
     void hideViewer();
 
@@ -90,7 +90,7 @@ private slots:
 
     void rename();
 
-    void openOp();
+    void viewImage();
 
     void newImage();
 
@@ -291,59 +291,59 @@ private:
     QAction *removeBookmarkAction;
 
     QActionGroup *sortTypesGroup;
-    QAction *actionSortByName;
-    QAction *actionSortByTime;
-    QAction *actionSortBySize;
-    QAction *actionSortByType;
-    QAction *actionSortReverse;
-    QAction *actionRefresh;
-    QAction *actionIncludeSubDirectories;
-    QAction *actionFullScreen;
-    QAction *actionThumbsGoToTop;
-    QAction *actionThumbsGoToBottom;
-    QAction *actionCloseImage;
-    QAction *actionSettings;
-    QAction *thumbsZoomInAct;
-    QAction *thumbsZoomOutAct;
-    QAction *zoomSubMenuAct;
-    QAction *zoomInAct;
-    QAction *zoomOutAct;
-    QAction *resetZoomAct;
-    QAction *origZoomAct;
-    QAction *keepZoomAct;
-    QAction *keepTransformAct;
-    QAction *transformSubMenuAct;
-    QAction *viewSubMenuAct;
-    QAction *rotateLeftAct;
-    QAction *rotateRightAct;
-    QAction *flipHAct;
-    QAction *flipVAct;
-    QAction *cropAct;
-    QAction *cropToSelectionAct;
-    QAction *resizeAct;
-    QAction *freeRotateLeftAct;
-    QAction *freeRotateRightAct;
-    QAction *colorsAct;
-    QActionGroup *mirroringGroup;
-    QAction *mirrorSubMenuAct;
-    QAction *mirrorDisabledAct;
-    QAction *mirrorDualAct;
-    QAction *mirrorTripleAct;
-    QAction *mirrorVDualAct;
-    QAction *mirrorQuadAct;
-    QAction *moveLeftAct;
-    QAction *moveRightAct;
-    QAction *moveUpAct;
-    QAction *moveDownAct;
+    QAction *sortByNameAction;
+    QAction *sortByTimeAction;
+    QAction *sortBySizeAction;
+    QAction *sortByTypeAction;
+    QAction *sortReverseAction;
+    QAction *refreshAction;
+    QAction *includeSubDirectoriesAction;
+    QAction *fullScreenAction;
+    QAction *thumbsGoToTopAction;
+    QAction *thumbsGoToBottomAction;
+    QAction *CloseImageAction;
+    QAction *settingsAction;
+    QAction *thumbsZoomInAction;
+    QAction *thumbsZoomOutAction;
+    QAction *zoomSubMenuAction;
+    QAction *zoomInAction;
+    QAction *zoomOutAction;
+    QAction *resetZoomAction;
+    QAction *origZoomAction;
+    QAction *keepZoomAction;
+    QAction *keepTransformAction;
+    QAction *transformSubMenuAction;
+    QAction *viewSubMenuAction;
+    QAction *rotateLeftAction;
+    QAction *rotateRightAction;
+    QAction *flipHorizontalAction;
+    QAction *flipVerticalAction;
+    QAction *cropAction;
+    QAction *cropToSelectionAction;
+    QAction *resizeAction;
+    QAction *freeRotateLeftAction;
+    QAction *freeRotateRightAction;
+    QAction *colorsAction;
+    QActionGroup *mirroringActionGroup;
+    QAction *mirrorSubMenuAction;
+    QAction *mirrorDisabledAction;
+    QAction *mirrorDualAction;
+    QAction *mirrorTripleAction;
+    QAction *mirrorDualVerticalAction;
+    QAction *mirrorQuadAction;
+    QAction *moveLeftAction;
+    QAction *moveRightAction;
+    QAction *moveUpAction;
+    QAction *moveDownAction;
 
-    QAction *actionAbout;
-    QAction *actionShowHiddenFiles;
-    QAction *actionSmallToolbarIcons;
-    QAction *actionLockDocks;
-    QAction *actionShowViewerToolbar;
+    QAction *aboutAction;
+    QAction *showHiddenFilesAction;
+    QAction *smallToolbarIconsAction;
+    QAction *lockDocksAction;
+    QAction *showViewerToolbarAction;
 
-    QAction *actionPaste;
-    QAction *actionCreateDirectory;
+    QAction *pasteAction;
+    QAction *createDirectoryAction;
 
     QAction *goBackAction;
     QAction *goFrwdAction;
@@ -356,13 +356,13 @@ private:
     QAction *firstImageAction;
     QAction *lastImageAction;
     QAction *randomImageAction;
-    QAction *openAction;
-    QAction *filterImagesFocusAct;
-    QAction *setPathFocusAct;
+    QAction *viewImageAction;
+    QAction *filterImagesFocusAction;
+    QAction *setPathFocusAction;
 
-    QAction *openWithMenuAct;
-    QAction *chooseAppAct;
-    QAction *invertSelectionAct;
+    QAction *openWithMenuAction;
+    QAction *chooseAppAction;
+    QAction *invertSelectionAction;
 
     QLineEdit *pathLineEdit;
     QLineEdit *filterLineEdit;

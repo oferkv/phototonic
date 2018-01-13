@@ -60,7 +60,6 @@ private:
     QColor imageViewerBackgroundColor;
     QColor thumbsBackgroundColor;
     QColor thumbsTextColor;
-    QCheckBox *exitCliCheckBox;
     QCheckBox *wrapListCheckBox;
     QCheckBox *enableAnimCheckBox;
     QCheckBox *enableExifCheckBox;

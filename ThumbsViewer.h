@@ -29,7 +29,7 @@
 #include "Tags.h"
 #include "MetadataCache.h"
 
-#define BAD_IMG_SZ    64
+#define BAD_IMAGE_SIZE    64
 
 class ImageTags;
 

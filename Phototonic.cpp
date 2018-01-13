@@ -27,7 +27,7 @@
 #include "ProgressDialog.h"
 
 #define THUMB_SIZE_MIN    50
-#define THUMB_SIZE_MAX    500
+#define THUMB_SIZE_MAX    750
 
 Phototonic::Phototonic(QString fileOrDirectory, QWidget *parent) : QMainWindow(parent) {
     Settings::appSettings = new QSettings("phototonic", "phototonic");
@@ -85,7 +85,7 @@ void Phototonic::handleStartupArgs(QString fileOrDirectory) {
             Settings::currentViewDir = cliFileOrDir.absolutePath();
             cliFileName = Settings::currentViewDir + QDir::separator() + cliFileOrDir.fileName();
             cliImageLoaded = true;
-            loadImagefromCli();
+            loadImageBromCliArguments();
         }
     } else {
         if (Settings::startupDir == Settings::SpecifiedDir) {
@@ -137,7 +137,7 @@ void Phototonic::createImageViewer() {
     connect(saveAsAction, SIGNAL(triggered()), imageViewer, SLOT(saveImageAs()));
     connect(copyImageAction, SIGNAL(triggered()), imageViewer, SLOT(copyImage()));
     connect(pasteImageAction, SIGNAL(triggered()), imageViewer, SLOT(pasteImage()));
-    connect(cropToSelectionAct, SIGNAL(triggered()), imageViewer, SLOT(cropToSelection()));
+    connect(cropToSelectionAction, SIGNAL(triggered()), imageViewer, SLOT(cropToSelection()));
     imageViewer->ImagePopUpMenu = new QMenu();
 
     // Widget actions
@@ -147,46 +147,46 @@ void Phototonic::createImageViewer() {
     imageViewer->addAction(firstImageAction);
     imageViewer->addAction(lastImageAction);
     imageViewer->addAction(randomImageAction);
-    imageViewer->addAction(zoomInAct);
-    imageViewer->addAction(zoomOutAct);
-    imageViewer->addAction(origZoomAct);
-    imageViewer->addAction(resetZoomAct);
-    imageViewer->addAction(rotateRightAct);
-    imageViewer->addAction(rotateLeftAct);
-    imageViewer->addAction(freeRotateRightAct);
-    imageViewer->addAction(freeRotateLeftAct);
-    imageViewer->addAction(flipHAct);
-    imageViewer->addAction(flipVAct);
-    imageViewer->addAction(cropAct);
-    imageViewer->addAction(cropToSelectionAct);
-    imageViewer->addAction(resizeAct);
+    imageViewer->addAction(zoomInAction);
+    imageViewer->addAction(zoomOutAction);
+    imageViewer->addAction(origZoomAction);
+    imageViewer->addAction(resetZoomAction);
+    imageViewer->addAction(rotateRightAction);
+    imageViewer->addAction(rotateLeftAction);
+    imageViewer->addAction(freeRotateRightAction);
+    imageViewer->addAction(freeRotateLeftAction);
+    imageViewer->addAction(flipHorizontalAction);
+    imageViewer->addAction(flipVerticalAction);
+    imageViewer->addAction(cropAction);
+    imageViewer->addAction(cropToSelectionAction);
+    imageViewer->addAction(resizeAction);
     imageViewer->addAction(saveAction);
     imageViewer->addAction(saveAsAction);
     imageViewer->addAction(copyImageAction);
     imageViewer->addAction(pasteImageAction);
     imageViewer->addAction(deleteAction);
     imageViewer->addAction(renameAction);
-    imageViewer->addAction(actionCloseImage);
-    imageViewer->addAction(actionFullScreen);
-    imageViewer->addAction(actionSettings);
-    imageViewer->addAction(mirrorDisabledAct);
-    imageViewer->addAction(mirrorDualAct);
-    imageViewer->addAction(mirrorTripleAct);
-    imageViewer->addAction(mirrorVDualAct);
-    imageViewer->addAction(mirrorQuadAct);
-    imageViewer->addAction(keepTransformAct);
-    imageViewer->addAction(keepZoomAct);
-    imageViewer->addAction(actionRefresh);
-    imageViewer->addAction(colorsAct);
-    imageViewer->addAction(moveRightAct);
-    imageViewer->addAction(moveLeftAct);
-    imageViewer->addAction(moveUpAct);
-    imageViewer->addAction(moveDownAct);
+    imageViewer->addAction(CloseImageAction);
+    imageViewer->addAction(fullScreenAction);
+    imageViewer->addAction(settingsAction);
+    imageViewer->addAction(mirrorDisabledAction);
+    imageViewer->addAction(mirrorDualAction);
+    imageViewer->addAction(mirrorTripleAction);
+    imageViewer->addAction(mirrorDualVerticalAction);
+    imageViewer->addAction(mirrorQuadAction);
+    imageViewer->addAction(keepTransformAction);
+    imageViewer->addAction(keepZoomAction);
+    imageViewer->addAction(refreshAction);
+    imageViewer->addAction(colorsAction);
+    imageViewer->addAction(moveRightAction);
+    imageViewer->addAction(moveLeftAction);
+    imageViewer->addAction(moveUpAction);
+    imageViewer->addAction(moveDownAction);
     imageViewer->addAction(showClipboardAction);
     imageViewer->addAction(copyToAction);
     imageViewer->addAction(moveToAction);
-    imageViewer->addAction(resizeAct);
-    imageViewer->addAction(openAction);
+    imageViewer->addAction(resizeAction);
+    imageViewer->addAction(viewImageAction);
     imageViewer->addAction(exitAction);
 
     // Actions
@@ -200,46 +200,46 @@ void Phototonic::createImageViewer() {
 
     addMenuSeparator(imageViewer->ImagePopUpMenu);
     zoomSubMenu = new QMenu(tr("Zoom"));
-    zoomSubMenuAct = new QAction(tr("Zoom"), this);
-    zoomSubMenuAct->setIcon(QIcon::fromTheme("edit-find", QIcon(":/images/zoom.png")));
-    zoomSubMenuAct->setMenu(zoomSubMenu);
-    imageViewer->ImagePopUpMenu->addAction(zoomSubMenuAct);
-    zoomSubMenu->addAction(zoomInAct);
-    zoomSubMenu->addAction(zoomOutAct);
-    zoomSubMenu->addAction(origZoomAct);
-    zoomSubMenu->addAction(resetZoomAct);
+    zoomSubMenuAction = new QAction(tr("Zoom"), this);
+    zoomSubMenuAction->setIcon(QIcon::fromTheme("edit-find", QIcon(":/images/zoom.png")));
+    zoomSubMenuAction->setMenu(zoomSubMenu);
+    imageViewer->ImagePopUpMenu->addAction(zoomSubMenuAction);
+    zoomSubMenu->addAction(zoomInAction);
+    zoomSubMenu->addAction(zoomOutAction);
+    zoomSubMenu->addAction(origZoomAction);
+    zoomSubMenu->addAction(resetZoomAction);
     addMenuSeparator(zoomSubMenu);
-    zoomSubMenu->addAction(keepZoomAct);
+    zoomSubMenu->addAction(keepZoomAction);
 
     MirroringSubMenu = new QMenu(tr("Mirroring"));
-    mirrorSubMenuAct = new QAction(tr("Mirroring"), this);
-    mirrorSubMenuAct->setMenu(MirroringSubMenu);
-    mirroringGroup = new QActionGroup(this);
-    mirroringGroup->addAction(mirrorDisabledAct);
-    mirroringGroup->addAction(mirrorDualAct);
-    mirroringGroup->addAction(mirrorTripleAct);
-    mirroringGroup->addAction(mirrorVDualAct);
-    mirroringGroup->addAction(mirrorQuadAct);
-    MirroringSubMenu->addActions(mirroringGroup->actions());
+    mirrorSubMenuAction = new QAction(tr("Mirroring"), this);
+    mirrorSubMenuAction->setMenu(MirroringSubMenu);
+    mirroringActionGroup = new QActionGroup(this);
+    mirroringActionGroup->addAction(mirrorDisabledAction);
+    mirroringActionGroup->addAction(mirrorDualAction);
+    mirroringActionGroup->addAction(mirrorTripleAction);
+    mirroringActionGroup->addAction(mirrorDualVerticalAction);
+    mirroringActionGroup->addAction(mirrorQuadAction);
+    MirroringSubMenu->addActions(mirroringActionGroup->actions());
 
     transformSubMenu = new QMenu(tr("Transform"));
-    transformSubMenuAct = new QAction(tr("Transform"), this);
-    transformSubMenuAct->setMenu(transformSubMenu);
-    imageViewer->ImagePopUpMenu->addAction(resizeAct);
-    imageViewer->ImagePopUpMenu->addAction(cropToSelectionAct);
-    imageViewer->ImagePopUpMenu->addAction(transformSubMenuAct);
-    transformSubMenu->addAction(colorsAct);
-    transformSubMenu->addAction(rotateRightAct);
-    transformSubMenu->addAction(rotateLeftAct);
-    transformSubMenu->addAction(freeRotateRightAct);
-    transformSubMenu->addAction(freeRotateLeftAct);
-    transformSubMenu->addAction(flipHAct);
-    transformSubMenu->addAction(flipVAct);
-    transformSubMenu->addAction(cropAct);
+    transformSubMenuAction = new QAction(tr("Transform"), this);
+    transformSubMenuAction->setMenu(transformSubMenu);
+    imageViewer->ImagePopUpMenu->addAction(resizeAction);
+    imageViewer->ImagePopUpMenu->addAction(cropToSelectionAction);
+    imageViewer->ImagePopUpMenu->addAction(transformSubMenuAction);
+    transformSubMenu->addAction(colorsAction);
+    transformSubMenu->addAction(rotateRightAction);
+    transformSubMenu->addAction(rotateLeftAction);
+    transformSubMenu->addAction(freeRotateRightAction);
+    transformSubMenu->addAction(freeRotateLeftAction);
+    transformSubMenu->addAction(flipHorizontalAction);
+    transformSubMenu->addAction(flipVerticalAction);
+    transformSubMenu->addAction(cropAction);
 
     addMenuSeparator(transformSubMenu);
-    transformSubMenu->addAction(keepTransformAct);
-    imageViewer->ImagePopUpMenu->addAction(mirrorSubMenuAct);
+    transformSubMenu->addAction(keepTransformAction);
+    imageViewer->ImagePopUpMenu->addAction(mirrorSubMenuAction);
 
     addMenuSeparator(imageViewer->ImagePopUpMenu);
     imageViewer->ImagePopUpMenu->addAction(copyToAction);
@@ -248,74 +248,74 @@ void Phototonic::createImageViewer() {
     imageViewer->ImagePopUpMenu->addAction(saveAsAction);
     imageViewer->ImagePopUpMenu->addAction(renameAction);
     imageViewer->ImagePopUpMenu->addAction(deleteAction);
-    imageViewer->ImagePopUpMenu->addAction(openWithMenuAct);
+    imageViewer->ImagePopUpMenu->addAction(openWithMenuAction);
 
     addMenuSeparator(imageViewer->ImagePopUpMenu);
     viewSubMenu = new QMenu(tr("View"));
-    viewSubMenuAct = new QAction(tr("View"), this);
-    viewSubMenuAct->setMenu(viewSubMenu);
-    imageViewer->ImagePopUpMenu->addAction(viewSubMenuAct);
-    viewSubMenu->addAction(actionFullScreen);
+    viewSubMenuAction = new QAction(tr("View"), this);
+    viewSubMenuAction->setMenu(viewSubMenu);
+    imageViewer->ImagePopUpMenu->addAction(viewSubMenuAction);
+    viewSubMenu->addAction(fullScreenAction);
     viewSubMenu->addAction(showClipboardAction);
-    viewSubMenu->addAction(actionShowViewerToolbar);
-    viewSubMenu->addAction(actionRefresh);
+    viewSubMenu->addAction(showViewerToolbarAction);
+    viewSubMenu->addAction(refreshAction);
     imageViewer->ImagePopUpMenu->addAction(copyImageAction);
     imageViewer->ImagePopUpMenu->addAction(pasteImageAction);
-    imageViewer->ImagePopUpMenu->addAction(actionCloseImage);
+    imageViewer->ImagePopUpMenu->addAction(CloseImageAction);
     imageViewer->ImagePopUpMenu->addAction(exitAction);
 
     addMenuSeparator(imageViewer->ImagePopUpMenu);
-    imageViewer->ImagePopUpMenu->addAction(actionSettings);
+    imageViewer->ImagePopUpMenu->addAction(settingsAction);
 
     imageViewer->setContextMenuPolicy(Qt::DefaultContextMenu);
     Settings::isFullScreen = Settings::appSettings->value(Settings::optionFullScreenMode).toBool();
-    actionFullScreen->setChecked(Settings::isFullScreen);
+    fullScreenAction->setChecked(Settings::isFullScreen);
     thumbsViewer->setImageView(imageViewer);
 }
 
 void Phototonic::createActions() {
-    actionThumbsGoToTop = new QAction(tr("Top"), this);
-    actionThumbsGoToTop->setObjectName("thumbsGoTop");
-    actionThumbsGoToTop->setIcon(QIcon::fromTheme("go-top", QIcon(":/images/top.png")));
-    connect(actionThumbsGoToTop, SIGNAL(triggered()), this, SLOT(goTop()));
+    thumbsGoToTopAction = new QAction(tr("Top"), this);
+    thumbsGoToTopAction->setObjectName("thumbsGoTop");
+    thumbsGoToTopAction->setIcon(QIcon::fromTheme("go-top", QIcon(":/images/top.png")));
+    connect(thumbsGoToTopAction, SIGNAL(triggered()), this, SLOT(goTop()));
 
-    actionThumbsGoToBottom = new QAction(tr("Bottom"), this);
-    actionThumbsGoToBottom->setObjectName("thumbsGoBottom");
-    actionThumbsGoToBottom->setIcon(QIcon::fromTheme("go-bottom", QIcon(":/images/bottom.png")));
-    connect(actionThumbsGoToBottom, SIGNAL(triggered()), this, SLOT(goBottom()));
+    thumbsGoToBottomAction = new QAction(tr("Bottom"), this);
+    thumbsGoToBottomAction->setObjectName("thumbsGoBottom");
+    thumbsGoToBottomAction->setIcon(QIcon::fromTheme("go-bottom", QIcon(":/images/bottom.png")));
+    connect(thumbsGoToBottomAction, SIGNAL(triggered()), this, SLOT(goBottom()));
 
-    actionCloseImage = new QAction(tr("Close Viewer"), this);
-    actionCloseImage->setObjectName("closeImage");
-    connect(actionCloseImage, SIGNAL(triggered()), this, SLOT(hideViewer()));
+    CloseImageAction = new QAction(tr("Close Viewer"), this);
+    CloseImageAction->setObjectName("closeImage");
+    connect(CloseImageAction, SIGNAL(triggered()), this, SLOT(hideViewer()));
 
-    actionFullScreen = new QAction(tr("Full Screen"), this);
-    actionFullScreen->setObjectName("fullScreen");
-    actionFullScreen->setCheckable(true);
-    connect(actionFullScreen, SIGNAL(triggered()), this, SLOT(toggleFullScreen()));
+    fullScreenAction = new QAction(tr("Full Screen"), this);
+    fullScreenAction->setObjectName("fullScreen");
+    fullScreenAction->setCheckable(true);
+    connect(fullScreenAction, SIGNAL(triggered()), this, SLOT(toggleFullScreen()));
 
-    actionSettings = new QAction(tr("Preferences"), this);
-    actionSettings->setObjectName("settings");
-    actionSettings->setIcon(QIcon::fromTheme("preferences-other", QIcon(":/images/settings.png")));
-    connect(actionSettings, SIGNAL(triggered()), this, SLOT(showSettings()));
+    settingsAction = new QAction(tr("Preferences"), this);
+    settingsAction->setObjectName("settings");
+    settingsAction->setIcon(QIcon::fromTheme("preferences-other", QIcon(":/images/settings.png")));
+    connect(settingsAction, SIGNAL(triggered()), this, SLOT(showSettings()));
 
     exitAction = new QAction(tr("Exit"), this);
     exitAction->setObjectName("exit");
     connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
 
-    thumbsZoomInAct = new QAction(tr("Enlarge Thumbnails"), this);
-    thumbsZoomInAct->setObjectName("thumbsZoomIn");
-    connect(thumbsZoomInAct, SIGNAL(triggered()), this, SLOT(thumbsZoomIn()));
-    thumbsZoomInAct->setIcon(QIcon::fromTheme("zoom-in", QIcon(":/images/zoom_in.png")));
+    thumbsZoomInAction = new QAction(tr("Enlarge Thumbnails"), this);
+    thumbsZoomInAction->setObjectName("thumbsZoomIn");
+    connect(thumbsZoomInAction, SIGNAL(triggered()), this, SLOT(thumbsZoomIn()));
+    thumbsZoomInAction->setIcon(QIcon::fromTheme("zoom-in", QIcon(":/images/zoom_in.png")));
     if (thumbsViewer->thumbSize == THUMB_SIZE_MAX) {
-        thumbsZoomInAct->setEnabled(false);
+        thumbsZoomInAction->setEnabled(false);
     }
 
-    thumbsZoomOutAct = new QAction(tr("Shrink Thumbnails"), this);
-    thumbsZoomOutAct->setObjectName("thumbsZoomOut");
-    connect(thumbsZoomOutAct, SIGNAL(triggered()), this, SLOT(thumbsZoomOut()));
-    thumbsZoomOutAct->setIcon(QIcon::fromTheme("zoom-out", QIcon(":/images/zoom_out.png")));
+    thumbsZoomOutAction = new QAction(tr("Shrink Thumbnails"), this);
+    thumbsZoomOutAction->setObjectName("thumbsZoomOut");
+    connect(thumbsZoomOutAction, SIGNAL(triggered()), this, SLOT(thumbsZoomOut()));
+    thumbsZoomOutAction->setIcon(QIcon::fromTheme("zoom-out", QIcon(":/images/zoom_out.png")));
     if (thumbsViewer->thumbSize == THUMB_SIZE_MIN) {
-        thumbsZoomOutAct->setEnabled(false);
+        thumbsZoomOutAction->setEnabled(false);
     }
 
     cutAction = new QAction(tr("Cut"), this);
@@ -364,89 +364,89 @@ void Phototonic::createActions() {
     selectAllAction->setObjectName("selectAll");
     connect(selectAllAction, SIGNAL(triggered()), this, SLOT(selectAllThumbs()));
 
-    actionAbout = new QAction(tr("About"), this);
-    actionAbout->setObjectName("about");
-    actionAbout->setIcon(QIcon::fromTheme("help-about", QIcon(":/images/about.png")));
-    connect(actionAbout, SIGNAL(triggered()), this, SLOT(about()));
+    aboutAction = new QAction(tr("About"), this);
+    aboutAction->setObjectName("about");
+    aboutAction->setIcon(QIcon::fromTheme("help-about", QIcon(":/images/about.png")));
+    connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
 
     // Sort actions
-    actionSortByName = new QAction(tr("Name"), this);
-    actionSortByName->setObjectName("name");
-    actionSortByTime = new QAction(tr("Time"), this);
-    actionSortByTime->setObjectName("time");
-    actionSortBySize = new QAction(tr("Size"), this);
-    actionSortBySize->setObjectName("size");
-    actionSortByType = new QAction(tr("Type"), this);
-    actionSortByType->setObjectName("type");
-    actionSortReverse = new QAction(tr("Reverse"), this);
-    actionSortReverse->setObjectName("reverse");
-    actionSortByName->setCheckable(true);
-    actionSortByTime->setCheckable(true);
-    actionSortBySize->setCheckable(true);
-    actionSortByType->setCheckable(true);
-    actionSortReverse->setCheckable(true);
-    connect(actionSortByName, SIGNAL(triggered()), this, SLOT(sortThumbnails()));
-    connect(actionSortByTime, SIGNAL(triggered()), this, SLOT(sortThumbnails()));
-    connect(actionSortBySize, SIGNAL(triggered()), this, SLOT(sortThumbnails()));
-    connect(actionSortByType, SIGNAL(triggered()), this, SLOT(sortThumbnails()));
-    connect(actionSortReverse, SIGNAL(triggered()), this, SLOT(sortThumbnails()));
+    sortByNameAction = new QAction(tr("Name"), this);
+    sortByNameAction->setObjectName("name");
+    sortByTimeAction = new QAction(tr("Time"), this);
+    sortByTimeAction->setObjectName("time");
+    sortBySizeAction = new QAction(tr("Size"), this);
+    sortBySizeAction->setObjectName("size");
+    sortByTypeAction = new QAction(tr("Type"), this);
+    sortByTypeAction->setObjectName("type");
+    sortReverseAction = new QAction(tr("Reverse"), this);
+    sortReverseAction->setObjectName("reverse");
+    sortByNameAction->setCheckable(true);
+    sortByTimeAction->setCheckable(true);
+    sortBySizeAction->setCheckable(true);
+    sortByTypeAction->setCheckable(true);
+    sortReverseAction->setCheckable(true);
+    connect(sortByNameAction, SIGNAL(triggered()), this, SLOT(sortThumbnails()));
+    connect(sortByTimeAction, SIGNAL(triggered()), this, SLOT(sortThumbnails()));
+    connect(sortBySizeAction, SIGNAL(triggered()), this, SLOT(sortThumbnails()));
+    connect(sortByTypeAction, SIGNAL(triggered()), this, SLOT(sortThumbnails()));
+    connect(sortReverseAction, SIGNAL(triggered()), this, SLOT(sortThumbnails()));
 
     if (thumbsViewer->thumbsSortFlags & QDir::Time) {
-        actionSortByTime->setChecked(true);
+        sortByTimeAction->setChecked(true);
     } else if (thumbsViewer->thumbsSortFlags & QDir::Size) {
-        actionSortBySize->setChecked(true);
+        sortBySizeAction->setChecked(true);
     } else if (thumbsViewer->thumbsSortFlags & QDir::Type) {
-        actionSortByType->setChecked(true);
+        sortByTypeAction->setChecked(true);
     } else {
-        actionSortByName->setChecked(true);
+        sortByNameAction->setChecked(true);
     }
-    actionSortReverse->setChecked(thumbsViewer->thumbsSortFlags & QDir::Reversed);
+    sortReverseAction->setChecked(thumbsViewer->thumbsSortFlags & QDir::Reversed);
 
-    actionShowHiddenFiles = new QAction(tr("Show Hidden Files"), this);
-    actionShowHiddenFiles->setObjectName("showHidden");
-    actionShowHiddenFiles->setCheckable(true);
-    actionShowHiddenFiles->setChecked(Settings::showHiddenFiles);
-    connect(actionShowHiddenFiles, SIGNAL(triggered()), this, SLOT(showHiddenFiles()));
+    showHiddenFilesAction = new QAction(tr("Show Hidden Files"), this);
+    showHiddenFilesAction->setObjectName("showHidden");
+    showHiddenFilesAction->setCheckable(true);
+    showHiddenFilesAction->setChecked(Settings::showHiddenFiles);
+    connect(showHiddenFilesAction, SIGNAL(triggered()), this, SLOT(showHiddenFiles()));
 
-    actionSmallToolbarIcons = new QAction(tr("Small Toolbar Icons"), this);
-    actionSmallToolbarIcons->setObjectName("smallToolbarIcons");
-    actionSmallToolbarIcons->setCheckable(true);
-    actionSmallToolbarIcons->setChecked(Settings::smallToolbarIcons);
-    connect(actionSmallToolbarIcons, SIGNAL(triggered()), this, SLOT(setToolbarIconSize()));
+    smallToolbarIconsAction = new QAction(tr("Small Toolbar Icons"), this);
+    smallToolbarIconsAction->setObjectName("smallToolbarIcons");
+    smallToolbarIconsAction->setCheckable(true);
+    smallToolbarIconsAction->setChecked(Settings::smallToolbarIcons);
+    connect(smallToolbarIconsAction, SIGNAL(triggered()), this, SLOT(setToolbarIconSize()));
 
-    actionLockDocks = new QAction(tr("Hide Dock Title Bars"), this);
-    actionLockDocks->setObjectName("lockDocks");
-    actionLockDocks->setCheckable(true);
-    actionLockDocks->setChecked(Settings::hideDockTitlebars);
-    connect(actionLockDocks, SIGNAL(triggered()), this, SLOT(lockDocks()));
+    lockDocksAction = new QAction(tr("Hide Dock Title Bars"), this);
+    lockDocksAction->setObjectName("lockDocks");
+    lockDocksAction->setCheckable(true);
+    lockDocksAction->setChecked(Settings::hideDockTitlebars);
+    connect(lockDocksAction, SIGNAL(triggered()), this, SLOT(lockDocks()));
 
-    actionShowViewerToolbar = new QAction(tr("Show Toolbar"), this);
-    actionShowViewerToolbar->setObjectName("showViewerToolbars");
-    actionShowViewerToolbar->setCheckable(true);
-    actionShowViewerToolbar->setChecked(Settings::showViewerToolbar);
-    connect(actionShowViewerToolbar, SIGNAL(triggered()), this, SLOT(toggleImageViewerToolbar()));
+    showViewerToolbarAction = new QAction(tr("Show Toolbar"), this);
+    showViewerToolbarAction->setObjectName("showViewerToolbars");
+    showViewerToolbarAction->setCheckable(true);
+    showViewerToolbarAction->setChecked(Settings::showViewerToolbar);
+    connect(showViewerToolbarAction, SIGNAL(triggered()), this, SLOT(toggleImageViewerToolbar()));
 
-    actionRefresh = new QAction(tr("Reload"), this);
-    actionRefresh->setObjectName("refresh");
-    actionRefresh->setIcon(QIcon::fromTheme("view-refresh", QIcon(":/images/refresh.png")));
-    connect(actionRefresh, SIGNAL(triggered()), this, SLOT(reload()));
+    refreshAction = new QAction(tr("Reload"), this);
+    refreshAction->setObjectName("refresh");
+    refreshAction->setIcon(QIcon::fromTheme("view-refresh", QIcon(":/images/refresh.png")));
+    connect(refreshAction, SIGNAL(triggered()), this, SLOT(reload()));
 
-    actionIncludeSubDirectories = new QAction(tr("Include Sub-directories"), this);
-    actionIncludeSubDirectories->setObjectName("subFolders");
-    actionIncludeSubDirectories->setIcon(QIcon(":/images/tree.png"));
-    actionIncludeSubDirectories->setCheckable(true);
-    connect(actionIncludeSubDirectories, SIGNAL(triggered()), this, SLOT(setIncludeSubFolders()));
+    includeSubDirectoriesAction = new QAction(tr("Include Sub-directories"), this);
+    includeSubDirectoriesAction->setObjectName("subFolders");
+    includeSubDirectoriesAction->setIcon(QIcon(":/images/tree.png"));
+    includeSubDirectoriesAction->setCheckable(true);
+    connect(includeSubDirectoriesAction, SIGNAL(triggered()), this, SLOT(setIncludeSubFolders()));
 
-    actionPaste = new QAction(tr("Paste Here"), this);
-    actionPaste->setObjectName("paste");
-    actionPaste->setIcon(QIcon::fromTheme("edit-paste", QIcon(":/images/paste.png")));
-    connect(actionPaste, SIGNAL(triggered()), this, SLOT(pasteThumbs()));
-    actionPaste->setEnabled(false);
+    pasteAction = new QAction(tr("Paste Here"), this);
+    pasteAction->setObjectName("paste");
+    pasteAction->setIcon(QIcon::fromTheme("edit-paste", QIcon(":/images/paste.png")));
+    connect(pasteAction, SIGNAL(triggered()), this, SLOT(pasteThumbs()));
+    pasteAction->setEnabled(false);
 
-    actionCreateDirectory = new QAction(tr("New Directory"), this);
-    actionCreateDirectory->setObjectName("createDir");
-    connect(actionCreateDirectory, SIGNAL(triggered()), this, SLOT(createSubDirectory()));
-    actionCreateDirectory->setIcon(QIcon::fromTheme("folder-new", QIcon(":/images/new_folder.png")));
+    createDirectoryAction = new QAction(tr("New Directory"), this);
+    createDirectoryAction->setObjectName("createDir");
+    connect(createDirectoryAction, SIGNAL(triggered()), this, SLOT(createSubDirectory()));
+    createDirectoryAction->setIcon(QIcon::fromTheme("folder-new", QIcon(":/images/new_folder.png")));
 
     goBackAction = new QAction(tr("Back"), this);
     goBackAction->setObjectName("goBack");
@@ -475,34 +475,34 @@ void Phototonic::createActions() {
     connect(slideShowAction, SIGNAL(triggered()), this, SLOT(toggleSlideShow()));
     slideShowAction->setIcon(QIcon::fromTheme("media-playback-start", QIcon(":/images/play.png")));
 
-    nextImageAction = new QAction(tr("Next"), this);
+    nextImageAction = new QAction(tr("Next Image"), this);
     nextImageAction->setObjectName("nextImage");
     nextImageAction->setIcon(QIcon::fromTheme("go-next", QIcon(":/images/next.png")));
     connect(nextImageAction, SIGNAL(triggered()), this, SLOT(loadNextImage()));
 
-    prevImageAction = new QAction(tr("Previous"), this);
+    prevImageAction = new QAction(tr("Previous Image"), this);
     prevImageAction->setObjectName("prevImage");
     prevImageAction->setIcon(QIcon::fromTheme("go-previous", QIcon(":/images/back.png")));
     connect(prevImageAction, SIGNAL(triggered()), this, SLOT(loadPrevImage()));
 
-    firstImageAction = new QAction(tr("First"), this);
+    firstImageAction = new QAction(tr("First Image"), this);
     firstImageAction->setObjectName("firstImage");
     firstImageAction->setIcon(QIcon::fromTheme("go-first", QIcon(":/images/first.png")));
     connect(firstImageAction, SIGNAL(triggered()), this, SLOT(loadFirstImage()));
 
-    lastImageAction = new QAction(tr("Last"), this);
+    lastImageAction = new QAction(tr("Last Image"), this);
     lastImageAction->setObjectName("lastImage");
     lastImageAction->setIcon(QIcon::fromTheme("go-last", QIcon(":/images/last.png")));
     connect(lastImageAction, SIGNAL(triggered()), this, SLOT(loadLastImage()));
 
-    randomImageAction = new QAction(tr("Random"), this);
+    randomImageAction = new QAction(tr("Random Image"), this);
     randomImageAction->setObjectName("randomImage");
     connect(randomImageAction, SIGNAL(triggered()), this, SLOT(loadRandomImage()));
 
-    openAction = new QAction(tr("Open"), this);
-    openAction->setObjectName("open");
-    openAction->setIcon(QIcon::fromTheme("document-open", QIcon(":/images/open.png")));
-    connect(openAction, SIGNAL(triggered()), this, SLOT(openOp()));
+    viewImageAction = new QAction(tr("View Image"), this);
+    viewImageAction->setObjectName("open");
+    viewImageAction->setIcon(QIcon::fromTheme("document-open", QIcon(":/images/open.png")));
+    connect(viewImageAction, SIGNAL(triggered()), this, SLOT(viewImage()));
 
     showClipboardAction = new QAction(tr("Load Clipboard"), this);
     showClipboardAction->setObjectName("showClipboard");
@@ -510,12 +510,12 @@ void Phototonic::createActions() {
     connect(showClipboardAction, SIGNAL(triggered()), this, SLOT(newImage()));
 
     openWithSubMenu = new QMenu(tr("Open With..."));
-    openWithMenuAct = new QAction(tr("Open With..."), this);
-    openWithMenuAct->setObjectName("openWithMenu");
-    openWithMenuAct->setMenu(openWithSubMenu);
-    chooseAppAct = new QAction(tr("Manage External Applications"), this);
-    chooseAppAct->setObjectName("chooseApp");
-    connect(chooseAppAct, SIGNAL(triggered()), this, SLOT(chooseExternalApp()));
+    openWithMenuAction = new QAction(tr("Open With..."), this);
+    openWithMenuAction->setObjectName("openWithMenu");
+    openWithMenuAction->setMenu(openWithSubMenu);
+    chooseAppAction = new QAction(tr("Manage External Applications"), this);
+    chooseAppAction->setObjectName("chooseApp");
+    connect(chooseAppAction, SIGNAL(triggered()), this, SLOT(chooseExternalApp()));
 
     addBookmarkAction = new QAction(tr("Add Bookmark"), this);
     addBookmarkAction->setObjectName("addBookmark");
@@ -526,135 +526,135 @@ void Phototonic::createActions() {
     removeBookmarkAction->setObjectName("removeBookmark");
     removeBookmarkAction->setIcon(QIcon::fromTheme("edit-delete", QIcon(":/images/delete.png")));
 
-    zoomOutAct = new QAction(tr("Zoom Out"), this);
-    zoomOutAct->setObjectName("zoomOut");
-    connect(zoomOutAct, SIGNAL(triggered()), this, SLOT(zoomOut()));
-    zoomOutAct->setIcon(QIcon::fromTheme("zoom-out", QIcon(":/images/zoom_out.png")));
+    zoomOutAction = new QAction(tr("Zoom Out"), this);
+    zoomOutAction->setObjectName("zoomOut");
+    connect(zoomOutAction, SIGNAL(triggered()), this, SLOT(zoomOut()));
+    zoomOutAction->setIcon(QIcon::fromTheme("zoom-out", QIcon(":/images/zoom_out.png")));
 
-    zoomInAct = new QAction(tr("Zoom In"), this);
-    zoomInAct->setObjectName("zoomIn");
-    connect(zoomInAct, SIGNAL(triggered()), this, SLOT(zoomIn()));
-    zoomInAct->setIcon(QIcon::fromTheme("zoom-in", QIcon(":/images/zoom_out.png")));
+    zoomInAction = new QAction(tr("Zoom In"), this);
+    zoomInAction->setObjectName("zoomIn");
+    connect(zoomInAction, SIGNAL(triggered()), this, SLOT(zoomIn()));
+    zoomInAction->setIcon(QIcon::fromTheme("zoom-in", QIcon(":/images/zoom_out.png")));
 
-    resetZoomAct = new QAction(tr("Reset Zoom"), this);
-    resetZoomAct->setObjectName("resetZoom");
-    resetZoomAct->setIcon(QIcon::fromTheme("zoom-fit-best", QIcon(":/images/zoom.png")));
-    connect(resetZoomAct, SIGNAL(triggered()), this, SLOT(resetZoom()));
+    resetZoomAction = new QAction(tr("Reset Zoom"), this);
+    resetZoomAction->setObjectName("resetZoom");
+    resetZoomAction->setIcon(QIcon::fromTheme("zoom-fit-best", QIcon(":/images/zoom.png")));
+    connect(resetZoomAction, SIGNAL(triggered()), this, SLOT(resetZoom()));
 
-    origZoomAct = new QAction(tr("Original Size"), this);
-    origZoomAct->setObjectName("origZoom");
-    origZoomAct->setIcon(QIcon::fromTheme("zoom-original", QIcon(":/images/zoom1.png")));
-    connect(origZoomAct, SIGNAL(triggered()), this, SLOT(origZoom()));
+    origZoomAction = new QAction(tr("Original Size"), this);
+    origZoomAction->setObjectName("origZoom");
+    origZoomAction->setIcon(QIcon::fromTheme("zoom-original", QIcon(":/images/zoom1.png")));
+    connect(origZoomAction, SIGNAL(triggered()), this, SLOT(origZoom()));
 
-    keepZoomAct = new QAction(tr("Keep Zoom"), this);
-    keepZoomAct->setObjectName("keepZoom");
-    keepZoomAct->setCheckable(true);
-    connect(keepZoomAct, SIGNAL(triggered()), this, SLOT(keepZoom()));
+    keepZoomAction = new QAction(tr("Keep Zoom"), this);
+    keepZoomAction->setObjectName("keepZoom");
+    keepZoomAction->setCheckable(true);
+    connect(keepZoomAction, SIGNAL(triggered()), this, SLOT(keepZoom()));
 
-    rotateLeftAct = new QAction(tr("Rotate 90 degree CCW"), this);
-    rotateLeftAct->setObjectName("rotateLeft");
-    rotateLeftAct->setIcon(QIcon::fromTheme("object-rotate-left", QIcon(":/images/rotate_left.png")));
-    connect(rotateLeftAct, SIGNAL(triggered()), this, SLOT(rotateLeft()));
+    rotateLeftAction = new QAction(tr("Rotate 90 degree CCW"), this);
+    rotateLeftAction->setObjectName("rotateLeft");
+    rotateLeftAction->setIcon(QIcon::fromTheme("object-rotate-left", QIcon(":/images/rotate_left.png")));
+    connect(rotateLeftAction, SIGNAL(triggered()), this, SLOT(rotateLeft()));
 
-    rotateRightAct = new QAction(tr("Rotate 90 degree CW"), this);
-    rotateRightAct->setObjectName("rotateRight");
-    rotateRightAct->setIcon(QIcon::fromTheme("object-rotate-right", QIcon(":/images/rotate_right.png")));
-    connect(rotateRightAct, SIGNAL(triggered()), this, SLOT(rotateRight()));
+    rotateRightAction = new QAction(tr("Rotate 90 degree CW"), this);
+    rotateRightAction->setObjectName("rotateRight");
+    rotateRightAction->setIcon(QIcon::fromTheme("object-rotate-right", QIcon(":/images/rotate_right.png")));
+    connect(rotateRightAction, SIGNAL(triggered()), this, SLOT(rotateRight()));
 
-    flipHAct = new QAction(tr("Flip Horizontally"), this);
-    flipHAct->setObjectName("flipH");
-    flipHAct->setIcon(QIcon::fromTheme("object-flip-horizontal", QIcon(":/images/flipH.png")));
-    connect(flipHAct, SIGNAL(triggered()), this, SLOT(flipHorizontal()));
+    flipHorizontalAction = new QAction(tr("Flip Horizontally"), this);
+    flipHorizontalAction->setObjectName("flipH");
+    flipHorizontalAction->setIcon(QIcon::fromTheme("object-flip-horizontal", QIcon(":/images/flipH.png")));
+    connect(flipHorizontalAction, SIGNAL(triggered()), this, SLOT(flipHorizontal()));
 
-    flipVAct = new QAction(tr("Flip Vertically"), this);
-    flipVAct->setObjectName("flipV");
-    flipVAct->setIcon(QIcon::fromTheme("object-flip-vertical", QIcon(":/images/flipV.png")));
-    connect(flipVAct, SIGNAL(triggered()), this, SLOT(flipVertical()));
+    flipVerticalAction = new QAction(tr("Flip Vertically"), this);
+    flipVerticalAction->setObjectName("flipV");
+    flipVerticalAction->setIcon(QIcon::fromTheme("object-flip-vertical", QIcon(":/images/flipV.png")));
+    connect(flipVerticalAction, SIGNAL(triggered()), this, SLOT(flipVertical()));
 
-    cropAct = new QAction(tr("Cropping"), this);
-    cropAct->setObjectName("crop");
-    cropAct->setIcon(QIcon(":/images/crop.png"));
-    connect(cropAct, SIGNAL(triggered()), this, SLOT(cropImage()));
+    cropAction = new QAction(tr("Cropping"), this);
+    cropAction->setObjectName("crop");
+    cropAction->setIcon(QIcon(":/images/crop.png"));
+    connect(cropAction, SIGNAL(triggered()), this, SLOT(cropImage()));
 
-    cropToSelectionAct = new QAction(tr("Crop to Selection"), this);
-    cropToSelectionAct->setObjectName("cropToSelection");
-    cropToSelectionAct->setIcon(QIcon(":/images/crop.png"));
+    cropToSelectionAction = new QAction(tr("Crop to Selection"), this);
+    cropToSelectionAction->setObjectName("cropToSelection");
+    cropToSelectionAction->setIcon(QIcon(":/images/crop.png"));
 
-    resizeAct = new QAction(tr("Scale Image"), this);
-    resizeAct->setObjectName("resize");
-    resizeAct->setIcon(QIcon::fromTheme("transform-scale", QIcon(":/images/scale.png")));
-    connect(resizeAct, SIGNAL(triggered()), this, SLOT(scaleImage()));
+    resizeAction = new QAction(tr("Scale Image"), this);
+    resizeAction->setObjectName("resize");
+    resizeAction->setIcon(QIcon::fromTheme("transform-scale", QIcon(":/images/scale.png")));
+    connect(resizeAction, SIGNAL(triggered()), this, SLOT(scaleImage()));
 
-    freeRotateLeftAct = new QAction(tr("Rotate 1 degree CCW"), this);
-    freeRotateLeftAct->setObjectName("freeRotateLeft");
-    connect(freeRotateLeftAct, SIGNAL(triggered()), this, SLOT(freeRotateLeft()));
+    freeRotateLeftAction = new QAction(tr("Rotate 1 degree CCW"), this);
+    freeRotateLeftAction->setObjectName("freeRotateLeft");
+    connect(freeRotateLeftAction, SIGNAL(triggered()), this, SLOT(freeRotateLeft()));
 
-    freeRotateRightAct = new QAction(tr("Rotate 1 degree CW"), this);
-    freeRotateRightAct->setObjectName("freeRotateRight");
-    connect(freeRotateRightAct, SIGNAL(triggered()), this, SLOT(freeRotateRight()));
+    freeRotateRightAction = new QAction(tr("Rotate 1 degree CW"), this);
+    freeRotateRightAction->setObjectName("freeRotateRight");
+    connect(freeRotateRightAction, SIGNAL(triggered()), this, SLOT(freeRotateRight()));
 
-    colorsAct = new QAction(tr("Colors"), this);
-    colorsAct->setObjectName("colors");
-    connect(colorsAct, SIGNAL(triggered()), this, SLOT(showColorsDialog()));
-    colorsAct->setIcon(QIcon(":/images/colors.png"));
+    colorsAction = new QAction(tr("Colors"), this);
+    colorsAction->setObjectName("colors");
+    connect(colorsAction, SIGNAL(triggered()), this, SLOT(showColorsDialog()));
+    colorsAction->setIcon(QIcon(":/images/colors.png"));
 
-    mirrorDisabledAct = new QAction(tr("Disable Mirror"), this);
-    mirrorDisabledAct->setObjectName("mirrorDisabled");
-    mirrorDualAct = new QAction(tr("Dual Mirror"), this);
-    mirrorDualAct->setObjectName("mirrorDual");
-    mirrorTripleAct = new QAction(tr("Triple Mirror"), this);
-    mirrorTripleAct->setObjectName("mirrorTriple");
-    mirrorVDualAct = new QAction(tr("Dual Vertical Mirror"), this);
-    mirrorVDualAct->setObjectName("mirrorVDual");
-    mirrorQuadAct = new QAction(tr("Quad Mirror"), this);
-    mirrorQuadAct->setObjectName("mirrorQuad");
+    mirrorDisabledAction = new QAction(tr("Disable Mirror"), this);
+    mirrorDisabledAction->setObjectName("mirrorDisabled");
+    mirrorDualAction = new QAction(tr("Dual Mirror"), this);
+    mirrorDualAction->setObjectName("mirrorDual");
+    mirrorTripleAction = new QAction(tr("Triple Mirror"), this);
+    mirrorTripleAction->setObjectName("mirrorTriple");
+    mirrorDualVerticalAction = new QAction(tr("Dual Vertical Mirror"), this);
+    mirrorDualVerticalAction->setObjectName("mirrorVDual");
+    mirrorQuadAction = new QAction(tr("Quad Mirror"), this);
+    mirrorQuadAction->setObjectName("mirrorQuad");
 
-    mirrorDisabledAct->setCheckable(true);
-    mirrorDualAct->setCheckable(true);
-    mirrorTripleAct->setCheckable(true);
-    mirrorVDualAct->setCheckable(true);
-    mirrorQuadAct->setCheckable(true);
-    connect(mirrorDisabledAct, SIGNAL(triggered()), this, SLOT(setMirrorDisabled()));
-    connect(mirrorDualAct, SIGNAL(triggered()), this, SLOT(setMirrorDual()));
-    connect(mirrorTripleAct, SIGNAL(triggered()), this, SLOT(setMirrorTriple()));
-    connect(mirrorVDualAct, SIGNAL(triggered()), this, SLOT(setMirrorVDual()));
-    connect(mirrorQuadAct, SIGNAL(triggered()), this, SLOT(setMirrorQuad()));
-    mirrorDisabledAct->setChecked(true);
+    mirrorDisabledAction->setCheckable(true);
+    mirrorDualAction->setCheckable(true);
+    mirrorTripleAction->setCheckable(true);
+    mirrorDualVerticalAction->setCheckable(true);
+    mirrorQuadAction->setCheckable(true);
+    connect(mirrorDisabledAction, SIGNAL(triggered()), this, SLOT(setMirrorDisabled()));
+    connect(mirrorDualAction, SIGNAL(triggered()), this, SLOT(setMirrorDual()));
+    connect(mirrorTripleAction, SIGNAL(triggered()), this, SLOT(setMirrorTriple()));
+    connect(mirrorDualVerticalAction, SIGNAL(triggered()), this, SLOT(setMirrorVDual()));
+    connect(mirrorQuadAction, SIGNAL(triggered()), this, SLOT(setMirrorQuad()));
+    mirrorDisabledAction->setChecked(true);
 
-    keepTransformAct = new QAction(tr("Lock Transformations"), this);
-    keepTransformAct->setObjectName("keepTransform");
-    keepTransformAct->setCheckable(true);
-    connect(keepTransformAct, SIGNAL(triggered()), this, SLOT(keepTransformClicked()));
+    keepTransformAction = new QAction(tr("Lock Transformations"), this);
+    keepTransformAction->setObjectName("keepTransform");
+    keepTransformAction->setCheckable(true);
+    connect(keepTransformAction, SIGNAL(triggered()), this, SLOT(keepTransformClicked()));
 
-    moveLeftAct = new QAction(tr("Move Image Left"), this);
-    moveLeftAct->setObjectName("moveLeft");
-    connect(moveLeftAct, SIGNAL(triggered()), this, SLOT(moveLeft()));
-    moveRightAct = new QAction(tr("Move Image Right"), this);
-    moveRightAct->setObjectName("moveRight");
-    connect(moveRightAct, SIGNAL(triggered()), this, SLOT(moveRight()));
-    moveUpAct = new QAction(tr("Move Image Up"), this);
-    moveUpAct->setObjectName("moveUp");
-    connect(moveUpAct, SIGNAL(triggered()), this, SLOT(moveUp()));
-    moveDownAct = new QAction(tr("Move Image Down"), this);
-    moveDownAct->setObjectName("moveDown");
-    connect(moveDownAct, SIGNAL(triggered()), this, SLOT(moveDown()));
+    moveLeftAction = new QAction(tr("Move Image Left"), this);
+    moveLeftAction->setObjectName("moveLeft");
+    connect(moveLeftAction, SIGNAL(triggered()), this, SLOT(moveLeft()));
+    moveRightAction = new QAction(tr("Move Image Right"), this);
+    moveRightAction->setObjectName("moveRight");
+    connect(moveRightAction, SIGNAL(triggered()), this, SLOT(moveRight()));
+    moveUpAction = new QAction(tr("Move Image Up"), this);
+    moveUpAction->setObjectName("moveUp");
+    connect(moveUpAction, SIGNAL(triggered()), this, SLOT(moveUp()));
+    moveDownAction = new QAction(tr("Move Image Down"), this);
+    moveDownAction->setObjectName("moveDown");
+    connect(moveDownAction, SIGNAL(triggered()), this, SLOT(moveDown()));
 
-    invertSelectionAct = new QAction(tr("Invert Selection"), this);
-    invertSelectionAct->setObjectName("invertSelection");
-    connect(invertSelectionAct, SIGNAL(triggered()), thumbsViewer, SLOT(invertSelection()));
+    invertSelectionAction = new QAction(tr("Invert Selection"), this);
+    invertSelectionAction->setObjectName("invertSelection");
+    connect(invertSelectionAction, SIGNAL(triggered()), thumbsViewer, SLOT(invertSelection()));
 
-    filterImagesFocusAct = new QAction(tr("Filter by Name"), this);
-    filterImagesFocusAct->setObjectName("filterImagesFocus");
-    connect(filterImagesFocusAct, SIGNAL(triggered()), this, SLOT(filterImagesFocus()));
-    setPathFocusAct = new QAction(tr("Set Path"), this);
-    setPathFocusAct->setObjectName("setPathFocus");
-    connect(setPathFocusAct, SIGNAL(triggered()), this, SLOT(setPathFocus()));
+    filterImagesFocusAction = new QAction(tr("Filter by Name"), this);
+    filterImagesFocusAction->setObjectName("filterImagesFocus");
+    connect(filterImagesFocusAction, SIGNAL(triggered()), this, SLOT(filterImagesFocus()));
+    setPathFocusAction = new QAction(tr("Set Path"), this);
+    setPathFocusAction->setObjectName("setPathFocus");
+    connect(setPathFocusAction, SIGNAL(triggered()), this, SLOT(setPathFocus()));
 }
 
 void Phototonic::createMenus() {
     fileMenu = menuBar()->addMenu(tr("&File"));
-    fileMenu->addAction(actionIncludeSubDirectories);
-    fileMenu->addAction(actionCreateDirectory);
+    fileMenu->addAction(includeSubDirectoriesAction);
+    fileMenu->addAction(createDirectoryAction);
     fileMenu->addAction(showClipboardAction);
     fileMenu->addAction(addBookmarkAction);
     fileMenu->addSeparator();
@@ -665,16 +665,16 @@ void Phototonic::createMenus() {
     editMenu->addAction(copyAction);
     editMenu->addAction(copyToAction);
     editMenu->addAction(moveToAction);
-    editMenu->addAction(actionPaste);
+    editMenu->addAction(pasteAction);
     editMenu->addAction(renameAction);
     editMenu->addAction(deleteAction);
     editMenu->addSeparator();
     editMenu->addAction(selectAllAction);
-    editMenu->addAction(invertSelectionAct);
-    addAction(filterImagesFocusAct);
-    addAction(setPathFocusAct);
+    editMenu->addAction(invertSelectionAction);
+    addAction(filterImagesFocusAction);
+    addAction(setPathFocusAction);
     editMenu->addSeparator();
-    editMenu->addAction(actionSettings);
+    editMenu->addAction(settingsAction);
 
     goMenu = menuBar()->addMenu(tr("&Go"));
     goMenu->addAction(goBackAction);
@@ -682,36 +682,36 @@ void Phototonic::createMenus() {
     goMenu->addAction(goUpAction);
     goMenu->addAction(goHomeAction);
     goMenu->addSeparator();
-    goMenu->addAction(actionThumbsGoToTop);
-    goMenu->addAction(actionThumbsGoToBottom);
+    goMenu->addAction(thumbsGoToTopAction);
+    goMenu->addAction(thumbsGoToBottomAction);
 
     viewMenu = menuBar()->addMenu(tr("&View"));
     viewMenu->addAction(slideShowAction);
     viewMenu->addSeparator();
 
-    viewMenu->addAction(thumbsZoomInAct);
-    viewMenu->addAction(thumbsZoomOutAct);
+    viewMenu->addAction(thumbsZoomInAction);
+    viewMenu->addAction(thumbsZoomOutAction);
     sortMenu = viewMenu->addMenu(tr("Sort By"));
     sortTypesGroup = new QActionGroup(this);
-    sortTypesGroup->addAction(actionSortByName);
-    sortTypesGroup->addAction(actionSortByTime);
-    sortTypesGroup->addAction(actionSortBySize);
-    sortTypesGroup->addAction(actionSortByType);
+    sortTypesGroup->addAction(sortByNameAction);
+    sortTypesGroup->addAction(sortByTimeAction);
+    sortTypesGroup->addAction(sortBySizeAction);
+    sortTypesGroup->addAction(sortByTypeAction);
     sortMenu->addActions(sortTypesGroup->actions());
     sortMenu->addSeparator();
-    sortMenu->addAction(actionSortReverse);
+    sortMenu->addAction(sortReverseAction);
     viewMenu->addSeparator();
 
-    viewMenu->addAction(actionShowHiddenFiles);
+    viewMenu->addAction(showHiddenFilesAction);
     viewMenu->addSeparator();
-    viewMenu->addAction(actionRefresh);
+    viewMenu->addAction(refreshAction);
 
     // thumbs viewer context menu
-    thumbsViewer->addAction(openAction);
-    thumbsViewer->addAction(openWithMenuAct);
+    thumbsViewer->addAction(viewImageAction);
+    thumbsViewer->addAction(openWithMenuAction);
     thumbsViewer->addAction(cutAction);
     thumbsViewer->addAction(copyAction);
-    thumbsViewer->addAction(actionPaste);
+    thumbsViewer->addAction(pasteAction);
     addMenuSeparator(thumbsViewer);
     thumbsViewer->addAction(copyToAction);
     thumbsViewer->addAction(moveToAction);
@@ -719,7 +719,7 @@ void Phototonic::createMenus() {
     thumbsViewer->addAction(deleteAction);
     addMenuSeparator(thumbsViewer);
     thumbsViewer->addAction(selectAllAction);
-    thumbsViewer->addAction(invertSelectionAct);
+    thumbsViewer->addAction(invertSelectionAction);
     thumbsViewer->setContextMenuPolicy(Qt::ActionsContextMenu);
     menuBar()->setVisible(true);
 }
@@ -730,7 +730,7 @@ void Phototonic::createToolBars() {
     editToolBar->setObjectName("Edit");
     editToolBar->addAction(cutAction);
     editToolBar->addAction(copyAction);
-    editToolBar->addAction(actionPaste);
+    editToolBar->addAction(pasteAction);
     editToolBar->addAction(deleteAction);
     editToolBar->addAction(showClipboardAction);
     connect(editToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setEditToolBarVisibility()));
@@ -742,7 +742,7 @@ void Phototonic::createToolBars() {
     goToolBar->addAction(goFrwdAction);
     goToolBar->addAction(goUpAction);
     goToolBar->addAction(goHomeAction);
-    goToolBar->addAction(actionRefresh);
+    goToolBar->addAction(refreshAction);
 
     /* path bar */
     pathLineEdit = new QLineEdit;
@@ -751,15 +751,15 @@ void Phototonic::createToolBars() {
     pathLineEdit->setMaximumWidth(600);
     connect(pathLineEdit, SIGNAL(returnPressed()), this, SLOT(goPathBarDir()));
     goToolBar->addWidget(pathLineEdit);
-    goToolBar->addAction(actionIncludeSubDirectories);
+    goToolBar->addAction(includeSubDirectoriesAction);
     connect(goToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setGoToolBarVisibility()));
 
     /* View */
     viewToolBar = addToolBar(tr("View Toolbar"));
     viewToolBar->setObjectName("View");
     viewToolBar->addAction(slideShowAction);
-    viewToolBar->addAction(thumbsZoomInAct);
-    viewToolBar->addAction(thumbsZoomOutAct);
+    viewToolBar->addAction(thumbsZoomInAction);
+    viewToolBar->addAction(thumbsZoomOutAction);
 
     /* filter bar */
     QAction *filterAct = new QAction(tr("Filter"), this);
@@ -776,7 +776,7 @@ void Phototonic::createToolBars() {
 
     viewToolBar->addSeparator();
     viewToolBar->addWidget(filterLineEdit);
-    viewToolBar->addAction(actionSettings);
+    viewToolBar->addAction(settingsAction);
     connect(viewToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setViewToolBarVisibility()));
 
     /* image */
@@ -792,18 +792,18 @@ void Phototonic::createToolBars() {
     imageToolBar->addAction(saveAsAction);
     imageToolBar->addAction(deleteAction);
     imageToolBar->addSeparator();
-    imageToolBar->addAction(zoomInAct);
-    imageToolBar->addAction(zoomOutAct);
-    imageToolBar->addAction(resetZoomAct);
-    imageToolBar->addAction(origZoomAct);
+    imageToolBar->addAction(zoomInAction);
+    imageToolBar->addAction(zoomOutAction);
+    imageToolBar->addAction(resetZoomAction);
+    imageToolBar->addAction(origZoomAction);
     imageToolBar->addSeparator();
-    imageToolBar->addAction(resizeAct);
-    imageToolBar->addAction(rotateRightAct);
-    imageToolBar->addAction(rotateLeftAct);
-    imageToolBar->addAction(flipHAct);
-    imageToolBar->addAction(flipVAct);
-    imageToolBar->addAction(cropAct);
-    imageToolBar->addAction(colorsAct);
+    imageToolBar->addAction(resizeAction);
+    imageToolBar->addAction(rotateRightAction);
+    imageToolBar->addAction(rotateLeftAction);
+    imageToolBar->addAction(flipHorizontalAction);
+    imageToolBar->addAction(flipVerticalAction);
+    imageToolBar->addAction(cropAction);
+    imageToolBar->addAction(colorsAction);
     imageToolBar->setVisible(false);
     connect(imageToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setImageToolBarVisibility()));
 
@@ -812,7 +812,7 @@ void Phototonic::createToolBars() {
 
 void Phototonic::setToolbarIconSize() {
     if (initComplete) {
-        Settings::smallToolbarIcons = actionSmallToolbarIcons->isChecked();
+        Settings::smallToolbarIcons = smallToolbarIconsAction->isChecked();
     }
     int iconSize = Settings::smallToolbarIcons ? 16 : 24;
     QSize iconQSize(iconSize, iconSize);
@@ -846,14 +846,14 @@ void Phototonic::createFileSystemTree() {
     addDockWidget(Qt::LeftDockWidgetArea, fileSystemDock);
 
     // Context menu
-    fileSystemTree->addAction(openAction);
-    fileSystemTree->addAction(actionCreateDirectory);
+    fileSystemTree->addAction(viewImageAction);
+    fileSystemTree->addAction(createDirectoryAction);
     fileSystemTree->addAction(renameAction);
     fileSystemTree->addAction(deleteAction);
     addMenuSeparator(fileSystemTree);
-    fileSystemTree->addAction(actionPaste);
+    fileSystemTree->addAction(pasteAction);
     addMenuSeparator(fileSystemTree);
-    fileSystemTree->addAction(openWithMenuAct);
+    fileSystemTree->addAction(openWithMenuAction);
     fileSystemTree->addAction(addBookmarkAction);
     fileSystemTree->setContextMenuPolicy(Qt::ActionsContextMenu);
 
@@ -892,7 +892,7 @@ void Phototonic::createBookmarks() {
             this, SLOT(updateActions()));
     addDockWidget(Qt::LeftDockWidgetArea, bookmarksDock);
 
-    bookmarks->addAction(actionPaste);
+    bookmarks->addAction(pasteAction);
     bookmarks->addAction(removeBookmarkAction);
     bookmarks->setContextMenuPolicy(Qt::ActionsContextMenu);
 }
@@ -913,17 +913,17 @@ void Phototonic::createImageTags() {
 void Phototonic::sortThumbnails() {
     thumbsViewer->thumbsSortFlags = QDir::IgnoreCase;
 
-    if (actionSortByName->isChecked()) {
+    if (sortByNameAction->isChecked()) {
         thumbsViewer->thumbsSortFlags |= QDir::Name;
-    } else if (actionSortByTime->isChecked()) {
+    } else if (sortByTimeAction->isChecked()) {
         thumbsViewer->thumbsSortFlags |= QDir::Time;
-    } else if (actionSortBySize->isChecked()) {
+    } else if (sortBySizeAction->isChecked()) {
         thumbsViewer->thumbsSortFlags |= QDir::Size;
-    } else if (actionSortByType->isChecked()) {
+    } else if (sortByTypeAction->isChecked()) {
         thumbsViewer->thumbsSortFlags |= QDir::Type;
     }
 
-    if (actionSortReverse->isChecked()) {
+    if (sortReverseAction->isChecked()) {
         thumbsViewer->thumbsSortFlags |= QDir::Reversed;
     }
     refreshThumbs(false);
@@ -938,7 +938,7 @@ void Phototonic::reload() {
 }
 
 void Phototonic::setIncludeSubFolders() {
-    Settings::includeSubDirectories = actionIncludeSubDirectories->isChecked();
+    Settings::includeSubDirectories = includeSubDirectoriesAction->isChecked();
     refreshThumbs(false);
 }
 
@@ -948,15 +948,15 @@ void Phototonic::refreshThumbs(bool scrollToTop) {
 }
 
 void Phototonic::showHiddenFiles() {
-    Settings::showHiddenFiles = actionShowHiddenFiles->isChecked();
+    Settings::showHiddenFiles = showHiddenFilesAction->isChecked();
     fileSystemTree->setModelFlags();
     refreshThumbs(false);
 }
 
 void Phototonic::toggleImageViewerToolbar() {
-    imageToolBar->setVisible(actionShowViewerToolbar->isChecked());
+    imageToolBar->setVisible(showViewerToolbarAction->isChecked());
     addToolBar(imageToolBar);
-    Settings::showViewerToolbar = actionShowViewerToolbar->isChecked();
+    Settings::showViewerToolbar = showViewerToolbarAction->isChecked();
 }
 
 void Phototonic::about() {
@@ -1076,7 +1076,7 @@ void Phototonic::updateExternalApps() {
     }
 
     openWithSubMenu->addSeparator();
-    openWithSubMenu->addAction(chooseAppAct);
+    openWithSubMenu->addAction(chooseAppAction);
 }
 
 void Phototonic::chooseExternalApp() {
@@ -1125,7 +1125,7 @@ void Phototonic::showSettings() {
 }
 
 void Phototonic::toggleFullScreen() {
-    if (actionFullScreen->isChecked()) {
+    if (fullScreenAction->isChecked()) {
         shouldMaximize = isMaximized();
         showFullScreen();
         Settings::isFullScreen = true;
@@ -1154,7 +1154,7 @@ void Phototonic::copyOrCutThumbs(bool copy) {
     }
 
     Settings::copyOp = copy;
-    actionPaste->setEnabled(true);
+    pasteAction->setEnabled(true);
 }
 
 void Phototonic::cutThumbs() {
@@ -1231,9 +1231,9 @@ void Phototonic::copyMoveImages(bool move) {
 void Phototonic::thumbsZoomIn() {
     if (thumbsViewer->thumbSize < THUMB_SIZE_MAX) {
         thumbsViewer->thumbSize += 50;
-        thumbsZoomOutAct->setEnabled(true);
+        thumbsZoomOutAction->setEnabled(true);
         if (thumbsViewer->thumbSize == THUMB_SIZE_MAX)
-            thumbsZoomInAct->setEnabled(false);
+            thumbsZoomInAction->setEnabled(false);
         refreshThumbs(false);
     }
 }
@@ -1241,9 +1241,9 @@ void Phototonic::thumbsZoomIn() {
 void Phototonic::thumbsZoomOut() {
     if (thumbsViewer->thumbSize > THUMB_SIZE_MIN) {
         thumbsViewer->thumbSize -= 50;
-        thumbsZoomInAct->setEnabled(true);
+        thumbsZoomInAction->setEnabled(true);
         if (thumbsViewer->thumbSize == THUMB_SIZE_MIN)
-            thumbsZoomOutAct->setEnabled(false);
+            thumbsZoomOutAction->setEnabled(false);
         refreshThumbs(false);
     }
 }
@@ -1297,7 +1297,7 @@ void Phototonic::origZoom() {
 }
 
 void Phototonic::keepZoom() {
-    Settings::keepZoomFactor = keepZoomAct->isChecked();
+    Settings::keepZoomFactor = keepZoomAction->isChecked();
     if (Settings::keepZoomFactor) {
         imageViewer->setFeedback(tr("Zoom Locked"));
     } else {
@@ -1306,7 +1306,7 @@ void Phototonic::keepZoom() {
 }
 
 void Phototonic::keepTransformClicked() {
-    Settings::keepTransform = keepTransformAct->isChecked();
+    Settings::keepTransform = keepTransformAction->isChecked();
 
     if (Settings::keepTransform) {
         imageViewer->setFeedback(tr("Transformations Locked"));
@@ -1535,7 +1535,7 @@ void Phototonic::pasteThumbs() {
     copyCutCount = 0;
     Settings::copyCutIdxList.clear();
     Settings::copyCutFileList.clear();
-    actionPaste->setEnabled(false);
+    pasteAction->setEnabled(false);
 
     thumbsViewer->loadVisibleThumbs();
 }
@@ -1826,17 +1826,17 @@ void Phototonic::updateActions() {
 
     if (Settings::layoutMode == ImageViewWidget && !interfaceDisabled) {
         setViewerKeyEventsEnabled(true);
-        actionFullScreen->setEnabled(true);
-        actionCloseImage->setEnabled(true);
+        fullScreenAction->setEnabled(true);
+        CloseImageAction->setEnabled(true);
     } else {
         if (QApplication::focusWidget() == imageViewer->scrlArea) {
             setViewerKeyEventsEnabled(true);
-            actionFullScreen->setEnabled(false);
-            actionCloseImage->setEnabled(false);
+            fullScreenAction->setEnabled(false);
+            CloseImageAction->setEnabled(false);
         } else {
             setViewerKeyEventsEnabled(false);
-            actionFullScreen->setEnabled(false);
-            actionCloseImage->setEnabled(false);
+            fullScreenAction->setEnabled(false);
+            CloseImageAction->setEnabled(false);
         }
     }
 }
@@ -1854,7 +1854,6 @@ void Phototonic::writeSettings() {
     Settings::appSettings->setValue("backgroundThumbColor", Settings::thumbsBackgroundColor);
     Settings::appSettings->setValue("textThumbColor", Settings::thumbsTextColor);
     Settings::appSettings->setValue("thumbPagesReadahead", (int) Settings::thumbPagesReadahead);
-    Settings::appSettings->setValue("exitInsteadOfClose", (int) Settings::exitInsteadOfClose);
     Settings::appSettings->setValue("enableAnimations", (bool) Settings::enableAnimations);
     Settings::appSettings->setValue("exifRotationEnabled", (bool) Settings::exifRotationEnabled);
     Settings::appSettings->setValue("exifThumbRotationEnabled", (bool) Settings::exifThumbRotationEnabled);
@@ -1940,7 +1939,6 @@ void Phototonic::readSettings() {
         Settings::appSettings->setValue("zoomOutFlags", (int) 1);
         Settings::appSettings->setValue("zoomInFlags", (int) 0);
         Settings::appSettings->setValue("wrapImageList", (bool) false);
-        Settings::appSettings->setValue("exitInsteadOfClose", (int) 0);
         Settings::appSettings->setValue("imageZoomFactor", (float) 1.0);
         Settings::appSettings->setValue("defaultSaveQuality", (int) 90);
         Settings::appSettings->setValue("noEnlargeSmallThumb", (bool) true);
@@ -1968,7 +1966,6 @@ void Phototonic::readSettings() {
     }
 
     Settings::backgroundColor = Settings::appSettings->value("backgroundColor").value<QColor>();
-    Settings::exitInsteadOfClose = Settings::appSettings->value("exitInsteadOfClose").toBool();
     Settings::enableAnimations = Settings::appSettings->value("enableAnimations").toBool();
     Settings::exifRotationEnabled = Settings::appSettings->value("exifRotationEnabled").toBool();
     Settings::exifThumbRotationEnabled = Settings::appSettings->value("exifThumbRotationEnabled").toBool();
@@ -2042,7 +2039,7 @@ void Phototonic::setupDocks() {
 
     menuBar()->addSeparator();
     helpMenu = menuBar()->addMenu(tr("&Help"));
-    helpMenu->addAction(actionAbout);
+    helpMenu->addAction(aboutAction);
 
     fileSystemDockOrigWidget = fileSystemDock->titleBarWidget();
     bookmarksDockOrigWidget = bookmarksDock->titleBarWidget();
@@ -2057,7 +2054,7 @@ void Phototonic::setupDocks() {
 
 void Phototonic::lockDocks() {
     if (initComplete)
-        Settings::hideDockTitlebars = actionLockDocks->isChecked();
+        Settings::hideDockTitlebars = lockDocksAction->isChecked();
 
     if (Settings::hideDockTitlebars) {
         fileSystemDock->setTitleBarWidget(fileSystemDockEmptyWidget);
@@ -2075,21 +2072,21 @@ void Phototonic::lockDocks() {
 QMenu *Phototonic::createPopupMenu() {
     QMenu *extraActsMenu = QMainWindow::createPopupMenu();
     extraActsMenu->addSeparator();
-    extraActsMenu->addAction(actionSmallToolbarIcons);
-    extraActsMenu->addAction(actionLockDocks);
+    extraActsMenu->addAction(smallToolbarIconsAction);
+    extraActsMenu->addAction(lockDocksAction);
     return extraActsMenu;
 }
 
 void Phototonic::loadShortcuts() {
     // Add customizable key shortcut actions
-    Settings::actionKeys[actionThumbsGoToTop->objectName()] = actionThumbsGoToTop;
-    Settings::actionKeys[actionThumbsGoToBottom->objectName()] = actionThumbsGoToBottom;
-    Settings::actionKeys[actionCloseImage->objectName()] = actionCloseImage;
-    Settings::actionKeys[actionFullScreen->objectName()] = actionFullScreen;
-    Settings::actionKeys[actionSettings->objectName()] = actionSettings;
+    Settings::actionKeys[thumbsGoToTopAction->objectName()] = thumbsGoToTopAction;
+    Settings::actionKeys[thumbsGoToBottomAction->objectName()] = thumbsGoToBottomAction;
+    Settings::actionKeys[CloseImageAction->objectName()] = CloseImageAction;
+    Settings::actionKeys[fullScreenAction->objectName()] = fullScreenAction;
+    Settings::actionKeys[settingsAction->objectName()] = settingsAction;
     Settings::actionKeys[exitAction->objectName()] = exitAction;
-    Settings::actionKeys[thumbsZoomInAct->objectName()] = thumbsZoomInAct;
-    Settings::actionKeys[thumbsZoomOutAct->objectName()] = thumbsZoomOutAct;
+    Settings::actionKeys[thumbsZoomInAction->objectName()] = thumbsZoomInAction;
+    Settings::actionKeys[thumbsZoomOutAction->objectName()] = thumbsZoomOutAction;
     Settings::actionKeys[cutAction->objectName()] = cutAction;
     Settings::actionKeys[copyAction->objectName()] = copyAction;
     Settings::actionKeys[nextImageAction->objectName()] = nextImageAction;
@@ -2097,56 +2094,56 @@ void Phototonic::loadShortcuts() {
     Settings::actionKeys[deleteAction->objectName()] = deleteAction;
     Settings::actionKeys[saveAction->objectName()] = saveAction;
     Settings::actionKeys[saveAsAction->objectName()] = saveAsAction;
-    Settings::actionKeys[keepTransformAct->objectName()] = keepTransformAct;
-    Settings::actionKeys[keepZoomAct->objectName()] = keepZoomAct;
+    Settings::actionKeys[keepTransformAction->objectName()] = keepTransformAction;
+    Settings::actionKeys[keepZoomAction->objectName()] = keepZoomAction;
     Settings::actionKeys[showClipboardAction->objectName()] = showClipboardAction;
     Settings::actionKeys[copyImageAction->objectName()] = copyImageAction;
     Settings::actionKeys[pasteImageAction->objectName()] = pasteImageAction;
     Settings::actionKeys[renameAction->objectName()] = renameAction;
-    Settings::actionKeys[actionRefresh->objectName()] = actionRefresh;
-    Settings::actionKeys[actionPaste->objectName()] = actionPaste;
+    Settings::actionKeys[refreshAction->objectName()] = refreshAction;
+    Settings::actionKeys[pasteAction->objectName()] = pasteAction;
     Settings::actionKeys[goBackAction->objectName()] = goBackAction;
     Settings::actionKeys[goFrwdAction->objectName()] = goFrwdAction;
     Settings::actionKeys[slideShowAction->objectName()] = slideShowAction;
     Settings::actionKeys[firstImageAction->objectName()] = firstImageAction;
     Settings::actionKeys[lastImageAction->objectName()] = lastImageAction;
     Settings::actionKeys[randomImageAction->objectName()] = randomImageAction;
-    Settings::actionKeys[openAction->objectName()] = openAction;
-    Settings::actionKeys[zoomOutAct->objectName()] = zoomOutAct;
-    Settings::actionKeys[zoomInAct->objectName()] = zoomInAct;
-    Settings::actionKeys[resetZoomAct->objectName()] = resetZoomAct;
-    Settings::actionKeys[origZoomAct->objectName()] = origZoomAct;
-    Settings::actionKeys[rotateLeftAct->objectName()] = rotateLeftAct;
-    Settings::actionKeys[rotateRightAct->objectName()] = rotateRightAct;
-    Settings::actionKeys[freeRotateLeftAct->objectName()] = freeRotateLeftAct;
-    Settings::actionKeys[freeRotateRightAct->objectName()] = freeRotateRightAct;
-    Settings::actionKeys[flipHAct->objectName()] = flipHAct;
-    Settings::actionKeys[flipVAct->objectName()] = flipVAct;
-    Settings::actionKeys[cropAct->objectName()] = cropAct;
-    Settings::actionKeys[cropToSelectionAct->objectName()] = cropToSelectionAct;
-    Settings::actionKeys[colorsAct->objectName()] = colorsAct;
-    Settings::actionKeys[mirrorDisabledAct->objectName()] = mirrorDisabledAct;
-    Settings::actionKeys[mirrorDualAct->objectName()] = mirrorDualAct;
-    Settings::actionKeys[mirrorTripleAct->objectName()] = mirrorTripleAct;
-    Settings::actionKeys[mirrorVDualAct->objectName()] = mirrorVDualAct;
-    Settings::actionKeys[mirrorQuadAct->objectName()] = mirrorQuadAct;
-    Settings::actionKeys[moveDownAct->objectName()] = moveDownAct;
-    Settings::actionKeys[moveUpAct->objectName()] = moveUpAct;
-    Settings::actionKeys[moveRightAct->objectName()] = moveRightAct;
-    Settings::actionKeys[moveLeftAct->objectName()] = moveLeftAct;
+    Settings::actionKeys[viewImageAction->objectName()] = viewImageAction;
+    Settings::actionKeys[zoomOutAction->objectName()] = zoomOutAction;
+    Settings::actionKeys[zoomInAction->objectName()] = zoomInAction;
+    Settings::actionKeys[resetZoomAction->objectName()] = resetZoomAction;
+    Settings::actionKeys[origZoomAction->objectName()] = origZoomAction;
+    Settings::actionKeys[rotateLeftAction->objectName()] = rotateLeftAction;
+    Settings::actionKeys[rotateRightAction->objectName()] = rotateRightAction;
+    Settings::actionKeys[freeRotateLeftAction->objectName()] = freeRotateLeftAction;
+    Settings::actionKeys[freeRotateRightAction->objectName()] = freeRotateRightAction;
+    Settings::actionKeys[flipHorizontalAction->objectName()] = flipHorizontalAction;
+    Settings::actionKeys[flipVerticalAction->objectName()] = flipVerticalAction;
+    Settings::actionKeys[cropAction->objectName()] = cropAction;
+    Settings::actionKeys[cropToSelectionAction->objectName()] = cropToSelectionAction;
+    Settings::actionKeys[colorsAction->objectName()] = colorsAction;
+    Settings::actionKeys[mirrorDisabledAction->objectName()] = mirrorDisabledAction;
+    Settings::actionKeys[mirrorDualAction->objectName()] = mirrorDualAction;
+    Settings::actionKeys[mirrorTripleAction->objectName()] = mirrorTripleAction;
+    Settings::actionKeys[mirrorDualVerticalAction->objectName()] = mirrorDualVerticalAction;
+    Settings::actionKeys[mirrorQuadAction->objectName()] = mirrorQuadAction;
+    Settings::actionKeys[moveDownAction->objectName()] = moveDownAction;
+    Settings::actionKeys[moveUpAction->objectName()] = moveUpAction;
+    Settings::actionKeys[moveRightAction->objectName()] = moveRightAction;
+    Settings::actionKeys[moveLeftAction->objectName()] = moveLeftAction;
     Settings::actionKeys[copyToAction->objectName()] = copyToAction;
     Settings::actionKeys[moveToAction->objectName()] = moveToAction;
     Settings::actionKeys[goUpAction->objectName()] = goUpAction;
-    Settings::actionKeys[resizeAct->objectName()] = resizeAct;
-    Settings::actionKeys[filterImagesFocusAct->objectName()] = filterImagesFocusAct;
-    Settings::actionKeys[setPathFocusAct->objectName()] = setPathFocusAct;
-    Settings::actionKeys[keepTransformAct->objectName()] = keepTransformAct;
+    Settings::actionKeys[resizeAction->objectName()] = resizeAction;
+    Settings::actionKeys[filterImagesFocusAction->objectName()] = filterImagesFocusAction;
+    Settings::actionKeys[setPathFocusAction->objectName()] = setPathFocusAction;
+    Settings::actionKeys[keepTransformAction->objectName()] = keepTransformAction;
 
     Settings::appSettings->beginGroup("Shortcuts");
     QStringList groupKeys = Settings::appSettings->childKeys();
 
     if (groupKeys.size()) {
-        if (groupKeys.contains(actionThumbsGoToTop->text())) {
+        if (groupKeys.contains(thumbsGoToTopAction->text())) {
             QMapIterator<QString, QAction *> key(Settings::actionKeys);
             while (key.hasNext()) {
                 key.next();
@@ -2164,11 +2161,11 @@ void Phototonic::loadShortcuts() {
             }
         }
     } else {
-        actionThumbsGoToTop->setShortcut(QKeySequence("Ctrl+Home"));
-        actionThumbsGoToBottom->setShortcut(QKeySequence("Ctrl+End"));
-        actionCloseImage->setShortcut(Qt::Key_Escape);
-        actionFullScreen->setShortcut(QKeySequence("Alt+Return"));
-        actionSettings->setShortcut(QKeySequence("Ctrl+P"));
+        thumbsGoToTopAction->setShortcut(QKeySequence("Ctrl+Home"));
+        thumbsGoToBottomAction->setShortcut(QKeySequence("Ctrl+End"));
+        CloseImageAction->setShortcut(Qt::Key_Escape);
+        fullScreenAction->setShortcut(QKeySequence("Alt+Return"));
+        settingsAction->setShortcut(QKeySequence("Ctrl+P"));
         exitAction->setShortcut(QKeySequence("Ctrl+Q"));
         cutAction->setShortcut(QKeySequence("Ctrl+X"));
         copyAction->setShortcut(QKeySequence("Ctrl+C"));
@@ -2177,8 +2174,8 @@ void Phototonic::loadShortcuts() {
         copyImageAction->setShortcut(QKeySequence("Ctrl+Shift+C"));
         pasteImageAction->setShortcut(QKeySequence("Ctrl+Shift+V"));
         renameAction->setShortcut(QKeySequence("F2"));
-        actionRefresh->setShortcut(QKeySequence("F5"));
-        actionPaste->setShortcut(QKeySequence("Ctrl+V"));
+        refreshAction->setShortcut(QKeySequence("F5"));
+        pasteAction->setShortcut(QKeySequence("Ctrl+V"));
         goBackAction->setShortcut(QKeySequence("Alt+Left"));
         goFrwdAction->setShortcut(QKeySequence("Alt+Right"));
         goUpAction->setShortcut(QKeySequence("Alt+Up"));
@@ -2188,35 +2185,35 @@ void Phototonic::loadShortcuts() {
         firstImageAction->setShortcut(QKeySequence("Home"));
         lastImageAction->setShortcut(QKeySequence("End"));
         randomImageAction->setShortcut(QKeySequence("Ctrl+D"));
-        openAction->setShortcut(QKeySequence("Return"));
-        zoomOutAct->setShortcut(QKeySequence("-"));
-        zoomInAct->setShortcut(QKeySequence("+"));
-        resetZoomAct->setShortcut(QKeySequence("*"));
-        origZoomAct->setShortcut(QKeySequence("/"));
-        rotateLeftAct->setShortcut(QKeySequence("Ctrl+Left"));
-        rotateRightAct->setShortcut(QKeySequence("Ctrl+Right"));
-        freeRotateLeftAct->setShortcut(QKeySequence("Ctrl+Shift+Left"));
-        freeRotateRightAct->setShortcut(QKeySequence("Ctrl+Shift+Right"));
-        flipHAct->setShortcut(QKeySequence("Ctrl+Down"));
-        flipVAct->setShortcut(QKeySequence("Ctrl+Up"));
-        cropAct->setShortcut(QKeySequence("Ctrl+G"));
-        cropToSelectionAct->setShortcut(QKeySequence("Ctrl+R"));
-        colorsAct->setShortcut(QKeySequence("Ctrl+O"));
-        mirrorDisabledAct->setShortcut(QKeySequence("Ctrl+1"));
-        mirrorDualAct->setShortcut(QKeySequence("Ctrl+2"));
-        mirrorTripleAct->setShortcut(QKeySequence("Ctrl+3"));
-        mirrorVDualAct->setShortcut(QKeySequence("Ctrl+4"));
-        mirrorQuadAct->setShortcut(QKeySequence("Ctrl+5"));
-        moveDownAct->setShortcut(QKeySequence("Down"));
-        moveUpAct->setShortcut(QKeySequence("Up"));
-        moveLeftAct->setShortcut(QKeySequence("Left"));
-        moveRightAct->setShortcut(QKeySequence("Right"));
+        viewImageAction->setShortcut(QKeySequence("Return"));
+        zoomOutAction->setShortcut(QKeySequence("-"));
+        zoomInAction->setShortcut(QKeySequence("+"));
+        resetZoomAction->setShortcut(QKeySequence("*"));
+        origZoomAction->setShortcut(QKeySequence("/"));
+        rotateLeftAction->setShortcut(QKeySequence("Ctrl+Left"));
+        rotateRightAction->setShortcut(QKeySequence("Ctrl+Right"));
+        freeRotateLeftAction->setShortcut(QKeySequence("Ctrl+Shift+Left"));
+        freeRotateRightAction->setShortcut(QKeySequence("Ctrl+Shift+Right"));
+        flipHorizontalAction->setShortcut(QKeySequence("Ctrl+Down"));
+        flipVerticalAction->setShortcut(QKeySequence("Ctrl+Up"));
+        cropAction->setShortcut(QKeySequence("Ctrl+G"));
+        cropToSelectionAction->setShortcut(QKeySequence("Ctrl+R"));
+        colorsAction->setShortcut(QKeySequence("Ctrl+O"));
+        mirrorDisabledAction->setShortcut(QKeySequence("Ctrl+1"));
+        mirrorDualAction->setShortcut(QKeySequence("Ctrl+2"));
+        mirrorTripleAction->setShortcut(QKeySequence("Ctrl+3"));
+        mirrorDualVerticalAction->setShortcut(QKeySequence("Ctrl+4"));
+        mirrorQuadAction->setShortcut(QKeySequence("Ctrl+5"));
+        moveDownAction->setShortcut(QKeySequence("Down"));
+        moveUpAction->setShortcut(QKeySequence("Up"));
+        moveLeftAction->setShortcut(QKeySequence("Left"));
+        moveRightAction->setShortcut(QKeySequence("Right"));
         copyToAction->setShortcut(QKeySequence("Ctrl+Y"));
         moveToAction->setShortcut(QKeySequence("Ctrl+M"));
-        resizeAct->setShortcut(QKeySequence("Ctrl+I"));
-        filterImagesFocusAct->setShortcut(QKeySequence("Ctrl+F"));
-        setPathFocusAct->setShortcut(QKeySequence("Ctrl+L"));
-        keepTransformAct->setShortcut(QKeySequence("Ctrl+K"));
+        resizeAction->setShortcut(QKeySequence("Ctrl+I"));
+        filterImagesFocusAction->setShortcut(QKeySequence("Ctrl+F"));
+        setPathFocusAction->setShortcut(QKeySequence("Ctrl+L"));
+        keepTransformAction->setShortcut(QKeySequence("Ctrl+K"));
     }
 
     Settings::appSettings->endGroup();
@@ -2244,16 +2241,16 @@ void Phototonic::mouseDoubleClickEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
         if (Settings::layoutMode == ImageViewWidget) {
             if (Settings::reverseMouseBehavior) {
-                actionFullScreen->setChecked(!(actionFullScreen->isChecked()));
+                fullScreenAction->setChecked(!(fullScreenAction->isChecked()));
                 toggleFullScreen();
                 event->accept();
-            } else if (actionCloseImage->isEnabled()) {
+            } else if (CloseImageAction->isEnabled()) {
                 hideViewer();
                 event->accept();
             }
         } else {
             if (QApplication::focusWidget() == imageViewer->scrlArea) {
-                openOp();
+                viewImage();
             }
         }
     }
@@ -2277,11 +2274,11 @@ void Phototonic::mousePressEvent(QMouseEvent *event) {
                 return;
             }
 
-            if (Settings::reverseMouseBehavior && actionCloseImage->isEnabled()) {
+            if (Settings::reverseMouseBehavior && CloseImageAction->isEnabled()) {
                 hideViewer();
                 event->accept();
             } else {
-                actionFullScreen->setChecked(!(actionFullScreen->isChecked()));
+                fullScreenAction->setChecked(!(fullScreenAction->isChecked()));
                 toggleFullScreen();
                 event->accept();
             }
@@ -2289,7 +2286,7 @@ void Phototonic::mousePressEvent(QMouseEvent *event) {
     } else {
         if (QApplication::focusWidget() == imageViewer->scrlArea) {
             if (event->button() == Qt::MiddleButton && Settings::reverseMouseBehavior) {
-                openOp();
+                viewImage();
             }
         }
     }
@@ -2321,7 +2318,7 @@ void Phototonic::setDocksVisibility(bool visible) {
     setContextMenuPolicy(Qt::PreventContextMenu);
 }
 
-void Phototonic::openOp() {
+void Phototonic::viewImage() {
     if (Settings::layoutMode == ImageViewWidget) {
         hideViewer();
         return;
@@ -2332,22 +2329,22 @@ void Phototonic::openOp() {
         return;
     } else if (QApplication::focusWidget() == thumbsViewer
                || QApplication::focusWidget() == imageViewer->scrlArea) {
-        QModelIndex idx;
-        QModelIndexList indexesList = thumbsViewer->selectionModel()->selectedIndexes();
-        if (indexesList.size() > 0) {
-            idx = indexesList.first();
+        QModelIndex selectedImageIndex;
+        QModelIndexList selectedIndexes = thumbsViewer->selectionModel()->selectedIndexes();
+        if (selectedIndexes.size() > 0) {
+            selectedImageIndex = selectedIndexes.first();
         } else {
             if (thumbsViewer->thumbsViewerModel->rowCount() == 0) {
                 setStatus(tr("No images"));
                 return;
             }
 
-            idx = thumbsViewer->thumbsViewerModel->indexFromItem(thumbsViewer->thumbsViewerModel->item(0));
-            thumbsViewer->selectionModel()->select(idx, QItemSelectionModel::Toggle);
+            selectedImageIndex = thumbsViewer->thumbsViewerModel->indexFromItem(thumbsViewer->thumbsViewerModel->item(0));
+            thumbsViewer->selectionModel()->select(selectedImageIndex, QItemSelectionModel::Toggle);
             thumbsViewer->setCurrentRow(0);
         }
 
-        loadImagefromThumb(idx);
+        loadImageByThumb(selectedImageIndex);
         return;
     } else if (QApplication::focusWidget() == filterLineEdit) {
         setThumbsFilter();
@@ -2416,6 +2413,7 @@ void Phototonic::showViewer() {
             imageViewer->setCursorHiding(true);
             QApplication::processEvents();
         }
+        imageViewer->setFocus(Qt::OtherFocusReason);
 
         updateActions();
     }
@@ -2440,7 +2438,7 @@ void Phototonic::showBusyStatus(bool busy) {
     }
 }
 
-void Phototonic::loadImagefromThumb(const QModelIndex &idx) {
+void Phototonic::loadImageByThumb(const QModelIndex &idx) {
     thumbsViewer->setCurrentRow(idx.row());
     showViewer();
     imageViewer->loadImage(
@@ -2448,7 +2446,7 @@ void Phototonic::loadImagefromThumb(const QModelIndex &idx) {
     thumbsViewer->setImageViewerWindowTitle();
 }
 
-void Phototonic::loadImagefromCli() {
+void Phototonic::loadImageBromCliArguments() {
     QFile imageFile(cliFileName);
     if (!imageFile.exists()) {
         QMessageBox msgBox;
@@ -2615,10 +2613,10 @@ void Phototonic::loadRandomImage() {
 }
 
 void Phototonic::setViewerKeyEventsEnabled(bool enabled) {
-    moveLeftAct->setEnabled(enabled);
-    moveRightAct->setEnabled(enabled);
-    moveUpAct->setEnabled(enabled);
-    moveDownAct->setEnabled(enabled);
+    moveLeftAction->setEnabled(enabled);
+    moveRightAction->setEnabled(enabled);
+    moveUpAction->setEnabled(enabled);
+    moveDownAction->setEnabled(enabled);
 }
 
 void Phototonic::updateIndexByViewerImage() {
@@ -2629,11 +2627,6 @@ void Phototonic::updateIndexByViewerImage() {
 }
 
 void Phototonic::hideViewer() {
-    if (cliImageLoaded && Settings::exitInsteadOfClose) {
-        close();
-        return;
-    }
-
     showBusyStatus(true);
 
     if (isFullScreen()) {
@@ -3118,11 +3111,11 @@ void Phototonic::cleanupColorsDialog() {
 
 void Phototonic::setInterfaceEnabled(bool enable) {
     // actions
-    colorsAct->setEnabled(enable);
+    colorsAction->setEnabled(enable);
     renameAction->setEnabled(enable);
-    cropAct->setEnabled(enable);
-    resizeAct->setEnabled(enable);
-    actionCloseImage->setEnabled(enable);
+    cropAction->setEnabled(enable);
+    resizeAction->setEnabled(enable);
+    CloseImageAction->setEnabled(enable);
     nextImageAction->setEnabled(enable);
     prevImageAction->setEnabled(enable);
     firstImageAction->setEnabled(enable);
@@ -3132,8 +3125,8 @@ void Phototonic::setInterfaceEnabled(bool enable) {
     copyToAction->setEnabled(enable);
     moveToAction->setEnabled(enable);
     deleteAction->setEnabled(enable);
-    actionSettings->setEnabled(enable);
-    openAction->setEnabled(enable);
+    settingsAction->setEnabled(enable);
+    viewImageAction->setEnabled(enable);
 
     // other
     thumbsViewer->setEnabled(enable);

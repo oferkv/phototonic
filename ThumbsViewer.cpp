@@ -43,7 +43,7 @@ ThumbsViewer::ThumbsViewer(QWidget *parent, MetadataCache *metadataCache) : QLis
     connect(this->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)),
             this, SLOT(handleSelectionChanged(QItemSelection)));
     connect(this, SIGNAL(doubleClicked(
-                                 const QModelIndex &)), parent, SLOT(loadImagefromThumb(
+                                 const QModelIndex &)), parent, SLOT(loadImageByThumb(
                                                                              const QModelIndex &)));
 
     thumbsDir = new QDir();
@@ -629,9 +629,9 @@ void ThumbsViewer::loadThumbsRange() {
         } else {
             thumbsViewerModel->item(currThumb)->setIcon(QIcon::fromTheme("image-missing",
                                                                          QIcon(":/images/error_image.png")).pixmap(
-                    BAD_IMG_SZ, BAD_IMG_SZ));
-            currThumbSize.setHeight(BAD_IMG_SZ);
-            currThumbSize.setWidth(BAD_IMG_SZ);
+                    BAD_IMAGE_SIZE, BAD_IMAGE_SIZE));
+            currThumbSize.setHeight(BAD_IMAGE_SIZE);
+            currThumbSize.setWidth(BAD_IMAGE_SIZE);
         }
 
         thumbsViewerModel->item(currThumb)->setData(true, LoadedRole);
@@ -676,9 +676,9 @@ void ThumbsViewer::addThumb(QString &imageFullPath) {
         thumbIitem->setIcon(QPixmap::fromImage(thumb));
     } else {
         thumbIitem->setIcon(
-                QIcon::fromTheme("image-missing", QIcon(":/images/error_image.png")).pixmap(BAD_IMG_SZ, BAD_IMG_SZ));
-        currThumbSize.setHeight(BAD_IMG_SZ);
-        currThumbSize.setWidth(BAD_IMG_SZ);
+                QIcon::fromTheme("image-missing", QIcon(":/images/error_image.png")).pixmap(BAD_IMAGE_SIZE, BAD_IMAGE_SIZE));
+        currThumbSize.setHeight(BAD_IMAGE_SIZE);
+        currThumbSize.setWidth(BAD_IMAGE_SIZE);
     }
 
 

@@ -42,6 +42,8 @@ protected:
     void keyPressEvent(QKeyEvent *keyEvent);
 
 private:
+    bool confirmOverwriteShortcut(QString action, QString shortcut);
+
     QStandardItemModel *keysModel;
     QModelIndex selectedEntry;
     QMenu *shortcutsMenu;

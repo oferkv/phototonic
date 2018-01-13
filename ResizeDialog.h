@@ -22,7 +22,7 @@
 #include "ImageViewer.h"
 
 class ResizeDialog : public QDialog {
-    Q_OBJECT
+Q_OBJECT
 
 public:
     ResizeDialog(QWidget *parent, ImageViewer *imageViewer);
@@ -44,7 +44,7 @@ private:
     int height;
     int lastWidth;
     int lastHeight;
-    bool aspectLocked;
+    bool keepAspect;
     bool pixelUnits;
     int newWidth;
     int newHeight;

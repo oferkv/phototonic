@@ -54,11 +54,11 @@ ResizeDialog::ResizeDialog(QWidget *parent, ImageViewer *imageViewer) : QDialog(
     connect(heightSpinBox, SIGNAL(valueChanged(int)), this, SLOT(adjustSizes()));
 
     QGridLayout *mainGbox = new QGridLayout;
-    QLabel *origSizeLab = new QLabel(tr("Original size:"));
+    QLabel *origSizeLab = new QLabel(tr("Current size:"));
     QString imageSizeStr = QString::number(width) + " x " + QString::number(height);
     QLabel *origSizePixelsLab = new QLabel(imageSizeStr);
-    QLabel *widthLab = new QLabel(tr("Width:"));
-    QLabel *heightLab = new QLabel(tr("Height:"));
+    QLabel *widthLab = new QLabel(tr("New Width:"));
+    QLabel *heightLab = new QLabel(tr("New Height:"));
     QLabel *unitsLab = new QLabel(tr("Units:"));
 
     QLabel *newSizeLab = new QLabel(tr("New size:"));
@@ -71,10 +71,10 @@ ResizeDialog::ResizeDialog(QWidget *parent, ImageViewer *imageViewer) : QDialog(
     pixelsRadioButton->setChecked(true);
     pixelUnits = true;
 
-    QCheckBox *lockAspectCb = new QCheckBox(tr("Lock aspect ratio"), this);
+    QCheckBox *lockAspectCb = new QCheckBox(tr("Keep aspect ratio"), this);
     lockAspectCb->setChecked(true);
     connect(lockAspectCb, SIGNAL(clicked()), this, SLOT(setAspectLock()));
-    aspectLocked = true;
+    keepAspect = true;
 
     QHBoxLayout *radiosHbox = new QHBoxLayout;
     radiosHbox->addStretch(1);
@@ -103,7 +103,7 @@ ResizeDialog::ResizeDialog(QWidget *parent, ImageViewer *imageViewer) : QDialog(
 }
 
 void ResizeDialog::setAspectLock() {
-    aspectLocked = ((QCheckBox *) QObject::sender())->isChecked();
+    keepAspect = ((QCheckBox *) QObject::sender())->isChecked();
     adjustSizes();
 }
 
@@ -126,7 +126,7 @@ void ResizeDialog::setUnits() {
     }
 
     widthSpinBox->setValue(newWidth);
-    if (!aspectLocked)
+    if (!keepAspect)
         heightSpinBox->setValue(newHeight);
 }
 
@@ -136,7 +136,7 @@ void ResizeDialog::adjustSizes() {
         return;
     busy = true;
 
-    if (aspectLocked) {
+    if (keepAspect) {
         if (pixelUnits) {
             QSize imageSize(width, height);
             if (widthSpinBox->value() > lastWidth || heightSpinBox->value() > lastHeight) {
