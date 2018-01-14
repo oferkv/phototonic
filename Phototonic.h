@@ -230,13 +230,15 @@ private slots:
 
     void setImageToolBarVisibility();
 
-    void setFsDockVisibility();
+    void setFileSystemDockVisibility();
 
-    void setBmDockVisibility();
+    void setBookmarksDockVisibility();
+
+    void setImagePreviewDockVisibility();
 
     void setTagsDockVisibility();
 
-    void setIiDockVisibility();
+    void setImageInfoDockVisibility();
 
     void lockDocks();
 
@@ -369,6 +371,7 @@ private:
     QLabel *statusLabel;
     QDockWidget *fileSystemDock;
     QDockWidget *bookmarksDock;
+    QDockWidget *imagePreviewDock;
     QDockWidget *tagsDock;
     FileSystemTree *fileSystemTree;
     BookMarks *bookmarks;
@@ -380,10 +383,12 @@ private:
     CopyMoveToDialog *copyMoveToDialog;
     QWidget *fileSystemDockOrigWidget;
     QWidget *bookmarksDockOrigWidget;
+    QWidget *imagePreviewDockOrigWidget;
     QWidget *tagsDockOrigWidget;
     QWidget *imageInfoDockOrigWidget;
     QWidget *fileSystemDockEmptyWidget;
     QWidget *bookmarksDockEmptyWidget;
+    QWidget *imagePreviewDockEmptyWidget;
     QWidget *tagsDockEmptyWidget;
     QWidget *imageInfoDockEmptyWidget;
     QVBoxLayout *imageViewLayout;
@@ -444,6 +449,8 @@ private:
     void createFileSystemTree();
 
     void createBookmarks();
+
+    void createImagePreview();
 
     void createImageTags();
 

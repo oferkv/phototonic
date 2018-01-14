@@ -56,6 +56,8 @@ ThumbsViewer::ThumbsViewer(QWidget *parent, MetadataCache *metadataCache) : QLis
     mainWindow = parent;
     infoView = new InfoView(this);
     connect(infoView, SIGNAL(updateInfo(QItemSelection)), this, SLOT(handleSelectionChanged(QItemSelection)));
+
+    imagePreview = new ImagePreview(this);
 }
 
 void ThumbsViewer::setThumbColors() {
@@ -250,30 +252,28 @@ void ThumbsViewer::updateImageInfoViewer(QString imageFullPath) {
 }
 
 void ThumbsViewer::handleSelectionChanged(const QItemSelection &) {
-    QString info;
-    QModelIndexList indexesList = selectionModel()->selectedIndexes();
-    int nSelected = indexesList.size();
-    QString imageFullPath;
-    QString statusStr;
 
     infoView->clear();
+    imagePreview->clear();
 
+    QModelIndexList indexesList = selectionModel()->selectedIndexes();
+    int nSelected = indexesList.size();
     if (nSelected == 1) {
         QString thumbFullPath = thumbsViewerModel->item(indexesList.first().row())->data(FileNameRole).toString();
         updateImageInfoViewer(thumbFullPath);
+        imagePreview->loadImage(thumbFullPath);
     }
 
     if (imageTags->currentDisplayMode == SelectionTagsDisplay) {
         imageTags->showSelectedImagesTags();
     }
 
-    /* update status bar */
+    QString statusStr;
     if (!nSelected) {
         updateThumbsCount();
         return;
     } else if (nSelected >= 1) {
-        statusStr = tr("Selected %1 of%2")
-                .arg(QString::number(nSelected))
+        statusStr = tr("Selected %1 of%2").arg(QString::number(nSelected))
                 .arg(tr(" %n image(s)", "", thumbsViewerModel->rowCount()));
     }
 

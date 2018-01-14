@@ -11,11 +11,14 @@ QMAKE_LFLAGS += $$(LDFLAGS)
 # Input
 HEADERS += SettingsDialog.h Phototonic.h ThumbsViewer.h ImageViewer.h CropRubberband.h Settings.h InfoViewer.h \
 			FileSystemTree.h Bookmarks.h DirCompleter.h Tags.h MetadataCache.h ShortcutsTable.h CopyMoveDialog.h \
-			CopyMoveToDialog.h CropDialog.h ProgressDialog.h ColorsDialog.h ResizeDialog.h ExternalAppsDialog.h
+			CopyMoveToDialog.h CropDialog.h ProgressDialog.h ColorsDialog.h ResizeDialog.h ExternalAppsDialog.h \
+			ImagePreview.h
+
 SOURCES += SettingsDialog.cpp main.cpp Phototonic.cpp ThumbsViewer.cpp ImageViewer.cpp CropRubberband.cpp \
 			Settings.cpp InfoViewer.cpp FileSystemTree.cpp Bookmarks.cpp DirCompleter.cpp Tags.cpp \
 			MetadataCache.cpp ShortcutsTable.cpp CopyMoveDialog.cpp CopyMoveToDialog.cpp CropDialog.cpp \
-			ProgressDialog.cpp ExternalAppsDialog.cpp ColorsDialog.cpp ResizeDialog.cpp
+			ProgressDialog.cpp ExternalAppsDialog.cpp ColorsDialog.cpp ResizeDialog.cpp ImagePreview.cpp
+
 RESOURCES += phototonic.qrc
 
 target.path = /usr/bin/

@@ -31,13 +31,13 @@ public:
     int mirrorLayout;
     QString currentImageFullPath;
     QMenu *ImagePopUpMenu;
-    QScrollArea *scrlArea;
-    QLabel *infoLabel;
-    CropRubberBand *cropBand;
+    QScrollArea *scrollArea;
+    QLabel *imageInfoLabel;
+    CropRubberBand *cropRubberBand;
 
     enum ZoomMethods {
         Disable = 0,
-        WidthNHeight,
+        WidthAndHeight,
         Width,
         Height,
         Disprop
@@ -86,7 +86,7 @@ public:
 
     void setFeedback(QString feedbackString);
 
-    void setBgColor();
+    void setBackgroundColor();
 
 public slots:
 
@@ -130,7 +130,7 @@ private:
     QImage displayImage;
     QImage mirrorImage;
     QTimer *mouseMovementTimer;
-    QMovie *anim;
+    QMovie *animation;
     bool newImage;
     bool cursorIsHidden;
     bool moveImageLocked;

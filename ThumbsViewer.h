@@ -28,6 +28,7 @@
 #include "ImageViewer.h"
 #include "Tags.h"
 #include "MetadataCache.h"
+#include "ImagePreview.h"
 
 #define BAD_IMAGE_SIZE    64
 
@@ -86,6 +87,7 @@ public:
     void setImageView(ImageViewer *imageViewer);
 
     InfoView *infoView;
+    ImagePreview *imagePreview;
     ImageTags *imageTags;
     QDir *thumbsDir;
     QStringList *fileFilters;

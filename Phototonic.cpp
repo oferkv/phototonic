@@ -25,6 +25,7 @@
 #include "ColorsDialog.h"
 #include "ExternalAppsDialog.h"
 #include "ProgressDialog.h"
+#include "ImagePreview.h"
 
 #define THUMB_SIZE_MIN    50
 #define THUMB_SIZE_MAX    750
@@ -40,6 +41,7 @@ Phototonic::Phototonic(QString fileOrDirectory, QWidget *parent) : QMainWindow(p
     createStatusBar();
     createFileSystemTree();
     createBookmarks();
+    createImagePreview();
     createImageTags();
     createImageViewer();
     updateExternalApps();
@@ -121,8 +123,8 @@ void Phototonic::createThumbsViewer() {
     imageInfoDock = new QDockWidget(tr("Image Info"), this);
     imageInfoDock->setObjectName("Image Info");
     imageInfoDock->setWidget(thumbsViewer->infoView);
-    connect(imageInfoDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setIiDockVisibility()));
-    connect(imageInfoDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setIiDockVisibility()));
+    connect(imageInfoDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setImageInfoDockVisibility()));
+    connect(imageInfoDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setImageInfoDockVisibility()));
 }
 
 void Phototonic::addMenuSeparator(QWidget *widget) {
@@ -841,8 +843,8 @@ void Phototonic::createFileSystemTree() {
     fileSystemDock->setObjectName("File System");
     fileSystemTree = new FileSystemTree(fileSystemDock);
     fileSystemDock->setWidget(fileSystemTree);
-    connect(fileSystemDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setFsDockVisibility()));
-    connect(fileSystemDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setFsDockVisibility()));
+    connect(fileSystemDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setFileSystemDockVisibility()));
+    connect(fileSystemDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setFileSystemDockVisibility()));
     addDockWidget(Qt::LeftDockWidgetArea, fileSystemDock);
 
     // Context menu
@@ -881,8 +883,8 @@ void Phototonic::createBookmarks() {
     bookmarks = new BookMarks(bookmarksDock);
     bookmarksDock->setWidget(bookmarks);
 
-    connect(bookmarksDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setBmDockVisibility()));
-    connect(bookmarksDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setBmDockVisibility()));
+    connect(bookmarksDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setBookmarksDockVisibility()));
+    connect(bookmarksDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setBookmarksDockVisibility()));
     connect(bookmarks, SIGNAL(itemClicked(QTreeWidgetItem * , int)),
             this, SLOT(bookmarkClicked(QTreeWidgetItem * , int)));
     connect(removeBookmarkAction, SIGNAL(triggered()), bookmarks, SLOT(removeBookmark()));
@@ -895,6 +897,15 @@ void Phototonic::createBookmarks() {
     bookmarks->addAction(pasteAction);
     bookmarks->addAction(removeBookmarkAction);
     bookmarks->setContextMenuPolicy(Qt::ActionsContextMenu);
+}
+
+void Phototonic::createImagePreview() {
+    imagePreviewDock = new QDockWidget(tr("Preview"), this);
+    imagePreviewDock->setObjectName("ImagePreview");
+    imagePreviewDock->setWidget(thumbsViewer->imagePreview);
+    connect(imagePreviewDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setImagePreviewDockVisibility()));
+
+    addDockWidget(Qt::RightDockWidgetArea, imagePreviewDock);
 }
 
 void Phototonic::createImageTags() {
@@ -1105,10 +1116,11 @@ void Phototonic::showSettings() {
 
     SettingsDialog *settingsDialog = new SettingsDialog(this);
     if (settingsDialog->exec()) {
-        imageViewer->setBgColor();
+        imageViewer->setBackgroundColor();
         thumbsViewer->setThumbColors();
+        thumbsViewer->imagePreview->setBackgroundColor();
         Settings::imageZoomFactor = 1.0;
-        imageViewer->infoLabel->setVisible(Settings::enableImageInfoFS);
+        imageViewer->imageInfoLabel->setVisible(Settings::enableImageInfoFS);
 
         if (Settings::layoutMode == ImageViewWidget) {
             imageViewer->reload();
@@ -1203,8 +1215,9 @@ void Phototonic::copyMoveImages(bool move) {
             QString fileName = fileInfo.fileName();
             QString destFile = copyMoveToDialog->selectedPath + QDir::separator() + fileInfo.fileName();
 
-            int res = CopyMoveDialog::copyMoveFile(copyMoveToDialog->copyOp, fileName, imageViewer->currentImageFullPath,
-                                   destFile, copyMoveToDialog->selectedPath);
+            int res = CopyMoveDialog::copyMoveFile(copyMoveToDialog->copyOp, fileName,
+                                                   imageViewer->currentImageFullPath,
+                                                   destFile, copyMoveToDialog->selectedPath);
 
             if (!res) {
                 QMessageBox msgBox;
@@ -1816,7 +1829,7 @@ void Phototonic::updateActions() {
     } else if (QApplication::focusWidget() == fileSystemTree) {
         setCopyCutActions(false);
         setDeleteAction(fileSystemTree->selectionModel()->selectedIndexes().size());
-    } else if (Settings::layoutMode == ImageViewWidget || QApplication::focusWidget() == imageViewer->scrlArea) {
+    } else if (Settings::layoutMode == ImageViewWidget || QApplication::focusWidget() == imageViewer->scrollArea) {
         setCopyCutActions(false);
         setDeleteAction(true);
     } else {
@@ -1829,7 +1842,7 @@ void Phototonic::updateActions() {
         fullScreenAction->setEnabled(true);
         CloseImageAction->setEnabled(true);
     } else {
-        if (QApplication::focusWidget() == imageViewer->scrlArea) {
+        if (QApplication::focusWidget() == imageViewer->scrollArea) {
             setViewerKeyEventsEnabled(true);
             fullScreenAction->setEnabled(false);
             CloseImageAction->setEnabled(false);
@@ -1873,6 +1886,7 @@ void Phototonic::writeSettings() {
     Settings::appSettings->setValue("fileSystemDockVisible", (bool) Settings::fileSystemDockVisible);
     Settings::appSettings->setValue("imageInfoDockVisible", (bool) Settings::imageInfoDockVisible);
     Settings::appSettings->setValue("bookmarksDockVisible", (bool) Settings::bookmarksDockVisible);
+    Settings::appSettings->setValue("imagePreviewDockVisible", (bool) Settings::imagePreviewDockVisible);
     Settings::appSettings->setValue("startupDir", (int) Settings::startupDir);
     Settings::appSettings->setValue("specifiedStartDir", Settings::specifiedStartDir);
     Settings::appSettings->setValue("thumbsBackImage", Settings::thumbsBackImage);
@@ -1956,6 +1970,7 @@ void Phototonic::readSettings() {
         Settings::appSettings->setValue("imageToolBarVisible", (bool) false);
         Settings::appSettings->setValue("fileSystemDockVisible", (bool) true);
         Settings::appSettings->setValue("bookmarksDockVisible", (bool) true);
+        Settings::appSettings->setValue("imagePreviewDockVisible", (bool) true);
         Settings::appSettings->setValue("imageInfoDockVisible", (bool) true);
         Settings::appSettings->setValue("enableImageInfoFS", (bool) true);
         Settings::appSettings->setValue("smallToolbarIcons", (bool) false);
@@ -1991,6 +2006,7 @@ void Phototonic::readSettings() {
     imageToolBarVisible = Settings::appSettings->value("imageToolBarVisible").toBool();
     Settings::fileSystemDockVisible = Settings::appSettings->value("fileSystemDockVisible").toBool();
     Settings::bookmarksDockVisible = Settings::appSettings->value("bookmarksDockVisible").toBool();
+    Settings::imagePreviewDockVisible = Settings::appSettings->value("imagePreviewDockVisible").toBool();
     Settings::imageInfoDockVisible = Settings::appSettings->value("imageInfoDockVisible").toBool();
     Settings::startupDir = (Settings::StartupDir) Settings::appSettings->value("startupDir").toInt();
     Settings::specifiedStartDir = Settings::appSettings->value("specifiedStartDir").toString();
@@ -2036,17 +2052,18 @@ void Phototonic::setupDocks() {
     addDockWidget(Qt::RightDockWidgetArea, tagsDock);
 
     menuBar()->addMenu(createPopupMenu())->setText(tr("Window"));
-
     menuBar()->addSeparator();
     helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(aboutAction);
 
     fileSystemDockOrigWidget = fileSystemDock->titleBarWidget();
     bookmarksDockOrigWidget = bookmarksDock->titleBarWidget();
+    imagePreviewDockOrigWidget = imagePreviewDock->titleBarWidget();
     tagsDockOrigWidget = tagsDock->titleBarWidget();
     imageInfoDockOrigWidget = imageInfoDock->titleBarWidget();
     fileSystemDockEmptyWidget = new QWidget;
     bookmarksDockEmptyWidget = new QWidget;
+    imagePreviewDockEmptyWidget = new QWidget;
     tagsDockEmptyWidget = new QWidget;
     imageInfoDockEmptyWidget = new QWidget;
     lockDocks();
@@ -2059,11 +2076,13 @@ void Phototonic::lockDocks() {
     if (Settings::hideDockTitlebars) {
         fileSystemDock->setTitleBarWidget(fileSystemDockEmptyWidget);
         bookmarksDock->setTitleBarWidget(bookmarksDockEmptyWidget);
+        imagePreviewDock->setTitleBarWidget(imagePreviewDockEmptyWidget);
         tagsDock->setTitleBarWidget(tagsDockEmptyWidget);
         imageInfoDock->setTitleBarWidget(imageInfoDockEmptyWidget);
     } else {
         fileSystemDock->setTitleBarWidget(fileSystemDockOrigWidget);
         bookmarksDock->setTitleBarWidget(bookmarksDockOrigWidget);
+        imagePreviewDock->setTitleBarWidget(imagePreviewDockOrigWidget);
         tagsDock->setTitleBarWidget(tagsDockOrigWidget);
         imageInfoDock->setTitleBarWidget(imageInfoDockOrigWidget);
     }
@@ -2249,7 +2268,7 @@ void Phototonic::mouseDoubleClickEvent(QMouseEvent *event) {
                 event->accept();
             }
         } else {
-            if (QApplication::focusWidget() == imageViewer->scrlArea) {
+            if (QApplication::focusWidget() == imageViewer->scrollArea) {
                 viewImage();
             }
         }
@@ -2284,7 +2303,7 @@ void Phototonic::mousePressEvent(QMouseEvent *event) {
             }
         }
     } else {
-        if (QApplication::focusWidget() == imageViewer->scrlArea) {
+        if (QApplication::focusWidget() == imageViewer->scrollArea) {
             if (event->button() == Qt::MiddleButton && Settings::reverseMouseBehavior) {
                 viewImage();
             }
@@ -2302,6 +2321,7 @@ void Phototonic::newImage() {
 void Phototonic::setDocksVisibility(bool visible) {
     fileSystemDock->setVisible(visible ? Settings::fileSystemDockVisible : false);
     bookmarksDock->setVisible(visible ? Settings::bookmarksDockVisible : false);
+    imagePreviewDock->setVisible(visible ? Settings::imagePreviewDockVisible : false);
     tagsDock->setVisible(visible ? Settings::tagsDockVisible : false);
     imageInfoDock->setVisible(visible ? Settings::imageInfoDockVisible : false);
 
@@ -2328,7 +2348,7 @@ void Phototonic::viewImage() {
         goSelectedDir(fileSystemTree->getCurrentIndex());
         return;
     } else if (QApplication::focusWidget() == thumbsViewer
-               || QApplication::focusWidget() == imageViewer->scrlArea) {
+               || QApplication::focusWidget() == imageViewer->scrollArea) {
         QModelIndex selectedImageIndex;
         QModelIndexList selectedIndexes = thumbsViewer->selectionModel()->selectedIndexes();
         if (selectedIndexes.size() > 0) {
@@ -2339,7 +2359,8 @@ void Phototonic::viewImage() {
                 return;
             }
 
-            selectedImageIndex = thumbsViewer->thumbsViewerModel->indexFromItem(thumbsViewer->thumbsViewerModel->item(0));
+            selectedImageIndex = thumbsViewer->thumbsViewerModel->indexFromItem(
+                    thumbsViewer->thumbsViewerModel->item(0));
             thumbsViewer->selectionModel()->select(selectedImageIndex, QItemSelectionModel::Toggle);
             thumbsViewer->setCurrentRow(0);
         }
@@ -2371,15 +2392,21 @@ void Phototonic::setImageToolBarVisibility() {
     imageToolBarVisible = imageToolBar->isVisible();
 }
 
-void Phototonic::setFsDockVisibility() {
+void Phototonic::setFileSystemDockVisibility() {
     if (Settings::layoutMode != ImageViewWidget) {
         Settings::fileSystemDockVisible = fileSystemDock->isVisible();
     }
 }
 
-void Phototonic::setBmDockVisibility() {
+void Phototonic::setBookmarksDockVisibility() {
     if (Settings::layoutMode != ImageViewWidget) {
         Settings::bookmarksDockVisible = bookmarksDock->isVisible();
+    }
+}
+
+void Phototonic::setImagePreviewDockVisibility() {
+    if (Settings::layoutMode != ImageViewWidget) {
+        Settings::imagePreviewDockVisible = imagePreviewDock->isVisible();
     }
 }
 
@@ -2389,7 +2416,7 @@ void Phototonic::setTagsDockVisibility() {
     }
 }
 
-void Phototonic::setIiDockVisibility() {
+void Phototonic::setImageInfoDockVisibility() {
     if (Settings::layoutMode != ImageViewWidget) {
         Settings::imageInfoDockVisible = imageInfoDock->isVisible();
     }
@@ -3052,19 +3079,21 @@ QString Phototonic::getSelectedPath() {
 }
 
 void Phototonic::wheelEvent(QWheelEvent *event) {
-    if (Settings::layoutMode == ImageViewWidget
-        || QApplication::focusWidget() == imageViewer->scrlArea) {
+    if (Settings::layoutMode == ImageViewWidget) {
         if (event->modifiers() == Qt::ControlModifier) {
-            if (event->delta() < 0)
+            if (event->delta() < 0) {
                 zoomOut();
-            else
+            } else {
                 zoomIn();
+            }
         } else if (nextImageAction->isEnabled()) {
-            if (event->delta() < 0)
+            if (event->delta() < 0) {
                 loadNextImage();
-            else
+            } else {
                 loadPrevImage();
+            }
         }
+        event->accept();
     }
 }
 

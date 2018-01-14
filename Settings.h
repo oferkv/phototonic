@@ -108,6 +108,7 @@ namespace Settings {
     extern bool hideDockTitlebars;
     extern bool fileSystemDockVisible;
     extern bool bookmarksDockVisible;
+    extern bool imagePreviewDockVisible;
     extern bool tagsDockVisible;
     extern bool imageInfoDockVisible;
     extern QString thumbsBackImage;

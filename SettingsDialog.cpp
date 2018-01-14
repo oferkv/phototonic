@@ -111,24 +111,26 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     viewerOptsBox->addStretch(1);
 
     // thumbsViewer background color
-    QLabel *thumbsBackgroundColorLabel = new QLabel(tr("Background color:"));
+    QLabel *thumbsBackgroundColorLabel = new QLabel(tr("Thumbnails and Preview Background Color:"));
     thumbsColorPickerButton = new QToolButton();
     thumbsColorPickerButton->setFixedSize(48, 24);
     QHBoxLayout *thumbsBackgroundColorLayout = new QHBoxLayout;
     thumbsBackgroundColorLayout->addWidget(thumbsBackgroundColorLabel);
     thumbsBackgroundColorLayout->addWidget(thumbsColorPickerButton);
+    thumbsBackgroundColorLayout->addStretch(1);
     connect(thumbsColorPickerButton, SIGNAL(clicked()), this, SLOT(pickThumbsColor()));
     setButtonBgColor(Settings::thumbsBackgroundColor, thumbsColorPickerButton);
     thumbsColorPickerButton->setAutoFillBackground(true);
     thumbsBackgroundColor = Settings::thumbsBackgroundColor;
 
     // thumbsViewer text color
-    QLabel *thumbLabelColorLabel = new QLabel("\t" + tr("Label color:"));
+    QLabel *thumbLabelColorLabel = new QLabel(tr("Label color:"));
     thumbsLabelColorButton = new QToolButton();
     thumbsLabelColorButton->setFixedSize(48, 24);
-    thumbsBackgroundColorLayout->addWidget(thumbLabelColorLabel);
-    thumbsBackgroundColorLayout->addWidget(thumbsLabelColorButton);
-    thumbsBackgroundColorLayout->addStretch(1);
+    QHBoxLayout *thumbsLabelColorLayout = new QHBoxLayout;
+    thumbsLabelColorLayout->addWidget(thumbLabelColorLabel);
+    thumbsLabelColorLayout->addWidget(thumbsLabelColorButton);
+    thumbsLabelColorLayout->addStretch(1);
     connect(thumbsLabelColorButton, SIGNAL(clicked()), this, SLOT(pickThumbsTextColor()));
     setButtonBgColor(Settings::thumbsTextColor, thumbsLabelColorButton);
     thumbsLabelColorButton->setAutoFillBackground(true);
@@ -169,7 +171,9 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     // Thumbnail options
     QVBoxLayout *thumbsOptsBox = new QVBoxLayout;
     thumbsOptsBox->addLayout(thumbsBackgroundColorLayout);
+
     thumbsOptsBox->addLayout(thumbsBackgroundImageLayout);
+    thumbsOptsBox->addLayout(thumbsLabelColorLayout);
     thumbsOptsBox->addWidget(enableThumbExifCheckBox);
     thumbsOptsBox->addLayout(thumbPagesReadLayout);
     thumbsOptsBox->addStretch(1);

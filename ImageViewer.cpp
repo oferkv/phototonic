@@ -35,36 +35,31 @@ ImageViewer::ImageViewer(QWidget *parent, MetadataCache *metadataCache) : QWidge
     imageLabel = new QLabel;
     imageLabel->setScaledContents(true);
     isAnimation = false;
-    anim = 0;
+    animation = nullptr;
 
-    QHBoxLayout *mainLayout = new QHBoxLayout();
-    mainLayout->setContentsMargins(0, 0, 0, 0);
-    mainLayout->setSpacing(0);
-    mainLayout->addWidget(imageLabel);
-
-    scrlArea = new QScrollArea;
-    scrlArea->setContentsMargins(0, 0, 0, 0);
-    scrlArea->setAlignment(Qt::AlignCenter);
-    scrlArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    scrlArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    scrlArea->verticalScrollBar()->blockSignals(true);
-    scrlArea->horizontalScrollBar()->blockSignals(true);
-    scrlArea->setFrameStyle(0);
-    scrlArea->setLayout(mainLayout);
-    scrlArea->setWidgetResizable(true);
-    setBgColor();
+    scrollArea = new QScrollArea;
+    scrollArea->setContentsMargins(0, 0, 0, 0);
+    scrollArea->setAlignment(Qt::AlignCenter);
+    scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    scrollArea->verticalScrollBar()->blockSignals(true);
+    scrollArea->horizontalScrollBar()->blockSignals(true);
+    scrollArea->setFrameStyle(0);
+    scrollArea->setWidget(imageLabel);
+    scrollArea->setWidgetResizable(true);
+    setBackgroundColor();
 
     QVBoxLayout *scrollLayout = new QVBoxLayout;
     scrollLayout->setContentsMargins(0, 0, 0, 0);
     scrollLayout->setSpacing(0);
-    scrollLayout->addWidget(scrlArea);
+    scrollLayout->addWidget(scrollArea);
     this->setLayout(scrollLayout);
 
-    infoLabel = new QLabel(this);
-    infoLabel->setVisible(Settings::enableImageInfoFS);
-    infoLabel->setMargin(3);
-    infoLabel->move(10, 10);
-    infoLabel->setStyleSheet("QLabel { background-color : black; color : white; border-radius: 3px} ");
+    imageInfoLabel = new QLabel(this);
+    imageInfoLabel->setVisible(Settings::enableImageInfoFS);
+    imageInfoLabel->setMargin(3);
+    imageInfoLabel->move(10, 10);
+    imageInfoLabel->setStyleSheet("QLabel { background-color : black; color : white; border-radius: 3px} ");
 
     feedbackLabel = new QLabel(this);
     feedbackLabel->setVisible(false);
@@ -73,7 +68,7 @@ ImageViewer::ImageViewer(QWidget *parent, MetadataCache *metadataCache) : QWidge
 
     QGraphicsOpacityEffect *infoEffect = new QGraphicsOpacityEffect;
     infoEffect->setOpacity(0.5);
-    infoLabel->setGraphicsEffect(infoEffect);
+    imageInfoLabel->setGraphicsEffect(infoEffect);
     QGraphicsOpacityEffect *feedbackEffect = new QGraphicsOpacityEffect;
     feedbackEffect->setOpacity(0.5);
     feedbackLabel->setGraphicsEffect(feedbackEffect);
@@ -97,7 +92,7 @@ ImageViewer::ImageViewer(QWidget *parent, MetadataCache *metadataCache) : QWidge
     Settings::dialogLastX = Settings::dialogLastY = 0;
 
     newImage = false;
-    cropBand = 0;
+    cropRubberBand = 0;
 }
 
 static unsigned int getHeightByWidth(int imgWidth, int imgHeight, int newWidth) {
@@ -118,121 +113,120 @@ static inline int calcZoom(int size) {
 
 void ImageViewer::resizeImage() {
     static bool busy = false;
-    if (busy || (!imageLabel->pixmap() && !anim)) {
+    if (busy || (!imageLabel->pixmap() && !animation)) {
         return;
     }
     busy = true;
 
     int imageViewWidth = this->size().width();
     int imageViewHeight = this->size().height();
-    QSize imgSize = isAnimation ? anim->currentPixmap().size() : imageLabel->pixmap()->size();
+    QSize imageSize = isAnimation ? animation->currentPixmap().size() : imageLabel->pixmap()->size();
 
     if (tempDisableResize) {
-        imgSize.scale(imgSize.width(), imgSize.height(), Qt::KeepAspectRatio);
+        imageSize.scale(imageSize.width(), imageSize.height(), Qt::KeepAspectRatio);
     } else {
         switch (Settings::zoomInFlags) {
             case Disable:
-                if (imgSize.width() <= imageViewWidth && imgSize.height() <= imageViewHeight) {
-                    imgSize.scale(calcZoom(imgSize.width()),
-                                  calcZoom(imgSize.height()),
-                                  Qt::KeepAspectRatio);
+                if (imageSize.width() <= imageViewWidth && imageSize.height() <= imageViewHeight) {
+                    imageSize.scale(calcZoom(imageSize.width()),
+                                    calcZoom(imageSize.height()),
+                                    Qt::KeepAspectRatio);
                 }
                 break;
 
-            case WidthNHeight:
-                if (imgSize.width() <= imageViewWidth && imgSize.height() <= imageViewHeight) {
-                    imgSize.scale(calcZoom(imageViewWidth),
-                                  calcZoom(imageViewHeight),
-                                  Qt::KeepAspectRatio);
+            case WidthAndHeight:
+                if (imageSize.width() <= imageViewWidth && imageSize.height() <= imageViewHeight) {
+                    imageSize.scale(calcZoom(imageViewWidth),
+                                    calcZoom(imageViewHeight),
+                                    Qt::KeepAspectRatio);
                 }
                 break;
 
             case Width:
-                if (imgSize.width() <= imageViewWidth) {
-                    imgSize.scale(calcZoom(imageViewWidth),
-                                  calcZoom(getHeightByWidth(imgSize.width(),
-                                                            imgSize.height(),
-                                                            imageViewWidth)),
-                                  Qt::KeepAspectRatio);
+                if (imageSize.width() <= imageViewWidth) {
+                    imageSize.scale(calcZoom(imageViewWidth),
+                                    calcZoom(getHeightByWidth(imageSize.width(),
+                                                              imageSize.height(),
+                                                              imageViewWidth)),
+                                    Qt::KeepAspectRatio);
                 }
                 break;
 
             case Height:
-                if (imgSize.height() <= imageViewHeight) {
-                    imgSize.scale(calcZoom(getWidthByHeight(imgSize.height(),
-                                                            imgSize.width(),
-                                                            imageViewHeight)),
-                                  calcZoom(imageViewHeight),
-                                  Qt::KeepAspectRatio);
+                if (imageSize.height() <= imageViewHeight) {
+                    imageSize.scale(calcZoom(getWidthByHeight(imageSize.height(),
+                                                              imageSize.width(),
+                                                              imageViewHeight)),
+                                    calcZoom(imageViewHeight),
+                                    Qt::KeepAspectRatio);
                 }
                 break;
 
             case Disprop:
-                int newWidth = imgSize.width(), newHeight = imgSize.height();
+                int newWidth = imageSize.width(), newHeight = imageSize.height();
                 if (newWidth <= imageViewWidth) {
                     newWidth = imageViewWidth;
                 }
                 if (newHeight <= imageViewHeight) {
                     newHeight = imageViewHeight;
                 }
-                imgSize.scale(calcZoom(newWidth), calcZoom(newHeight), Qt::IgnoreAspectRatio);
+                imageSize.scale(calcZoom(newWidth), calcZoom(newHeight), Qt::IgnoreAspectRatio);
                 break;
         }
 
         switch (Settings::zoomOutFlags) {
             case Disable:
-                if (imgSize.width() >= imageViewWidth || imgSize.height() >= imageViewHeight) {
-                    imgSize.scale(calcZoom(imgSize.width()),
-                                  calcZoom(imgSize.height()),
-                                  Qt::KeepAspectRatio);
+                if (imageSize.width() >= imageViewWidth || imageSize.height() >= imageViewHeight) {
+                    imageSize.scale(calcZoom(imageSize.width()),
+                                    calcZoom(imageSize.height()),
+                                    Qt::KeepAspectRatio);
                 }
                 break;
 
-            case WidthNHeight:
-                if (imgSize.width() >= imageViewWidth || imgSize.height() >= imageViewHeight) {
-                    imgSize.scale(calcZoom(imageViewWidth),
-                                  calcZoom(imageViewHeight),
-                                  Qt::KeepAspectRatio);
+            case WidthAndHeight:
+                if (imageSize.width() >= imageViewWidth || imageSize.height() >= imageViewHeight) {
+                    imageSize.scale(calcZoom(imageViewWidth),
+                                    calcZoom(imageViewHeight),
+                                    Qt::KeepAspectRatio);
                 }
                 break;
 
             case Width:
-                if (imgSize.width() >= imageViewWidth) {
-                    imgSize.scale(calcZoom(imageViewWidth),
-                                  calcZoom(getHeightByWidth(imgSize.width(),
-                                                            imgSize.height(),
-                                                            imageViewWidth)),
-                                  Qt::KeepAspectRatio);
+                if (imageSize.width() >= imageViewWidth) {
+                    imageSize.scale(calcZoom(imageViewWidth),
+                                    calcZoom(getHeightByWidth(imageSize.width(),
+                                                              imageSize.height(),
+                                                              imageViewWidth)),
+                                    Qt::KeepAspectRatio);
                 }
                 break;
 
             case Height:
-                if (imgSize.height() >= imageViewHeight) {
-                    imgSize.scale(calcZoom(getWidthByHeight(imgSize.height(),
-                                                            imgSize.width(),
-                                                            imageViewHeight)),
-                                  calcZoom(imageViewHeight),
-                                  Qt::KeepAspectRatio);
+                if (imageSize.height() >= imageViewHeight) {
+                    imageSize.scale(calcZoom(getWidthByHeight(imageSize.height(),
+                                                              imageSize.width(),
+                                                              imageViewHeight)),
+                                    calcZoom(imageViewHeight),
+                                    Qt::KeepAspectRatio);
                 }
                 break;
 
             case Disprop:
-                int newWidth = imgSize.width(), newHeight = imgSize.height();
+                int newWidth = imageSize.width(), newHeight = imageSize.height();
                 if (newWidth >= imageViewWidth) {
                     newWidth = imageViewWidth;
                 }
                 if (newHeight >= imageViewHeight) {
                     newHeight = imageViewHeight;
                 }
-                imgSize.scale(calcZoom(newWidth), calcZoom(newHeight), Qt::IgnoreAspectRatio);
+                imageSize.scale(calcZoom(newWidth), calcZoom(newHeight), Qt::IgnoreAspectRatio);
                 break;
         }
     }
 
-    imageLabel->setVisible(false);
-    imageLabel->setFixedSize(imgSize);
-    imageLabel->setVisible(true);
-    centerImage(imgSize);
+    imageLabel->setFixedSize(imageSize);
+    imageLabel->adjustSize();
+    centerImage(imageSize);
     busy = false;
 }
 
@@ -633,15 +627,15 @@ void ImageViewer::reload() {
 
     imageReader.setFileName(currentImageFullPath);
     if (Settings::enableAnimations && imageReader.supportsAnimation()) {
-        if (anim) {
-            delete anim;
+        if (animation) {
+            delete animation;
         }
-        anim = new QMovie(currentImageFullPath);
+        animation = new QMovie(currentImageFullPath);
 
-        if (anim->frameCount() > 1) {
+        if (animation->frameCount() > 1) {
             isAnimation = true;
-            imageLabel->setMovie(anim);
-            anim->start();
+            imageLabel->setMovie(animation);
+            animation->start();
         }
     }
 
@@ -669,8 +663,8 @@ void ImageViewer::reload() {
 }
 
 void ImageViewer::setInfo(QString infoString) {
-    infoLabel->setText(infoString);
-    infoLabel->adjustSize();
+    imageInfoLabel->setText(infoString);
+    imageInfoLabel->adjustSize();
 }
 
 void ImageViewer::unsetFeedback() {
@@ -682,7 +676,7 @@ void ImageViewer::setFeedback(QString feedbackString) {
     feedbackLabel->setText(feedbackString);
     feedbackLabel->setVisible(true);
 
-    int margin = infoLabel->isVisible() ? (infoLabel->height() + 15) : 10;
+    int margin = imageInfoLabel->isVisible() ? (imageInfoLabel->height() + 15) : 10;
     feedbackLabel->move(10, margin);
 
     feedbackLabel->adjustSize();
@@ -733,22 +727,23 @@ void ImageViewer::setCursorHiding(bool hide) {
 
 void ImageViewer::mouseDoubleClickEvent(QMouseEvent *event) {
     QWidget::mouseDoubleClickEvent(event);
-    while (QApplication::overrideCursor())
+    while (QApplication::overrideCursor()) {
         QApplication::restoreOverrideCursor();
+    }
 }
 
 void ImageViewer::mousePressEvent(QMouseEvent *event) {
     if (event->button() == Qt::LeftButton) {
-
         if (event->modifiers() == Qt::ControlModifier) {
             cropOrigin = event->pos();
-            if (!cropBand)
-                cropBand = new CropRubberBand(this);
-            cropBand->show();
-            cropBand->setGeometry(QRect(cropOrigin, event->pos()).normalized());
+            if (!cropRubberBand) {
+                cropRubberBand = new CropRubberBand(this);
+            }
+            cropRubberBand->show();
+            cropRubberBand->setGeometry(QRect(cropOrigin, event->pos()).normalized());
         } else {
-            if (cropBand) {
-                cropBand->hide();
+            if (cropRubberBand) {
+                cropRubberBand->hide();
             }
         }
 
@@ -766,11 +761,11 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event) {
             QApplication::restoreOverrideCursor();
         }
 
-        if (cropBand && cropBand->isVisible()) {
+        if (cropRubberBand && cropRubberBand->isVisible()) {
             setFeedback(tr("Selection size: ")
-                        + QString::number(cropBand->width())
+                        + QString::number(cropRubberBand->width())
                         + "x"
-                        + QString::number(cropBand->height()));
+                        + QString::number(cropRubberBand->height()));
         }
     }
 
@@ -778,43 +773,47 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event) {
 }
 
 void ImageViewer::cropToSelection() {
-    if (cropBand && cropBand->isVisible()) {
+    if (cropRubberBand && cropRubberBand->isVisible()) {
 
-        QPoint bandTL = mapToGlobal(cropBand->geometry().topLeft());
-        QPoint bandBR = mapToGlobal(cropBand->geometry().bottomRight());
+        QPoint bandTopLeft = mapToGlobal(cropRubberBand->geometry().topLeft());
+        QPoint bandBottomRight = mapToGlobal(cropRubberBand->geometry().bottomRight());
 
-        bandTL = imageLabel->mapFromGlobal(bandTL);
-        bandBR = imageLabel->mapFromGlobal(bandBR);
+        bandTopLeft = imageLabel->mapFromGlobal(bandTopLeft);
+        bandBottomRight = imageLabel->mapFromGlobal(bandBottomRight);
 
         double scaledX = imageLabel->rect().width();
         double scaledY = imageLabel->rect().height();
         scaledX = displayPixmap.width() / scaledX;
         scaledY = displayPixmap.height() / scaledY;
 
-        bandTL.setX(int(bandTL.x() * scaledX));
-        bandTL.setY(int(bandTL.y() * scaledY));
-        bandBR.setX(int(bandBR.x() * scaledX));
-        bandBR.setY(int(bandBR.y() * scaledY));
+        bandTopLeft.setX(int(bandTopLeft.x() * scaledX));
+        bandTopLeft.setY(int(bandTopLeft.y() * scaledY));
+        bandBottomRight.setX(int(bandBottomRight.x() * scaledX));
+        bandBottomRight.setY(int(bandBottomRight.y() * scaledY));
 
-        int cropLeft = bandTL.x();
-        int cropTop = bandTL.y();
-        int cropWidth = displayPixmap.width() - bandBR.x();
-        int cropHeight = displayPixmap.height() - bandBR.y();
+        int cropLeft = bandTopLeft.x();
+        int cropTop = bandTopLeft.y();
+        int cropWidth = displayPixmap.width() - bandBottomRight.x();
+        int cropHeight = displayPixmap.height() - bandBottomRight.y();
 
-        if (cropLeft > 0)
+        if (cropLeft > 0) {
             Settings::cropLeft += cropLeft;
-        if (cropTop > 0)
+        }
+        if (cropTop > 0) {
             Settings::cropTop += cropTop;
-        if (cropWidth > 0)
+        }
+        if (cropWidth > 0) {
             Settings::cropWidth += cropWidth;
-        if (cropHeight > 0)
+        }
+        if (cropHeight > 0) {
             Settings::cropHeight += cropHeight;
+        }
 
-        cropBand->hide();
+        cropRubberBand->hide();
         refresh();
     } else {
-        QMessageBox msgBox;
-        msgBox.warning(this, tr("No selection"), tr("Hold down the Ctrl key and select a region using the mouse."));
+        QMessageBox messageBox;
+        messageBox.warning(this, tr("No selection"), tr("Hold down the Ctrl key and select a region using the mouse."));
     }
 }
 
@@ -828,8 +827,8 @@ void ImageViewer::setMouseMoveData(bool lockMove, int lMouseX, int lMouseY) {
 
 void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
     if (event->modifiers() == Qt::ControlModifier) {
-        if (cropBand && cropBand->isVisible()) {
-            cropBand->setGeometry(QRect(cropOrigin, event->pos()).normalized());
+        if (cropRubberBand && cropRubberBand->isVisible()) {
+            cropRubberBand->setGeometry(QRect(cropOrigin, event->pos()).normalized());
         }
     } else {
         if (moveImageLocked) {
@@ -1052,13 +1051,13 @@ void ImageViewer::pasteImage() {
     }
 }
 
-void ImageViewer::setBgColor() {
+void ImageViewer::setBackgroundColor() {
     QString bgColor = "background: rgb(%1, %2, %3); ";
     bgColor = bgColor.arg(Settings::backgroundColor.red())
             .arg(Settings::backgroundColor.green())
             .arg(Settings::backgroundColor.blue());
 
     QString ss = "QWidget { " + bgColor + " }";
-    scrlArea->setStyleSheet(ss);
+    scrollArea->setStyleSheet(ss);
 }
 
