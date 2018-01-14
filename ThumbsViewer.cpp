@@ -43,7 +43,7 @@ ThumbsViewer::ThumbsViewer(QWidget *parent, MetadataCache *metadataCache) : QLis
     connect(this->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)),
             this, SLOT(handleSelectionChanged(QItemSelection)));
     connect(this, SIGNAL(doubleClicked(
-                                 const QModelIndex &)), parent, SLOT(loadImageByThumb(
+                                 const QModelIndex &)), parent, SLOT(loadSelectedThumbImage (
                                                                              const QModelIndex &)));
 
     thumbsDir = new QDir();
@@ -260,6 +260,7 @@ void ThumbsViewer::handleSelectionChanged(const QItemSelection &) {
     int nSelected = indexesList.size();
     if (nSelected == 1) {
         QString thumbFullPath = thumbsViewerModel->item(indexesList.first().row())->data(FileNameRole).toString();
+        setCurrentRow(indexesList.first().row());
         updateImageInfoViewer(thumbFullPath);
         imagePreview->loadImage(thumbFullPath);
     }

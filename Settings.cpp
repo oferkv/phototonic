@@ -29,6 +29,7 @@ namespace Settings {
     const char optionThumbsPagesReadCount[] = "optionThumbsPagesReadCount";
     const char optionViewerZoomOutFlags[] = "optionViewerZoomOutFlags";
     const char optionViewerZoomInFlags[] = "optionViewerZoomInFlags";
+    const char optionShowImageName[] = "optionShowImageName";
 
     QSettings *appSettings;
     unsigned int layoutMode;
@@ -95,7 +96,7 @@ namespace Settings {
     int dialogLastY;
     StartupDir startupDir;
     QString specifiedStartDir;
-    bool enableImageInfoFS;
+    bool showImageName;
     bool smallToolbarIcons;
     bool hideDockTitlebars;
     bool tagsDockVisible;

@@ -89,9 +89,9 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     enableExifCheckBox = new QCheckBox(tr("Rotate image according to Exif orientation value"), this);
     enableExifCheckBox->setChecked(Settings::exifRotationEnabled);
 
-    // Image Info
-    imageInfoCheckBox = new QCheckBox(tr("Show image file name in viewer"), this);
-    imageInfoCheckBox->setChecked(Settings::enableImageInfoFS);
+    // Image name
+    showImageNameCheckBox = new QCheckBox(tr("Show image file name in viewer"), this);
+    showImageNameCheckBox->setChecked(Settings::showImageName);
 
     // Viewer options
     QVBoxLayout *viewerOptsBox = new QVBoxLayout;
@@ -104,7 +104,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     viewerOptsBox->addLayout(zoomOptsBox);
     viewerOptsBox->addLayout(backgroundColorHBox);
     viewerOptsBox->addWidget(enableExifCheckBox);
-    viewerOptsBox->addWidget(imageInfoCheckBox);
+    viewerOptsBox->addWidget(showImageNameCheckBox);
     viewerOptsBox->addWidget(wrapListCheckBox);
     viewerOptsBox->addWidget(enableAnimCheckBox);
     viewerOptsBox->addLayout(saveQualityHbox);
@@ -346,7 +346,7 @@ void SettingsDialog::saveSettings() {
     Settings::enableAnimations = enableAnimCheckBox->isChecked();
     Settings::exifRotationEnabled = enableExifCheckBox->isChecked();
     Settings::exifThumbRotationEnabled = enableThumbExifCheckBox->isChecked();
-    Settings::enableImageInfoFS = imageInfoCheckBox->isChecked();
+    Settings::showImageName = showImageNameCheckBox->isChecked();
     Settings::reverseMouseBehavior = reverseMouseCheckBox->isChecked();
     Settings::deleteConfirm = deleteConfirmCheckBox->isChecked();
 

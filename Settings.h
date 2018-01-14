@@ -43,6 +43,7 @@ namespace Settings {
     extern const char optionThumbsPagesReadCount[];
     extern const char optionViewerZoomOutFlags[];
     extern const char optionViewerZoomInFlags[];
+    extern const char optionShowImageName[];
 
     extern QSettings *appSettings;
     extern unsigned int layoutMode;
@@ -109,7 +110,7 @@ namespace Settings {
     extern int dialogLastY;
     extern StartupDir startupDir;
     extern QString specifiedStartDir;
-    extern bool enableImageInfoFS;
+    extern bool showImageName;
     extern bool smallToolbarIcons;
     extern bool hideDockTitlebars;
     extern bool fileSystemDockVisible;

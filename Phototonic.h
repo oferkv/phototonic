@@ -58,7 +58,7 @@ public slots:
 
     void showViewer();
 
-    void loadImageByThumb(const QModelIndex &idx);
+    void loadSelectedThumbImage(const QModelIndex &idx);
 
     void loadImageBromCliArguments();
 
@@ -90,13 +90,15 @@ private slots:
 
     void rename();
 
+    void removeMetadata();
+
     void viewImage();
 
     void newImage();
 
     void addNewBookmark();
 
-    void deleteDir();
+    void deleteDirectory();
 
     void createSubDirectory();
 
@@ -128,7 +130,7 @@ private slots:
 
     void loadNextImage();
 
-    void loadPrevImage();
+    void loadPreviousImage();
 
     void loadFirstImage();
 
@@ -285,6 +287,7 @@ private:
     QAction *saveAction;
     QAction *saveAsAction;
     QAction *renameAction;
+    QAction *removeMetadataAction;
     QAction *selectAllAction;
     QAction *copyImageAction;
     QAction *pasteImageAction;

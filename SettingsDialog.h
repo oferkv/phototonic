@@ -64,7 +64,7 @@ private:
     QCheckBox *enableAnimCheckBox;
     QCheckBox *enableExifCheckBox;
     QCheckBox *enableThumbExifCheckBox;
-    QCheckBox *imageInfoCheckBox;
+    QCheckBox *showImageNameCheckBox;
     QCheckBox *reverseMouseCheckBox;
     QCheckBox *deleteConfirmCheckBox;
     QSpinBox *slideDelaySpinBox;

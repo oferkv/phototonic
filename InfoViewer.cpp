@@ -22,14 +22,13 @@
 InfoView::InfoView(QWidget *parent) : QWidget(parent) {
 
     infoViewerTable = new QTableView();
-    infoViewerTable->setSelectionBehavior(QAbstractItemView::SelectItems);
     infoViewerTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
     infoViewerTable->verticalHeader()->setVisible(false);
     infoViewerTable->verticalHeader()->setDefaultSectionSize(infoViewerTable->verticalHeader()->minimumSectionSize());
     infoViewerTable->horizontalHeader()->setVisible(false);
     infoViewerTable->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     infoViewerTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    infoViewerTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    infoViewerTable->setSelectionBehavior(QAbstractItemView::SelectItems);
     infoViewerTable->setTabKeyNavigation(false);
     infoViewerTable->setShowGrid(false);
 
@@ -98,8 +97,9 @@ void InfoView::addTitleEntry(QString title) {
 }
 
 void InfoView::copyEntry() {
-    if (selectedEntry.isValid())
+    if (selectedEntry.isValid()) {
         QApplication::clipboard()->setText(imageInfoModel->itemFromIndex(selectedEntry)->toolTip());
+    }
 }
 
 void InfoView::filterItems() {

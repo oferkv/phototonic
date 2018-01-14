@@ -56,7 +56,7 @@ ImageViewer::ImageViewer(QWidget *parent, MetadataCache *metadataCache) : QWidge
     this->setLayout(scrollLayout);
 
     imageInfoLabel = new QLabel(this);
-    imageInfoLabel->setVisible(Settings::enableImageInfoFS);
+    imageInfoLabel->setVisible(Settings::showImageName);
     imageInfoLabel->setMargin(3);
     imageInfoLabel->move(10, 10);
     imageInfoLabel->setStyleSheet("QLabel { background-color : black; color : white; border-radius: 3px} ");
@@ -595,7 +595,7 @@ QImage createImageWithOverlay(const QImage &baseImage, const QImage &overlayImag
 
 void ImageViewer::reload() {
     isAnimation = false;
-    if (Settings::enableImageInfoFS) {
+    if (Settings::showImageName) {
         if (viewerImageFullPath.left(1) == ":") {
             setInfo("No Image");
         } else if (viewerImageFullPath.isEmpty()) {
@@ -949,8 +949,8 @@ void ImageViewer::saveImage() {
         exifError = true;
     }
 
-    QImageReader imgReader(viewerImageFullPath);
-    if (!viewerPixmap.save(viewerImageFullPath, imgReader.format().toUpper(),
+    QImageReader imageReader(viewerImageFullPath);
+    if (!viewerPixmap.save(viewerImageFullPath, imageReader.format().toUpper(),
                            Settings::defaultSaveQuality)) {
         QMessageBox msgBox;
         msgBox.critical(this, tr("Error"), tr("Failed to save image."));
@@ -1018,8 +1018,9 @@ void ImageViewer::saveImageAs() {
 }
 
 void ImageViewer::contextMenuEvent(QContextMenuEvent *) {
-    while (QApplication::overrideCursor())
+    while (QApplication::overrideCursor()) {
         QApplication::restoreOverrideCursor();
+    }
 
     ImagePopUpMenu->exec(QCursor::pos());
 }
@@ -1041,8 +1042,9 @@ void ImageViewer::copyImage() {
 }
 
 void ImageViewer::pasteImage() {
-    if (isAnimation)
+    if (isAnimation) {
         return;
+    }
 
     if (!QApplication::clipboard()->image().isNull()) {
         origImage = QApplication::clipboard()->image();
@@ -1056,7 +1058,7 @@ void ImageViewer::setBackgroundColor() {
             .arg(Settings::viewerBackgroundColor.green())
             .arg(Settings::viewerBackgroundColor.blue());
 
-    QString ss = "QWidget { " + bgColor + " }";
-    scrollArea->setStyleSheet(ss);
+    QString styleSheet = "QWidget { " + bgColor + " }";
+    scrollArea->setStyleSheet(styleSheet);
 }
 
