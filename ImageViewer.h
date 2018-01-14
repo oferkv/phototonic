@@ -29,7 +29,7 @@ Q_OBJECT
 public:
     bool tempDisableResize;
     int mirrorLayout;
-    QString currentImageFullPath;
+    QString viewerImageFullPath;
     QMenu *ImagePopUpMenu;
     QScrollArea *scrollArea;
     QLabel *imageInfoLabel;
@@ -125,9 +125,9 @@ private:
     QWidget *mainWindow;
     QImageReader imageReader;
     QLabel *imageLabel;
-    QPixmap displayPixmap;
+    QPixmap viewerPixmap;
     QImage origImage;
-    QImage displayImage;
+    QImage viewerImage;
     QImage mirrorImage;
     QTimer *mouseMovementTimer;
     QMovie *animation;

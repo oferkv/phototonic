@@ -63,9 +63,9 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     backgroundColorHBox->addWidget(backgroundColorButton);
     backgroundColorHBox->addStretch(1);
     connect(backgroundColorButton, SIGNAL(clicked()), this, SLOT(pickColor()));
-    setButtonBgColor(Settings::backgroundColor, backgroundColorButton);
+    setButtonBgColor(Settings::viewerBackgroundColor, backgroundColorButton);
     backgroundColorButton->setAutoFillBackground(true);
-    imageViewerBackgroundColor = Settings::backgroundColor;
+    imageViewerBackgroundColor = Settings::viewerBackgroundColor;
 
     // Wrap image list
     wrapListCheckBox = new QCheckBox(tr("Wrap image list when reaching last or first image"), this);
@@ -159,7 +159,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     QLabel *thumbsPagesReadLabel = new QLabel(tr("Number of thumbnail pages to read ahead:"));
     thumbPagesSpinBox = new QSpinBox;
     thumbPagesSpinBox->setRange(1, 10);
-    thumbPagesSpinBox->setValue(Settings::thumbPagesReadahead);
+    thumbPagesSpinBox->setValue(Settings::thumbsPagesReadCount);
     QHBoxLayout *thumbPagesReadLayout = new QHBoxLayout;
     thumbPagesReadLayout->addWidget(thumbsPagesReadLabel);
     thumbPagesReadLayout->addWidget(thumbPagesSpinBox);
@@ -316,12 +316,12 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
 }
 
 void SettingsDialog::saveSettings() {
-    int i;
+    unsigned int i;
 
     for (i = 0; i < nZoomRadios; ++i) {
         if (fitLargeRadios[i]->isChecked()) {
             Settings::zoomOutFlags = i;
-            Settings::appSettings->setValue("zoomOutFlags", (int) Settings::zoomOutFlags);
+            Settings::appSettings->setValue(Settings::optionViewerZoomOutFlags, (int) Settings::zoomOutFlags);
             break;
         }
     }
@@ -329,16 +329,16 @@ void SettingsDialog::saveSettings() {
     for (i = 0; i < nZoomRadios; ++i) {
         if (fitSmallRadios[i]->isChecked()) {
             Settings::zoomInFlags = i;
-            Settings::appSettings->setValue("zoomInFlags", (int) Settings::zoomInFlags);
+            Settings::appSettings->setValue(Settings::optionViewerZoomInFlags, (int) Settings::zoomInFlags);
             break;
         }
     }
 
-    Settings::backgroundColor = imageViewerBackgroundColor;
+    Settings::viewerBackgroundColor = imageViewerBackgroundColor;
     Settings::thumbsBackgroundColor = thumbsBackgroundColor;
     Settings::thumbsTextColor = thumbsTextColor;
     Settings::thumbsBackImage = thumbsBackgroundImageLineEdit->text();
-    Settings::thumbPagesReadahead = thumbPagesSpinBox->value();
+    Settings::thumbsPagesReadCount = (unsigned int)thumbPagesSpinBox->value();
     Settings::wrapImageList = wrapListCheckBox->isChecked();
     Settings::defaultSaveQuality = saveQualitySpinBox->value();
     Settings::slideShowDelay = slideDelaySpinBox->value();
@@ -367,7 +367,7 @@ void SettingsDialog::abort() {
 }
 
 void SettingsDialog::pickColor() {
-    QColor userColor = QColorDialog::getColor(Settings::backgroundColor, this);
+    QColor userColor = QColorDialog::getColor(Settings::viewerBackgroundColor, this);
     if (userColor.isValid()) {
         setButtonBgColor(userColor, backgroundColorButton);
         imageViewerBackgroundColor = userColor;

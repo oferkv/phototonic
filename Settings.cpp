@@ -23,15 +23,21 @@ namespace Settings {
     const char optionThumbsSortFlags[] = "optionThumbsSortFlags";
     const char optionThumbsZoomLevel[] = "optionThumbsZoomLevel";
     const char optionFullScreenMode[] = "optionFullScreenMode";
+    const char optionViewerBackgroundColor[] = "optionViewerBackgroundColor";
+    const char optionThumbsBackgroundColor[] = "optionThumbsBackgroundColor";
+    const char optionThumbsTextColor[] = "optionThumbsTextColor";
+    const char optionThumbsPagesReadCount[] = "optionThumbsPagesReadCount";
+    const char optionViewerZoomOutFlags[] = "optionViewerZoomOutFlags";
+    const char optionViewerZoomInFlags[] = "optionViewerZoomInFlags";
 
     QSettings *appSettings;
     unsigned int layoutMode;
     unsigned int zoomInFlags;
     unsigned int zoomOutFlags;
-    QColor backgroundColor;
+    QColor viewerBackgroundColor;
     QColor thumbsBackgroundColor;
     QColor thumbsTextColor;
-    unsigned int thumbPagesReadahead;
+    unsigned int thumbsPagesReadCount;
     bool wrapImageList;
     bool enableAnimations;
     float imageZoomFactor;

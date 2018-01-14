@@ -37,15 +37,21 @@ namespace Settings {
     extern const char optionThumbsSortFlags[];
     extern const char optionThumbsZoomLevel[];
     extern const char optionFullScreenMode[];
+    extern const char optionViewerBackgroundColor[];
+    extern const char optionThumbsBackgroundColor[];
+    extern const char optionThumbsTextColor[];
+    extern const char optionThumbsPagesReadCount[];
+    extern const char optionViewerZoomOutFlags[];
+    extern const char optionViewerZoomInFlags[];
 
     extern QSettings *appSettings;
     extern unsigned int layoutMode;
     extern unsigned int zoomInFlags;
     extern unsigned int zoomOutFlags;
-    extern QColor backgroundColor;
+    extern QColor viewerBackgroundColor;
     extern QColor thumbsBackgroundColor;
     extern QColor thumbsTextColor;
-    extern unsigned int thumbPagesReadahead;
+    extern unsigned int thumbsPagesReadCount;
     extern bool wrapImageList;
     extern bool enableAnimations;
     extern float imageZoomFactor;

@@ -623,7 +623,7 @@ void Phototonic::createActions() {
     connect(mirrorQuadAction, SIGNAL(triggered()), this, SLOT(setMirrorQuad()));
     mirrorDisabledAction->setChecked(true);
 
-    keepTransformAction = new QAction(tr("Lock Transformations"), this);
+    keepTransformAction = new QAction(tr("Keep Transformations"), this);
     keepTransformAction->setObjectName("keepTransform");
     keepTransformAction->setCheckable(true);
     connect(keepTransformAction, SIGNAL(triggered()), this, SLOT(keepTransformClicked()));
@@ -1021,7 +1021,7 @@ void Phototonic::runExternalApp() {
             return;
         }
 
-        execCommand += " \"" + imageViewer->currentImageFullPath + "\"";
+        execCommand += " \"" + imageViewer->viewerImageFullPath + "\"";
     } else {
         if (QApplication::focusWidget() == fileSystemTree) {
             selectedFileNames += " \"" + getSelectedPath() + "\"";
@@ -1211,12 +1211,12 @@ void Phototonic::copyMoveImages(bool move) {
                 return;
             }
 
-            QFileInfo fileInfo = QFileInfo(imageViewer->currentImageFullPath);
+            QFileInfo fileInfo = QFileInfo(imageViewer->viewerImageFullPath);
             QString fileName = fileInfo.fileName();
             QString destFile = copyMoveToDialog->selectedPath + QDir::separator() + fileInfo.fileName();
 
             int res = CopyMoveDialog::copyMoveFile(copyMoveToDialog->copyOp, fileName,
-                                                   imageViewer->currentImageFullPath,
+                                                   imageViewer->viewerImageFullPath,
                                                    destFile, copyMoveToDialog->selectedPath);
 
             if (!res) {
@@ -1594,7 +1594,7 @@ void Phototonic::deleteViewerImage() {
     imageViewer->setCursorHiding(false);
 
     bool ok;
-    QFileInfo fileInfo = QFileInfo(imageViewer->currentImageFullPath);
+    QFileInfo fileInfo = QFileInfo(imageViewer->viewerImageFullPath);
     QString fileName = fileInfo.fileName();
 
     bool deleteConfirmed = true;
@@ -1616,7 +1616,7 @@ void Phototonic::deleteViewerImage() {
     if (deleteConfirmed) {
         int currentRow = thumbsViewer->getCurrentRow();
 
-        ok = QFile::remove(imageViewer->currentImageFullPath);
+        ok = QFile::remove(imageViewer->viewerImageFullPath);
         if (ok) {
             thumbsViewer->thumbsViewerModel->removeRow(currentRow);
             imageViewer->setFeedback(tr("Deleted ") + fileName);
@@ -1863,10 +1863,10 @@ void Phototonic::writeSettings() {
     Settings::appSettings->setValue(Settings::optionThumbsSortFlags, (int) thumbsViewer->thumbsSortFlags);
     Settings::appSettings->setValue(Settings::optionThumbsZoomLevel, (int) thumbsViewer->thumbSize);
     Settings::appSettings->setValue(Settings::optionFullScreenMode, (bool) Settings::isFullScreen);
-    Settings::appSettings->setValue("backgroundColor", Settings::backgroundColor);
-    Settings::appSettings->setValue("backgroundThumbColor", Settings::thumbsBackgroundColor);
-    Settings::appSettings->setValue("textThumbColor", Settings::thumbsTextColor);
-    Settings::appSettings->setValue("thumbPagesReadahead", (int) Settings::thumbPagesReadahead);
+    Settings::appSettings->setValue(Settings::optionViewerBackgroundColor, Settings::viewerBackgroundColor);
+    Settings::appSettings->setValue(Settings::optionThumbsBackgroundColor, Settings::thumbsBackgroundColor);
+    Settings::appSettings->setValue(Settings::optionThumbsTextColor, Settings::thumbsTextColor);
+    Settings::appSettings->setValue(Settings::optionThumbsPagesReadCount, (int) Settings::thumbsPagesReadCount);
     Settings::appSettings->setValue("enableAnimations", (bool) Settings::enableAnimations);
     Settings::appSettings->setValue("exifRotationEnabled", (bool) Settings::exifRotationEnabled);
     Settings::appSettings->setValue("exifThumbRotationEnabled", (bool) Settings::exifThumbRotationEnabled);
@@ -1946,12 +1946,12 @@ void Phototonic::readSettings() {
         Settings::appSettings->setValue(Settings::optionThumbsSortFlags, (int) 0);
         Settings::appSettings->setValue(Settings::optionThumbsZoomLevel, (int) 200);
         Settings::appSettings->setValue(Settings::optionFullScreenMode, (bool) false);
-        Settings::appSettings->setValue("backgroundColor", QColor(25, 25, 25));
-        Settings::appSettings->setValue("backgroundThumbColor", QColor(200, 200, 200));
-        Settings::appSettings->setValue("textThumbColor", QColor(25, 25, 25));
-        Settings::appSettings->setValue("thumbPagesReadahead", (int) 2);
-        Settings::appSettings->setValue("zoomOutFlags", (int) 1);
-        Settings::appSettings->setValue("zoomInFlags", (int) 0);
+        Settings::appSettings->setValue(Settings::optionViewerBackgroundColor, QColor(25, 25, 25));
+        Settings::appSettings->setValue(Settings::optionThumbsBackgroundColor, QColor(200, 200, 200));
+        Settings::appSettings->setValue(Settings::optionThumbsTextColor, QColor(25, 25, 25));
+        Settings::appSettings->setValue(Settings::optionThumbsPagesReadCount, (int) 2);
+        Settings::appSettings->setValue(Settings::optionViewerZoomOutFlags, (int) 1);
+        Settings::appSettings->setValue(Settings::optionViewerZoomInFlags, (int) 0);
         Settings::appSettings->setValue("wrapImageList", (bool) false);
         Settings::appSettings->setValue("imageZoomFactor", (float) 1.0);
         Settings::appSettings->setValue("defaultSaveQuality", (int) 90);
@@ -1980,7 +1980,7 @@ void Phototonic::readSettings() {
         Settings::bookmarkPaths.insert(QDir::homePath());
     }
 
-    Settings::backgroundColor = Settings::appSettings->value("backgroundColor").value<QColor>();
+    Settings::viewerBackgroundColor = Settings::appSettings->value(Settings::optionViewerBackgroundColor).value<QColor>();
     Settings::enableAnimations = Settings::appSettings->value("enableAnimations").toBool();
     Settings::exifRotationEnabled = Settings::appSettings->value("exifRotationEnabled").toBool();
     Settings::exifThumbRotationEnabled = Settings::appSettings->value("exifThumbRotationEnabled").toBool();
@@ -1989,8 +1989,8 @@ void Phototonic::readSettings() {
     Settings::showHiddenFiles = Settings::appSettings->value("showHiddenFiles").toBool();
     Settings::wrapImageList = Settings::appSettings->value("wrapImageList").toBool();
     Settings::imageZoomFactor = Settings::appSettings->value("imageZoomFactor").toFloat();
-    Settings::zoomOutFlags = Settings::appSettings->value("zoomOutFlags").toInt();
-    Settings::zoomInFlags = Settings::appSettings->value("zoomInFlags").toInt();
+    Settings::zoomOutFlags = Settings::appSettings->value(Settings::optionViewerZoomOutFlags).toUInt();
+    Settings::zoomInFlags = Settings::appSettings->value(Settings::optionViewerZoomInFlags).toUInt();
     Settings::rotation = 0;
     Settings::keepTransform = false;
     shouldMaximize = Settings::appSettings->value("shouldMaximize").toBool();
@@ -2254,8 +2254,9 @@ void Phototonic::setStatus(QString state) {
 }
 
 void Phototonic::mouseDoubleClickEvent(QMouseEvent *event) {
-    if (interfaceDisabled)
+    if (interfaceDisabled) {
         return;
+    }
 
     if (event->button() == Qt::LeftButton) {
         if (Settings::layoutMode == ImageViewWidget) {
@@ -2268,7 +2269,7 @@ void Phototonic::mouseDoubleClickEvent(QMouseEvent *event) {
                 event->accept();
             }
         } else {
-            if (QApplication::focusWidget() == imageViewer->scrollArea) {
+            if (QApplication::focusWidget() == thumbsViewer->imagePreview->scrollArea) {
                 viewImage();
             }
         }
@@ -2276,8 +2277,9 @@ void Phototonic::mouseDoubleClickEvent(QMouseEvent *event) {
 }
 
 void Phototonic::mousePressEvent(QMouseEvent *event) {
-    if (interfaceDisabled)
+    if (interfaceDisabled) {
         return;
+    }
 
     if (Settings::layoutMode == ImageViewWidget) {
         if (event->button() == Qt::MiddleButton) {
@@ -2302,11 +2304,9 @@ void Phototonic::mousePressEvent(QMouseEvent *event) {
                 event->accept();
             }
         }
-    } else {
-        if (QApplication::focusWidget() == imageViewer->scrollArea) {
-            if (event->button() == Qt::MiddleButton && Settings::reverseMouseBehavior) {
-                viewImage();
-            }
+    } else if (QApplication::focusWidget() == thumbsViewer->imagePreview->scrollArea) {
+        if (event->button() == Qt::MiddleButton) {
+            viewImage();
         }
     }
 }
@@ -2348,6 +2348,7 @@ void Phototonic::viewImage() {
         goSelectedDir(fileSystemTree->getCurrentIndex());
         return;
     } else if (QApplication::focusWidget() == thumbsViewer
+               || QApplication::focusWidget() == thumbsViewer->imagePreview->scrollArea
                || QApplication::focusWidget() == imageViewer->scrollArea) {
         QModelIndex selectedImageIndex;
         QModelIndexList selectedIndexes = thumbsViewer->selectionModel()->selectedIndexes();
@@ -2648,7 +2649,7 @@ void Phototonic::setViewerKeyEventsEnabled(bool enabled) {
 
 void Phototonic::updateIndexByViewerImage() {
     if (thumbsViewer->thumbsViewerModel->rowCount() > 0 &&
-        thumbsViewer->setCurrentIndexByName(imageViewer->currentImageFullPath)) {
+        thumbsViewer->setCurrentIndexByName(imageViewer->viewerImageFullPath)) {
         thumbsViewer->selectCurrentIndex();
     }
 }
@@ -2695,7 +2696,7 @@ void Phototonic::hideViewer() {
         refreshThumbs(true);
     } else {
         if (thumbsViewer->thumbsViewerModel->rowCount() > 0) {
-            if (thumbsViewer->setCurrentIndexByName(imageViewer->currentImageFullPath)) {
+            if (thumbsViewer->setCurrentIndexByName(imageViewer->viewerImageFullPath)) {
                 thumbsViewer->selectCurrentIndex();
             }
         }
@@ -2842,10 +2843,11 @@ void Phototonic::reloadThumbsSlot() {
         return;
     }
 
-    if (Settings::currentViewDir == "") {
+    if (Settings::currentViewDir.isEmpty()) {
         Settings::currentViewDir = getSelectedPath();
-        if (Settings::currentViewDir == "")
+        if (Settings::currentViewDir.isEmpty()) {
             return;
+        }
     }
 
     QDir checkPath(Settings::currentViewDir);
@@ -2859,8 +2861,9 @@ void Phototonic::reloadThumbsSlot() {
 
     pathLineEdit->setText(Settings::currentViewDir);
     recordHistory(Settings::currentViewDir);
-    if (currentHistoryIdx > 0)
+    if (currentHistoryIdx > 0) {
         goBackAction->setEnabled(true);
+    }
 
     if (Settings::layoutMode == ThumbViewWidget) {
         setThumbsViewerWindowTitle();
@@ -2925,7 +2928,7 @@ void Phototonic::rename() {
         }
 
         if (thumbsViewer->thumbsViewerModel->rowCount() > 0) {
-            if (thumbsViewer->setCurrentIndexByName(imageViewer->currentImageFullPath))
+            if (thumbsViewer->setCurrentIndexByName(imageViewer->viewerImageFullPath))
                 thumbsViewer->selectCurrentIndex();
         }
     }
@@ -2978,7 +2981,7 @@ void Phototonic::rename() {
                 indexesList.first().row())->setData(newImageFullPath, thumbsViewer->FileNameRole);
 
         imageViewer->setInfo(newImageName);
-        imageViewer->currentImageFullPath = newImageFullPath;
+        imageViewer->viewerImageFullPath = newImageFullPath;
 
         if (Settings::layoutMode == ImageViewWidget) {
             thumbsViewer->setImageViewerWindowTitle();

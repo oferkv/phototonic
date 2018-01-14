@@ -287,17 +287,17 @@ void ImageViewer::rotateByExifRotation(QImage &image, QString &imageFullPath) {
 
 void ImageViewer::transform() {
     if (Settings::exifRotationEnabled) {
-        rotateByExifRotation(displayImage, currentImageFullPath);
+        rotateByExifRotation(viewerImage, viewerImageFullPath);
     }
 
     if (Settings::rotation) {
         QTransform trans;
         trans.rotate(Settings::rotation);
-        displayImage = displayImage.transformed(trans, Qt::SmoothTransformation);
+        viewerImage = viewerImage.transformed(trans, Qt::SmoothTransformation);
     }
 
     if (Settings::flipH || Settings::flipV) {
-        displayImage = displayImage.mirrored(Settings::flipH, Settings::flipV);
+        viewerImage = viewerImage.mirrored(Settings::flipH, Settings::flipV);
     }
 
     int cropLeftPercentPixels = 0, cropTopPercentPixels = 0, cropWidthPercentPixels = 0, cropHeightPercentPixels = 0;
@@ -305,27 +305,27 @@ void ImageViewer::transform() {
     if (Settings::cropLeftPercent || Settings::cropTopPercent
         || Settings::cropWidthPercent || Settings::cropHeightPercent) {
         croppingOn = true;
-        cropLeftPercentPixels = (displayImage.width() * Settings::cropLeftPercent) / 100;
-        cropTopPercentPixels = (displayImage.height() * Settings::cropTopPercent) / 100;
-        cropWidthPercentPixels = (displayImage.width() * Settings::cropWidthPercent) / 100;
-        cropHeightPercentPixels = (displayImage.height() * Settings::cropHeightPercent) / 100;
+        cropLeftPercentPixels = (viewerImage.width() * Settings::cropLeftPercent) / 100;
+        cropTopPercentPixels = (viewerImage.height() * Settings::cropTopPercent) / 100;
+        cropWidthPercentPixels = (viewerImage.width() * Settings::cropWidthPercent) / 100;
+        cropHeightPercentPixels = (viewerImage.height() * Settings::cropHeightPercent) / 100;
     }
 
     if (Settings::cropLeft || Settings::cropTop || Settings::cropWidth || Settings::cropHeight) {
-        displayImage = displayImage.copy(
+        viewerImage = viewerImage.copy(
                 Settings::cropLeft + cropLeftPercentPixels,
                 Settings::cropTop + cropTopPercentPixels,
-                displayImage.width() - Settings::cropLeft - Settings::cropWidth - cropLeftPercentPixels -
+                viewerImage.width() - Settings::cropLeft - Settings::cropWidth - cropLeftPercentPixels -
                 cropWidthPercentPixels,
-                displayImage.height() - Settings::cropTop - Settings::cropHeight - cropTopPercentPixels -
+                viewerImage.height() - Settings::cropTop - Settings::cropHeight - cropTopPercentPixels -
                 cropHeightPercentPixels);
     } else {
         if (croppingOn) {
-            displayImage = displayImage.copy(
+            viewerImage = viewerImage.copy(
                     cropLeftPercentPixels,
                     cropTopPercentPixels,
-                    displayImage.width() - cropLeftPercentPixels - cropWidthPercentPixels,
-                    displayImage.height() - cropTopPercentPixels - cropHeightPercentPixels);
+                    viewerImage.width() - cropLeftPercentPixels - cropWidthPercentPixels,
+                    viewerImage.height() - cropTopPercentPixels - cropHeightPercentPixels);
         }
     }
 }
@@ -333,47 +333,47 @@ void ImageViewer::transform() {
 void ImageViewer::mirror() {
     switch (mirrorLayout) {
         case LayDual: {
-            mirrorImage = QImage(displayImage.width() * 2, displayImage.height(),
+            mirrorImage = QImage(viewerImage.width() * 2, viewerImage.height(),
                                  QImage::Format_ARGB32);
             QPainter painter(&mirrorImage);
-            painter.drawImage(0, 0, displayImage);
-            painter.drawImage(displayImage.width(), 0, displayImage.mirrored(true, false));
+            painter.drawImage(0, 0, viewerImage);
+            painter.drawImage(viewerImage.width(), 0, viewerImage.mirrored(true, false));
             break;
         }
 
         case LayTriple: {
-            mirrorImage = QImage(displayImage.width() * 3, displayImage.height(),
+            mirrorImage = QImage(viewerImage.width() * 3, viewerImage.height(),
                                  QImage::Format_ARGB32);
             QPainter painter(&mirrorImage);
-            painter.drawImage(0, 0, displayImage);
-            painter.drawImage(displayImage.width(), 0, displayImage.mirrored(true, false));
-            painter.drawImage(displayImage.width() * 2, 0, displayImage.mirrored(false, false));
+            painter.drawImage(0, 0, viewerImage);
+            painter.drawImage(viewerImage.width(), 0, viewerImage.mirrored(true, false));
+            painter.drawImage(viewerImage.width() * 2, 0, viewerImage.mirrored(false, false));
             break;
         }
 
         case LayQuad: {
-            mirrorImage = QImage(displayImage.width() * 2, displayImage.height() * 2,
+            mirrorImage = QImage(viewerImage.width() * 2, viewerImage.height() * 2,
                                  QImage::Format_ARGB32);
             QPainter painter(&mirrorImage);
-            painter.drawImage(0, 0, displayImage);
-            painter.drawImage(displayImage.width(), 0, displayImage.mirrored(true, false));
-            painter.drawImage(0, displayImage.height(), displayImage.mirrored(false, true));
-            painter.drawImage(displayImage.width(), displayImage.height(),
-                              displayImage.mirrored(true, true));
+            painter.drawImage(0, 0, viewerImage);
+            painter.drawImage(viewerImage.width(), 0, viewerImage.mirrored(true, false));
+            painter.drawImage(0, viewerImage.height(), viewerImage.mirrored(false, true));
+            painter.drawImage(viewerImage.width(), viewerImage.height(),
+                              viewerImage.mirrored(true, true));
             break;
         }
 
         case LayVDual: {
-            mirrorImage = QImage(displayImage.width(), displayImage.height() * 2,
+            mirrorImage = QImage(viewerImage.width(), viewerImage.height() * 2,
                                  QImage::Format_ARGB32);
             QPainter painter(&mirrorImage);
-            painter.drawImage(0, 0, displayImage);
-            painter.drawImage(0, displayImage.height(), displayImage.mirrored(false, true));
+            painter.drawImage(0, 0, viewerImage);
+            painter.drawImage(0, viewerImage.height(), viewerImage.mirrored(false, true));
             break;
         }
     }
 
-    displayImage = mirrorImage;
+    viewerImage = mirrorImage;
 }
 
 static inline int bound0To255(int val) {
@@ -482,10 +482,10 @@ void ImageViewer::colorize() {
     unsigned char h, s, l;
     static unsigned char contrastTransform[256];
     static unsigned char brightTransform[256];
-    bool hasAlpha = displayImage.hasAlphaChannel();
+    bool hasAlpha = viewerImage.hasAlphaChannel();
 
-    if (displayImage.colorCount()) {
-        displayImage = displayImage.convertToFormat(QImage::Format_RGB32);
+    if (viewerImage.colorCount()) {
+        viewerImage = viewerImage.convertToFormat(QImage::Format_RGB32);
     }
 
     int i;
@@ -506,10 +506,10 @@ void ImageViewer::colorize() {
         brightTransform[i] = MIN(255, (int) ((255.0 * pow(i / 255.0, 1.0 / brightness)) + 0.5));
     }
 
-    for (y = 0; y < displayImage.height(); ++y) {
+    for (y = 0; y < viewerImage.height(); ++y) {
 
-        line = (QRgb *) displayImage.scanLine(y);
-        for (x = 0; x < displayImage.width(); ++x) {
+        line = (QRgb *) viewerImage.scanLine(y);
+        for (x = 0; x < viewerImage.width(); ++x) {
             r = Settings::rNegateEnabled ? bound0To255(255 - qRed(line[x])) : qRed(line[x]);
             g = Settings::gNegateEnabled ? bound0To255(255 - qGreen(line[x])) : qGreen(line[x]);
             b = Settings::bNegateEnabled ? bound0To255(255 - qBlue(line[x])) : qBlue(line[x]);
@@ -551,10 +551,10 @@ void ImageViewer::refresh() {
     }
 
     if (Settings::scaledWidth) {
-        displayImage = origImage.scaled(Settings::scaledWidth, Settings::scaledHeight,
-                                        Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        viewerImage = origImage.scaled(Settings::scaledWidth, Settings::scaledHeight,
+                                       Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     } else {
-        displayImage = origImage;
+        viewerImage = origImage;
     }
 
     transform();
@@ -567,8 +567,8 @@ void ImageViewer::refresh() {
         mirror();
     }
 
-    displayPixmap = QPixmap::fromImage(displayImage);
-    imageLabel->setPixmap(displayPixmap);
+    viewerPixmap = QPixmap::fromImage(viewerImage);
+    imageLabel->setPixmap(viewerPixmap);
     resizeImage();
 }
 
@@ -596,12 +596,12 @@ QImage createImageWithOverlay(const QImage &baseImage, const QImage &overlayImag
 void ImageViewer::reload() {
     isAnimation = false;
     if (Settings::enableImageInfoFS) {
-        if (currentImageFullPath.left(1) == ":") {
+        if (viewerImageFullPath.left(1) == ":") {
             setInfo("No Image");
-        } else if (currentImageFullPath.isEmpty()) {
+        } else if (viewerImageFullPath.isEmpty()) {
             setInfo("Clipboard");
         } else {
-            setInfo(QFileInfo(currentImageFullPath).fileName());
+            setInfo(QFileInfo(viewerImageFullPath).fileName());
         }
     }
 
@@ -613,52 +613,51 @@ void ImageViewer::reload() {
     Settings::scaledWidth = Settings::scaledHeight = 0;
     Settings::cropLeft = Settings::cropTop = Settings::cropWidth = Settings::cropHeight = 0;
 
-    if (newImage || currentImageFullPath.isEmpty()) {
+    if (newImage || viewerImageFullPath.isEmpty()) {
         newImage = true;
-        currentImageFullPath = CLIPBOARD_IMAGE_NAME;
+        viewerImageFullPath = CLIPBOARD_IMAGE_NAME;
         origImage.load(":/images/no_image.png");
-        displayImage = origImage;
-        displayPixmap = QPixmap::fromImage(displayImage);
-        imageLabel->setPixmap(displayPixmap);
+        viewerImage = origImage;
+        viewerPixmap = QPixmap::fromImage(viewerImage);
+        imageLabel->setPixmap(viewerPixmap);
         pasteImage();
         mainWindow->setWindowTitle(tr("Clipboard") + " - Phototonic");
         return;
     }
 
-    imageReader.setFileName(currentImageFullPath);
+    imageReader.setFileName(viewerImageFullPath);
     if (Settings::enableAnimations && imageReader.supportsAnimation()) {
         if (animation) {
             delete animation;
         }
-        animation = new QMovie(currentImageFullPath);
+        animation = new QMovie(viewerImageFullPath);
 
         if (animation->frameCount() > 1) {
             isAnimation = true;
             imageLabel->setMovie(animation);
             animation->start();
+            resizeImage();
+            return;
         }
     }
 
-    if (!isAnimation) {
-        if (imageReader.size().isValid() && imageReader.read(&origImage)) {
-            displayImage = origImage;
-            transform();
-            if (Settings::colorsActive || Settings::keepTransform) {
-                colorize();
-            }
-            if (mirrorLayout) {
-                mirror();
-            }
-            displayPixmap = QPixmap::fromImage(displayImage);
-        } else {
-            displayPixmap = QIcon::fromTheme("image-missing",
-                                             QIcon(":/images/error_image.png")).pixmap(128, 128);
-            setInfo(imageReader.errorString());
+    if (imageReader.size().isValid() && imageReader.read(&origImage)) {
+        viewerImage = origImage;
+        transform();
+        if (Settings::colorsActive || Settings::keepTransform) {
+            colorize();
         }
-
-        imageLabel->setPixmap(displayPixmap);
+        if (mirrorLayout) {
+            mirror();
+        }
+        viewerPixmap = QPixmap::fromImage(viewerImage);
+    } else {
+        viewerPixmap = QIcon::fromTheme("image-missing",
+                                        QIcon(":/images/error_image.png")).pixmap(128, 128);
+        setInfo(imageReader.errorString());
     }
 
+    imageLabel->setPixmap(viewerPixmap);
     resizeImage();
 }
 
@@ -668,7 +667,7 @@ void ImageViewer::setInfo(QString infoString) {
 }
 
 void ImageViewer::unsetFeedback() {
-    feedbackLabel->setText("");
+    feedbackLabel->clear();
     feedbackLabel->setVisible(false);
 }
 
@@ -686,7 +685,7 @@ void ImageViewer::setFeedback(QString feedbackString) {
 void ImageViewer::loadImage(QString imageFileName) {
     newImage = false;
     tempDisableResize = false;
-    currentImageFullPath = imageFileName;
+    viewerImageFullPath = imageFileName;
 
     if (!Settings::keepZoomFactor) {
         Settings::imageZoomFactor = 1.0;
@@ -783,8 +782,8 @@ void ImageViewer::cropToSelection() {
 
         double scaledX = imageLabel->rect().width();
         double scaledY = imageLabel->rect().height();
-        scaledX = displayPixmap.width() / scaledX;
-        scaledY = displayPixmap.height() / scaledY;
+        scaledX = viewerPixmap.width() / scaledX;
+        scaledY = viewerPixmap.height() / scaledY;
 
         bandTopLeft.setX(int(bandTopLeft.x() * scaledX));
         bandTopLeft.setY(int(bandTopLeft.y() * scaledY));
@@ -793,8 +792,8 @@ void ImageViewer::cropToSelection() {
 
         int cropLeft = bandTopLeft.x();
         int cropTop = bandTopLeft.y();
-        int cropWidth = displayPixmap.width() - bandBottomRight.x();
-        int cropHeight = displayPixmap.height() - bandBottomRight.y();
+        int cropWidth = viewerPixmap.width() - bandBottomRight.x();
+        int cropHeight = viewerPixmap.height() - bandBottomRight.y();
 
         if (cropLeft > 0) {
             Settings::cropLeft += cropLeft;
@@ -943,16 +942,16 @@ void ImageViewer::saveImage() {
     setFeedback(tr("Saving..."));
 
     try {
-        image = Exiv2::ImageFactory::open(currentImageFullPath.toStdString());
+        image = Exiv2::ImageFactory::open(viewerImageFullPath.toStdString());
         image->readMetadata();
     }
     catch (Exiv2::Error &error) {
         exifError = true;
     }
 
-    QImageReader imgReader(currentImageFullPath);
-    if (!displayPixmap.save(currentImageFullPath, imgReader.format().toUpper(),
-                            Settings::defaultSaveQuality)) {
+    QImageReader imgReader(viewerImageFullPath);
+    if (!viewerPixmap.save(viewerImageFullPath, imgReader.format().toUpper(),
+                           Settings::defaultSaveQuality)) {
         QMessageBox msgBox;
         msgBox.critical(this, tr("Error"), tr("Failed to save image."));
         return;
@@ -981,13 +980,13 @@ void ImageViewer::saveImageAs() {
 
     QString fileName = QFileDialog::getSaveFileName(this,
                                                     tr("Save image as"),
-                                                    currentImageFullPath,
+                                                    viewerImageFullPath,
                                                     tr("Images") +
                                                     " (*.jpg *.jpeg *.jpe *.png *.bmp *.ppm *.pgm *.pbm *.xbm *.xpm)");
 
     if (!fileName.isEmpty()) {
         try {
-            exifImage = Exiv2::ImageFactory::open(currentImageFullPath.toStdString());
+            exifImage = Exiv2::ImageFactory::open(viewerImageFullPath.toStdString());
             exifImage->readMetadata();
         }
         catch (Exiv2::Error &error) {
@@ -995,7 +994,7 @@ void ImageViewer::saveImageAs() {
         }
 
 
-        if (!displayPixmap.save(fileName, 0, Settings::defaultSaveQuality)) {
+        if (!viewerPixmap.save(fileName, 0, Settings::defaultSaveQuality)) {
             QMessageBox msgBox;
             msgBox.critical(this, tr("Error"), tr("Failed to save image."));
         } else {
@@ -1038,7 +1037,7 @@ bool ImageViewer::isNewImage() {
 }
 
 void ImageViewer::copyImage() {
-    QApplication::clipboard()->setImage(displayImage);
+    QApplication::clipboard()->setImage(viewerImage);
 }
 
 void ImageViewer::pasteImage() {
@@ -1053,9 +1052,9 @@ void ImageViewer::pasteImage() {
 
 void ImageViewer::setBackgroundColor() {
     QString bgColor = "background: rgb(%1, %2, %3); ";
-    bgColor = bgColor.arg(Settings::backgroundColor.red())
-            .arg(Settings::backgroundColor.green())
-            .arg(Settings::backgroundColor.blue());
+    bgColor = bgColor.arg(Settings::viewerBackgroundColor.red())
+            .arg(Settings::viewerBackgroundColor.green())
+            .arg(Settings::viewerBackgroundColor.blue());
 
     QString ss = "QWidget { " + bgColor + " }";
     scrollArea->setStyleSheet(ss);

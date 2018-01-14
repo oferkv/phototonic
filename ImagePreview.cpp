@@ -62,7 +62,6 @@ void ImagePreview::loadImage(QString imageFileName) {
 }
 
 void ImagePreview::clear() {
-    //previewPixmap = QIcon::fromTheme("image-missing", QIcon(":/images/no_image.png")).pixmap(1, 1);
     imageLabel->clear();
 }
 

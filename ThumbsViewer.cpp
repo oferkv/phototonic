@@ -20,10 +20,10 @@
 
 ThumbsViewer::ThumbsViewer(QWidget *parent, MetadataCache *metadataCache) : QListView(parent) {
     this->metadataCache = metadataCache;
-    Settings::thumbsBackgroundColor = Settings::appSettings->value("backgroundThumbColor").value<QColor>();
-    Settings::thumbsTextColor = Settings::appSettings->value("textThumbColor").value<QColor>();
+    Settings::thumbsBackgroundColor = Settings::appSettings->value(Settings::optionThumbsBackgroundColor).value<QColor>();
+    Settings::thumbsTextColor = Settings::appSettings->value(Settings::optionThumbsTextColor).value<QColor>();
     setThumbColors();
-    Settings::thumbPagesReadahead = Settings::appSettings->value("thumbPagesReadahead").toInt();
+    Settings::thumbsPagesReadCount = Settings::appSettings->value(Settings::optionThumbsPagesReadCount).toUInt();
     thumbSize = Settings::appSettings->value(Settings::optionThumbsZoomLevel).toInt();
     currentRow = 0;
 
@@ -358,12 +358,12 @@ void ThumbsViewer::loadVisibleThumbs(int scrollBarValue) {
     }
 
     if (scrolledForward) {
-        lastVisible += ((lastVisible - firstVisible) * (Settings::thumbPagesReadahead + 1));
+        lastVisible += ((lastVisible - firstVisible) * (Settings::thumbsPagesReadCount + 1));
         if (lastVisible >= thumbsViewerModel->rowCount()) {
             lastVisible = thumbsViewerModel->rowCount() - 1;
         }
     } else {
-        firstVisible -= (lastVisible - firstVisible) * (Settings::thumbPagesReadahead + 1);
+        firstVisible -= (lastVisible - firstVisible) * (Settings::thumbsPagesReadCount + 1);
         if (firstVisible < 0) {
             firstVisible = 0;
         }

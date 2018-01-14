@@ -35,13 +35,14 @@ public:
 
     void clear();
 
+    QScrollArea *scrollArea;
+
 protected:
     void resizeEvent(QResizeEvent *event);
 
 private:
     QLabel *imageLabel;
     QImageReader imageReader;
-    QScrollArea *scrollArea;
     QPixmap previewPixmap;
 
 };
