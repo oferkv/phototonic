@@ -102,8 +102,8 @@ namespace Settings {
     extern QSet<QString> knownTags;
     extern bool reverseMouseBehavior;
     extern bool deleteConfirm;
-    extern QModelIndexList copyCutIdxList;
-    extern bool copyOp;
+    extern QModelIndexList copyCutIndexList;
+    extern bool isCopyOperation;
     extern QStringList copyCutFileList;
     extern bool isFullScreen;
     extern int dialogLastX;

@@ -88,8 +88,8 @@ namespace Settings {
     QSet<QString> knownTags;
     bool reverseMouseBehavior;
     bool deleteConfirm;
-    QModelIndexList copyCutIdxList;
-    bool copyOp;
+    QModelIndexList copyCutIndexList;
+    bool isCopyOperation;
     QStringList copyCutFileList;
     bool isFullScreen;
     int dialogLastX;

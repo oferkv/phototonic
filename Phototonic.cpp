@@ -343,7 +343,7 @@ void Phototonic::createActions() {
     deleteAction = new QAction(tr("Delete"), this);
     deleteAction->setObjectName("delete");
     deleteAction->setIcon(QIcon::fromTheme("edit-delete", QIcon(":/images/delete.png")));
-    connect(deleteAction, SIGNAL(triggered()), this, SLOT(deleteOp()));
+    connect(deleteAction, SIGNAL(triggered()), this, SLOT(deleteOperation()));
 
     saveAction = new QAction(tr("Save"), this);
     saveAction->setObjectName("save");
@@ -927,7 +927,7 @@ void Phototonic::createImageTags() {
     connect(tagsDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setTagsDockVisibility()));
     connect(thumbsViewer->imageTags, SIGNAL(setStatus(QString)), this, SLOT(setStatus(QString)));
     connect(thumbsViewer->imageTags, SIGNAL(reloadThumbs()), this, SLOT(reloadThumbsSlot()));
-    connect(thumbsViewer->imageTags->removeTagAction, SIGNAL(triggered()), this, SLOT(deleteOp()));
+    connect(thumbsViewer->imageTags->removeTagAction, SIGNAL(triggered()), this, SLOT(deleteOperation()));
 }
 
 void Phototonic::sortThumbnails() {
@@ -981,11 +981,39 @@ void Phototonic::toggleImageViewerToolbar() {
 
 void Phototonic::about() {
     QString aboutString = "<h2>" + QString(VERSION) + "</h2>"
-                          + tr("<p>Image Viewer</p>")
+                          + tr("<p>Image viewer and organizer</p>")
                           + "Qt v" + QT_VERSION_STR
                           + "<p><a href=\"https://github.com/oferkv/phototonic\">" + tr("Home page") + "</a></p>"
+                          "</a></p>"
+                          + "<p></p>"
+                          + "<table><tr><td>Code:</td><td>Ofer Kashayov</td><td>(oferkv@gmail.com)</td></tr>"
+                          + "<tr><td></td><td>Christopher Roy Bratusek</td><td>(nano@jpberlin.de)</td></tr>"
+                          + "<tr><td></td><td>Krzysztof Pyrkosz</td><td>(pyrkosz@o2.pl)</td></tr>"
+                          + QString::fromUtf8(
+            "<tr><td></td><td>Thomas L\u00FCbking</td><td>(thomas.luebking@gmail.com)</td></tr>")
+                          + "<tr><td></td><td>Tung Le</td><td>(https://github.com/everbot)</td></tr>"
+                          + "<tr><td></td><td>Peter Mattern</td><td>(https://github.com/pmattern)</td></tr>"
+                          + QString::fromUtf8(
+            "<tr><td>Bosnian:</td><td>Dino Duratovi\u0107</td><td>(dinomol@mail.com)</td></tr>")
+                          + QString::fromUtf8(
+            "<tr><td>Croatian:</td><td>Dino Duratovi\u0107</td><td>(dinomol@mail.com)</td></tr>")
+                          + "<tr><td>Czech:</td><td>Pavel Fric</td><td>(pavelfric@seznam.cz)</td></tr>"
+                          +
+                          "<tr><td>French:</td><td>Adrien Daugabel</td><td>(adrien.d@mageialinux-online.org)</td></tr>"
+                          + "<tr><td></td><td>David Geiger</td><td>(david.david@mageialinux-online.org)</td></tr>"
+                          + QString::fromUtf8(
+            "<tr><td></td><td>R\u00E9mi Verschelde</td><td>(akien@mageia.org)</td></tr>")
+                          +
+                          "<tr><td>German:</td><td>Jonathan Hooverman</td><td>(jonathan.hooverman@gmail.com)</td></tr>"
+                          + QString::fromUtf8(
+            "<tr><td>Polish:</td><td>Robert Wojew\u00F3dzki</td><td>(robwoj44@poczta.onet.pl)</td></tr>")
+                          + QString::fromUtf8("<tr><td></td><td>Krzysztof Pyrkosz</td><td>(pyrkosz@o2.pl)</td></tr>")
+                            + "<tr><td>Portuguese:</td><td>Marcos M. Nascimento</td><td>(wstlmn@uol.com.br)</td></tr>"
+                          + "<tr><td>Russian:</td><td>Ilya Alexandrovich</td><td>(yast4ik@gmail.com)</td></tr>"
+                          + QString::fromUtf8(
+            "<tr><td>Serbian:</td><td>Dino Duratovi\u0107</td><td>(dinomol@mail.com)</td></tr></table>")
                           + "<p>Phototonic is licensed under the GNU General Public License version 3</p>"
-                          + "<p>Copyright &copy; 2013-2018</p>";
+                          + "<p>Copyright &copy; 2013-2018 Ofer Kashayov</p>";
 
     QMessageBox::about(this, tr("About") + " Phototonic", aboutString);
 }
@@ -1164,17 +1192,17 @@ void Phototonic::selectAllThumbs() {
     thumbsViewer->selectAll();
 }
 
-void Phototonic::copyOrCutThumbs(bool copy) {
-    Settings::copyCutIdxList = thumbsViewer->selectionModel()->selectedIndexes();
-    copyCutCount = Settings::copyCutIdxList.size();
+void Phototonic::copyOrCutThumbs(bool isCopyOperation) {
+    Settings::copyCutIndexList = thumbsViewer->selectionModel()->selectedIndexes();
+    copyCutThumbsCount = Settings::copyCutIndexList.size();
 
     Settings::copyCutFileList.clear();
-    for (int tn = 0; tn < copyCutCount; ++tn) {
-        Settings::copyCutFileList.append(thumbsViewer->thumbsViewerModel->item(Settings::copyCutIdxList[tn].
+    for (int thumb = 0; thumb < copyCutThumbsCount; ++thumb) {
+        Settings::copyCutFileList.append(thumbsViewer->thumbsViewerModel->item(Settings::copyCutIndexList[thumb].
                 row())->data(thumbsViewer->FileNameRole).toString());
     }
 
-    Settings::copyOp = copy;
+    Settings::isCopyOperation = isCopyOperation;
     pasteAction->setEnabled(true);
 }
 
@@ -1187,14 +1215,14 @@ void Phototonic::copyThumbs() {
 }
 
 void Phototonic::copyImagesTo() {
-    copyMoveImages(false);
+    copyOrMoveImages(false);
 }
 
 void Phototonic::moveImagesTo() {
-    copyMoveImages(true);
+    copyOrMoveImages(true);
 }
 
-void Phototonic::copyMoveImages(bool isMoveOperation) {
+void Phototonic::copyOrMoveImages(bool isMoveOperation) {
     if (Settings::slideShowActive) {
         toggleSlideShow();
     }
@@ -1493,8 +1521,9 @@ bool Phototonic::isValidPath(QString &path) {
 }
 
 void Phototonic::pasteThumbs() {
-    if (!copyCutCount)
+    if (!copyCutThumbsCount) {
         return;
+    }
 
     QString destDir;
     if (copyMoveToDialog)
@@ -1517,11 +1546,10 @@ void Phototonic::pasteThumbs() {
     }
 
     bool pasteInCurrDir = (Settings::currentViewDir == destDir);
-
     QFileInfo fileInfo;
-    if (!Settings::copyOp && pasteInCurrDir) {
-        for (int tn = 0; tn < Settings::copyCutFileList.size(); ++tn) {
-            fileInfo = QFileInfo(Settings::copyCutFileList[tn]);
+    if (!Settings::isCopyOperation && pasteInCurrDir) {
+        for (int thumb = 0; thumb < Settings::copyCutFileList.size(); ++thumb) {
+            fileInfo = QFileInfo(Settings::copyCutFileList[thumb]);
             if (fileInfo.absolutePath() == destDir) {
                 QMessageBox msgBox;
                 msgBox.critical(this, tr("Error"), tr("Can not copy or move to the same folder"));
@@ -1533,8 +1561,8 @@ void Phototonic::pasteThumbs() {
     CopyMoveDialog *copyMoveDialog = new CopyMoveDialog(this);
     copyMoveDialog->exec(thumbsViewer, destDir, pasteInCurrDir);
     if (pasteInCurrDir) {
-        for (int tn = 0; tn < Settings::copyCutFileList.size(); ++tn) {
-            thumbsViewer->addThumb(Settings::copyCutFileList[tn]);
+        for (int thumb = 0; thumb < Settings::copyCutFileList.size(); ++thumb) {
+            thumbsViewer->addThumb(Settings::copyCutFileList[thumb]);
         }
     } else {
         int row = copyMoveDialog->latestRow;
@@ -1548,14 +1576,14 @@ void Phototonic::pasteThumbs() {
         }
     }
 
-    QString state = QString((Settings::copyOp ? tr("Copied") : tr("Moved")) + " " +
+    QString state = QString((Settings::isCopyOperation ? tr("Copied") : tr("Moved")) + " " +
                             tr("%n image(s)", "", copyMoveDialog->nFiles));
     setStatus(state);
     delete (copyMoveDialog);
     selectCurrentViewDir();
 
-    copyCutCount = 0;
-    Settings::copyCutIdxList.clear();
+    copyCutThumbsCount = 0;
+    Settings::copyCutIndexList.clear();
     Settings::copyCutFileList.clear();
     pasteAction->setEnabled(false);
 
@@ -1591,7 +1619,7 @@ void Phototonic::loadCurrentImage(int currentRow) {
     thumbsViewer->setImageViewerWindowTitle();
 }
 
-void Phototonic::deleteViewerImage() {
+void Phototonic::viewerDeleteImage() {
     if (imageViewer->isNewImage()) {
         showNewImageWarning(this);
         return;
@@ -1645,7 +1673,7 @@ void Phototonic::deleteViewerImage() {
     }
 }
 
-void Phototonic::deleteOp() {
+void Phototonic::deleteOperation() {
     if (QApplication::focusWidget() == thumbsViewer->imageTags->tagsTree) {
         thumbsViewer->imageTags->removeTag();
         return;
@@ -1662,17 +1690,16 @@ void Phototonic::deleteOp() {
     }
 
     if (Settings::layoutMode == ImageViewWidget) {
-        deleteViewerImage();
+        viewerDeleteImage();
         return;
     }
 
+    // Deleting selected thumbnails
     if (thumbsViewer->selectionModel()->selectedIndexes().size() < 1) {
         setStatus(tr("No selection"));
         return;
     }
 
-    // deleting from thumbnail viewer
-    bool deleteConfirmed = true;
     if (Settings::deleteConfirm) {
         QMessageBox msgBox;
         msgBox.setText(tr("Permanently delete selected images?"));
@@ -1684,64 +1711,57 @@ void Phototonic::deleteOp() {
         msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));
 
         if (msgBox.exec() != QMessageBox::Yes) {
-            deleteConfirmed = false;
+            return;
         }
     }
 
-    if (deleteConfirmed) {
-        QModelIndexList indexesList;
-        int nfiles = 0;
-        bool ok;
-        QList<int> rows;
-        int row;
+    ProgressDialog *progressDialog = new ProgressDialog(this);
+    progressDialog->show();
 
-        ProgressDialog *progressDialog = new ProgressDialog(this);
-        progressDialog->show();
+    int deleteFilesCount = 0;
+    bool deleteOk;
+    QList<int> rows;
+    int row;
+    QModelIndexList indexesList;
+    while ((indexesList = thumbsViewer->selectionModel()->selectedIndexes()).size()) {
+        QString fileName = thumbsViewer->thumbsViewerModel->item(
+                indexesList.first().row())->data(thumbsViewer->FileNameRole).toString();
+        progressDialog->opLabel->setText("Deleting " + fileName);
+        deleteOk = QFile::remove(fileName);
 
-        while ((indexesList = thumbsViewer->selectionModel()->selectedIndexes()).size()) {
-            QString fileName = thumbsViewer->thumbsViewerModel->item(
-                    indexesList.first().row())->data(thumbsViewer->FileNameRole).toString();
-            progressDialog->opLabel->setText("Deleting " + fileName);
-            ok = QFile::remove(fileName);
-
-            ++nfiles;
-            if (ok) {
-                row = indexesList.first().row();
-                rows << row;
-                thumbsViewer->thumbsViewerModel->removeRow(row);
-            } else {
-                QMessageBox msgBox;
-                msgBox.critical(this, tr("Error"), tr("Failed to delete image."));
-                break;
-            }
-            if (thumbsViewer->thumbsViewerModel->rowCount() > 0) {
-                thumbsViewer->setRowHidden(0, false);
-            }
-
-            if (progressDialog->abortOp) {
-                break;
-            }
+        ++deleteFilesCount;
+        if (deleteOk) {
+            row = indexesList.first().row();
+            rows << row;
+            thumbsViewer->thumbsViewerModel->removeRow(row);
+        } else {
+            QMessageBox msgBox;
+            msgBox.critical(this, tr("Error"), tr("Failed to delete image."));
+            break;
         }
 
-        if (thumbsViewer->thumbsViewerModel->rowCount()) {
-
-            qSort(rows.begin(), rows.end());
-            row = rows.at(0);
-
-            if (row >= thumbsViewer->thumbsViewerModel->rowCount()) {
-                row = thumbsViewer->thumbsViewerModel->rowCount() - 1;
-            }
-
-            thumbsViewer->setCurrentRow(row);
-            thumbsViewer->selectThumbByRow(row);
+        if (progressDialog->abortOp) {
+            break;
         }
-
-        progressDialog->close();
-        delete (progressDialog);
-
-        QString state = QString(tr("Deleted") + " " + tr("%n image(s)", "", nfiles));
-        setStatus(state);
     }
+
+    if (thumbsViewer->thumbsViewerModel->rowCount()) {
+        qSort(rows.begin(), rows.end());
+        row = rows.at(0);
+
+        if (row >= thumbsViewer->thumbsViewerModel->rowCount()) {
+            row = thumbsViewer->thumbsViewerModel->rowCount() - 1;
+        }
+
+        thumbsViewer->setCurrentRow(row);
+        thumbsViewer->selectThumbByRow(row);
+    }
+
+    progressDialog->close();
+    delete (progressDialog);
+
+    QString state = QString(tr("Deleted") + " " + tr("%n image(s)", "", deleteFilesCount));
+    setStatus(state);
 }
 
 void Phototonic::goTo(QString path) {
@@ -2741,7 +2761,7 @@ void Phototonic::goTop() {
 
 void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString copyMoveDirPath) {
     QApplication::restoreOverrideCursor();
-    Settings::copyOp = (keyMods == Qt::ControlModifier);
+    Settings::isCopyOperation = (keyMods == Qt::ControlModifier);
     QMessageBox msgBox;
     QString destDir;
 
@@ -2788,10 +2808,10 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString copyM
         }
     } else {
         CopyMoveDialog *copyMoveDialog = new CopyMoveDialog(this);
-        Settings::copyCutIdxList = thumbsViewer->selectionModel()->selectedIndexes();
+        Settings::copyCutIndexList = thumbsViewer->selectionModel()->selectedIndexes();
         copyMoveDialog->exec(thumbsViewer, destDir, false);
 
-        if (!Settings::copyOp) {
+        if (!Settings::isCopyOperation) {
             int row = copyMoveDialog->latestRow;
             if (thumbsViewer->thumbsViewerModel->rowCount()) {
                 if (row >= thumbsViewer->thumbsViewerModel->rowCount()) {
@@ -2803,7 +2823,7 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString copyM
             }
         }
 
-        QString stateString = QString((Settings::copyOp ? tr("Copied") : tr("Moved")) + " " +
+        QString stateString = QString((Settings::isCopyOperation ? tr("Copied") : tr("Moved")) + " " +
                                       tr("%n image(s)", "", copyMoveDialog->nFiles));
         setStatus(stateString);
         delete (copyMoveDialog);
@@ -3022,8 +3042,16 @@ void Phototonic::rename() {
 
 void Phototonic::removeMetadata() {
 
-    QString selectedImageFileName = thumbsViewer->getSingleSelectionFilename();
-    if (selectedImageFileName.isEmpty()) {
+    QModelIndexList indexList = thumbsViewer->selectionModel()->selectedIndexes();
+    QStringList fileList;
+    copyCutThumbsCount = indexList.size();
+
+    for (int thumb = 0; thumb < copyCutThumbsCount; ++thumb) {
+        fileList.append(thumbsViewer->thumbsViewerModel->item(indexList[thumb].
+                row())->data(thumbsViewer->FileNameRole).toString());
+    }
+
+    if (fileList.isEmpty()) {
         setStatus(tr("Invalid selection"));
         return;
     }
@@ -3033,26 +3061,33 @@ void Phototonic::removeMetadata() {
     }
 
     QMessageBox msgBox;
-    msgBox.setText(tr("Permanently remove all Exif metadata from image?"));
+    msgBox.setText(tr("Permanently remove all Exif metadata from selected images?"));
     msgBox.setWindowTitle(tr("Remove Metadata"));
     msgBox.setIcon(QMessageBox::Warning);
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
     msgBox.setDefaultButton(QMessageBox::Cancel);
-    msgBox.setButtonText(QMessageBox::Yes, tr("OK"));
+    msgBox.setButtonText(QMessageBox::Yes, tr("Remove Metadata"));
     msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));
     int ret = msgBox.exec();
 
     if (ret == QMessageBox::Yes) {
-        Exiv2::Image::AutoPtr image;
-        try {
-            image = Exiv2::ImageFactory::open(selectedImageFileName.toStdString());
-            image->clearMetadata();
-            image->writeMetadata();
+        for (int file = 0; file < fileList.size(); ++file) {
+            Exiv2::Image::AutoPtr image;
+            try {
+                image = Exiv2::ImageFactory::open(fileList[file].toStdString());
+                image->clearMetadata();
+                image->writeMetadata();
+            }
+            catch (Exiv2::Error &error) {
+                msgBox.critical(this, tr("Error"), tr("Failed to remove Exif metadata."));
+                return;
+            }
         }
-        catch (Exiv2::Error &error) {
-            msgBox.critical(this, tr("Error"), tr("Failed to remove Exif metadata."));
-            return;
-        }
+
+        QItemSelection dummy;
+        thumbsViewer->handleSelectionChanged(dummy);
+        QString state = QString(tr("Metadata removed from selected images"));
+        setStatus(state);
     }
 }
 
@@ -3075,7 +3110,7 @@ void Phototonic::deleteDirectory() {
     int ret = msgBox.exec();
 
     if (ret == QMessageBox::Yes) {
-        removeDirectoryOk = removeDirOp(deletePath);
+        removeDirectoryOk = removeDirectoryOperation(deletePath);
     } else {
         selectCurrentViewDir();
         return;
@@ -3166,25 +3201,24 @@ void Phototonic::showNewImageWarning(QWidget *parent) {
     msgBox.warning(parent, tr("Warning"), tr("Cannot perform action with temporary image."));
 }
 
-bool Phototonic::removeDirOp(QString dirToDelete) {
-    bool ok = true;
+bool Phototonic::removeDirectoryOperation(QString dirToDelete) {
+    bool removeDirOk;
     QDir dir(dirToDelete);
 
     Q_FOREACH(QFileInfo info, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden |
                                                 QDir::AllDirs | QDir::Files, QDir::DirsFirst)) {
             if (info.isDir()) {
-                ok = removeDirOp(info.absoluteFilePath());
+                removeDirOk = removeDirectoryOperation(info.absoluteFilePath());
             } else {
-                ok = QFile::remove(info.absoluteFilePath());
+                removeDirOk = QFile::remove(info.absoluteFilePath());
             }
 
-            if (!ok) {
-                return ok;
+            if (!removeDirOk) {
+                return removeDirOk;
             }
         }
-    ok = dir.rmdir(dirToDelete);
-
-    return ok;
+    removeDirOk = dir.rmdir(dirToDelete);
+    return removeDirOk;
 }
 
 void Phototonic::cleanupCropDialog() {

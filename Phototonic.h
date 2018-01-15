@@ -35,7 +35,7 @@ Q_OBJECT
 
 public:
 
-    int copyCutCount;
+    int copyCutThumbsCount;
 
     Phototonic(QString fileOrDirectory, QWidget *parent = 0);
 
@@ -142,7 +142,7 @@ private slots:
 
     void selectAllThumbs();
 
-    void deleteOp();
+    void deleteOperation();
 
     void cutThumbs();
 
@@ -427,7 +427,7 @@ private:
 
     void setupDocks();
 
-    void deleteViewerImage();
+    void viewerDeleteImage();
 
     void loadCurrentImage(int currentRow);
 
@@ -477,13 +477,13 @@ private:
 
     void showNewImageWarning(QWidget *parent);
 
-    bool removeDirOp(QString dirToDelete);
+    bool removeDirectoryOperation(QString dirToDelete);
 
     void setInterfaceEnabled(bool enable);
 
     void addBookmark(QString path);
 
-    void copyMoveImages(bool move);
+    void copyOrMoveImages(bool move);
 
     void setViewerKeyEventsEnabled(bool enabled);
 };

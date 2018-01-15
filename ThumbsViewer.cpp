@@ -143,7 +143,6 @@ bool ThumbsViewer::setCurrentIndexByName(QString &fileName) {
     if (indexList.size()) {
         currentIndex = indexList[0];
         setCurrentRow(currentIndex.row());
-        setRowHidden(currentIndex.row(), false);
         return true;
     }
 
