@@ -1,4 +1,9 @@
-# phototonic
-Image viewer and organizer
+# Phototonic Image Viewer
 
-Phototonic is not currently being maintained, please contact me if you wish to take the lead.
+### Latest Updates:
+##### 15.Jan.18
++ Code cleanup and removal of useless features.
++ Lots of bug fixes.
++ Added Remove Image Metadata action.
++ Enhanced keyboard settings.
++ Enhanced image info.
