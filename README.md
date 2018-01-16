@@ -59,9 +59,11 @@ Phototonic is an image viewer and organizer built with Qt and Exiv2, released un
 + qt5-svg (SVG support)
 
 ##### Quick and Dirty Build Instructions
+```
 $ tar -zxvf phototonic.tar.gz
 $ cd phototonic
 $ qmake
 $ make
 $ make install
 $ sudo make install
+```
