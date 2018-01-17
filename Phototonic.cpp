@@ -30,7 +30,7 @@
 #define THUMB_SIZE_MIN    50
 #define THUMB_SIZE_MAX    750
 
-Phototonic::Phototonic(QString fileOrDirectory, QWidget *parent) : QMainWindow(parent) {
+Phototonic::Phototonic(QStringList arguments, int argumentsStartAt, QWidget *parent) : QMainWindow(parent) {
     Settings::appSettings = new QSettings("phototonic", "phototonic");
     setDockOptions(QMainWindow::AllowNestedDocks);
     readSettings();
@@ -55,7 +55,7 @@ Phototonic::Phototonic(QString fileOrDirectory, QWidget *parent) : QMainWindow(p
     setWindowIcon(QIcon(":/images/phototonic.png"));
     setCentralWidget(thumbsViewer);
 
-    handleStartupArgs(fileOrDirectory);
+    handleStartupArguments(arguments, argumentsStartAt);
 
     copyMoveToDialog = nullptr;
     colorsDialog = nullptr;
@@ -70,24 +70,20 @@ Phototonic::Phototonic(QString fileOrDirectory, QWidget *parent) : QMainWindow(p
     if (Settings::layoutMode == ThumbViewWidget) {
         thumbsViewer->setFocus(Qt::OtherFocusReason);
     }
-
-    if (cliImageLoaded) {
-        QTimer::singleShot(100, this, SLOT(updateIndexByViewerImage()));
-    }
 }
 
-void Phototonic::handleStartupArgs(QString fileOrDirectory) {
-    cliImageLoaded = false;
-    if (fileOrDirectory.size()) {
-        QFileInfo cliFileOrDir(fileOrDirectory);
-        if (cliFileOrDir.isDir()) {
-            Settings::currentViewDir = fileOrDirectory;
-            cliImageLoaded = false;
+void Phototonic::handleStartupArguments(QStringList arguments, int argumentsStartAt) {
+    if (arguments.size() > argumentsStartAt) {
+        QFileInfo firstArgument(arguments.at(argumentsStartAt));
+        if (firstArgument.isDir()) {
+            Settings::currentViewDir = arguments.at(argumentsStartAt);
+        } else if (arguments.size() > argumentsStartAt +1) {
+            loadFileList(arguments, argumentsStartAt);
         } else {
-            Settings::currentViewDir = cliFileOrDir.absolutePath();
-            cliFileName = Settings::currentViewDir + QDir::separator() + cliFileOrDir.fileName();
-            cliImageLoaded = true;
-            loadImageBromCliArguments();
+            Settings::currentViewDir = firstArgument.absolutePath();
+            QString cliFileName = Settings::currentViewDir + QDir::separator() + firstArgument.fileName();
+            loadImageFromCliArguments(cliFileName);
+            QTimer::singleShot(1000, this, SLOT(updateIndexByViewerImage()));
         }
     } else {
         if (Settings::startupDir == Settings::SpecifiedDir) {
@@ -97,6 +93,10 @@ void Phototonic::handleStartupArgs(QString fileOrDirectory) {
         }
     }
     selectCurrentViewDir();
+}
+
+void Phototonic::loadFileList(QStringList arguments, int argumentsStartAt) {
+    qInfo() << "load file list " << arguments.at(argumentsStartAt);
 }
 
 bool Phototonic::event(QEvent *event) {
@@ -2504,12 +2504,11 @@ void Phototonic::loadSelectedThumbImage(const QModelIndex &idx) {
     thumbsViewer->setImageViewerWindowTitle();
 }
 
-void Phototonic::loadImageBromCliArguments() {
+void Phototonic::loadImageFromCliArguments(QString cliFileName) {
     QFile imageFile(cliFileName);
     if (!imageFile.exists()) {
         QMessageBox msgBox;
         msgBox.critical(this, tr("Error"), tr("Failed to open file \"%1\", file not found.").arg(cliFileName));
-        cliFileName = "";
         return;
     }
 
@@ -2724,9 +2723,6 @@ void Phototonic::hideViewer() {
     }
     setThumbsViewerWindowTitle();
 
-    if (!cliFileName.isEmpty()) {
-        cliFileName = "";
-    }
     restoreGeometry(Settings::appSettings->value("Geometry").toByteArray());
     restoreState(Settings::appSettings->value("WindowState").toByteArray());
 

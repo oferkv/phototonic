@@ -37,7 +37,7 @@ public:
 
     int copyCutThumbsCount;
 
-    Phototonic(QString fileOrDirectory, QWidget *parent = 0);
+    Phototonic(QStringList arguments, int argumentsStartAt, QWidget *parent = 0);
 
     QMenu *createPopupMenu();
 
@@ -60,7 +60,7 @@ public slots:
 
     void loadSelectedThumbImage(const QModelIndex &idx);
 
-    void loadImageBromCliArguments();
+    void loadImageFromCliArguments(QString cliFileName);
 
     void hideViewer();
 
@@ -259,7 +259,6 @@ private slots:
     void moveImagesTo();
 
 private:
-    QString cliFileName;
     QMenu *fileMenu;
     QMenu *editMenu;
     QMenu *goMenu;
@@ -407,7 +406,6 @@ private:
     bool needHistoryRecord;
     bool initComplete;
     bool needThumbsRefresh;
-    bool cliImageLoaded;
     bool shouldMaximize;
 
     bool editToolBarVisible;
@@ -433,7 +431,9 @@ private:
 
     void selectCurrentViewDir();
 
-    void handleStartupArgs(QString fileOrDirectory);
+    void handleStartupArguments(QStringList arguments, int argumentsStartAt);
+
+    void loadFileList(QStringList arguments, int argumentsStartAt);
 
     void addMenuSeparator(QWidget *widget);
 

@@ -17,40 +17,33 @@
  */
 
 #include "Phototonic.h"
-#include <ostream>
 #include <QApplication>
 
-using namespace std;
-
 static void showHelp() {
-    cout << VERSION << ", image viewer and organizer." << endl;
-    cout << "Usage: phototonic [OPTION...] [FILE | DIRECTORY]" << endl << endl;
-    cout << "  -h, --help\t\t\tshow this help" << endl;
-    cout << "  -l, --lang=LANGUAGE\t\tuse a specific language" << endl;
-    cout << endl << "Report bugs to oferkv@gmail.com" << endl;
+    qInfo() << VERSION << "image viewer.";
+    qInfo() << "Usage: phototonic [OPTION] [FILE... | DIRECTORY]";
+    qInfo() << "  -h, --help\t\t\tshow this help and exit";
+    qInfo() << "  -l, --lang=LANGUAGE\t\tstart with a specific translation";
 }
 
 int main(int argc, char *argv[]) {
     QApplication QApp(argc, argv);
-    QStringList args = QCoreApplication::arguments();
-    QString fileOrDirectory, language;
+    QStringList arguments = QCoreApplication::arguments();
+    QString language;
+    int argumentsStartAt = 1;
 
-    if (args.size() == 2) {
-        if (args.at(1)[0] == '-') {
+    if (arguments.size() == 2) {
+        if (arguments.at(1)[0] == '-') {
             showHelp();
             return -1;
         }
-        fileOrDirectory = args.at(1);
-    } else if (args.size() == 3 || args.size() == 4) {
-        if ((args.at(1) != "-l" && args.at(1) != "--lang")) {
+    } else if (arguments.size() > 3) {
+        if ((arguments.at(1) != "-l" && arguments.at(1) != "--lang")) {
             showHelp();
             return -1;
         }
-        language = args.at(2);
-
-        if (args.size() == 4) {
-            fileOrDirectory = args.at(3);
-        }
+        language = arguments.at(2);
+        argumentsStartAt = 3;
     }
 
     if (!language.size()) {
@@ -65,7 +58,7 @@ int main(int argc, char *argv[]) {
     qTranslatorPhototonic.load(":/translations/phototonic_" + language);
     QApp.installTranslator(&qTranslatorPhototonic);
 
-    Phototonic phototonic(fileOrDirectory);
+    Phototonic phototonic(arguments, argumentsStartAt);
     phototonic.show();
     return QApp.exec();
 }
