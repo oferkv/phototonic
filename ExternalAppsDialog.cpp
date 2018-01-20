@@ -40,32 +40,32 @@ ExternalAppsDialog::ExternalAppsDialog(QWidget *parent) : QDialog(parent) {
     appsTable->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
     appsTable->setShowGrid(false);
 
-    QHBoxLayout *addRemoveHbox = new QHBoxLayout;
+    QHBoxLayout *externalAppsLayout = new QHBoxLayout;
     QPushButton *addButton = new QPushButton(tr("Choose"));
     addButton->setIcon(QIcon::fromTheme("list-add"));
     connect(addButton, SIGNAL(clicked()), this, SLOT(add()));
-    addRemoveHbox->addWidget(addButton, 0, Qt::AlignRight);
+    externalAppsLayout->addWidget(addButton, 0, Qt::AlignRight);
     QPushButton *entryButton = new QPushButton(tr("Add manually"));
     entryButton->setIcon(QIcon::fromTheme("list-add"));
     connect(entryButton, SIGNAL(clicked()), this, SLOT(entry()));
-    addRemoveHbox->addWidget(entryButton, 0, Qt::AlignRight);
+    externalAppsLayout->addWidget(entryButton, 0, Qt::AlignRight);
     QPushButton *removeButton = new QPushButton(tr("Remove"));
     removeButton->setIcon(QIcon::fromTheme("list-remove"));
     connect(removeButton, SIGNAL(clicked()), this, SLOT(remove()));
-    addRemoveHbox->addWidget(removeButton, 0, Qt::AlignRight);
-    addRemoveHbox->addStretch(1);
+    externalAppsLayout->addWidget(removeButton, 0, Qt::AlignRight);
+    externalAppsLayout->addStretch(1);
 
-    QHBoxLayout *buttonsHbox = new QHBoxLayout;
+    QHBoxLayout *buttonsLayout = new QHBoxLayout;
     QPushButton *okButton = new QPushButton(tr("OK"));
     okButton->setIcon(QIcon::fromTheme("dialog-ok"));
     okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
-    buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);
-    QVBoxLayout *mainVbox = new QVBoxLayout;
-    mainVbox->addWidget(appsTable);
-    mainVbox->addLayout(addRemoveHbox);
-    mainVbox->addLayout(buttonsHbox);
-    setLayout(mainVbox);
+    buttonsLayout->addWidget(okButton, 0, Qt::AlignRight);
+    QVBoxLayout *externalAppsMainLayout = new QVBoxLayout;
+    externalAppsMainLayout->addWidget(appsTable);
+    externalAppsMainLayout->addLayout(externalAppsLayout);
+    externalAppsMainLayout->addLayout(buttonsLayout);
+    setLayout(externalAppsMainLayout);
 
     // Load external apps list
     QString key, val;
