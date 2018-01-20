@@ -17,6 +17,9 @@
  */
 
 #include <QtWidgets/QWidget>
+#include <QtWidgets/qboxlayout.h>
+#include <QtWidgets/qpushbutton.h>
+#include <QtWidgets/QtWidgets>
 #include "ImageViewer.h"
 #include "ResizeDialog.h"
 #include "Settings.h"
@@ -26,8 +29,9 @@ ResizeDialog::ResizeDialog(QWidget *parent, ImageViewer *imageViewer) : QDialog(
     setWindowIcon(QIcon::fromTheme("transform-scale", QIcon(":/images/phototonic.png")));
     newWidth = newHeight = 0;
 
-    if (Settings::dialogLastX)
+    if (Settings::dialogLastX) {
         move(Settings::dialogLastX, Settings::dialogLastY);
+    }
     this->imageViewer = imageViewer;
 
     width = lastWidth = imageViewer->getImageWidthPreCropped();
@@ -126,14 +130,16 @@ void ResizeDialog::setUnits() {
     }
 
     widthSpinBox->setValue(newWidth);
-    if (!keepAspect)
+    if (!keepAspect) {
         heightSpinBox->setValue(newHeight);
+    }
 }
 
 void ResizeDialog::adjustSizes() {
     static bool busy = false;
-    if (busy)
+    if (busy) {
         return;
+    }
     busy = true;
 
     if (keepAspect) {

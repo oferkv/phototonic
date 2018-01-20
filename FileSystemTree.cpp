@@ -18,32 +18,15 @@
 
 #include "FileSystemTree.h"
 
-bool FileSystemModel::hasChildren(const QModelIndex &parent) const {
-    if (parent.column() > 0)
-        return false;
-
-    if (!parent.isValid()) // drives
-        return true;
-
-    // return false if item cant have children
-    if (parent.flags() & Qt::ItemNeverHasChildren) {
-        return false;
-    }
-
-    // return if at least one child exists
-    return QDirIterator(filePath(parent), filter() | QDir::NoDotAndDotDot, QDirIterator::NoIteratorFlags).hasNext();
-}
-
 FileSystemTree::FileSystemTree(QWidget *parent) : QTreeView(parent) {
     setAcceptDrops(true);
     setDragEnabled(true);
     setDragDropMode(QAbstractItemView::InternalMove);
 
-    fsModel = new FileSystemModel();
-    fsModel->setRootPath("");
+    fileSystemModel = new FileSystemModel();
+    fileSystemModel->setRootPath("");
     setModelFlags();
-
-    setModel(fsModel);
+    setModel(fileSystemModel);
 
     for (int i = 1; i <= 3; ++i) {
         hideColumn(i);
@@ -82,16 +65,17 @@ void FileSystemTree::dragMoveEvent(QDragMoveEvent *event) {
 
 void FileSystemTree::dropEvent(QDropEvent *event) {
     if (event->source()) {
-        QString fstreeStr = "FileSystemTree";
-        bool dirOp = (event->source()->metaObject()->className() == fstreeStr);
+        QString fileSystemTreeStr = "FileSystemTree";
+        bool dirOp = (event->source()->metaObject()->className() == fileSystemTreeStr);
         emit dropOp(event->keyboardModifiers(), dirOp, event->mimeData()->urls().at(0).toLocalFile());
         setCurrentIndex(dndOrigSelection);
     }
 }
 
 void FileSystemTree::setModelFlags() {
-    fsModel->setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
-    if (Settings::showHiddenFiles)
-        fsModel->setFilter(fsModel->filter() | QDir::Hidden);
+    fileSystemModel->setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
+    if (Settings::showHiddenFiles) {
+        fileSystemModel->setFilter(fileSystemModel->filter() | QDir::Hidden);
+    }
 }
 

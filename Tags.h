@@ -27,7 +27,7 @@
 class ThumbsViewer;
 
 enum TagsDisplayMode {
-    FolderTagsDisplay,
+    DirectoryTagsDisplay,
     SelectionTagsDisplay
 };
 
@@ -62,7 +62,7 @@ public:
 
     QMenu *tagsMenu;
     QTreeWidget *tagsTree;
-    bool folderFilteringActive;
+    bool dirFilteringActive;
     QAction *removeTagAction;
     TagsDisplayMode currentDisplayMode;
 

@@ -79,6 +79,7 @@ void Phototonic::handleStartupArguments(QStringList arguments, int argumentsStar
             Settings::currentViewDir = arguments.at(argumentsStartAt);
         } else if (arguments.size() > argumentsStartAt +1) {
             loadFileList(arguments, argumentsStartAt);
+            return;
         } else {
             Settings::currentViewDir = firstArgument.absolutePath();
             QString cliFileName = Settings::currentViewDir + QDir::separator() + firstArgument.fileName();
@@ -297,7 +298,7 @@ void Phototonic::createActions() {
 
     settingsAction = new QAction(tr("Preferences"), this);
     settingsAction->setObjectName("settings");
-    settingsAction->setIcon(QIcon::fromTheme("preferences-other", QIcon(":/images/settings.png")));
+    settingsAction->setIcon(QIcon::fromTheme("preferences-system", QIcon(":/images/settings.png")));
     connect(settingsAction, SIGNAL(triggered()), this, SLOT(showSettings()));
 
     exitAction = new QAction(tr("Exit"), this);
@@ -441,7 +442,7 @@ void Phototonic::createActions() {
     includeSubDirectoriesAction->setObjectName("subFolders");
     includeSubDirectoriesAction->setIcon(QIcon(":/images/tree.png"));
     includeSubDirectoriesAction->setCheckable(true);
-    connect(includeSubDirectoriesAction, SIGNAL(triggered()), this, SLOT(setIncludeSubFolders()));
+    connect(includeSubDirectoriesAction, SIGNAL(triggered()), this, SLOT(setIncludeSubDirs()));
 
     pasteAction = new QAction(tr("Paste Here"), this);
     pasteAction->setObjectName("paste");
@@ -519,9 +520,10 @@ void Phototonic::createActions() {
     openWithMenuAction = new QAction(tr("Open With..."), this);
     openWithMenuAction->setObjectName("openWithMenu");
     openWithMenuAction->setMenu(openWithSubMenu);
-    chooseAppAction = new QAction(tr("Manage External Applications"), this);
-    chooseAppAction->setObjectName("chooseApp");
-    connect(chooseAppAction, SIGNAL(triggered()), this, SLOT(chooseExternalApp()));
+    externalAppsAction = new QAction(tr("External Applications"), this);
+    externalAppsAction->setIcon(QIcon::fromTheme("preferences-other", QIcon(":/images/settings.png")));
+    externalAppsAction->setObjectName("chooseApp");
+    connect(externalAppsAction, SIGNAL(triggered()), this, SLOT(chooseExternalApp()));
 
     addBookmarkAction = new QAction(tr("Add Bookmark"), this);
     addBookmarkAction->setObjectName("addBookmark");
@@ -681,6 +683,7 @@ void Phototonic::createMenus() {
     addAction(filterImagesFocusAction);
     addAction(setPathFocusAction);
     editMenu->addSeparator();
+    editMenu->addAction(externalAppsAction);
     editMenu->addAction(settingsAction);
 
     goMenu = menuBar()->addMenu(tr("&Go"));
@@ -857,7 +860,6 @@ void Phototonic::createFileSystemTree() {
     addDockWidget(Qt::LeftDockWidgetArea, fileSystemDock);
 
     // Context menu
-    fileSystemTree->addAction(viewImageAction);
     fileSystemTree->addAction(createDirectoryAction);
     fileSystemTree->addAction(renameAction);
     fileSystemTree->addAction(deleteAction);
@@ -872,7 +874,7 @@ void Phototonic::createFileSystemTree() {
                                            const QModelIndex&)), this, SLOT(goSelectedDir(
                                                                                     const QModelIndex &)));
 
-    connect(fileSystemTree->fsModel, SIGNAL(rowsRemoved(
+    connect(fileSystemTree->fileSystemModel, SIGNAL(rowsRemoved(
                                                     const QModelIndex &, int, int)),
             this, SLOT(checkDirState(
                                const QModelIndex &, int, int)));
@@ -880,7 +882,7 @@ void Phototonic::createFileSystemTree() {
     connect(fileSystemTree, SIGNAL(dropOp(Qt::KeyboardModifiers, bool, QString)),
             this, SLOT(dropOp(Qt::KeyboardModifiers, bool, QString)));
 
-    fileSystemTree->setCurrentIndex(fileSystemTree->fsModel->index(QDir::currentPath()));
+    fileSystemTree->setCurrentIndex(fileSystemTree->fileSystemModel->index(QDir::currentPath()));
 
     connect(fileSystemTree->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)),
             this, SLOT(updateActions()));
@@ -957,7 +959,7 @@ void Phototonic::reload() {
     }
 }
 
-void Phototonic::setIncludeSubFolders() {
+void Phototonic::setIncludeSubDirs() {
     Settings::includeSubDirectories = includeSubDirectoriesAction->isChecked();
     refreshThumbs(false);
 }
@@ -1090,8 +1092,8 @@ void Phototonic::runExternalApp() {
 }
 
 void Phototonic::updateExternalApps() {
-    int actionNum = 0;
-    QMapIterator<QString, QString> eaIter(Settings::externalApps);
+    int actionNumber = 0;
+    QMapIterator<QString, QString> externalAppsIterator(Settings::externalApps);
 
     QList<QAction *> actionList = openWithSubMenu->actions();
     if (!actionList.empty()) {
@@ -1110,21 +1112,21 @@ void Phototonic::updateExternalApps() {
         openWithSubMenu->clear();
     }
 
-    while (eaIter.hasNext()) {
-        ++actionNum;
-        eaIter.next();
-        QAction *extAppAct = new QAction(eaIter.key(), this);
-        if (actionNum < 10) {
-            extAppAct->setShortcut(QKeySequence("Alt+" + QString::number(actionNum)));
+    while (externalAppsIterator.hasNext()) {
+        ++actionNumber;
+        externalAppsIterator.next();
+        QAction *extAppAct = new QAction(externalAppsIterator.key(), this);
+        if (actionNumber < 10) {
+            extAppAct->setShortcut(QKeySequence("Alt+" + QString::number(actionNumber)));
         }
-        extAppAct->setIcon(QIcon::fromTheme(eaIter.key()));
+        extAppAct->setIcon(QIcon::fromTheme(externalAppsIterator.key()));
         connect(extAppAct, SIGNAL(triggered()), this, SLOT(runExternalApp()));
         openWithSubMenu->addAction(extAppAct);
         imageViewer->addAction(extAppAct);
     }
 
     openWithSubMenu->addSeparator();
-    openWithSubMenu->addAction(chooseAppAction);
+    openWithSubMenu->addAction(externalAppsAction);
 }
 
 void Phototonic::chooseExternalApp() {
@@ -1181,8 +1183,9 @@ void Phototonic::toggleFullScreen() {
         imageViewer->setCursorHiding(true);
     } else {
         showNormal();
-        if (shouldMaximize)
+        if (shouldMaximize) {
             showMaximized();
+        }
         imageViewer->setCursorHiding(false);
         Settings::isFullScreen = false;
     }
@@ -1204,6 +1207,10 @@ void Phototonic::copyOrCutThumbs(bool isCopyOperation) {
 
     Settings::isCopyOperation = isCopyOperation;
     pasteAction->setEnabled(true);
+
+    QString state = QString((Settings::isCopyOperation ? tr("Copied") : tr("Cut")) + " " +
+                            tr("%n image(s) to clipboard", "", copyCutThumbsCount));
+    setStatus(state);
 }
 
 void Phototonic::cutThumbs() {
@@ -1552,7 +1559,7 @@ void Phototonic::pasteThumbs() {
             fileInfo = QFileInfo(Settings::copyCutFileList[thumb]);
             if (fileInfo.absolutePath() == destDir) {
                 QMessageBox msgBox;
-                msgBox.critical(this, tr("Error"), tr("Can not copy or move to the same folder"));
+                msgBox.critical(this, tr("Error"), tr("Can not copy or move to the same directory"));
                 return;
             }
         }
@@ -1766,16 +1773,16 @@ void Phototonic::deleteOperation() {
 
 void Phototonic::goTo(QString path) {
     thumbsViewer->setNeedScroll(true);
-    fileSystemTree->setCurrentIndex(fileSystemTree->fsModel->index(path));
+    fileSystemTree->setCurrentIndex(fileSystemTree->fileSystemModel->index(path));
     Settings::currentViewDir = path;
     refreshThumbs(true);
 }
 
 void Phototonic::goSelectedDir(const QModelIndex &idx) {
+    (void)idx;
     thumbsViewer->setNeedScroll(true);
     Settings::currentViewDir = getSelectedPath();
     refreshThumbs(true);
-    fileSystemTree->expand(idx);
 }
 
 void Phototonic::goPathBarDir() {
@@ -2776,13 +2783,13 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString copyM
     }
 
     if (!isValidPath(destDir)) {
-        msgBox.critical(this, tr("Error"), tr("Can not move or copy images to this folder."));
+        msgBox.critical(this, tr("Error"), tr("Can not move or copy images to this directory."));
         selectCurrentViewDir();
         return;
     }
 
     if (destDir == Settings::currentViewDir) {
-        msgBox.critical(this, tr("Error"), tr("Destination folder is same as source."));
+        msgBox.critical(this, tr("Error"), tr("Destination directory is the same as the source directory."));
         return;
     }
 
@@ -2791,16 +2798,16 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString copyM
                 copyMoveDirPath.size() - copyMoveDirPath.lastIndexOf(QDir::separator()) - 1);
 
         QString question = tr("Move \"%1\" to \"%2\"?").arg(dirOnly).arg(destDir);
-        int ret = QMessageBox::question(this, tr("Move folder"), question,
+        int ret = QMessageBox::question(this, tr("Move Directory"), question,
                                         QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
 
         if (ret == QMessageBox::Yes) {
             QFile dir(copyMoveDirPath);
             bool ok = dir.rename(destDir + QDir::separator() + dirOnly);
             if (!ok) {
-                msgBox.critical(this, tr("Error"), tr("Failed to move folder."));
+                msgBox.critical(this, tr("Error"), tr("Failed to move directory."));
             }
-            setStatus(tr("Folder moved"));
+            setStatus(tr("Directory moved"));
         }
     } else {
         CopyMoveDialog *copyMoveDialog = new CopyMoveDialog(this);
@@ -2829,9 +2836,8 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString copyM
 }
 
 void Phototonic::selectCurrentViewDir() {
-    QModelIndex idx = fileSystemTree->fsModel->index(Settings::currentViewDir);
+    QModelIndex idx = fileSystemTree->fileSystemModel->index(Settings::currentViewDir);
     if (idx.isValid()) {
-        fileSystemTree->expand(idx);
         fileSystemTree->setCurrentIndex(idx);
     }
 }
@@ -2888,7 +2894,7 @@ void Phototonic::reloadThumbsSlot() {
     QDir checkPath(Settings::currentViewDir);
     if (!checkPath.exists() || !checkPath.isReadable()) {
         QMessageBox msgBox;
-        msgBox.critical(this, tr("Error"), tr("Failed to open folder:") + " " + Settings::currentViewDir);
+        msgBox.critical(this, tr("Error"), tr("Failed to open directory ") + Settings::currentViewDir);
         return;
     }
 
@@ -2914,7 +2920,7 @@ void Phototonic::setThumbsViewerWindowTitle() {
 
 void Phototonic::renameDir() {
     QModelIndexList selectedDirs = fileSystemTree->selectionModel()->selectedRows();
-    QFileInfo dirInfo = QFileInfo(fileSystemTree->fsModel->filePath(selectedDirs[0]));
+    QFileInfo dirInfo = QFileInfo(fileSystemTree->fileSystemModel->filePath(selectedDirs[0]));
 
     bool renameOk;
     QString title = tr("Rename") + " " + dirInfo.completeBaseName();
@@ -2939,13 +2945,13 @@ void Phototonic::renameDir() {
     renameOk = dir.rename(newFullPathName);
     if (!renameOk) {
         QMessageBox msgBox;
-        msgBox.critical(this, tr("Error"), tr("Failed to rename folder."));
+        msgBox.critical(this, tr("Error"), tr("Failed to rename directory."));
         selectCurrentViewDir();
         return;
     }
 
     if (Settings::currentViewDir == dirInfo.absoluteFilePath()) {
-        fileSystemTree->setCurrentIndex(fileSystemTree->fsModel->index(newFullPathName));
+        fileSystemTree->setCurrentIndex(fileSystemTree->fileSystemModel->index(newFullPathName));
     } else {
         selectCurrentViewDir();
     }
@@ -3090,18 +3096,18 @@ void Phototonic::removeMetadata() {
 void Phototonic::deleteDirectory() {
     bool removeDirectoryOk;
     QModelIndexList selectedDirs = fileSystemTree->selectionModel()->selectedRows();
-    QString deletePath = fileSystemTree->fsModel->filePath(selectedDirs[0]);
+    QString deletePath = fileSystemTree->fileSystemModel->filePath(selectedDirs[0]);
     QModelIndex idxAbove = fileSystemTree->indexAbove(selectedDirs[0]);
     QFileInfo dirInfo = QFileInfo(deletePath);
-    QString question = tr("Permanently delete \"%1\" and all of its contents?").arg(dirInfo.completeBaseName());
+    QString question = tr("Permanently delete the directory %1 and all of its contents?").arg(dirInfo.completeBaseName());
 
     QMessageBox msgBox;
     msgBox.setText(question);
-    msgBox.setWindowTitle(tr("Delete folder"));
+    msgBox.setWindowTitle(tr("Delete directory"));
     msgBox.setIcon(QMessageBox::Warning);
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
     msgBox.setDefaultButton(QMessageBox::Cancel);
-    msgBox.setButtonText(QMessageBox::Yes, tr("Delete Folder"));
+    msgBox.setButtonText(QMessageBox::Yes, tr("Delete Directory"));
     msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));
     int ret = msgBox.exec();
 
@@ -3113,7 +3119,7 @@ void Phototonic::deleteDirectory() {
     }
 
     if (!removeDirectoryOk) {
-        msgBox.critical(this, tr("Error"), tr("Failed to delete folder."));
+        msgBox.critical(this, tr("Error"), tr("Failed to delete directory."));
         selectCurrentViewDir();
         return;
     }
@@ -3132,11 +3138,11 @@ void Phototonic::deleteDirectory() {
 
 void Phototonic::createSubDirectory() {
     QModelIndexList selectedDirs = fileSystemTree->selectionModel()->selectedRows();
-    QFileInfo dirInfo = QFileInfo(fileSystemTree->fsModel->filePath(selectedDirs[0]));
+    QFileInfo dirInfo = QFileInfo(fileSystemTree->fileSystemModel->filePath(selectedDirs[0]));
 
     bool ok;
-    QString newDirName = QInputDialog::getText(this, tr("New Sub folder"),
-                                               tr("New folder name:"), QLineEdit::Normal, "", &ok);
+    QString newDirName = QInputDialog::getText(this, tr("New Sub directory"),
+                                               tr("New directory name:"), QLineEdit::Normal, "", &ok);
 
     if (!ok) {
         selectCurrentViewDir();
@@ -3155,7 +3161,7 @@ void Phototonic::createSubDirectory() {
 
     if (!ok) {
         QMessageBox msgBox;
-        msgBox.critical(this, tr("Error"), tr("Failed to create new folder."));
+        msgBox.critical(this, tr("Error"), tr("Failed to create new directory."));
         selectCurrentViewDir();
         return;
     }
@@ -3167,7 +3173,7 @@ void Phototonic::createSubDirectory() {
 QString Phototonic::getSelectedPath() {
     QModelIndexList selectedDirs = fileSystemTree->selectionModel()->selectedRows();
     if (selectedDirs.size() && selectedDirs[0].isValid()) {
-        QFileInfo dirInfo = QFileInfo(fileSystemTree->fsModel->filePath(selectedDirs[0]));
+        QFileInfo dirInfo = QFileInfo(fileSystemTree->fileSystemModel->filePath(selectedDirs[0]));
         return dirInfo.absoluteFilePath();
     } else
         return "";

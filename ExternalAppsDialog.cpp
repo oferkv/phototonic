@@ -22,7 +22,7 @@
 
 ExternalAppsDialog::ExternalAppsDialog(QWidget *parent) : QDialog(parent) {
     setWindowTitle(tr("Manage External Applications"));
-    setWindowIcon(QIcon::fromTheme("document-properties", QIcon(":/images/phototonic.png")));
+    setWindowIcon(QIcon::fromTheme("preferences-other", QIcon(":/images/phototonic.png")));
     resize(350, 250);
 
     appsTable = new QTableView(this);

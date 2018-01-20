@@ -17,23 +17,21 @@
  */
 
 #include <QtWidgets>
+#include <QtWidgets/QtWidgets>
 #include "Settings.h"
+#include "FileSystemModel.h"
 
 #ifndef FILE_SYSTEM_TREE_H
 #define FILE_SYSTEM_TREE_H
 
-class FileSystemModel : public QFileSystemModel {
-public:
-    bool hasChildren(const QModelIndex &parent) const;
-};
-
 class FileSystemTree : public QTreeView {
+
 Q_OBJECT
 
 public:
     FileSystemTree(QWidget *parent);
 
-    FileSystemModel *fsModel;
+    FileSystemModel *fileSystemModel;
 
     QModelIndex getCurrentIndex();
 

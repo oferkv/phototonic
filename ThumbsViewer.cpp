@@ -535,7 +535,7 @@ void ThumbsViewer::initThumbs() {
         thumbFileInfo = thumbFileInfoList.at(fileIndex);
 
         metadataCache->loadImageMetadata(thumbFileInfo.filePath());
-        if (imageTags->folderFilteringActive && imageTags->isImageFilteredOut(thumbFileInfo.filePath())) {
+        if (imageTags->dirFilteringActive && imageTags->isImageFilteredOut(thumbFileInfo.filePath())) {
             continue;
         }
 

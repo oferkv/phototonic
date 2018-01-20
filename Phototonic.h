@@ -74,7 +74,7 @@ private slots:
 
     void reload();
 
-    void setIncludeSubFolders();
+    void setIncludeSubDirs();
 
     void showSettings();
 
@@ -365,7 +365,7 @@ private:
     QAction *setPathFocusAction;
 
     QAction *openWithMenuAction;
-    QAction *chooseAppAction;
+    QAction *externalAppsAction;
     QAction *invertSelectionAction;
 
     QLineEdit *pathLineEdit;

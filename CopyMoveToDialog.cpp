@@ -22,7 +22,8 @@
 void CopyMoveToDialog::selection(const QItemSelection &, const QItemSelection &) {
     if (pathsTable->selectionModel()->selectedRows().size() > 0) {
         destinationLabel->setText(tr("Destination:") + " " +
-                            pathsTableModel->item(pathsTable->selectionModel()->selectedRows().at(0).row())->text());
+                                  pathsTableModel->item(
+                                          pathsTable->selectionModel()->selectedRows().at(0).row())->text());
     }
 }
 
@@ -56,7 +57,7 @@ void CopyMoveToDialog::justClose() {
 }
 
 void CopyMoveToDialog::add() {
-    QString dirName = QFileDialog::getExistingDirectory(this, tr("Choose Folder"), currentPath,
+    QString dirName = QFileDialog::getExistingDirectory(this, tr("Choose Directory"), currentPath,
                                                         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     if (dirName.isEmpty()) {
         return;

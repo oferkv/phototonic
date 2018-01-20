@@ -46,7 +46,7 @@ ImageTags::ImageTags(QWidget *parent, ThumbsViewer *thumbsViewer, MetadataCache 
     mainLayout->addWidget(tagsTree);
     setLayout(mainLayout);
     currentDisplayMode = SelectionTagsDisplay;
-    folderFilteringActive = false;
+    dirFilteringActive = false;
 
     connect(tagsTree, SIGNAL(itemChanged(QTreeWidgetItem * , int)),
             this, SLOT(saveLastChangedTag(QTreeWidgetItem * , int)));
@@ -251,7 +251,7 @@ void ImageTags::showTagsFilter() {
         return;
     busy = true;
 
-    setActiveViewMode(FolderTagsDisplay);
+    setActiveViewMode(DirectoryTagsDisplay);
 
     QTreeWidgetItemIterator it(tagsTree);
     while (*it) {
@@ -289,8 +289,8 @@ void ImageTags::setActiveViewMode(TagsDisplayMode mode) {
     removeTagAction->setVisible(currentDisplayMode == SelectionTagsDisplay);
     addToSelectionAction->setVisible(currentDisplayMode == SelectionTagsDisplay);
     removeFromSelectionAction->setVisible(currentDisplayMode == SelectionTagsDisplay);
-    actionClearTagsFilter->setVisible(currentDisplayMode == FolderTagsDisplay);
-    negateAction->setVisible(currentDisplayMode == FolderTagsDisplay);
+    actionClearTagsFilter->setVisible(currentDisplayMode == DirectoryTagsDisplay);
+    negateAction->setVisible(currentDisplayMode == DirectoryTagsDisplay);
 }
 
 bool ImageTags::isImageFilteredOut(QString imageFileName) {
@@ -328,14 +328,14 @@ QSet<QString> ImageTags::getCheckedTags(Qt::CheckState tagState) {
 void ImageTags::applyTagFiltering() {
     imageFilteringTags = getCheckedTags(Qt::Checked);
     if (imageFilteringTags.size()) {
-        folderFilteringActive = true;
+        dirFilteringActive = true;
         if (negateFilterEnabled) {
             tabs->setTabIcon(1, QIcon(":/images/tag_filter_negate.png"));
         } else {
             tabs->setTabIcon(1, QIcon(":/images/tag_filter_on.png"));
         }
     } else {
-        folderFilteringActive = false;
+        dirFilteringActive = false;
         tabs->setTabIcon(1, QIcon(":/images/tag_filter_off.png"));
     }
 
@@ -404,7 +404,7 @@ void ImageTags::tabsChanged(int index) {
 
 void ImageTags::tagClicked(QTreeWidgetItem *item, int) {
     if (item == lastChangedTagItem) {
-        if (currentDisplayMode == FolderTagsDisplay) {
+        if (currentDisplayMode == DirectoryTagsDisplay) {
             applyTagFiltering();
         } else {
             applyUserAction(item);

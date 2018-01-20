@@ -20,7 +20,7 @@
 
 SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     setWindowTitle(tr("Preferences"));
-    setWindowIcon(QIcon::fromTheme("preferences-other", QIcon(":/images/phototonic.png")));
+    setWindowIcon(QIcon::fromTheme("preferences-system", QIcon(":/images/phototonic.png")));
 
     // Zoom large images
     QGroupBox *fitLargeGroupBox = new QGroupBox(tr("Fit Large Images"));
@@ -397,7 +397,7 @@ void SettingsDialog::pickThumbsTextColor() {
 }
 
 void SettingsDialog::pickStartupDir() {
-    QString dirName = QFileDialog::getExistingDirectory(this, tr("Choose Startup Folder"), "",
+    QString dirName = QFileDialog::getExistingDirectory(this, tr("Choose Startup Directory"), "",
                                                         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     startupDirLineEdit->setText(dirName);
 }

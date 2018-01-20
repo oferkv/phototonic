@@ -1,3 +1,21 @@
+#
+#  Copyright (C) 2013-2018 Ofer Kashayov <oferkv@live.com>
+#  This file is part of Phototonic Image Viewer.
+#
+#  Phototonic is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Phototonic is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
+#
+
 TEMPLATE = app
 TARGET = phototonic
 INCLUDEPATH += .
@@ -8,16 +26,16 @@ QMAKE_CXXFLAGS += $$(CXXFLAGS)
 QMAKE_CFLAGS += $$(CFLAGS)
 QMAKE_LFLAGS += $$(LDFLAGS)
 
-# Input
 HEADERS += SettingsDialog.h Phototonic.h ThumbsViewer.h ImageViewer.h CropRubberband.h Settings.h InfoViewer.h \
 			FileSystemTree.h Bookmarks.h DirCompleter.h Tags.h MetadataCache.h ShortcutsTable.h CopyMoveDialog.h \
 			CopyMoveToDialog.h CropDialog.h ProgressDialog.h ColorsDialog.h ResizeDialog.h ExternalAppsDialog.h \
-			ImagePreview.h
+			ImagePreview.h FileSystemModel.h
 
 SOURCES += SettingsDialog.cpp main.cpp Phototonic.cpp ThumbsViewer.cpp ImageViewer.cpp CropRubberband.cpp \
 			Settings.cpp InfoViewer.cpp FileSystemTree.cpp Bookmarks.cpp DirCompleter.cpp Tags.cpp \
 			MetadataCache.cpp ShortcutsTable.cpp CopyMoveDialog.cpp CopyMoveToDialog.cpp CropDialog.cpp \
-			ProgressDialog.cpp ExternalAppsDialog.cpp ColorsDialog.cpp ResizeDialog.cpp ImagePreview.cpp
+			ProgressDialog.cpp ExternalAppsDialog.cpp ColorsDialog.cpp ResizeDialog.cpp ImagePreview.cpp \
+			FileSystemModel.cpp
 
 RESOURCES += phototonic.qrc
 

@@ -16,7 +16,11 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QtWidgets/QWidget>
+#include <QtWidgets>
+#include <QtWidgets/qboxlayout.h>
+#include <QtWidgets/qpushbutton.h>
+#include <QtWidgets/qlabel.h>
+#include <QtWidgets/QtWidgets>
 #include "ImageViewer.h"
 #include "ColorsDialog.h"
 #include "Settings.h"
@@ -201,27 +205,31 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageViewer *imageViewer) : QDialog(
 }
 
 void ColorsDialog::applyColors(int) {
-    if (brightSlider->value() >= 0)
+    if (brightSlider->value() >= 0) {
         Settings::brightVal = (brightSlider->value() * 500 / 100) + 100;
-    else
+    } else {
         Settings::brightVal = brightSlider->value() + 100;
+    }
 
-    if (contrastSlider->value() >= 0)
+    if (contrastSlider->value() >= 0) {
         Settings::contrastVal = (contrastSlider->value() * 79 / 100) + 78;
-    else
+    } else {
         Settings::contrastVal = contrastSlider->value() + 79;
+    }
 
     Settings::hueVal = hueSlider->value() * 127 / 100;
 
-    if (saturationSlider->value() >= 0)
+    if (saturationSlider->value() >= 0) {
         Settings::saturationVal = (saturationSlider->value() * 500 / 100) + 100;
-    else
+    } else {
         Settings::saturationVal = saturationSlider->value() + 100;
+    }
 
-    if (lightnessSlider->value() >= 0)
+    if (lightnessSlider->value() >= 0) {
         Settings::lightnessVal = (lightnessSlider->value() * 200 / 100) + 100;
-    else
+    } else {
         Settings::lightnessVal = lightnessSlider->value() + 100;
+    }
 
     Settings::redVal = redSlider->value();
     Settings::greenVal = greenSlider->value();
