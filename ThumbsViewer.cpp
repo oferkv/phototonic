@@ -420,6 +420,13 @@ void ThumbsViewer::loadFileList() {
     for (int i = 0; i < Settings::customFilesList.size(); i++) {
         addThumb(Settings::customFilesList[i]);
     }
+    updateThumbsCount();
+
+    imageTags->populateTagsTree();
+
+    if (thumbFileInfoList.size() && selectionModel()->selectedIndexes().size() == 0) {
+        selectThumbByRow(0);
+    }
 
     emit showBusy(false);
     isBusy = false;
@@ -568,11 +575,6 @@ void ThumbsViewer::initThumbs() {
     }
 
     imageTags->populateTagsTree();
-    if (imageTags->currentDisplayMode == SelectionTagsDisplay) {
-        imageTags->showSelectedImagesTags();
-    } else {
-        imageTags->showTagsFilter();
-    }
 
     if (thumbFileInfoList.size() && selectionModel()->selectedIndexes().size() == 0) {
         selectThumbByRow(0);
@@ -666,6 +668,12 @@ void ThumbsViewer::loadThumbsRange() {
 }
 
 void ThumbsViewer::addThumb(QString &imageFullPath) {
+
+    metadataCache->loadImageMetadata(imageFullPath);
+    if (imageTags->dirFilteringActive && imageTags->isImageFilteredOut(imageFullPath)) {
+        return;
+    }
+
     QStandardItem *thumbItem = new QStandardItem();
     QImageReader thumbReader;
     QSize hintSize;

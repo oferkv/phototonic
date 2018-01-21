@@ -89,7 +89,7 @@ ImageTags::ImageTags(QWidget *parent, ThumbsViewer *thumbsViewer, MetadataCache 
     tagsMenu->addAction(negateAction);
 }
 
-void ImageTags::redrawTree() {
+void ImageTags::redrawTagTree() {
     tagsTree->resizeColumnToContents(0);
     tagsTree->sortItems(0, Qt::AscendingOrder);
 }
@@ -240,7 +240,7 @@ void ImageTags::showSelectedImagesTags() {
     addToSelectionAction->setEnabled(selectedThumbsNum ? true : false);
     removeFromSelectionAction->setEnabled(selectedThumbsNum ? true : false);
 
-    redrawTree();
+    redrawTagTree();
     busy = false;
 }
 
@@ -267,7 +267,7 @@ void ImageTags::showTagsFilter() {
         ++it;
     }
 
-    redrawTree();
+    redrawTagTree();
     busy = false;
 }
 
@@ -279,7 +279,13 @@ void ImageTags::populateTagsTree() {
         addTag(tag, false);
     }
 
-    redrawTree();
+    redrawTagTree();
+
+    if (currentDisplayMode == SelectionTagsDisplay) {
+        showSelectedImagesTags();
+    } else {
+        showTagsFilter();
+    }
 }
 
 void ImageTags::setActiveViewMode(TagsDisplayMode mode) {
@@ -298,11 +304,11 @@ bool ImageTags::isImageFilteredOut(QString imageFileName) {
     QSetIterator<QString> filteredTagsIt(imageFilteringTags);
     while (filteredTagsIt.hasNext()) {
         if (imageTags.contains(filteredTagsIt.next())) {
-            return negateFilterEnabled ? true : false;
+            return negateFilterEnabled;
         }
     }
 
-    return negateFilterEnabled ? false : true;
+    return !negateFilterEnabled;
 }
 
 void ImageTags::resetTagsState() {
@@ -471,7 +477,7 @@ void ImageTags::addNewTag() {
 
     addTag(newTagName, false);
     Settings::knownTags.insert(newTagName);
-    redrawTree();
+    redrawTagTree();
 }
 
 void ImageTags::removeTag() {

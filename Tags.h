@@ -79,7 +79,7 @@ private:
 
     void applyUserAction(QList<QTreeWidgetItem *> tagsList);
 
-    void redrawTree();
+    void redrawTagTree();
 
     QSet<QString> imageFilteringTags;
     QAction *actionAddTag;

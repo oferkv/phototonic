@@ -28,8 +28,8 @@
 #include "ImagePreview.h"
 #include "FileListWidget.h"
 
-#define THUMB_SIZE_MIN    50
-#define THUMB_SIZE_MAX    750
+#define THUMB_SIZE_MIN    25
+#define THUMB_SIZE_MAX    450
 
 Phototonic::Phototonic(QStringList argumentsList, int filesStartAt, QWidget *parent) : QMainWindow(parent) {
     Settings::appSettings = new QSettings("phototonic", "phototonic");
@@ -1314,7 +1314,7 @@ void Phototonic::copyOrMoveImages(bool isMoveOperation) {
 
 void Phototonic::thumbsZoomIn() {
     if (thumbsViewer->thumbSize < THUMB_SIZE_MAX) {
-        thumbsViewer->thumbSize += 50;
+        thumbsViewer->thumbSize += THUMB_SIZE_MIN;
         thumbsZoomOutAction->setEnabled(true);
         if (thumbsViewer->thumbSize == THUMB_SIZE_MAX)
             thumbsZoomInAction->setEnabled(false);
@@ -1324,7 +1324,7 @@ void Phototonic::thumbsZoomIn() {
 
 void Phototonic::thumbsZoomOut() {
     if (thumbsViewer->thumbSize > THUMB_SIZE_MIN) {
-        thumbsViewer->thumbSize -= 50;
+        thumbsViewer->thumbSize -= THUMB_SIZE_MIN;
         thumbsZoomInAction->setEnabled(true);
         if (thumbsViewer->thumbSize == THUMB_SIZE_MIN)
             thumbsZoomOutAction->setEnabled(false);
@@ -1799,6 +1799,8 @@ void Phototonic::deleteOperation() {
 }
 
 void Phototonic::goTo(QString path) {
+    Settings::isLoadFileList = false;
+    fileListWidget->clearSelection();
     thumbsViewer->setNeedToScroll(true);
     fileSystemTree->setCurrentIndex(fileSystemTree->fileSystemModel->index(path));
     Settings::currentDirectory = path;
@@ -3225,6 +3227,12 @@ void Phototonic::wheelEvent(QWheelEvent *event) {
             }
         }
         event->accept();
+    } else if (event->modifiers() == Qt::ControlModifier && QApplication::focusWidget() == thumbsViewer){
+        if (event->delta() < 0) {
+            thumbsZoomOut();
+        } else {
+            thumbsZoomIn();
+        }
     }
 }
 
