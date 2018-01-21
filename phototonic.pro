@@ -29,13 +29,13 @@ QMAKE_LFLAGS += $$(LDFLAGS)
 HEADERS += SettingsDialog.h Phototonic.h ThumbsViewer.h ImageViewer.h CropRubberband.h Settings.h InfoViewer.h \
 			FileSystemTree.h Bookmarks.h DirCompleter.h Tags.h MetadataCache.h ShortcutsTable.h CopyMoveDialog.h \
 			CopyMoveToDialog.h CropDialog.h ProgressDialog.h ColorsDialog.h ResizeDialog.h ExternalAppsDialog.h \
-			ImagePreview.h FileSystemModel.h
+			ImagePreview.h FileSystemModel.h FileListWidget.h
 
 SOURCES += SettingsDialog.cpp main.cpp Phototonic.cpp ThumbsViewer.cpp ImageViewer.cpp CropRubberband.cpp \
 			Settings.cpp InfoViewer.cpp FileSystemTree.cpp Bookmarks.cpp DirCompleter.cpp Tags.cpp \
 			MetadataCache.cpp ShortcutsTable.cpp CopyMoveDialog.cpp CopyMoveToDialog.cpp CropDialog.cpp \
 			ProgressDialog.cpp ExternalAppsDialog.cpp ColorsDialog.cpp ResizeDialog.cpp ImagePreview.cpp \
-			FileSystemModel.cpp
+			FileSystemModel.cpp FileListWidget.cpp
 
 RESOURCES += phototonic.qrc
 

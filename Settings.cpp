@@ -104,7 +104,9 @@ namespace Settings {
     bool bookmarksDockVisible;
     bool imagePreviewDockVisible;
     bool imageInfoDockVisible;
-    QString currentViewDir;
-    QString thumbsBackImage;
+    QString currentDirectory;
+    QString thumbsBackgroundImage;
+    QStringList customFilesList;
+    bool isLoadFileList;
 }
 

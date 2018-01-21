@@ -33,15 +33,11 @@ int main(int argc, char *argv[]) {
     int argumentsStartAt = 1;
 
     if (arguments.size() == 2) {
-        if (arguments.at(1)[0] == '-') {
+        if (arguments.at(1).startsWith("-")) {
             showHelp();
             return -1;
         }
-    } else if (arguments.size() > 3) {
-        if ((arguments.at(1) != "-l" && arguments.at(1) != "--lang")) {
-            showHelp();
-            return -1;
-        }
+    } else if (arguments.size() >= 3 && (arguments.at(1) == "-l" || arguments.at(1) == "--lang")) {
         language = arguments.at(2);
         argumentsStartAt = 3;
     }

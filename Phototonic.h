@@ -27,6 +27,7 @@
 #include "CropDialog.h"
 #include "ColorsDialog.h"
 #include "ResizeDialog.h"
+#include "FileListWidget.h"
 
 #define VERSION "Phototonic v2.0.1"
 
@@ -37,7 +38,7 @@ public:
 
     int copyCutThumbsCount;
 
-    Phototonic(QStringList arguments, int argumentsStartAt, QWidget *parent = 0);
+    Phototonic(QStringList argumentsList, int filesStartAt, QWidget *parent = 0);
 
     QMenu *createPopupMenu();
 
@@ -82,7 +83,7 @@ private slots:
 
     void updateActions();
 
-    void reloadThumbsSlot();
+    void onReloadThumbs();
 
     void renameDir();
 
@@ -258,13 +259,14 @@ private slots:
 
     void moveImagesTo();
 
+    void onFileListSelected();
+
 private:
     QMenu *fileMenu;
     QMenu *editMenu;
     QMenu *goMenu;
     QMenu *sortMenu;
     QMenu *viewMenu;
-    QMenu *toolsMenu;
     QMenu *helpMenu;
     QMenu *zoomSubMenu;
     QMenu *transformSubMenu;
@@ -396,6 +398,7 @@ private:
     QVBoxLayout *imageViewLayout;
     bool interfaceDisabled;
     MetadataCache *metadataCache;
+    FileListWidget *fileListWidget;
 
     enum CentralWidgets {
         ThumbViewWidget = 0,
@@ -431,9 +434,9 @@ private:
 
     void selectCurrentViewDir();
 
-    void handleStartupArguments(QStringList arguments, int argumentsStartAt);
+    void processStartupArguments(QStringList argumentsList, int filesStartAt);
 
-    void loadFileList(QStringList arguments, int argumentsStartAt);
+    void loadStartupFileList(QStringList argumentsList, int filesStartAt);
 
     void addMenuSeparator(QWidget *widget);
 
@@ -449,19 +452,19 @@ private:
 
     void createStatusBar();
 
-    void createFileSystemTree();
+    void createFileSystemDock();
 
-    void createBookmarks();
+    void createBookmarksDock();
 
-    void createImagePreview();
+    void createImagePreviewDock();
 
-    void createImageTags();
+    void createImageTagsDock();
 
     void writeSettings();
 
     void readSettings();
 
-    void recordHistory(QString dir);
+    void addPathHistoryRecord(QString dir);
 
     bool isValidPath(QString &path);
 

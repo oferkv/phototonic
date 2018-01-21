@@ -48,7 +48,13 @@ public:
 
     void loadPrepare();
 
-    void load();
+    void applyFilter();
+
+    void reLoad();
+
+    void loadFileList();
+
+    void loadSubDirectories();
 
     void setThumbColors();
 
@@ -60,7 +66,7 @@ public:
 
     void setImageViewerWindowTitle();
 
-    void setNeedScroll(bool needScroll);
+    void setNeedToScroll(bool needToScroll);
 
     void selectCurrentIndex();
 
@@ -94,8 +100,8 @@ public:
     QStandardItemModel *thumbsViewerModel;
     QDir::SortFlags thumbsSortFlags;
     int thumbSize;
-    QString filterStr;
-    bool busy;
+    QString filterString;
+    bool isBusy;
 
 protected:
     void startDrag(Qt::DropActions);
@@ -123,8 +129,8 @@ private:
     QWidget *mainWindow;
     MetadataCache *metadataCache;
     ImageViewer *imageViewer;
-    bool abortOp;
-    bool isNeedScroll;
+    bool isAbortThumbsLoading;
+    bool isNeedToScroll;
     int currentRow;
     bool scrolledForward;
     int thumbsRangeFirst;
@@ -140,7 +146,7 @@ public slots:
 
     void loadVisibleThumbs(int scrollBarValue = 0);
 
-    void handleSelectionChanged(const QItemSelection &selection);
+    void onSelectionChanged(const QItemSelection &selection);
 
     void invertSelection();
 

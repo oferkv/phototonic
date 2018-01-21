@@ -26,11 +26,12 @@
 #include "ExternalAppsDialog.h"
 #include "ProgressDialog.h"
 #include "ImagePreview.h"
+#include "FileListWidget.h"
 
 #define THUMB_SIZE_MIN    50
 #define THUMB_SIZE_MAX    750
 
-Phototonic::Phototonic(QStringList arguments, int argumentsStartAt, QWidget *parent) : QMainWindow(parent) {
+Phototonic::Phototonic(QStringList argumentsList, int filesStartAt, QWidget *parent) : QMainWindow(parent) {
     Settings::appSettings = new QSettings("phototonic", "phototonic");
     setDockOptions(QMainWindow::AllowNestedDocks);
     readSettings();
@@ -39,10 +40,10 @@ Phototonic::Phototonic(QStringList arguments, int argumentsStartAt, QWidget *par
     createMenus();
     createToolBars();
     createStatusBar();
-    createFileSystemTree();
-    createBookmarks();
-    createImagePreview();
-    createImageTags();
+    createFileSystemDock();
+    createBookmarksDock();
+    createImagePreviewDock();
+    createImageTagsDock();
     createImageViewer();
     updateExternalApps();
     loadShortcuts();
@@ -54,14 +55,13 @@ Phototonic::Phototonic(QStringList arguments, int argumentsStartAt, QWidget *par
     restoreState(Settings::appSettings->value("WindowState").toByteArray());
     setWindowIcon(QIcon(":/images/phototonic.png"));
     setCentralWidget(thumbsViewer);
-
-    handleStartupArguments(arguments, argumentsStartAt);
+    processStartupArguments(argumentsList, filesStartAt);
 
     copyMoveToDialog = nullptr;
     colorsDialog = nullptr;
     cropDialog = nullptr;
     initComplete = true;
-    thumbsViewer->busy = false;
+    thumbsViewer->isBusy = false;
     currentHistoryIdx = -1;
     needHistoryRecord = true;
     interfaceDisabled = false;
@@ -72,32 +72,38 @@ Phototonic::Phototonic(QStringList arguments, int argumentsStartAt, QWidget *par
     }
 }
 
-void Phototonic::handleStartupArguments(QStringList arguments, int argumentsStartAt) {
-    if (arguments.size() > argumentsStartAt) {
-        QFileInfo firstArgument(arguments.at(argumentsStartAt));
+void Phototonic::processStartupArguments(QStringList argumentsList, int filesStartAt) {
+    if (argumentsList.size() > filesStartAt) {
+        QFileInfo firstArgument(argumentsList.at(filesStartAt));
         if (firstArgument.isDir()) {
-            Settings::currentViewDir = arguments.at(argumentsStartAt);
-        } else if (arguments.size() > argumentsStartAt + 1) {
-            loadFileList(arguments, argumentsStartAt);
+            Settings::currentDirectory = argumentsList.at(filesStartAt);
+        } else if (argumentsList.size() > filesStartAt + 1) {
+            loadStartupFileList(argumentsList, filesStartAt);
             return;
         } else {
-            Settings::currentViewDir = firstArgument.absolutePath();
-            QString cliFileName = Settings::currentViewDir + QDir::separator() + firstArgument.fileName();
+            Settings::currentDirectory = firstArgument.absolutePath();
+            QString cliFileName = Settings::currentDirectory + QDir::separator() + firstArgument.fileName();
             loadImageFromCliArguments(cliFileName);
             QTimer::singleShot(1000, this, SLOT(updateIndexByViewerImage()));
         }
     } else {
         if (Settings::startupDir == Settings::SpecifiedDir) {
-            Settings::currentViewDir = Settings::specifiedStartDir;
+            Settings::currentDirectory = Settings::specifiedStartDir;
         } else if (Settings::startupDir == Settings::RememberLastDir) {
-            Settings::currentViewDir = Settings::appSettings->value("lastDir").toString();
+            Settings::currentDirectory = Settings::appSettings->value("lastDir").toString();
         }
     }
     selectCurrentViewDir();
 }
 
-void Phototonic::loadFileList(QStringList arguments, int argumentsStartAt) {
-    qInfo() << "load file list " << arguments.at(argumentsStartAt);
+void Phototonic::loadStartupFileList(QStringList argumentsList, int filesStartAt) {
+    Settings::customFilesList.clear();
+    for (int i = filesStartAt; i < argumentsList.size(); i++) {
+        Settings::customFilesList << argumentsList[i];
+    }
+    fileSystemTree->clearSelection();
+    fileListWidget->setItemSelected(fileListWidget->itemAt(0, 0), true);
+    Settings::isLoadFileList = true;
 }
 
 bool Phototonic::event(QEvent *event) {
@@ -850,39 +856,22 @@ void Phototonic::createStatusBar() {
     statusBar()->setStyleSheet("QStatusBar::item { border: 0px solid black }; ");
 }
 
-void Phototonic::createFileSystemTree() {
+void Phototonic::onFileListSelected() {
+    if (initComplete && fileListWidget->itemAt(0,0)->isSelected()) {
+        Settings::isLoadFileList = true;
+        fileSystemTree->clearSelection();
+        refreshThumbs(true);
+    }
+}
+
+void Phototonic::createFileSystemDock() {
     fileSystemDock = new QDockWidget(tr("File System"), this);
     fileSystemDock->setObjectName("File System");
 
-    QListWidget *fileListListWidget;
-    if (false) {
-        fileListListWidget = new QListWidget(this);
-        fileListListWidget->setIconSize(QSize(16, 16));
-        QListWidgetItem *fileListItem  = new QListWidgetItem(tr("File List"), fileListListWidget);
-        fileListItem->setIcon(QIcon::fromTheme("edit-select-all"));
-        fileListListWidget->insertItem(0, fileListItem);
-        fileListListWidget->setMaximumHeight((int)(QFontMetrics(font()).height() * 1.5));
-    }
+    fileListWidget = new FileListWidget(fileSystemDock);
+    connect(fileListWidget, SIGNAL(itemSelectionChanged()),this, SLOT(onFileListSelected()));
 
     fileSystemTree = new FileSystemTree(fileSystemDock);
-
-    QVBoxLayout *mainLayout = new QVBoxLayout;
-    mainLayout->setContentsMargins(0, 0, 0, 0);
-    mainLayout->setSpacing(0);
-    if (false) {
-        mainLayout->addWidget(fileListListWidget);
-    }
-
-    mainLayout->addWidget(fileSystemTree);
-
-    QWidget *fileSystemTreeMainWidget = new QWidget(fileSystemDock);
-    fileSystemTreeMainWidget->setLayout(mainLayout);
-    fileSystemDock->setWidget(fileSystemTreeMainWidget);
-    connect(fileSystemDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setFileSystemDockVisibility()));
-    connect(fileSystemDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setFileSystemDockVisibility()));
-    addDockWidget(Qt::LeftDockWidgetArea, fileSystemDock);
-
-    // Context menu
     fileSystemTree->addAction(createDirectoryAction);
     fileSystemTree->addAction(renameAction);
     fileSystemTree->addAction(deleteAction);
@@ -909,9 +898,24 @@ void Phototonic::createFileSystemTree() {
 
     connect(fileSystemTree->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)),
             this, SLOT(updateActions()));
+
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->setSpacing(0);
+    mainLayout->addWidget(fileListWidget);
+    mainLayout->addWidget(fileSystemTree);
+
+    QWidget *fileSystemTreeMainWidget = new QWidget(fileSystemDock);
+    fileSystemTreeMainWidget->setLayout(mainLayout);
+
+    fileSystemDock->setWidget(fileSystemTreeMainWidget);
+    connect(fileSystemDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setFileSystemDockVisibility()));
+    connect(fileSystemDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setFileSystemDockVisibility()));
+    addDockWidget(Qt::LeftDockWidgetArea, fileSystemDock);
+
 }
 
-void Phototonic::createBookmarks() {
+void Phototonic::createBookmarksDock() {
     bookmarksDock = new QDockWidget(tr("Bookmarks"), this);
     bookmarksDock->setObjectName("Bookmarks");
     bookmarks = new BookMarks(bookmarksDock);
@@ -933,7 +937,7 @@ void Phototonic::createBookmarks() {
     bookmarks->setContextMenuPolicy(Qt::ActionsContextMenu);
 }
 
-void Phototonic::createImagePreview() {
+void Phototonic::createImagePreviewDock() {
     imagePreviewDock = new QDockWidget(tr("Preview"), this);
     imagePreviewDock->setObjectName("ImagePreview");
     imagePreviewDock->setWidget(thumbsViewer->imagePreview);
@@ -942,7 +946,7 @@ void Phototonic::createImagePreview() {
     addDockWidget(Qt::RightDockWidgetArea, imagePreviewDock);
 }
 
-void Phototonic::createImageTags() {
+void Phototonic::createImageTagsDock() {
     tagsDock = new QDockWidget(tr("Tags"), this);
     tagsDock->setObjectName("Tags");
     thumbsViewer->imageTags = new ImageTags(tagsDock, thumbsViewer, metadataCache);
@@ -951,7 +955,7 @@ void Phototonic::createImageTags() {
     connect(tagsDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setTagsDockVisibility()));
     connect(tagsDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setTagsDockVisibility()));
     connect(thumbsViewer->imageTags, SIGNAL(setStatus(QString)), this, SLOT(setStatus(QString)));
-    connect(thumbsViewer->imageTags, SIGNAL(reloadThumbs()), this, SLOT(reloadThumbsSlot()));
+    connect(thumbsViewer->imageTags, SIGNAL(reloadThumbs()), this, SLOT(onReloadThumbs()));
     connect(thumbsViewer->imageTags->removeTagAction, SIGNAL(triggered()), this, SLOT(deleteOperation()));
 }
 
@@ -988,8 +992,8 @@ void Phototonic::setIncludeSubDirs() {
 }
 
 void Phototonic::refreshThumbs(bool scrollToTop) {
-    thumbsViewer->setNeedScroll(scrollToTop);
-    QTimer::singleShot(0, this, SLOT(reloadThumbsSlot()));
+    thumbsViewer->setNeedToScroll(scrollToTop);
+    QTimer::singleShot(0, this, SLOT(onReloadThumbs()));
 }
 
 void Phototonic::showHiddenFiles() {
@@ -1575,7 +1579,7 @@ void Phototonic::pasteThumbs() {
         return;
     }
 
-    bool pasteInCurrDir = (Settings::currentViewDir == destDir);
+    bool pasteInCurrDir = (Settings::currentDirectory == destDir);
     QFileInfo fileInfo;
     if (!Settings::isCopyOperation && pasteInCurrDir) {
         for (int thumb = 0; thumb < Settings::copyCutFileList.size(); ++thumb) {
@@ -1795,31 +1799,33 @@ void Phototonic::deleteOperation() {
 }
 
 void Phototonic::goTo(QString path) {
-    thumbsViewer->setNeedScroll(true);
+    thumbsViewer->setNeedToScroll(true);
     fileSystemTree->setCurrentIndex(fileSystemTree->fileSystemModel->index(path));
-    Settings::currentViewDir = path;
+    Settings::currentDirectory = path;
     refreshThumbs(true);
 }
 
 void Phototonic::goSelectedDir(const QModelIndex &idx) {
     (void) idx;
-    thumbsViewer->setNeedScroll(true);
-    Settings::currentViewDir = getSelectedPath();
+    Settings::isLoadFileList = false;
+    fileListWidget->clearSelection();
+    thumbsViewer->setNeedToScroll(true);
+    Settings::currentDirectory = getSelectedPath();
     refreshThumbs(true);
 }
 
 void Phototonic::goPathBarDir() {
-    thumbsViewer->setNeedScroll(true);
+    thumbsViewer->setNeedToScroll(true);
 
     QDir checkPath(pathLineEdit->text());
     if (!checkPath.exists() || !checkPath.isReadable()) {
         QMessageBox msgBox;
         msgBox.critical(this, tr("Error"), tr("Invalid Path:") + " " + pathLineEdit->text());
-        pathLineEdit->setText(Settings::currentViewDir);
+        pathLineEdit->setText(Settings::currentDirectory);
         return;
     }
 
-    Settings::currentViewDir = pathLineEdit->text();
+    Settings::currentDirectory = pathLineEdit->text();
     refreshThumbs(true);
     selectCurrentViewDir();
 }
@@ -1829,13 +1835,13 @@ void Phototonic::bookmarkClicked(QTreeWidgetItem *item, int col) {
 }
 
 void Phototonic::setThumbsFilter() {
-    thumbsViewer->filterStr = filterLineEdit->text();
+    thumbsViewer->filterString = filterLineEdit->text();
     refreshThumbs(true);
 }
 
 void Phototonic::clearThumbsFilter() {
     if (filterLineEdit->text() == "") {
-        thumbsViewer->filterStr = filterLineEdit->text();
+        thumbsViewer->filterString = filterLineEdit->text();
         refreshThumbs(true);
     }
 }
@@ -1861,7 +1867,7 @@ void Phototonic::goForward() {
 }
 
 void Phototonic::goUp() {
-    QFileInfo fileInfo = QFileInfo(Settings::currentViewDir);
+    QFileInfo fileInfo = QFileInfo(Settings::currentDirectory);
     goTo(fileInfo.dir().absolutePath());
 }
 
@@ -1948,9 +1954,9 @@ void Phototonic::writeSettings() {
     Settings::appSettings->setValue("imagePreviewDockVisible", (bool) Settings::imagePreviewDockVisible);
     Settings::appSettings->setValue("startupDir", (int) Settings::startupDir);
     Settings::appSettings->setValue("specifiedStartDir", Settings::specifiedStartDir);
-    Settings::appSettings->setValue("thumbsBackImage", Settings::thumbsBackImage);
+    Settings::appSettings->setValue("thumbsBackgroundImage", Settings::thumbsBackgroundImage);
     Settings::appSettings->setValue("lastDir",
-                                    Settings::startupDir == Settings::RememberLastDir ? Settings::currentViewDir : "");
+                                    Settings::startupDir == Settings::RememberLastDir ? Settings::currentDirectory : "");
     Settings::appSettings->setValue(Settings::optionShowImageName, (bool) Settings::showImageName);
     Settings::appSettings->setValue("smallToolbarIcons", (bool) Settings::smallToolbarIcons);
     Settings::appSettings->setValue("hideDockTitlebars", (bool) Settings::hideDockTitlebars);
@@ -2070,7 +2076,7 @@ void Phototonic::readSettings() {
     Settings::imageInfoDockVisible = Settings::appSettings->value("imageInfoDockVisible").toBool();
     Settings::startupDir = (Settings::StartupDir) Settings::appSettings->value("startupDir").toInt();
     Settings::specifiedStartDir = Settings::appSettings->value("specifiedStartDir").toString();
-    Settings::thumbsBackImage = Settings::appSettings->value("thumbsBackImage").toString();
+    Settings::thumbsBackgroundImage = Settings::appSettings->value("thumbsBackgroundImage").toString();
     Settings::showImageName = Settings::appSettings->value(Settings::optionShowImageName).toBool();
     Settings::smallToolbarIcons = Settings::appSettings->value("smallToolbarIcons").toBool();
     Settings::hideDockTitlebars = Settings::appSettings->value("hideDockTitlebars").toBool();
@@ -2099,6 +2105,8 @@ void Phototonic::readSettings() {
         Settings::knownTags.insert(Settings::appSettings->value(tags.at(i)).toString());
     }
     Settings::appSettings->endGroup();
+
+    Settings::isLoadFileList = false;
 }
 
 void Phototonic::setupDocks() {
@@ -2811,7 +2819,7 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString copyM
         return;
     }
 
-    if (destDir == Settings::currentViewDir) {
+    if (destDir == Settings::currentDirectory) {
         msgBox.critical(this, tr("Error"), tr("Destination directory is the same as the source directory."));
         return;
     }
@@ -2859,7 +2867,7 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString copyM
 }
 
 void Phototonic::selectCurrentViewDir() {
-    QModelIndex idx = fileSystemTree->fileSystemModel->index(Settings::currentViewDir);
+    QModelIndex idx = fileSystemTree->fileSystemModel->index(Settings::currentDirectory);
     if (idx.isValid()) {
         fileSystemTree->setCurrentIndex(idx);
     }
@@ -2870,24 +2878,25 @@ void Phototonic::checkDirState(const QModelIndex &, int, int) {
         return;
     }
 
-    if (thumbsViewer->busy) {
+    if (thumbsViewer->isBusy) {
         thumbsViewer->abort();
     }
 
-    if (!QDir().exists(Settings::currentViewDir)) {
-        Settings::currentViewDir = "";
-        QTimer::singleShot(0, this, SLOT(reloadThumbsSlot()));
+    if (!QDir().exists(Settings::currentDirectory)) {
+        Settings::currentDirectory.clear();
+        QTimer::singleShot(0, this, SLOT(onReloadThumbs()));
     }
 }
 
-void Phototonic::recordHistory(QString dir) {
+void Phototonic::addPathHistoryRecord(QString dir) {
     if (!needHistoryRecord) {
         needHistoryRecord = true;
         return;
     }
 
-    if (pathHistoryList.size() && dir == pathHistoryList.at(currentHistoryIdx))
+    if (pathHistoryList.size() && dir == pathHistoryList.at(currentHistoryIdx)) {
         return;
+    }
 
     pathHistoryList.insert(++currentHistoryIdx, dir);
 
@@ -2900,45 +2909,47 @@ void Phototonic::recordHistory(QString dir) {
     }
 }
 
-void Phototonic::reloadThumbsSlot() {
-    if (thumbsViewer->busy || !initComplete) {
+void Phototonic::onReloadThumbs() {
+    if (thumbsViewer->isBusy || !initComplete) {
         thumbsViewer->abort();
-        QTimer::singleShot(0, this, SLOT(reloadThumbsSlot()));
+        QTimer::singleShot(0, this, SLOT(onReloadThumbs()));
         return;
     }
 
-    if (Settings::currentViewDir.isEmpty()) {
-        Settings::currentViewDir = getSelectedPath();
-        if (Settings::currentViewDir.isEmpty()) {
+    if (!Settings::isLoadFileList) {
+        if (Settings::currentDirectory.isEmpty()) {
+            Settings::currentDirectory = getSelectedPath();
+            if (Settings::currentDirectory.isEmpty()) {
+                return;
+            }
+        }
+
+        QDir checkPath(Settings::currentDirectory);
+        if (!checkPath.exists() || !checkPath.isReadable()) {
+            QMessageBox msgBox;
+            msgBox.critical(this, tr("Error"), tr("Failed to open directory ") + Settings::currentDirectory);
+            setStatus(tr("No directory selected"));
             return;
         }
-    }
 
-    QDir checkPath(Settings::currentViewDir);
-    if (!checkPath.exists() || !checkPath.isReadable()) {
-        QMessageBox msgBox;
-        msgBox.critical(this, tr("Error"), tr("Failed to open directory ") + Settings::currentViewDir);
-        return;
-    }
+        thumbsViewer->infoView->clear();
 
-    thumbsViewer->infoView->clear();
-
-    pathLineEdit->setText(Settings::currentViewDir);
-    recordHistory(Settings::currentViewDir);
-    if (currentHistoryIdx > 0) {
-        goBackAction->setEnabled(true);
+        pathLineEdit->setText(Settings::currentDirectory);
+        addPathHistoryRecord(Settings::currentDirectory);
+        if (currentHistoryIdx > 0) {
+            goBackAction->setEnabled(true);
+        }
     }
 
     if (Settings::layoutMode == ThumbViewWidget) {
         setThumbsViewerWindowTitle();
     }
 
-    thumbsViewer->busy = true;
-    thumbsViewer->load();
+    thumbsViewer->reLoad();
 }
 
 void Phototonic::setThumbsViewerWindowTitle() {
-    setWindowTitle(Settings::currentViewDir + " - Phototonic");
+    setWindowTitle(Settings::currentDirectory + " - Phototonic");
 }
 
 void Phototonic::renameDir() {
@@ -2973,7 +2984,7 @@ void Phototonic::renameDir() {
         return;
     }
 
-    if (Settings::currentViewDir == dirInfo.absoluteFilePath()) {
+    if (Settings::currentDirectory == dirInfo.absoluteFilePath()) {
         fileSystemTree->setCurrentIndex(fileSystemTree->fileSystemModel->index(newFullPathName));
     } else {
         selectCurrentViewDir();
@@ -3011,55 +3022,50 @@ void Phototonic::rename() {
     imageViewer->setCursorHiding(false);
 
     QFile currentFile(selectedImageFileName);
-    QString newImageFullPath = Settings::currentViewDir;
-    bool renameOk;
-    QString title = tr("Rename Image");
+    QString newImageFullPath = Settings::currentDirectory;
+    bool renameConfirmed;
     QString newImageName = QInputDialog::getText(this,
-                                                 title, tr("Rename %1 to")
+                                                 tr("Rename Image"), tr("Rename %1 to")
                                                                 .arg(QFileInfo(selectedImageFileName).fileName())
                                                         + "\t\t\t",
                                                  QLineEdit::Normal,
                                                  QFileInfo(selectedImageFileName).completeBaseName(),
-                                                 &renameOk);
+                                                 &renameConfirmed);
 
-    if (!renameOk) {
-        goto cleanUp;
-    }
-
-    if (newImageName.isEmpty()) {
+    if (renameConfirmed && newImageName.isEmpty()) {
         QMessageBox msgBox;
         msgBox.critical(this, tr("Error"), tr("No name entered."));
-        goto cleanUp;
+        renameConfirmed = false;
     }
 
-    newImageName += "." + QFileInfo(selectedImageFileName).suffix();
-    if (newImageFullPath.right(1) == QDir::separator()) {
-        newImageFullPath += newImageName;
-    } else {
-        newImageFullPath += QDir::separator() + newImageName;
-    }
-
-    renameOk = currentFile.rename(newImageFullPath);
-    if (renameOk) {
-        QModelIndexList indexesList = thumbsViewer->selectionModel()->selectedIndexes();
-        thumbsViewer->thumbsViewerModel->item(
-                indexesList.first().row())->setData(newImageFullPath, thumbsViewer->FileNameRole);
-
-        thumbsViewer->thumbsViewerModel->item(
-                indexesList.first().row())->setData(newImageName, Qt::DisplayRole);
-
-        imageViewer->setInfo(newImageName);
-        imageViewer->viewerImageFullPath = newImageFullPath;
-
-        if (Settings::layoutMode == ImageViewWidget) {
-            thumbsViewer->setImageViewerWindowTitle();
+    if (renameConfirmed) {
+        newImageName += "." + QFileInfo(selectedImageFileName).suffix();
+        if (newImageFullPath.right(1) == QDir::separator()) {
+            newImageFullPath += newImageName;
+        } else {
+            newImageFullPath += QDir::separator() + newImageName;
         }
-    } else {
-        QMessageBox msgBox;
-        msgBox.critical(this, tr("Error"), tr("Failed to rename image."));
+
+        if (currentFile.rename(newImageFullPath)) {
+            QModelIndexList indexesList = thumbsViewer->selectionModel()->selectedIndexes();
+            thumbsViewer->thumbsViewerModel->item(
+                    indexesList.first().row())->setData(newImageFullPath, thumbsViewer->FileNameRole);
+
+            thumbsViewer->thumbsViewerModel->item(
+                    indexesList.first().row())->setData(newImageName, Qt::DisplayRole);
+
+            imageViewer->setInfo(newImageName);
+            imageViewer->viewerImageFullPath = newImageFullPath;
+
+            if (Settings::layoutMode == ImageViewWidget) {
+                thumbsViewer->setImageViewerWindowTitle();
+            }
+        } else {
+            QMessageBox msgBox;
+            msgBox.critical(this, tr("Error"), tr("Failed to rename image."));
+        }
     }
 
-    cleanUp:
     if (isFullScreen()) {
         imageViewer->setCursorHiding(true);
     }
@@ -3110,7 +3116,7 @@ void Phototonic::removeMetadata() {
         }
 
         QItemSelection dummy;
-        thumbsViewer->handleSelectionChanged(dummy);
+        thumbsViewer->onSelectionChanged(dummy);
         QString state = QString(tr("Metadata removed from selected images"));
         setStatus(state);
     }
@@ -3151,7 +3157,7 @@ void Phototonic::deleteDirectory() {
     QString state = QString(tr("Removed \"%1\"").arg(deletePath));
     setStatus(state);
 
-    if (Settings::currentViewDir == deletePath) {
+    if (Settings::currentDirectory == deletePath) {
         if (idxAbove.isValid()) {
             fileSystemTree->setCurrentIndex(idxAbove);
         }

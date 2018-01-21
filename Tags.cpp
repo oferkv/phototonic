@@ -127,7 +127,6 @@ void ImageTags::setTagIcon(QTreeWidgetItem *tagItem, TagIcons icon) {
 
 void ImageTags::addTag(QString tagName, bool tagChecked) {
     QTreeWidgetItem *tagItem = new QTreeWidgetItem();
-
     tagItem->setText(0, tagName);
     tagItem->setCheckState(0, tagChecked ? Qt::Checked : Qt::Unchecked);
     setTagIcon(tagItem, tagChecked ? TagIconEnabled : TagIconDisabled);

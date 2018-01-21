@@ -153,7 +153,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     thumbsBackgroundImageLayout->addWidget(thumbsBackgroundImageLineEdit);
     thumbsBackgroundImageLayout->addWidget(chooseThumbsBackImageButton);
     thumbsBackgroundImageLayout->addStretch(1);
-    thumbsBackgroundImageLineEdit->setText(Settings::thumbsBackImage);
+    thumbsBackgroundImageLineEdit->setText(Settings::thumbsBackgroundImage);
 
     // Thumbnail pages to read ahead
     QLabel *thumbsPagesReadLabel = new QLabel(tr("Number of thumbnail pages to read ahead:"));
@@ -337,7 +337,7 @@ void SettingsDialog::saveSettings() {
     Settings::viewerBackgroundColor = imageViewerBackgroundColor;
     Settings::thumbsBackgroundColor = thumbsBackgroundColor;
     Settings::thumbsTextColor = thumbsTextColor;
-    Settings::thumbsBackImage = thumbsBackgroundImageLineEdit->text();
+    Settings::thumbsBackgroundImage = thumbsBackgroundImageLineEdit->text();
     Settings::thumbsPagesReadCount = (unsigned int)thumbPagesSpinBox->value();
     Settings::wrapImageList = wrapListCheckBox->isChecked();
     Settings::defaultSaveQuality = saveQualitySpinBox->value();

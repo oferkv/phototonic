@@ -39,7 +39,7 @@ ShortcutsTable::ShortcutsTable() {
     shortcutsMenu->addAction(clearAction);
     setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this, SIGNAL(customContextMenuRequested(QPoint)), SLOT(showShortcutPopupMenu(QPoint)));
-    shortcutsFilter = "";
+    shortcutsFilter.clear();
 }
 
 void ShortcutsTable::addRow(QString action, QString description, QString shortcut) {
