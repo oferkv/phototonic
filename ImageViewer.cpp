@@ -21,7 +21,7 @@
 #include "Settings.h"
 #include "ImageViewer.h"
 
-#define CLIPBOARD_IMAGE_NAME        "clipboard.png"
+#define CLIPBOARD_IMAGE_NAME "clipboard.png"
 #define ROUND(x) ((int) ((x) + 0.5))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
@@ -251,9 +251,11 @@ void ImageViewer::centerImage(QSize &imgSize) {
 
 void ImageViewer::rotateByExifRotation(QImage &image, QString &imageFullPath) {
     QTransform trans;
-    int orientation = metadataCache->getImageOrientation(imageFullPath);
+    long orientation = metadataCache->getImageOrientation(imageFullPath);
 
     switch (orientation) {
+        case 1:
+            break;
         case 2:
             image = image.mirrored(true, false);
             break;
@@ -281,6 +283,8 @@ void ImageViewer::rotateByExifRotation(QImage &image, QString &imageFullPath) {
         case 8:
             trans.rotate(270);
             image = image.transformed(trans, Qt::SmoothTransformation);
+            break;
+        default:
             break;
     }
 }
@@ -693,6 +697,13 @@ void ImageViewer::loadImage(QString imageFileName) {
 
     QApplication::processEvents();
     reload();
+}
+
+void ImageViewer::clearImage() {
+    origImage.load(":/images/no_image.png");
+    viewerImage = origImage;
+    viewerPixmap = QPixmap::fromImage(viewerImage);
+    imageLabel->setPixmap(viewerPixmap);
 }
 
 void ImageViewer::monitorCursorState() {

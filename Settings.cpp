@@ -106,7 +106,7 @@ namespace Settings {
     bool imageInfoDockVisible;
     QString currentDirectory;
     QString thumbsBackgroundImage;
-    QStringList customFilesList;
-    bool isLoadFileList;
+    QStringList filesList;
+    bool isFileListLoaded;
 }
 

@@ -21,24 +21,24 @@
 #include "MetadataCache.h"
 
 void MetadataCache::updateImageTags(QString &imageFileName, QSet<QString> tags) {
-    imageTagsCache[imageFileName].tags = tags;
+    cache[imageFileName].tags = tags;
 }
 
 bool MetadataCache::removeTagFromImage(QString &imageFileName, const QString &tagName) {
-    return imageTagsCache[imageFileName].tags.remove(tagName);
+    return cache[imageFileName].tags.remove(tagName);
 }
 
 void MetadataCache::removeImage(QString &imageFileName) {
-    imageTagsCache.remove(imageFileName);
+    cache.remove(imageFileName);
 }
 
 QSet<QString> &MetadataCache::getImageTags(QString &imageFileName) {
-    return imageTagsCache[imageFileName].tags;
+    return cache[imageFileName].tags;
 }
 
-int MetadataCache::getImageOrientation(QString &imageFileName) {
-    if (imageTagsCache.contains(imageFileName) || loadImageMetadata(imageFileName)) {
-        return imageTagsCache[imageFileName].orientation;
+long MetadataCache::getImageOrientation(QString &imageFileName) {
+    if (cache.contains(imageFileName) || loadImageMetadata(imageFileName)) {
+        return cache[imageFileName].orientation;
     }
 
     return 0;
@@ -48,19 +48,19 @@ void MetadataCache::setImageTags(const QString &imageFileName, QSet<QString> tag
     ImageMetadata imageMetadata;
 
     imageMetadata.tags = tags;
-    imageTagsCache.insert(imageFileName, imageMetadata);
+    cache.insert(imageFileName, imageMetadata);
 }
 
 void MetadataCache::addTagToImage(QString &imageFileName, QString &tagName) {
-    if (imageTagsCache[imageFileName].tags.contains(tagName)) {
+    if (cache[imageFileName].tags.contains(tagName)) {
         return;
     }
 
-    imageTagsCache[imageFileName].tags.insert(tagName);
+    cache[imageFileName].tags.insert(tagName);
 }
 
 void MetadataCache::clear() {
-    imageTagsCache.clear();
+    cache.clear();
 }
 
 bool MetadataCache::loadImageMetadata(const QString &imageFullPath) {
@@ -81,7 +81,7 @@ bool MetadataCache::loadImageMetadata(const QString &imageFullPath) {
             orientation = exifData["Exif.Image.Orientation"].value().toLong();
         }
     } catch (Exiv2::Error &error) {
-
+        qWarning() << "Failed to read Exif metadata";
     }
 
     try {
@@ -98,7 +98,7 @@ bool MetadataCache::loadImageMetadata(const QString &imageFullPath) {
             }
         }
     } catch (Exiv2::Error &error) {
-
+        qWarning() << "Failed to read Iptc metadata";
     }
 
     ImageMetadata imageMetadata;
@@ -111,7 +111,7 @@ bool MetadataCache::loadImageMetadata(const QString &imageFullPath) {
     }
 
     if (tags.size() || orientation) {
-        imageTagsCache.insert(imageFullPath, imageMetadata);
+        cache.insert(imageFullPath, imageMetadata);
     }
 
     return true;

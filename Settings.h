@@ -120,8 +120,8 @@ namespace Settings {
     extern bool imageInfoDockVisible;
     extern QString currentDirectory;
     extern QString thumbsBackgroundImage;
-    extern QStringList customFilesList;
-    extern bool isLoadFileList;
+    extern QStringList filesList;
+    extern bool isFileListLoaded;
 }
 
 #endif // SETTINGS_H

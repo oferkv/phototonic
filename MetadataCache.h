@@ -24,13 +24,13 @@
 class ImageMetadata {
 public:
     QSet<QString> tags;
-    int orientation;
+    long orientation;
 };
 
 class MetadataCache {
 
 private:
-    QMap<QString, ImageMetadata> imageTagsCache;
+    QMap<QString, ImageMetadata> cache;
 
 public:
     void updateImageTags(QString &imageFileName, QSet<QString> tags);
@@ -49,7 +49,7 @@ public:
 
     bool loadImageMetadata(const QString &imageFullPath);
 
-    int getImageOrientation(QString &imageFileName);
+    long getImageOrientation(QString &imageFileName);
 
 };
 

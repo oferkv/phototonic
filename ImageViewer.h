@@ -62,13 +62,13 @@ public:
 
     void loadImage(QString imageFileName);
 
+    void clearImage();
+
     void resizeImage();
 
     void setCursorHiding(bool hide);
 
     void refresh();
-
-    void refreshColors();
 
     void reload();
 

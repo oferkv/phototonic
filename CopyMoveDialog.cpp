@@ -33,7 +33,7 @@ static QString autoRename(QString &destDir, QString &currFile) {
     return newFile;
 }
 
-int CopyMoveDialog::copyMoveFile(bool isCopy, QString &srcFile, QString &srcPath, QString &dstPath, QString &dstDir) {
+int CopyMoveDialog::copyOrMoveFile(bool isCopy, QString &srcFile, QString &srcPath, QString &dstPath, QString &dstDir) {
     int res;
 
     if (isCopy) {
@@ -100,7 +100,7 @@ void CopyMoveDialog::exec(ThumbsViewer *thumbView, QString &destDir, bool pasteI
                                      .arg(sourceFile).arg(destFile));
             QApplication::processEvents();
 
-            res = CopyMoveDialog::copyMoveFile(Settings::isCopyOperation, currFile, sourceFile, destFile, destDir);
+            res = CopyMoveDialog::copyOrMoveFile(Settings::isCopyOperation, currFile, sourceFile, destFile, destDir);
 
             if (!res || abortOp) {
                 break;
@@ -118,11 +118,10 @@ void CopyMoveDialog::exec(ThumbsViewer *thumbView, QString &destDir, bool pasteI
             destFile = destDir + QDir::separator() + currFile;
 
             opLabel->setText((Settings::isCopyOperation ?
-                              tr("Copying \"%1\" to \"%2\".")
-                                               : tr("Moving \"%1\" to \"%2\".")).arg(sourceFile).arg(destFile));
+                              tr("Copying %1 to %2.") : tr("Moving %1 to %2.")).arg(sourceFile).arg(destFile));
             QApplication::processEvents();
 
-            res = CopyMoveDialog::copyMoveFile(Settings::isCopyOperation, currFile, sourceFile, destFile, destDir);
+            res = copyOrMoveFile(Settings::isCopyOperation, currFile, sourceFile, destFile, destDir);
 
             if (!res || abortOp) {
                 break;

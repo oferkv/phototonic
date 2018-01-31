@@ -27,6 +27,7 @@
 #include "ProgressDialog.h"
 #include "ImagePreview.h"
 #include "FileListWidget.h"
+#include "RenameDialog.h"
 
 #define THUMB_SIZE_MIN    25
 #define THUMB_SIZE_MAX    450
@@ -97,13 +98,18 @@ void Phototonic::processStartupArguments(QStringList argumentsList, int filesSta
 }
 
 void Phototonic::loadStartupFileList(QStringList argumentsList, int filesStartAt) {
-    Settings::customFilesList.clear();
+    Settings::filesList.clear();
     for (int i = filesStartAt; i < argumentsList.size(); i++) {
-        Settings::customFilesList << argumentsList[i];
+        QFile currentFileFullPath(argumentsList[i]);
+        QFileInfo currentFileInfo(currentFileFullPath);
+
+        if (!Settings::filesList.contains(currentFileInfo.absoluteFilePath())) {
+            Settings::filesList << currentFileInfo.absoluteFilePath();
+        }
     }
     fileSystemTree->clearSelection();
     fileListWidget->setItemSelected(fileListWidget->itemAt(0, 0), true);
-    Settings::isLoadFileList = true;
+    Settings::isFileListLoaded = true;
 }
 
 bool Phototonic::event(QEvent *event) {
@@ -857,8 +863,8 @@ void Phototonic::createStatusBar() {
 }
 
 void Phototonic::onFileListSelected() {
-    if (initComplete && fileListWidget->itemAt(0,0)->isSelected()) {
-        Settings::isLoadFileList = true;
+    if (initComplete && fileListWidget->itemAt(0, 0)->isSelected()) {
+        Settings::isFileListLoaded = true;
         fileSystemTree->clearSelection();
         refreshThumbs(true);
     }
@@ -869,7 +875,7 @@ void Phototonic::createFileSystemDock() {
     fileSystemDock->setObjectName("File System");
 
     fileListWidget = new FileListWidget(fileSystemDock);
-    connect(fileListWidget, SIGNAL(itemSelectionChanged()),this, SLOT(onFileListSelected()));
+    connect(fileListWidget, SIGNAL(itemSelectionChanged()), this, SLOT(onFileListSelected()));
 
     fileSystemTree = new FileSystemTree(fileSystemDock);
     fileSystemTree->addAction(createDirectoryAction);
@@ -1286,11 +1292,11 @@ void Phototonic::copyOrMoveImages(bool isMoveOperation) {
             QString fileName = fileInfo.fileName();
             QString destFile = copyMoveToDialog->selectedPath + QDir::separator() + fileInfo.fileName();
 
-            int res = CopyMoveDialog::copyMoveFile(copyMoveToDialog->copyOp, fileName,
-                                                   imageViewer->viewerImageFullPath,
-                                                   destFile, copyMoveToDialog->selectedPath);
+            int result = CopyMoveDialog::copyOrMoveFile(copyMoveToDialog->copyOp, fileName,
+                                                        imageViewer->viewerImageFullPath,
+                                                        destFile, copyMoveToDialog->selectedPath);
 
-            if (!res) {
+            if (!result) {
                 QMessageBox msgBox;
                 msgBox.critical(this, tr("Error"), tr("Failed to copy or move image."));
             } else {
@@ -1460,8 +1466,8 @@ void Phototonic::scaleImage() {
     }
 
     resizeDialog = new ResizeDialog(this, imageViewer);
-    connect(resizeDialog, SIGNAL(accepted()), this, SLOT(cleanupScaleDialog()));
-    connect(resizeDialog, SIGNAL(rejected()), this, SLOT(cleanupScaleDialog()));
+    connect(resizeDialog, SIGNAL(accepted()), this, SLOT(cleanupResizeDialog()));
+    connect(resizeDialog, SIGNAL(rejected()), this, SLOT(cleanupResizeDialog()));
 
     resizeDialog->show();
     setInterfaceEnabled(false);
@@ -1560,9 +1566,9 @@ void Phototonic::pasteThumbs() {
     }
 
     QString destDir;
-    if (copyMoveToDialog)
+    if (copyMoveToDialog) {
         destDir = copyMoveToDialog->selectedPath;
-    else {
+    } else {
         if (QApplication::focusWidget() == bookmarks) {
             if (bookmarks->currentItem()) {
                 destDir = bookmarks->currentItem()->toolTip(0);
@@ -1586,7 +1592,7 @@ void Phototonic::pasteThumbs() {
             fileInfo = QFileInfo(Settings::copyCutFileList[thumb]);
             if (fileInfo.absolutePath() == destDir) {
                 QMessageBox msgBox;
-                msgBox.critical(this, tr("Error"), tr("Can not copy or move to the same directory"));
+                msgBox.critical(this, tr("Error"), tr("Can not move to the same directory"));
                 return;
             }
         }
@@ -1653,7 +1659,7 @@ void Phototonic::loadCurrentImage(int currentRow) {
     thumbsViewer->setImageViewerWindowTitle();
 }
 
-void Phototonic::viewerDeleteImage() {
+void Phototonic::viewerDeleteFromViewer() {
     if (imageViewer->isNewImage()) {
         showNewImageWarning(this);
         return;
@@ -1707,6 +1713,7 @@ void Phototonic::viewerDeleteImage() {
     }
 }
 
+// Main delete operation
 void Phototonic::deleteOperation() {
     if (QApplication::focusWidget() == thumbsViewer->imageTags->tagsTree) {
         thumbsViewer->imageTags->removeTag();
@@ -1724,7 +1731,7 @@ void Phototonic::deleteOperation() {
     }
 
     if (Settings::layoutMode == ImageViewWidget) {
-        viewerDeleteImage();
+        viewerDeleteFromViewer();
         return;
     }
 
@@ -1758,10 +1765,10 @@ void Phototonic::deleteOperation() {
     int row;
     QModelIndexList indexesList;
     while ((indexesList = thumbsViewer->selectionModel()->selectedIndexes()).size()) {
-        QString fileName = thumbsViewer->thumbsViewerModel->item(
+        QString fileNameFullPath = thumbsViewer->thumbsViewerModel->item(
                 indexesList.first().row())->data(thumbsViewer->FileNameRole).toString();
-        progressDialog->opLabel->setText("Deleting " + fileName);
-        deleteOk = QFile::remove(fileName);
+        progressDialog->opLabel->setText("Deleting " + fileNameFullPath);
+        deleteOk = QFile::remove(fileNameFullPath);
 
         ++deleteFilesCount;
         if (deleteOk) {
@@ -1773,6 +1780,8 @@ void Phototonic::deleteOperation() {
             msgBox.critical(this, tr("Error"), tr("Failed to delete image."));
             break;
         }
+
+        Settings::filesList.removeOne(fileNameFullPath);
 
         if (progressDialog->abortOp) {
             break;
@@ -1799,7 +1808,7 @@ void Phototonic::deleteOperation() {
 }
 
 void Phototonic::goTo(QString path) {
-    Settings::isLoadFileList = false;
+    Settings::isFileListLoaded = false;
     fileListWidget->clearSelection();
     thumbsViewer->setNeedToScroll(true);
     fileSystemTree->setCurrentIndex(fileSystemTree->fileSystemModel->index(path));
@@ -1809,7 +1818,7 @@ void Phototonic::goTo(QString path) {
 
 void Phototonic::goSelectedDir(const QModelIndex &idx) {
     (void) idx;
-    Settings::isLoadFileList = false;
+    Settings::isFileListLoaded = false;
     fileListWidget->clearSelection();
     thumbsViewer->setNeedToScroll(true);
     Settings::currentDirectory = getSelectedPath();
@@ -1958,7 +1967,8 @@ void Phototonic::writeSettings() {
     Settings::appSettings->setValue("specifiedStartDir", Settings::specifiedStartDir);
     Settings::appSettings->setValue("thumbsBackgroundImage", Settings::thumbsBackgroundImage);
     Settings::appSettings->setValue("lastDir",
-                                    Settings::startupDir == Settings::RememberLastDir ? Settings::currentDirectory : "");
+                                    Settings::startupDir == Settings::RememberLastDir ? Settings::currentDirectory
+                                                                                      : "");
     Settings::appSettings->setValue(Settings::optionShowImageName, (bool) Settings::showImageName);
     Settings::appSettings->setValue("smallToolbarIcons", (bool) Settings::smallToolbarIcons);
     Settings::appSettings->setValue("hideDockTitlebars", (bool) Settings::hideDockTitlebars);
@@ -2108,7 +2118,7 @@ void Phototonic::readSettings() {
     }
     Settings::appSettings->endGroup();
 
-    Settings::isLoadFileList = false;
+    Settings::isFileListLoaded = false;
 }
 
 void Phototonic::setupDocks() {
@@ -2746,8 +2756,6 @@ void Phototonic::hideViewer() {
     Settings::layoutMode = ThumbViewWidget;
     takeCentralWidget();
     setCentralWidget(thumbsViewer);
-    imageViewLayout->addWidget(imageViewer);
-    QApplication::processEvents();
 
     setDocksVisibility(true);
     while (QApplication::overrideCursor()) {
@@ -2758,10 +2766,11 @@ void Phototonic::hideViewer() {
         toggleSlideShow();
     }
 
+    setThumbsViewerWindowTitle();
+
     for (int i = 0; i <= 10 && qApp->hasPendingEvents(); ++i) {
         QApplication::processEvents();
     }
-    setThumbsViewerWindowTitle();
 
     restoreGeometry(Settings::appSettings->value("Geometry").toByteArray());
     restoreState(Settings::appSettings->value("WindowState").toByteArray());
@@ -2779,7 +2788,7 @@ void Phototonic::hideViewer() {
         thumbsViewer->loadVisibleThumbs();
     }
 
-    imageViewer->loadImage("");
+    imageViewer->clearImage();
     thumbsViewer->setFocus(Qt::OtherFocusReason);
     showBusyStatus(false);
     setContextMenuPolicy(Qt::DefaultContextMenu);
@@ -2918,7 +2927,7 @@ void Phototonic::onReloadThumbs() {
         return;
     }
 
-    if (!Settings::isLoadFileList) {
+    if (!Settings::isFileListLoaded) {
         if (Settings::currentDirectory.isEmpty()) {
             Settings::currentDirectory = getSelectedPath();
             if (Settings::currentDirectory.isEmpty()) {
@@ -2951,7 +2960,12 @@ void Phototonic::onReloadThumbs() {
 }
 
 void Phototonic::setThumbsViewerWindowTitle() {
-    setWindowTitle(Settings::currentDirectory + " - Phototonic");
+
+    if (Settings::isFileListLoaded) {
+        setWindowTitle(tr("Files List") + " - Phototonic");
+    } else {
+        setWindowTitle(Settings::currentDirectory + " - Phototonic");
+    }
 }
 
 void Phototonic::renameDir() {
@@ -3000,7 +3014,6 @@ void Phototonic::rename() {
     }
 
     if (Settings::layoutMode == ImageViewWidget) {
-
         if (imageViewer->isNewImage()) {
             showNewImageWarning(this);
             return;
@@ -3023,41 +3036,39 @@ void Phototonic::rename() {
     }
     imageViewer->setCursorHiding(false);
 
-    QFile currentFile(selectedImageFileName);
-    QString newImageFullPath = Settings::currentDirectory;
-    bool renameConfirmed;
-    QString newImageName = QInputDialog::getText(this,
-                                                 tr("Rename Image"), tr("Rename %1 to")
-                                                                .arg(QFileInfo(selectedImageFileName).fileName())
-                                                        + "\t\t\t",
-                                                 QLineEdit::Normal,
-                                                 QFileInfo(selectedImageFileName).completeBaseName(),
-                                                 &renameConfirmed);
+    QFile currentFileFullPath(selectedImageFileName);
+    QFileInfo currentFileInfo(currentFileFullPath);
+    int renameConfirmed;
 
-    if (renameConfirmed && newImageName.isEmpty()) {
+    RenameDialog *renameDialog = new RenameDialog(this);
+    renameDialog->setModal(true);
+    renameDialog->setFileName(currentFileInfo.fileName());
+    renameConfirmed = renameDialog->exec();
+
+    QString newFileName = renameDialog->getFileName();
+    delete(renameDialog);
+
+    if (renameConfirmed && newFileName.isEmpty()) {
         QMessageBox msgBox;
         msgBox.critical(this, tr("Error"), tr("No name entered."));
-        renameConfirmed = false;
+        renameConfirmed = 0;
     }
 
     if (renameConfirmed) {
-        newImageName += "." + QFileInfo(selectedImageFileName).suffix();
-        if (newImageFullPath.right(1) == QDir::separator()) {
-            newImageFullPath += newImageName;
-        } else {
-            newImageFullPath += QDir::separator() + newImageName;
-        }
-
-        if (currentFile.rename(newImageFullPath)) {
+        QString newFileNameFullPath = currentFileInfo.absolutePath() + QDir::separator() + newFileName;
+        if (currentFileFullPath.rename(newFileNameFullPath)) {
             QModelIndexList indexesList = thumbsViewer->selectionModel()->selectedIndexes();
-            thumbsViewer->thumbsViewerModel->item(
-                    indexesList.first().row())->setData(newImageFullPath, thumbsViewer->FileNameRole);
+            thumbsViewer->thumbsViewerModel->item(indexesList.first().row())->setData(newFileNameFullPath,
+                                                                                      thumbsViewer->FileNameRole);
+            thumbsViewer->thumbsViewerModel->item(indexesList.first().row())->setData(newFileName, Qt::DisplayRole);
 
-            thumbsViewer->thumbsViewerModel->item(
-                    indexesList.first().row())->setData(newImageName, Qt::DisplayRole);
+            imageViewer->setInfo(newFileName);
+            imageViewer->viewerImageFullPath = newFileNameFullPath;
 
-            imageViewer->setInfo(newImageName);
-            imageViewer->viewerImageFullPath = newImageFullPath;
+            if (Settings::filesList.contains(currentFileInfo.absoluteFilePath())) {
+                Settings::filesList.replace(Settings::filesList.indexOf(currentFileInfo.absoluteFilePath()),
+                                            newFileNameFullPath);
+            }
 
             if (Settings::layoutMode == ImageViewWidget) {
                 thumbsViewer->setImageViewerWindowTitle();
@@ -3110,6 +3121,7 @@ void Phototonic::removeMetadata() {
                 image = Exiv2::ImageFactory::open(fileList[file].toStdString());
                 image->clearMetadata();
                 image->writeMetadata();
+                metadataCache->removeImage(fileList[file]);
             }
             catch (Exiv2::Error &error) {
                 msgBox.critical(this, tr("Error"), tr("Failed to remove Exif metadata."));
@@ -3227,7 +3239,7 @@ void Phototonic::wheelEvent(QWheelEvent *event) {
             }
         }
         event->accept();
-    } else if (event->modifiers() == Qt::ControlModifier && QApplication::focusWidget() == thumbsViewer){
+    } else if (event->modifiers() == Qt::ControlModifier && QApplication::focusWidget() == thumbsViewer) {
         if (event->delta() < 0) {
             thumbsZoomOut();
         } else {
@@ -3265,7 +3277,7 @@ void Phototonic::cleanupCropDialog() {
     setInterfaceEnabled(true);
 }
 
-void Phototonic::cleanupScaleDialog() {
+void Phototonic::cleanupResizeDialog() {
     delete resizeDialog;
     resizeDialog = 0;
     setInterfaceEnabled(true);

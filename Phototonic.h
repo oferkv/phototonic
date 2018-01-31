@@ -247,7 +247,7 @@ private slots:
 
     void cleanupCropDialog();
 
-    void cleanupScaleDialog();
+    void cleanupResizeDialog();
 
     void cleanupColorsDialog();
 
@@ -428,7 +428,7 @@ private:
 
     void setupDocks();
 
-    void viewerDeleteImage();
+    void viewerDeleteFromViewer();
 
     void loadCurrentImage(int currentRow);
 

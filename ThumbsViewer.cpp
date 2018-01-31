@@ -417,8 +417,8 @@ int ThumbsViewer::getLastVisibleThumb() {
 }
 
 void ThumbsViewer::loadFileList() {
-    for (int i = 0; i < Settings::customFilesList.size(); i++) {
-        addThumb(Settings::customFilesList[i]);
+    for (int i = 0; i < Settings::filesList.size(); i++) {
+        addThumb(Settings::filesList[i]);
     }
     updateThumbsCount();
 
@@ -438,7 +438,7 @@ void ThumbsViewer::reLoad() {
     emit showBusy(true);
     loadPrepare();
 
-    if (Settings::isLoadFileList) {
+    if (Settings::isFileListLoaded) {
         loadFileList();
         return;
     }
