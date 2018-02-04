@@ -258,8 +258,8 @@ void ThumbsViewer::onSelectionChanged(const QItemSelection &) {
     imagePreview->clear();
 
     QModelIndexList indexesList = selectionModel()->selectedIndexes();
-    int nSelected = indexesList.size();
-    if (nSelected == 1) {
+    int selectedThumbs = indexesList.size();
+    if (selectedThumbs == 1) {
         QString thumbFullPath = thumbsViewerModel->item(indexesList.first().row())->data(FileNameRole).toString();
         setCurrentRow(indexesList.first().row());
         updateImageInfoViewer(thumbFullPath);
@@ -270,16 +270,14 @@ void ThumbsViewer::onSelectionChanged(const QItemSelection &) {
         imageTags->showSelectedImagesTags();
     }
 
-    QString statusStr;
-    if (!nSelected) {
-        updateThumbsCount();
-        return;
-    } else if (nSelected >= 1) {
-        statusStr = tr("Selected %1 of%2").arg(QString::number(nSelected))
+    if (selectedThumbs >= 1) {
+        QString statusStr;
+        statusStr = tr("Selected %1 of %2").arg(QString::number(selectedThumbs))
                 .arg(tr(" %n image(s)", "", thumbsViewerModel->rowCount()));
+        emit setStatus(statusStr);
+    } else if (!selectedThumbs) {
+        updateThumbsCount();
     }
-
-    emit setStatus(statusStr);
 }
 
 QStringList ThumbsViewer::getSelectedThumbsList() {
@@ -287,8 +285,7 @@ QStringList ThumbsViewer::getSelectedThumbsList() {
     QStringList SelectedThumbsPaths;
 
     for (int tn = indexesList.size() - 1; tn >= 0; --tn) {
-        SelectedThumbsPaths <<
-                            thumbsViewerModel->item(indexesList[tn].row())->data(FileNameRole).toString();
+        SelectedThumbsPaths << thumbsViewerModel->item(indexesList[tn].row())->data(FileNameRole).toString();
     }
 
     return SelectedThumbsPaths;

@@ -1816,8 +1816,7 @@ void Phototonic::goTo(QString path) {
     refreshThumbs(true);
 }
 
-void Phototonic::goSelectedDir(const QModelIndex &idx) {
-    (void) idx;
+void Phototonic::goSelectedDir(const QModelIndex &) {
     Settings::isFileListLoaded = false;
     fileListWidget->clearSelection();
     thumbsViewer->setNeedToScroll(true);
@@ -2944,6 +2943,7 @@ void Phototonic::onReloadThumbs() {
         }
 
         thumbsViewer->infoView->clear();
+        thumbsViewer->imagePreview->clear();
 
         pathLineEdit->setText(Settings::currentDirectory);
         addPathHistoryRecord(Settings::currentDirectory);

@@ -45,7 +45,6 @@ ImagePreview::ImagePreview(QWidget *parent) : QWidget(parent) {
 }
 
 void ImagePreview::loadImage(QString imageFileName) {
-
     imageReader.setFileName(imageFileName);
     if (imageReader.size().isValid()) {
         QSize resize = imageReader.size();
