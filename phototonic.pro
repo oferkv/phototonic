@@ -25,6 +25,7 @@ QT += widgets
 QMAKE_CXXFLAGS += $$(CXXFLAGS)
 QMAKE_CFLAGS += $$(CFLAGS)
 QMAKE_LFLAGS += $$(LDFLAGS)
+CONFIG += c++11
 
 HEADERS += SettingsDialog.h Phototonic.h ThumbsViewer.h ImageViewer.h CropRubberband.h Settings.h InfoViewer.h \
 			FileSystemTree.h Bookmarks.h DirCompleter.h Tags.h MetadataCache.h ShortcutsTable.h CopyMoveDialog.h \
