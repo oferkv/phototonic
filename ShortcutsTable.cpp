@@ -86,7 +86,7 @@ void ShortcutsTable::keyPressEvent(QKeyEvent *keyEvent) {
     while (keysIterator.hasNext()) {
         keysIterator.next();
 
-        QAction tmpAction;
+        QAction tmpAction(this);
         tmpAction.setShortcut(keySequenceText);
         if (keysIterator.value()->shortcut().toString() == tmpAction.shortcut().toString()) {
             if (!confirmOverwriteShortcut(keysIterator.value()->text(), keySequenceText)) {
