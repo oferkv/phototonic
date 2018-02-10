@@ -2054,6 +2054,9 @@ void Phototonic::readSettings() {
         Settings::appSettings->setValue("showViewerToolbar", (bool) false);
         Settings::appSettings->setValue("smallToolbarIcons", (bool) true);
         Settings::bookmarkPaths.insert(QDir::homePath());
+        const QString picturesLocation = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
+        if (!picturesLocation.isEmpty())
+            Settings::bookmarkPaths.insert(picturesLocation);
     }
 
     Settings::viewerBackgroundColor = Settings::appSettings->value(
