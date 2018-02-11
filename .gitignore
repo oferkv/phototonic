@@ -1,0 +1,9 @@
+*.exe
+phototonic
+moc_*.cpp
+*.o
+*.obj
+.qmake.stash
+qrc_phototonic.cpp
+*.pro.user
+Makefile
