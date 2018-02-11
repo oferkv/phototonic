@@ -1,5 +1,7 @@
 # Phototonic Image Viewer
 
+[![Build Status](https://travis-ci.org/oferkv/phototonic.svg?branch=master)](https://travis-ci.org/oferkv/phototonic)
+
 ### About
 
 Phototonic is an image viewer and organizer built with Qt and Exiv2, released under GNU General Public License v3.
