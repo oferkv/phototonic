@@ -54,7 +54,7 @@ ThumbsViewer::ThumbsViewer(QWidget *parent, MetadataCache *metadataCache) : QLis
 
     QTime time = QTime::currentTime();
     qsrand((uint) time.msec());
-    phototonic = (Phototonic *)parent;
+    phototonic = (Phototonic *) parent;
     infoView = new InfoView(this);
     connect(infoView, SIGNAL(updateInfo(QItemSelection)), this, SLOT(onSelectionChanged(QItemSelection)));
 
@@ -257,14 +257,17 @@ void ThumbsViewer::onSelectionChanged(const QItemSelection &) {
 
     infoView->clear();
     imagePreview->clear();
+    phototonic->setDefaultWindowIcon();
 
     QModelIndexList indexesList = selectionModel()->selectedIndexes();
     int selectedThumbs = indexesList.size();
     if (selectedThumbs == 1) {
-        QString thumbFullPath = thumbsViewerModel->item(indexesList.first().row())->data(FileNameRole).toString();
-        setCurrentRow(indexesList.first().row());
+        int currentRow = indexesList.first().row();
+        QString thumbFullPath = thumbsViewerModel->item(currentRow)->data(FileNameRole).toString();
+        setCurrentRow(currentRow);
         updateImageInfoViewer(thumbFullPath);
-        imagePreview->loadImage(thumbFullPath);
+        QPixmap imagePreviewPixmap = imagePreview->loadImage(thumbFullPath);
+        phototonic->setWindowIcon(imagePreviewPixmap.scaled(16, 16, Qt::KeepAspectRatio, Qt::FastTransformation));
     }
 
     if (imageTags->currentDisplayMode == SelectionTagsDisplay) {

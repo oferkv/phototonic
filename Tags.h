@@ -117,8 +117,6 @@ private slots:
 
 signals:
 
-    void setStatus(QString state);
-
     void reloadThumbs();
 
 };

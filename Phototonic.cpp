@@ -971,7 +971,6 @@ void Phototonic::createImageTagsDock() {
 
     connect(tagsDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setTagsDockVisibility()));
     connect(tagsDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setTagsDockVisibility()));
-    connect(thumbsViewer->imageTags, SIGNAL(setStatus(QString)), this, SLOT(setStatus(QString)));
     connect(thumbsViewer->imageTags, SIGNAL(reloadThumbs()), this, SLOT(onReloadThumbs()));
     connect(thumbsViewer->imageTags->removeTagAction, SIGNAL(triggered()), this, SLOT(deleteOperation()));
 }
@@ -2986,6 +2985,7 @@ void Phototonic::onReloadThumbs() {
 
         thumbsViewer->infoView->clear();
         thumbsViewer->imagePreview->clear();
+        setDefaultWindowIcon();
 
         pathLineEdit->setText(Settings::currentDirectory);
         addPathHistoryRecord(Settings::currentDirectory);

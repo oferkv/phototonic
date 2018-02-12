@@ -44,7 +44,7 @@ ImagePreview::ImagePreview(QWidget *parent) : QWidget(parent) {
     setLayout(mainLayout);
 }
 
-void ImagePreview::loadImage(QString imageFileName) {
+QPixmap& ImagePreview::loadImage(QString imageFileName) {
     imageReader.setFileName(imageFileName);
     if (imageReader.size().isValid()) {
         QSize resize = imageReader.size();
@@ -58,6 +58,7 @@ void ImagePreview::loadImage(QString imageFileName) {
 
     imageLabel->setPixmap(previewPixmap);
     resizeImagePreview();
+    return previewPixmap;
 }
 
 void ImagePreview::clear() {

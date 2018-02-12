@@ -27,7 +27,7 @@ Q_OBJECT
 public:
     ImagePreview(QWidget *parent);
 
-    void loadImage(QString imageFileName);
+    QPixmap& loadImage(QString imageFileName);
 
     void resizeImagePreview();
 

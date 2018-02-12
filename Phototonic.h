@@ -47,6 +47,8 @@ public:
 
     void showBusyAnimation(bool busy);
 
+    void setDefaultWindowIcon();
+
 protected:
     void mouseDoubleClickEvent(QMouseEvent *event);
 
@@ -441,8 +443,6 @@ private:
     void selectCurrentViewDir();
 
     void processStartupArguments(QStringList argumentsList, int filesStartAt);
-
-    void setDefaultWindowIcon();
 
     void loadStartupFileList(QStringList argumentsList, int filesStartAt);
 

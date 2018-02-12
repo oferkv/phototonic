@@ -572,7 +572,6 @@ void ImageViewer::refresh() {
     viewerPixmap = QPixmap::fromImage(viewerImage);
     imageLabel->setPixmap(viewerPixmap);
     resizeImage();
-    phototonic->setWindowIcon(viewerPixmap);
 }
 
 QImage createImageWithOverlay(const QImage &baseImage, const QImage &overlayImage, int x, int y) {
@@ -662,6 +661,7 @@ void ImageViewer::reload() {
 
     imageLabel->setPixmap(viewerPixmap);
     resizeImage();
+    phototonic->setWindowIcon(viewerPixmap.scaled(16, 16, Qt::KeepAspectRatio, Qt::FastTransformation));
 }
 
 void ImageViewer::setInfo(QString infoString) {
