@@ -1034,6 +1034,7 @@ void Phototonic::about() {
                           + "<table><tr><td>Code:</td><td>Ofer Kashayov</td><td>(oferkv@gmail.com)</td></tr>"
                           + "<tr><td></td><td>Christopher Roy Bratusek</td><td>(nano@jpberlin.de)</td></tr>"
                           + "<tr><td></td><td>Krzysztof Pyrkosz</td><td>(pyrkosz@o2.pl)</td></tr>"
+                          + "<tr><td></td><td>Roman Chistokhodov</td><td>(freeslave93@gmail.com)</td></tr>"
                           + QString::fromUtf8(
             "<tr><td></td><td>Thomas L\u00FCbking</td><td>(thomas.luebking@gmail.com)</td></tr>")
                           + "<tr><td></td><td>Tung Le</td><td>(https://github.com/everbot)</td></tr>"
