@@ -28,6 +28,7 @@
 #include "ImagePreview.h"
 #include "FileListWidget.h"
 #include "RenameDialog.h"
+#include "Trashcan.h"
 
 Phototonic::Phototonic(QStringList argumentsList, int filesStartAt, QWidget *parent) : QMainWindow(parent) {
     Settings::appSettings = new QSettings("phototonic", "phototonic");
@@ -179,6 +180,7 @@ void Phototonic::createImageViewer() {
     imageViewer->addAction(copyImageAction);
     imageViewer->addAction(pasteImageAction);
     imageViewer->addAction(deleteAction);
+    imageViewer->addAction(moveToTrashAction);
     imageViewer->addAction(renameAction);
     imageViewer->addAction(CloseImageAction);
     imageViewer->addAction(fullScreenAction);
@@ -262,6 +264,7 @@ void Phototonic::createImageViewer() {
     imageViewer->ImagePopUpMenu->addAction(saveAsAction);
     imageViewer->ImagePopUpMenu->addAction(renameAction);
     imageViewer->ImagePopUpMenu->addAction(deleteAction);
+    imageViewer->ImagePopUpMenu->addAction(moveToTrashAction);
     imageViewer->ImagePopUpMenu->addAction(openWithMenuAction);
 
     addMenuSeparator(imageViewer->ImagePopUpMenu);
@@ -356,6 +359,11 @@ void Phototonic::createActions() {
     deleteAction->setObjectName("delete");
     deleteAction->setIcon(QIcon::fromTheme("edit-delete", QIcon(":/images/delete.png")));
     connect(deleteAction, SIGNAL(triggered()), this, SLOT(deleteOperation()));
+
+    moveToTrashAction = new QAction(tr("Move to Trash"), this);
+    moveToTrashAction->setObjectName("moveToTrash");
+    moveToTrashAction->setIcon(style()->standardPixmap(QStyle::SP_TrashIcon));
+    connect(moveToTrashAction, SIGNAL(triggered()), this, SLOT(moveToTrashOperation()));
 
     saveAction = new QAction(tr("Save"), this);
     saveAction->setObjectName("save");
@@ -688,6 +696,7 @@ void Phototonic::createMenus() {
     editMenu->addAction(renameAction);
     editMenu->addAction(removeMetadataAction);
     editMenu->addAction(deleteAction);
+    editMenu->addAction(moveToTrashAction);
     editMenu->addSeparator();
     editMenu->addAction(selectAllAction);
     editMenu->addAction(invertSelectionAction);
@@ -742,6 +751,7 @@ void Phototonic::createMenus() {
     thumbsViewer->addAction(renameAction);
     thumbsViewer->addAction(removeMetadataAction);
     thumbsViewer->addAction(deleteAction);
+    thumbsViewer->addAction(moveToTrashAction);
     addMenuSeparator(thumbsViewer);
     thumbsViewer->addAction(selectAllAction);
     thumbsViewer->addAction(invertSelectionAction);
@@ -757,6 +767,7 @@ void Phototonic::createToolBars() {
     editToolBar->addAction(copyAction);
     editToolBar->addAction(pasteAction);
     editToolBar->addAction(deleteAction);
+    editToolBar->addAction(moveToTrashAction);
     editToolBar->addAction(showClipboardAction);
     connect(editToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setEditToolBarVisibility()));
 
@@ -816,6 +827,7 @@ void Phototonic::createToolBars() {
     imageToolBar->addAction(saveAction);
     imageToolBar->addAction(saveAsAction);
     imageToolBar->addAction(deleteAction);
+    imageToolBar->addAction(moveToTrashAction);
     imageToolBar->addSeparator();
     imageToolBar->addAction(zoomInAction);
     imageToolBar->addAction(zoomOutAction);
@@ -1658,7 +1670,82 @@ void Phototonic::loadCurrentImage(int currentRow) {
     thumbsViewer->setImageViewerWindowTitle();
 }
 
-void Phototonic::viewerDeleteFromViewer() {
+void Phototonic::deleteFromThumbsViewer(bool trash)
+{
+    // Deleting selected thumbnails
+    if (thumbsViewer->selectionModel()->selectedIndexes().size() < 1) {
+        setStatus(tr("No selection"));
+        return;
+    }
+
+    if (Settings::deleteConfirm) {
+        QMessageBox msgBox;
+        msgBox.setText(trash ? tr("Move selected images to trash can?") : tr("Permanently delete selected images?"));
+        msgBox.setWindowTitle(tr("Delete images"));
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Yes);
+        msgBox.setButtonText(QMessageBox::Yes, tr("Yes"));
+        msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));
+
+        if (msgBox.exec() != QMessageBox::Yes) {
+            return;
+        }
+    }
+
+    ProgressDialog *progressDialog = new ProgressDialog(this);
+    progressDialog->show();
+
+    int deleteFilesCount = 0;
+    bool deleteOk;
+    QList<int> rows;
+    int row;
+    QModelIndexList indexesList;
+    while ((indexesList = thumbsViewer->selectionModel()->selectedIndexes()).size()) {
+        QString fileNameFullPath = thumbsViewer->thumbsViewerModel->item(
+                indexesList.first().row())->data(thumbsViewer->FileNameRole).toString();
+        progressDialog->opLabel->setText("Deleting " + fileNameFullPath);
+        QString trashError;
+        deleteOk = trash ? (Trash::moveToTrash(fileNameFullPath, trashError) == Trash::Success) : QFile::remove(fileNameFullPath);
+
+        ++deleteFilesCount;
+        if (deleteOk) {
+            row = indexesList.first().row();
+            rows << row;
+            thumbsViewer->thumbsViewerModel->removeRow(row);
+        } else {
+            QMessageBox msgBox;
+            msgBox.critical(this, tr("Error"), trash ? trashError : tr("Failed to delete image."));
+            break;
+        }
+
+        Settings::filesList.removeOne(fileNameFullPath);
+
+        if (progressDialog->abortOp) {
+            break;
+        }
+    }
+
+    if (thumbsViewer->thumbsViewerModel->rowCount()) {
+        qSort(rows.begin(), rows.end());
+        row = rows.at(0);
+
+        if (row >= thumbsViewer->thumbsViewerModel->rowCount()) {
+            row = thumbsViewer->thumbsViewerModel->rowCount() - 1;
+        }
+
+        thumbsViewer->setCurrentRow(row);
+        thumbsViewer->selectThumbByRow(row);
+    }
+
+    progressDialog->close();
+    delete (progressDialog);
+
+    QString state = QString(tr("Deleted") + " " + tr("%n image(s)", "", deleteFilesCount));
+    setStatus(state);
+}
+
+void Phototonic::viewerDeleteFromViewer(bool trash) {
     if (imageViewer->isNewImage()) {
         showNewImageWarning(this);
         return;
@@ -1676,7 +1763,7 @@ void Phototonic::viewerDeleteFromViewer() {
     bool deleteConfirmed = true;
     if (Settings::deleteConfirm) {
         QMessageBox msgBox;
-        msgBox.setText(tr("Permanently delete") + " " + fileName);
+        msgBox.setText(trash ? tr("Move to trashcan") : tr("Permanently delete") + " " + fileName);
         msgBox.setWindowTitle(tr("Delete image"));
         msgBox.setIcon(QMessageBox::Warning);
         msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
@@ -1692,13 +1779,14 @@ void Phototonic::viewerDeleteFromViewer() {
     if (deleteConfirmed) {
         int currentRow = thumbsViewer->getCurrentRow();
 
-        ok = QFile::remove(imageViewer->viewerImageFullPath);
+        QString trashError;
+        ok = trash ? (Trash::moveToTrash(imageViewer->viewerImageFullPath, trashError) == Trash::Success) : QFile::remove(imageViewer->viewerImageFullPath);
         if (ok) {
             thumbsViewer->thumbsViewerModel->removeRow(currentRow);
             imageViewer->setFeedback(tr("Deleted ") + fileName);
         } else {
             QMessageBox msgBox;
-            msgBox.critical(this, tr("Error"), tr("Failed to delete image"));
+            msgBox.critical(this, tr("Error"), trash ? trashError : tr("Failed to delete image"));
             if (isFullScreen()) {
                 imageViewer->setCursorHiding(true);
             }
@@ -1730,80 +1818,20 @@ void Phototonic::deleteOperation() {
     }
 
     if (Settings::layoutMode == ImageViewWidget) {
-        viewerDeleteFromViewer();
+        viewerDeleteFromViewer(false);
         return;
     }
 
-    // Deleting selected thumbnails
-    if (thumbsViewer->selectionModel()->selectedIndexes().size() < 1) {
-        setStatus(tr("No selection"));
+    deleteFromThumbsViewer(false);
+}
+
+void Phototonic::moveToTrashOperation()
+{
+    if (Settings::layoutMode == ImageViewWidget) {
+        viewerDeleteFromViewer(true);
         return;
     }
-
-    if (Settings::deleteConfirm) {
-        QMessageBox msgBox;
-        msgBox.setText(tr("Permanently delete selected images?"));
-        msgBox.setWindowTitle(tr("Delete images"));
-        msgBox.setIcon(QMessageBox::Warning);
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
-        msgBox.setDefaultButton(QMessageBox::Yes);
-        msgBox.setButtonText(QMessageBox::Yes, tr("Yes"));
-        msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));
-
-        if (msgBox.exec() != QMessageBox::Yes) {
-            return;
-        }
-    }
-
-    ProgressDialog *progressDialog = new ProgressDialog(this);
-    progressDialog->show();
-
-    int deleteFilesCount = 0;
-    bool deleteOk;
-    QList<int> rows;
-    int row;
-    QModelIndexList indexesList;
-    while ((indexesList = thumbsViewer->selectionModel()->selectedIndexes()).size()) {
-        QString fileNameFullPath = thumbsViewer->thumbsViewerModel->item(
-                indexesList.first().row())->data(thumbsViewer->FileNameRole).toString();
-        progressDialog->opLabel->setText("Deleting " + fileNameFullPath);
-        deleteOk = QFile::remove(fileNameFullPath);
-
-        ++deleteFilesCount;
-        if (deleteOk) {
-            row = indexesList.first().row();
-            rows << row;
-            thumbsViewer->thumbsViewerModel->removeRow(row);
-        } else {
-            QMessageBox msgBox;
-            msgBox.critical(this, tr("Error"), tr("Failed to delete image."));
-            break;
-        }
-
-        Settings::filesList.removeOne(fileNameFullPath);
-
-        if (progressDialog->abortOp) {
-            break;
-        }
-    }
-
-    if (thumbsViewer->thumbsViewerModel->rowCount()) {
-        qSort(rows.begin(), rows.end());
-        row = rows.at(0);
-
-        if (row >= thumbsViewer->thumbsViewerModel->rowCount()) {
-            row = thumbsViewer->thumbsViewerModel->rowCount() - 1;
-        }
-
-        thumbsViewer->setCurrentRow(row);
-        thumbsViewer->selectThumbByRow(row);
-    }
-
-    progressDialog->close();
-    delete (progressDialog);
-
-    QString state = QString(tr("Deleted") + " " + tr("%n image(s)", "", deleteFilesCount));
-    setStatus(state);
+    deleteFromThumbsViewer(true);
 }
 
 void Phototonic::goTo(QString path) {
@@ -1893,22 +1921,32 @@ void Phototonic::setDeleteAction(bool setEnabled) {
     deleteAction->setEnabled(setEnabled);
 }
 
+void Phototonic::setMoveToTrashAction(bool setEnabled) {
+    moveToTrashAction->setEnabled(setEnabled);
+}
+
 void Phototonic::updateActions() {
     if (QApplication::focusWidget() == thumbsViewer) {
-        setCopyCutActions(thumbsViewer->selectionModel()->selectedIndexes().size() > 0);
-        setDeleteAction(thumbsViewer->selectionModel()->selectedIndexes().size() > 0);
+        bool hasSelectedItems = thumbsViewer->selectionModel()->selectedIndexes().size() > 0;
+        setCopyCutActions(hasSelectedItems);
+        setDeleteAction(hasSelectedItems);
+        setMoveToTrashAction(hasSelectedItems);
     } else if (QApplication::focusWidget() == bookmarks) {
         setCopyCutActions(false);
         setDeleteAction(bookmarks->selectionModel()->selectedIndexes().size() > 0);
+        setMoveToTrashAction(false);
     } else if (QApplication::focusWidget() == fileSystemTree) {
         setCopyCutActions(false);
         setDeleteAction(fileSystemTree->selectionModel()->selectedIndexes().size() > 0);
+        setMoveToTrashAction(false);
     } else if (Settings::layoutMode == ImageViewWidget || QApplication::focusWidget() == imageViewer->scrollArea) {
         setCopyCutActions(false);
         setDeleteAction(true);
+        setMoveToTrashAction(true);
     } else {
         setCopyCutActions(false);
         setDeleteAction(false);
+        setMoveToTrashAction(false);
     }
 
     if (Settings::layoutMode == ImageViewWidget && !interfaceDisabled) {
@@ -3309,6 +3347,7 @@ void Phototonic::setInterfaceEnabled(bool enable) {
     copyToAction->setEnabled(enable);
     moveToAction->setEnabled(enable);
     deleteAction->setEnabled(enable);
+    moveToTrashAction->setEnabled(enable);
     settingsAction->setEnabled(enable);
     viewImageAction->setEnabled(enable);
 
