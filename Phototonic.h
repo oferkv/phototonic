@@ -145,6 +145,8 @@ private slots:
 
     void deleteOperation();
 
+    void moveToTrashOperation();
+
     void cutThumbs();
 
     void copyThumbs();
@@ -285,6 +287,7 @@ private:
     QAction *copyToAction;
     QAction *moveToAction;
     QAction *deleteAction;
+    QAction *moveToTrashAction;
     QAction *saveAction;
     QAction *saveAsAction;
     QAction *renameAction;
@@ -428,7 +431,9 @@ private:
 
     void setupDocks();
 
-    void viewerDeleteFromViewer();
+    void deleteFromThumbsViewer(bool trash);
+
+    void viewerDeleteFromViewer(bool trash);
 
     void loadCurrentImage(int currentRow);
 
@@ -473,6 +478,8 @@ private:
     void setCopyCutActions(bool setEnabled);
 
     void setDeleteAction(bool setEnabled);
+
+    void setMoveToTrashAction(bool setEnabled);
 
     void wheelEvent(QWheelEvent *event);
 
