@@ -20,14 +20,15 @@
 #define PHOTOTONIC_H
 
 #include <QtWidgets>
-#include "ThumbsViewer.h"
 #include "ImageViewer.h"
+#include "ThumbsViewer.h"
 #include "SettingsDialog.h"
 #include "CopyMoveToDialog.h"
 #include "CropDialog.h"
 #include "ColorsDialog.h"
 #include "ResizeDialog.h"
 #include "FileListWidget.h"
+#include "FileSystemTree.h"
 
 #define VERSION "Phototonic v2.0.1"
 
@@ -42,6 +43,10 @@ public:
 
     QMenu *createPopupMenu();
 
+    void setStatus(QString state);
+
+    void showBusyAnimation(bool busy);
+
 protected:
     void mouseDoubleClickEvent(QMouseEvent *event);
 
@@ -53,8 +58,6 @@ public slots:
 
     bool event(QEvent *event);
 
-    void setStatus(QString state);
-
     void dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString copyMoveDirPath);
 
     void showViewer();
@@ -64,8 +67,6 @@ public slots:
     void loadImageFromCliArguments(QString cliFileName);
 
     void hideViewer();
-
-    void showBusyStatus(bool busy);
 
 private slots:
 
@@ -435,6 +436,8 @@ private:
     void selectCurrentViewDir();
 
     void processStartupArguments(QStringList argumentsList, int filesStartAt);
+
+    void setDefaultWindowIcon();
 
     void loadStartupFileList(QStringList argumentsList, int filesStartAt);
 

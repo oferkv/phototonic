@@ -29,9 +29,6 @@
 #include "FileListWidget.h"
 #include "RenameDialog.h"
 
-#define THUMB_SIZE_MIN    25
-#define THUMB_SIZE_MAX    450
-
 Phototonic::Phototonic(QStringList argumentsList, int filesStartAt, QWidget *parent) : QMainWindow(parent) {
     Settings::appSettings = new QSettings("phototonic", "phototonic");
     setDockOptions(QMainWindow::AllowNestedDocks);
@@ -54,7 +51,7 @@ Phototonic::Phototonic(QStringList argumentsList, int filesStartAt, QWidget *par
 
     restoreGeometry(Settings::appSettings->value(Settings::optionGeometry).toByteArray());
     restoreState(Settings::appSettings->value(Settings::optionWindowState).toByteArray());
-    setWindowIcon(QIcon(":/images/phototonic.png"));
+    setDefaultWindowIcon();
     setCentralWidget(thumbsViewer);
     processStartupArguments(argumentsList, filesStartAt);
 
@@ -97,6 +94,10 @@ void Phototonic::processStartupArguments(QStringList argumentsList, int filesSta
     selectCurrentViewDir();
 }
 
+void Phototonic::setDefaultWindowIcon() {
+    setWindowIcon(QIcon(":/images/phototonic.png"));
+}
+
 void Phototonic::loadStartupFileList(QStringList argumentsList, int filesStartAt) {
     Settings::filesList.clear();
     for (int i = filesStartAt; i < argumentsList.size(); i++) {
@@ -128,8 +129,6 @@ void Phototonic::createThumbsViewer() {
             Settings::optionThumbsSortFlags).toInt();
     thumbsViewer->thumbsSortFlags |= QDir::IgnoreCase;
 
-    connect(thumbsViewer, SIGNAL(setStatus(QString)), this, SLOT(setStatus(QString)));
-    connect(thumbsViewer, SIGNAL(showBusy(bool)), this, SLOT(showBusyStatus(bool)));
     connect(thumbsViewer->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)),
             this, SLOT(updateActions()));
 
@@ -2531,7 +2530,7 @@ void Phototonic::showViewer() {
     }
 }
 
-void Phototonic::showBusyStatus(bool busy) {
+void Phototonic::showBusyAnimation(bool busy) {
     static int busyStatus = 0;
 
     if (busy) {
@@ -2747,7 +2746,7 @@ void Phototonic::updateIndexByViewerImage() {
 }
 
 void Phototonic::hideViewer() {
-    showBusyStatus(true);
+    showBusyAnimation(true);
 
     if (isFullScreen()) {
         showNormal();
@@ -2794,7 +2793,7 @@ void Phototonic::hideViewer() {
 
     imageViewer->clearImage();
     thumbsViewer->setFocus(Qt::OtherFocusReason);
-    showBusyStatus(false);
+    showBusyAnimation(false);
     setContextMenuPolicy(Qt::DefaultContextMenu);
 
     updateActions();

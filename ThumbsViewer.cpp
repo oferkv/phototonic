@@ -17,6 +17,7 @@
  */
 
 #include "ThumbsViewer.h"
+#include "Phototonic.h"
 
 ThumbsViewer::ThumbsViewer(QWidget *parent, MetadataCache *metadataCache) : QListView(parent) {
     this->metadataCache = metadataCache;
@@ -53,7 +54,7 @@ ThumbsViewer::ThumbsViewer(QWidget *parent, MetadataCache *metadataCache) : QLis
 
     QTime time = QTime::currentTime();
     qsrand((uint) time.msec());
-    mainWindow = parent;
+    phototonic = (Phototonic *)parent;
     infoView = new InfoView(this);
     connect(infoView, SIGNAL(updateInfo(QItemSelection)), this, SLOT(onSelectionChanged(QItemSelection)));
 
@@ -137,7 +138,7 @@ void ThumbsViewer::setImageViewerWindowTitle() {
                     + QString::number(thumbsViewerModel->rowCount())
                     + "] - Phototonic";
 
-    mainWindow->setWindowTitle(title);
+    phototonic->setWindowTitle(title);
 }
 
 bool ThumbsViewer::setCurrentIndexByName(QString &fileName) {
@@ -274,7 +275,7 @@ void ThumbsViewer::onSelectionChanged(const QItemSelection &) {
         QString statusStr;
         statusStr = tr("Selected %1 of %2").arg(QString::number(selectedThumbs))
                 .arg(tr(" %n image(s)", "", thumbsViewerModel->rowCount()));
-        emit setStatus(statusStr);
+        phototonic->setStatus(statusStr);
     } else if (!selectedThumbs) {
         updateThumbsCount();
     }
@@ -425,14 +426,14 @@ void ThumbsViewer::loadFileList() {
         selectThumbByRow(0);
     }
 
-    emit showBusy(false);
+    phototonic->showBusyAnimation(false);
     isBusy = false;
 }
 
 void ThumbsViewer::reLoad() {
 
     isBusy = true;
-    emit showBusy(true);
+    phototonic->showBusyAnimation(true);
     loadPrepare();
 
     if (Settings::isFileListLoaded) {
@@ -449,7 +450,7 @@ void ThumbsViewer::reLoad() {
         loadSubDirectories();
     }
 
-    emit showBusy(false);
+    phototonic->showBusyAnimation(false);
     isBusy = false;
 }
 
@@ -587,7 +588,7 @@ void ThumbsViewer::updateThumbsCount() {
         state = tr("No images");
     }
     thumbsDir->setPath(Settings::currentDirectory);
-    emit setStatus(state);
+    phototonic->setStatus(state);
 }
 
 void ThumbsViewer::selectThumbByRow(int row) {

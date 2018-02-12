@@ -25,10 +25,13 @@
 #include "FileSystemTree.h"
 #include "Bookmarks.h"
 #include "InfoViewer.h"
-#include "ImageViewer.h"
 #include "Tags.h"
 #include "MetadataCache.h"
 #include "ImagePreview.h"
+
+class Phototonic;
+
+class ImageViewer;
 
 #define BAD_IMAGE_SIZE    64
 
@@ -126,7 +129,7 @@ private:
     QImage emptyImg;
     QModelIndex currentIndex;
     QImageReader imageInfoReader;
-    QWidget *mainWindow;
+    Phototonic *phototonic;
     MetadataCache *metadataCache;
     ImageViewer *imageViewer;
     bool isAbortThumbsLoading;
@@ -135,12 +138,6 @@ private:
     bool scrolledForward;
     int thumbsRangeFirst;
     int thumbsRangeLast;
-
-signals:
-
-    void setStatus(QString state);
-
-    void showBusy(bool busy);
 
 public slots:
 

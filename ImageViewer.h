@@ -19,9 +19,13 @@
 #ifndef IMAGE_VIEWER_H
 #define IMAGE_VIEWER_H
 
-#include <QtWidgets>
+#include <QGraphicsDropShadowEffect>
+#include <exiv2/exiv2.hpp>
+#include "Settings.h"
 #include "CropRubberband.h"
 #include "MetadataCache.h"
+
+class Phototonic;
 
 class ImageViewer : public QWidget {
 Q_OBJECT
@@ -122,7 +126,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
 
 private:
-    QWidget *mainWindow;
+    Phototonic *phototonic;
     QImageReader imageReader;
     QLabel *imageLabel;
     QPixmap viewerPixmap;

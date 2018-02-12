@@ -19,6 +19,9 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+#define THUMB_SIZE_MIN 25
+#define THUMB_SIZE_MAX 450
+
 #include <QSettings>
 #include <QModelIndexList>
 #include <QStringList>

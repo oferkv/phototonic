@@ -16,10 +16,8 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QGraphicsDropShadowEffect>
-#include <exiv2/exiv2.hpp>
-#include "Settings.h"
 #include "ImageViewer.h"
+#include "Phototonic.h"
 
 #define CLIPBOARD_IMAGE_NAME "clipboard.png"
 #define ROUND(x) ((int) ((x) + 0.5))
@@ -27,7 +25,7 @@
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
 ImageViewer::ImageViewer(QWidget *parent, MetadataCache *metadataCache) : QWidget(parent) {
-    this->mainWindow = parent;
+    this->phototonic = (Phototonic *)parent;
     this->metadataCache = metadataCache;
     cursorIsHidden = false;
     moveImageLocked = false;
@@ -574,6 +572,7 @@ void ImageViewer::refresh() {
     viewerPixmap = QPixmap::fromImage(viewerImage);
     imageLabel->setPixmap(viewerPixmap);
     resizeImage();
+    phototonic->setWindowIcon(viewerPixmap);
 }
 
 QImage createImageWithOverlay(const QImage &baseImage, const QImage &overlayImage, int x, int y) {
@@ -625,7 +624,7 @@ void ImageViewer::reload() {
         viewerPixmap = QPixmap::fromImage(viewerImage);
         imageLabel->setPixmap(viewerPixmap);
         pasteImage();
-        mainWindow->setWindowTitle(tr("Clipboard") + " - Phototonic");
+        phototonic->setWindowTitle(tr("Clipboard") + " - Phototonic");
         return;
     }
 
@@ -1023,7 +1022,7 @@ void ImageViewer::saveImageAs() {
             setFeedback(tr("Image saved."));
         }
     }
-    if (mainWindow->isFullScreen()) {
+    if (phototonic->isFullScreen()) {
         setCursorHiding(true);
     }
 }
