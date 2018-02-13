@@ -29,6 +29,7 @@
 #include "ResizeDialog.h"
 #include "FileListWidget.h"
 #include "FileSystemTree.h"
+#include <QStackedLayout>
 
 #define VERSION "Phototonic v2.0.1"
 
@@ -401,10 +402,10 @@ private:
     QWidget *imagePreviewDockEmptyWidget;
     QWidget *tagsDockEmptyWidget;
     QWidget *imageInfoDockEmptyWidget;
-    QVBoxLayout *imageViewLayout;
     bool interfaceDisabled;
     MetadataCache *metadataCache;
     FileListWidget *fileListWidget;
+    QStackedLayout *stackedLayout;
 
     enum CentralWidgets {
         ThumbViewWidget = 0,
