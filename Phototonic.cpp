@@ -53,7 +53,13 @@ Phototonic::Phototonic(QStringList argumentsList, int filesStartAt, QWidget *par
     restoreGeometry(Settings::appSettings->value(Settings::optionGeometry).toByteArray());
     restoreState(Settings::appSettings->value(Settings::optionWindowState).toByteArray());
     setDefaultWindowIcon();
-    setCentralWidget(thumbsViewer);
+
+    stackedLayout = new QStackedLayout;
+    QWidget *stackedLayoutWidget = new QWidget;
+    stackedLayout->addWidget(thumbsViewer);
+    stackedLayout->addWidget(imageViewer);
+    stackedLayoutWidget->setLayout(stackedLayout);
+    setCentralWidget(stackedLayoutWidget);
     processStartupArguments(argumentsList, filesStartAt);
 
     copyMoveToDialog = nullptr;
@@ -2163,11 +2169,6 @@ void Phototonic::readSettings() {
 }
 
 void Phototonic::setupDocks() {
-    imageViewLayout = new QVBoxLayout;
-    imageViewLayout->setContentsMargins(0, 0, 0, 0);
-    imageViewLayout->addWidget(imageViewer);
-    QWidget *imageViewContainerWidget = new QWidget;
-    imageViewContainerWidget->setLayout(imageViewLayout);
 
     addDockWidget(Qt::RightDockWidgetArea, imageInfoDock);
     addDockWidget(Qt::RightDockWidgetArea, tagsDock);
@@ -2550,10 +2551,7 @@ void Phototonic::showViewer() {
         Settings::appSettings->setValue("Geometry", saveGeometry());
         Settings::appSettings->setValue("WindowState", saveState());
 
-        imageViewLayout->removeWidget(imageViewer);
-        imageViewer->setVisible(true);
-        takeCentralWidget();
-        setCentralWidget(imageViewer);
+        stackedLayout->setCurrentWidget(imageViewer);
         setDocksVisibility(false);
 
         if (Settings::isFullScreen) {
@@ -2795,8 +2793,7 @@ void Phototonic::hideViewer() {
     }
 
     Settings::layoutMode = ThumbViewWidget;
-    takeCentralWidget();
-    setCentralWidget(thumbsViewer);
+    stackedLayout->setCurrentWidget(thumbsViewer);
 
     setDocksVisibility(true);
     while (QApplication::overrideCursor()) {
@@ -2812,9 +2809,6 @@ void Phototonic::hideViewer() {
     for (int i = 0; i <= 10 && qApp->hasPendingEvents(); ++i) {
         QApplication::processEvents();
     }
-
-    restoreGeometry(Settings::appSettings->value("Geometry").toByteArray());
-    restoreState(Settings::appSettings->value("WindowState").toByteArray());
 
     if (needThumbsRefresh) {
         needThumbsRefresh = false;
