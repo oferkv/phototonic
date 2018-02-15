@@ -267,7 +267,7 @@ void ThumbsViewer::onSelectionChanged(const QItemSelection &) {
         setCurrentRow(currentRow);
         updateImageInfoViewer(thumbFullPath);
         QPixmap imagePreviewPixmap = imagePreview->loadImage(thumbFullPath);
-        phototonic->setWindowIcon(imagePreviewPixmap.scaled(16, 16, Qt::KeepAspectRatio, Qt::FastTransformation));
+        phototonic->setWindowIcon(imagePreviewPixmap.scaled(32, 32, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     }
 
     if (imageTags->currentDisplayMode == SelectionTagsDisplay) {

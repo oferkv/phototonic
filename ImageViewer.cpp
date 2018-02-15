@@ -661,7 +661,7 @@ void ImageViewer::reload() {
 
     imageLabel->setPixmap(viewerPixmap);
     resizeImage();
-    phototonic->setWindowIcon(viewerPixmap.scaled(16, 16, Qt::KeepAspectRatio, Qt::FastTransformation));
+    phototonic->setWindowIcon(viewerPixmap.scaled(32, 32, Qt::KeepAspectRatio, Qt::SmoothTransformation));
 }
 
 void ImageViewer::setInfo(QString infoString) {

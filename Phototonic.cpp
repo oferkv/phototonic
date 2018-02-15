@@ -1072,8 +1072,9 @@ void Phototonic::about() {
 
 void Phototonic::filterImagesFocus() {
     if (Settings::layoutMode == ThumbViewWidget) {
-        if (!viewToolBar->isVisible())
+        if (!viewToolBar->isVisible()) {
             viewToolBar->setVisible(true);
+        }
         setViewToolBarVisibility();
         filterLineEdit->setFocus(Qt::OtherFocusReason);
         filterLineEdit->selectAll();
@@ -1082,8 +1083,9 @@ void Phototonic::filterImagesFocus() {
 
 void Phototonic::setPathFocus() {
     if (Settings::layoutMode == ThumbViewWidget) {
-        if (!goToolBar->isVisible())
+        if (!goToolBar->isVisible()) {
             goToolBar->setVisible(true);
+        }
         setGoToolBarVisibility();
         pathLineEdit->setFocus(Qt::OtherFocusReason);
         pathLineEdit->selectAll();
@@ -2874,15 +2876,23 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString copyM
         QString dirOnly = copyMoveDirPath.right(
                 copyMoveDirPath.size() - copyMoveDirPath.lastIndexOf(QDir::separator()) - 1);
 
-        QString question = tr("Move \"%1\" to \"%2\"?").arg(dirOnly).arg(destDir);
-        int ret = QMessageBox::question(this, tr("Move Directory"), question,
-                                        QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel);
+        QString question = tr("Move directory %1 to %2?").arg(dirOnly).arg(destDir);
+
+        QMessageBox moveDirMessageBox;
+        moveDirMessageBox.setText(question);
+        moveDirMessageBox.setWindowTitle(tr("Move directory"));
+        moveDirMessageBox.setIcon(QMessageBox::Warning);
+        moveDirMessageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+        moveDirMessageBox.setDefaultButton(QMessageBox::Cancel);
+        moveDirMessageBox.setButtonText(QMessageBox::Yes, tr("Move Directory"));
+        moveDirMessageBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));
+        int ret = moveDirMessageBox.exec();
 
         if (ret == QMessageBox::Yes) {
             QFile dir(copyMoveDirPath);
             bool ok = dir.rename(destDir + QDir::separator() + dirOnly);
             if (!ok) {
-                msgBox.critical(this, tr("Error"), tr("Failed to move directory."));
+                moveDirMessageBox.critical(this, tr("Error"), tr("Failed to move directory."));
             }
             setStatus(tr("Directory moved"));
         }
