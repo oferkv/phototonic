@@ -1711,8 +1711,16 @@ void Phototonic::deleteFromThumbsViewer(bool trash)
         QString fileNameFullPath = thumbsViewer->thumbsViewerModel->item(
                 indexesList.first().row())->data(thumbsViewer->FileNameRole).toString();
         progressDialog->opLabel->setText("Deleting " + fileNameFullPath);
-        QString trashError;
-        deleteOk = trash ? (Trash::moveToTrash(fileNameFullPath, trashError) == Trash::Success) : QFile::remove(fileNameFullPath);
+        QString deleteError;
+        if (trash) {
+            deleteOk = Trash::moveToTrash(fileNameFullPath, deleteError) == Trash::Success;
+        } else {
+            QFile fileToRemove(fileNameFullPath);
+            deleteOk = fileToRemove.remove();
+            if (!deleteOk) {
+                deleteError = fileToRemove.errorString();
+            }
+        }
 
         ++deleteFilesCount;
         if (deleteOk) {
@@ -1721,7 +1729,7 @@ void Phototonic::deleteFromThumbsViewer(bool trash)
             thumbsViewer->thumbsViewerModel->removeRow(row);
         } else {
             QMessageBox msgBox;
-            msgBox.critical(this, tr("Error"), trash ? trashError : tr("Failed to delete image."));
+            msgBox.critical(this, tr("Error"), (trash ? tr("Failed to move image to trash can") : tr("Failed to delete image.")) + "\n" + deleteError );
             break;
         }
 
@@ -1732,7 +1740,7 @@ void Phototonic::deleteFromThumbsViewer(bool trash)
         }
     }
 
-    if (thumbsViewer->thumbsViewerModel->rowCount()) {
+    if (thumbsViewer->thumbsViewerModel->rowCount() && rows.count()) {
         qSort(rows.begin(), rows.end());
         row = rows.at(0);
 

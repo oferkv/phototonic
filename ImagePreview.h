@@ -42,7 +42,6 @@ protected:
 
 private:
     QLabel *imageLabel;
-    QImageReader imageReader;
     QPixmap previewPixmap;
 
 };
