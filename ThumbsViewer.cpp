@@ -165,7 +165,7 @@ bool ThumbsViewer::setCurrentIndexByRow(int row) {
 
 void ThumbsViewer::updateImageInfoViewer(QString imageFullPath) {
 
-    imageInfoReader.setFileName(imageFullPath);
+    QImageReader imageInfoReader(imageFullPath);
     QString key;
     QString val;
 
@@ -601,7 +601,7 @@ void ThumbsViewer::selectThumbByRow(int row) {
 
 void ThumbsViewer::loadThumbsRange() {
     static bool isInProgress = false;
-    static QImageReader thumbReader;
+    QImageReader thumbReader;
     static QSize currentThumbSize;
     static int currentRowCount;
     static QString imageFileName;

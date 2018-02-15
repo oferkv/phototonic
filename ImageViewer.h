@@ -127,7 +127,6 @@ protected:
 
 private:
     Phototonic *phototonic;
-    QImageReader imageReader;
     QLabel *imageLabel;
     QPixmap viewerPixmap;
     QImage origImage;
