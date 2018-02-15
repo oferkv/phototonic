@@ -45,7 +45,7 @@ ImagePreview::ImagePreview(QWidget *parent) : QWidget(parent) {
 }
 
 QPixmap& ImagePreview::loadImage(QString imageFileName) {
-    imageReader.setFileName(imageFileName);
+    QImageReader imageReader(imageFileName);
     if (imageReader.size().isValid()) {
         QSize resize = imageReader.size();
         resize.scale(QSize(imageLabel->width(), imageLabel->height()), Qt::KeepAspectRatio);

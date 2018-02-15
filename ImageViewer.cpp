@@ -627,7 +627,7 @@ void ImageViewer::reload() {
         return;
     }
 
-    imageReader.setFileName(viewerImageFullPath);
+    QImageReader imageReader(viewerImageFullPath);
     if (Settings::enableAnimations && imageReader.supportsAnimation()) {
         if (animation) {
             delete animation;

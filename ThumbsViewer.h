@@ -128,7 +128,6 @@ private:
     QFileInfoList thumbFileInfoList;
     QImage emptyImg;
     QModelIndex currentIndex;
-    QImageReader imageInfoReader;
     Phototonic *phototonic;
     MetadataCache *metadataCache;
     ImageViewer *imageViewer;
