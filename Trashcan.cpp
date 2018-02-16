@@ -134,6 +134,30 @@ Trash::Result Trash::moveToTrash(const QString &path, QString &error, Trash::Opt
     }
 }
 
+#elif defined(Q_OS_WIN)
+#include <windows.h>
+#include <shellapi.h>
+
+Trash::Result Trash::moveToTrash(const QString &path, QString &error, Trash::Options trashOptions)
+{
+    Q_UNUSED(trashOptions);
+    SHFILEOPSTRUCTW fileOp;
+    ZeroMemory(&fileOp, sizeof(fileOp));
+    fileOp.wFunc = FO_DELETE;
+    fileOp.fFlags = FOF_SILENT | FOF_NOCONFIRMATION | FOF_NOERRORUI | FOF_NOCONFIRMMKDIR | FOF_ALLOWUNDO;
+    std::wstring wFileName = path.toStdWString();
+    wFileName.push_back('\0');
+    wFileName.push_back('\0');
+    fileOp.pFrom = wFileName.c_str();
+
+    int r = SHFileOperation(&fileOp);
+    if (r != 0) {
+        // Unfortunately there's no adequate way to get message from SHFileOperation failure
+        error = QString("SHFileOperation failed with code %1").arg(r);
+        return Trash::Error;
+    }
+    return Trash::Success;
+}
 #else
 
 Trash::Result Trash::moveToTrash(const QString &path, QString &error, Trash::Options trashOptions)
