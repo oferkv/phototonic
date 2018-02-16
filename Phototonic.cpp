@@ -898,6 +898,7 @@ void Phototonic::createFileSystemDock() {
     fileSystemTree->addAction(createDirectoryAction);
     fileSystemTree->addAction(renameAction);
     fileSystemTree->addAction(deleteAction);
+    fileSystemTree->addAction(moveToTrashAction);
     addMenuSeparator(fileSystemTree);
     fileSystemTree->addAction(pasteAction);
     addMenuSeparator(fileSystemTree);
@@ -1829,7 +1830,7 @@ void Phototonic::deleteOperation() {
     }
 
     if (QApplication::focusWidget() == fileSystemTree) {
-        deleteDirectory();
+        deleteDirectory(false);
         return;
     }
 
@@ -1843,6 +1844,10 @@ void Phototonic::deleteOperation() {
 
 void Phototonic::moveToTrashOperation()
 {
+    if (QApplication::focusWidget() == fileSystemTree) {
+        deleteDirectory(true);
+        return;
+    }
     if (Settings::layoutMode == ImageViewWidget) {
         viewerDeleteFromViewer(true);
         return;
@@ -1952,9 +1957,10 @@ void Phototonic::updateActions() {
         setDeleteAction(bookmarks->selectionModel()->selectedIndexes().size() > 0);
         setMoveToTrashAction(false);
     } else if (QApplication::focusWidget() == fileSystemTree) {
+        bool hasSelectedItems = fileSystemTree->selectionModel()->selectedIndexes().size() > 0;
         setCopyCutActions(false);
-        setDeleteAction(fileSystemTree->selectionModel()->selectedIndexes().size() > 0);
-        setMoveToTrashAction(false);
+        setDeleteAction(hasSelectedItems);
+        setMoveToTrashAction(hasSelectedItems);
     } else if (Settings::layoutMode == ImageViewWidget || QApplication::focusWidget() == imageViewer->scrollArea) {
         setCopyCutActions(false);
         setDeleteAction(true);
@@ -3191,13 +3197,13 @@ void Phototonic::removeMetadata() {
     }
 }
 
-void Phototonic::deleteDirectory() {
+void Phototonic::deleteDirectory(bool trash) {
     bool removeDirectoryOk;
     QModelIndexList selectedDirs = fileSystemTree->selectionModel()->selectedRows();
     QString deletePath = fileSystemTree->fileSystemModel->filePath(selectedDirs[0]);
     QModelIndex idxAbove = fileSystemTree->indexAbove(selectedDirs[0]);
     QFileInfo dirInfo = QFileInfo(deletePath);
-    QString question = tr("Permanently delete the directory %1 and all of its contents?").arg(
+    QString question = (trash ? tr("Move the directory %1 to trash can?") : tr("Permanently delete the directory %1 and all of its contents?")).arg(
             dirInfo.completeBaseName());
 
     QMessageBox msgBox;
@@ -3210,15 +3216,20 @@ void Phototonic::deleteDirectory() {
     msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));
     int ret = msgBox.exec();
 
+    QString trashError;
     if (ret == QMessageBox::Yes) {
-        removeDirectoryOk = removeDirectoryOperation(deletePath);
+        if (trash) {
+            removeDirectoryOk = Trash::moveToTrash(deletePath, trashError) == Trash::Success;
+        } else {
+            removeDirectoryOk = removeDirectoryOperation(deletePath);
+        }
     } else {
         selectCurrentViewDir();
         return;
     }
 
     if (!removeDirectoryOk) {
-        msgBox.critical(this, tr("Error"), tr("Failed to delete directory."));
+        msgBox.critical(this, tr("Error"), trash ? tr("Failed to move directory to trash can: %1").arg(trashError) : tr("Failed to delete directory."));
         selectCurrentViewDir();
         return;
     }
