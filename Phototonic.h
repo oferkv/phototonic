@@ -103,7 +103,7 @@ private slots:
 
     void addNewBookmark();
 
-    void deleteDirectory();
+    void deleteDirectory(bool trash);
 
     void createSubDirectory();
 
