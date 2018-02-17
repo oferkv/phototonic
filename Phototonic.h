@@ -31,7 +31,7 @@
 #include "FileSystemTree.h"
 #include <QStackedLayout>
 
-#define VERSION "Phototonic v2.0.1"
+#define VERSION "Phototonic v2.0 Snapshot"
 
 class Phototonic : public QMainWindow {
 Q_OBJECT

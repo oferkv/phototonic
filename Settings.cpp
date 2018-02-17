@@ -63,6 +63,7 @@ namespace Settings {
     const char optionExternalApps[] = "ExternalApps";
     const char optionCopyMoveToPaths[] = "CopyMoveToPaths";
     const char optionKnownTags[] = "KnownTags";
+    const char optionSetWindowIcon[] = "setWindowIcon";
 
     QSettings *appSettings;
     unsigned int layoutMode;
@@ -141,5 +142,6 @@ namespace Settings {
     QString thumbsBackgroundImage;
     QStringList filesList;
     bool isFileListLoaded;
+    bool setWindowIcon;
 }
 

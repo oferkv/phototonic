@@ -80,6 +80,7 @@ namespace Settings {
     extern const char optionExternalApps[];
     extern const char optionCopyMoveToPaths[];
     extern const char optionKnownTags[];
+    extern const char optionSetWindowIcon[];
 
     extern QSettings *appSettings;
     extern unsigned int layoutMode;
@@ -158,6 +159,7 @@ namespace Settings {
     extern QString thumbsBackgroundImage;
     extern QStringList filesList;
     extern bool isFileListLoaded;
+    extern bool setWindowIcon;
 }
 
 #endif // SETTINGS_H

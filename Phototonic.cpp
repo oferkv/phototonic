@@ -2033,6 +2033,7 @@ void Phototonic::writeSettings() {
     Settings::appSettings->setValue(Settings::optionSmallToolbarIcons, (bool) Settings::smallToolbarIcons);
     Settings::appSettings->setValue(Settings::optionHideDockTitlebars, (bool) Settings::hideDockTitlebars);
     Settings::appSettings->setValue(Settings::optionShowViewerToolbar, (bool) Settings::showViewerToolbar);
+    Settings::appSettings->setValue(Settings::optionSetWindowIcon, (bool) Settings::setWindowIcon);
 
     /* Action shortcuts */
     Settings::appSettings->beginGroup(Settings::optionShortcuts);
@@ -2157,6 +2158,7 @@ void Phototonic::readSettings() {
     Settings::smallToolbarIcons = Settings::appSettings->value(Settings::optionSmallToolbarIcons).toBool();
     Settings::hideDockTitlebars = Settings::appSettings->value(Settings::optionHideDockTitlebars).toBool();
     Settings::showViewerToolbar = Settings::appSettings->value(Settings::optionShowViewerToolbar).toBool();
+    Settings::setWindowIcon = Settings::appSettings->value(Settings::optionSetWindowIcon).toBool();
 
     /* read external apps */
     Settings::appSettings->beginGroup(Settings::optionExternalApps);
@@ -3216,7 +3218,7 @@ void Phototonic::deleteDirectory(bool trash) {
     msgBox.setIcon(QMessageBox::Warning);
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
     msgBox.setDefaultButton(QMessageBox::Cancel);
-    msgBox.setButtonText(QMessageBox::Yes, trash? tr("OK") : tr("Delete Directory"));
+    msgBox.setButtonText(QMessageBox::Yes, trash ? tr("OK") : tr("Delete Directory"));
     msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));
     int ret = msgBox.exec();
 

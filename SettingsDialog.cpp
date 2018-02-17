@@ -246,6 +246,10 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     keyboardSettingsLayout->addLayout(filterShortcutsLayout);
     keyboardGroupBox->setLayout(keyboardSettingsLayout);
 
+    // Set window icon
+    setWindowIconCheckBox = new QCheckBox(tr("Set the application icon according to the current image"), this);
+    setWindowIconCheckBox->setChecked(Settings::setWindowIcon);
+
     QVBoxLayout *generalSettingsLayout = new QVBoxLayout;
     generalSettingsLayout->addWidget(reverseMouseCheckBox);
     generalSettingsLayout->addWidget(deleteConfirmCheckBox);
@@ -274,6 +278,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     QGroupBox *slideshowGroupBox = new QGroupBox(tr("Slide Show"));
     slideshowGroupBox->setLayout(slideshowLayout);
     generalSettingsLayout->addWidget(slideshowGroupBox);
+    generalSettingsLayout->addWidget(setWindowIconCheckBox);
     generalSettingsLayout->addStretch(1);
 
     /* Confirmation buttons */
@@ -338,7 +343,7 @@ void SettingsDialog::saveSettings() {
     Settings::thumbsBackgroundColor = thumbsBackgroundColor;
     Settings::thumbsTextColor = thumbsTextColor;
     Settings::thumbsBackgroundImage = thumbsBackgroundImageLineEdit->text();
-    Settings::thumbsPagesReadCount = (unsigned int)thumbPagesSpinBox->value();
+    Settings::thumbsPagesReadCount = (unsigned int) thumbPagesSpinBox->value();
     Settings::wrapImageList = wrapListCheckBox->isChecked();
     Settings::defaultSaveQuality = saveQualitySpinBox->value();
     Settings::slideShowDelay = slideDelaySpinBox->value();
@@ -349,6 +354,7 @@ void SettingsDialog::saveSettings() {
     Settings::showImageName = showImageNameCheckBox->isChecked();
     Settings::reverseMouseBehavior = reverseMouseCheckBox->isChecked();
     Settings::deleteConfirm = deleteConfirmCheckBox->isChecked();
+    Settings::setWindowIcon = setWindowIconCheckBox->isChecked();
 
     if (startupDirectoryRadioButtons[Settings::RememberLastDir]->isChecked()) {
         Settings::startupDir = Settings::RememberLastDir;

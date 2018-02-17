@@ -72,6 +72,7 @@ private:
     QRadioButton *startupDirectoryRadioButtons[3];
     QLineEdit *startupDirLineEdit;
     QLineEdit *thumbsBackgroundImageLineEdit;
+    QCheckBox *setWindowIconCheckBox;
 
     void setButtonBgColor(QColor &color, QToolButton *button);
 };
