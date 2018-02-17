@@ -185,8 +185,8 @@ void Phototonic::createImageViewer() {
     imageViewer->addAction(saveAsAction);
     imageViewer->addAction(copyImageAction);
     imageViewer->addAction(pasteImageAction);
-    imageViewer->addAction(deleteAction);
     imageViewer->addAction(moveToTrashAction);
+    imageViewer->addAction(deleteAction);
     imageViewer->addAction(renameAction);
     imageViewer->addAction(CloseImageAction);
     imageViewer->addAction(fullScreenAction);
@@ -269,8 +269,8 @@ void Phototonic::createImageViewer() {
     imageViewer->ImagePopUpMenu->addAction(saveAction);
     imageViewer->ImagePopUpMenu->addAction(saveAsAction);
     imageViewer->ImagePopUpMenu->addAction(renameAction);
-    imageViewer->ImagePopUpMenu->addAction(deleteAction);
     imageViewer->ImagePopUpMenu->addAction(moveToTrashAction);
+    imageViewer->ImagePopUpMenu->addAction(deleteAction);
     imageViewer->ImagePopUpMenu->addAction(openWithMenuAction);
 
     addMenuSeparator(imageViewer->ImagePopUpMenu);
@@ -368,7 +368,7 @@ void Phototonic::createActions() {
 
     moveToTrashAction = new QAction(tr("Move to Trash"), this);
     moveToTrashAction->setObjectName("moveToTrash");
-    moveToTrashAction->setIcon(style()->standardPixmap(QStyle::SP_TrashIcon));
+    moveToTrashAction->setIcon(style()->standardIcon(QStyle::SP_TrashIcon));
     connect(moveToTrashAction, SIGNAL(triggered()), this, SLOT(moveToTrashOperation()));
 
     saveAction = new QAction(tr("Save"), this);
@@ -701,8 +701,8 @@ void Phototonic::createMenus() {
     editMenu->addAction(pasteAction);
     editMenu->addAction(renameAction);
     editMenu->addAction(removeMetadataAction);
-    editMenu->addAction(deleteAction);
     editMenu->addAction(moveToTrashAction);
+    editMenu->addAction(deleteAction);
     editMenu->addSeparator();
     editMenu->addAction(selectAllAction);
     editMenu->addAction(invertSelectionAction);
@@ -756,8 +756,8 @@ void Phototonic::createMenus() {
     thumbsViewer->addAction(moveToAction);
     thumbsViewer->addAction(renameAction);
     thumbsViewer->addAction(removeMetadataAction);
-    thumbsViewer->addAction(deleteAction);
     thumbsViewer->addAction(moveToTrashAction);
+    thumbsViewer->addAction(deleteAction);
     addMenuSeparator(thumbsViewer);
     thumbsViewer->addAction(selectAllAction);
     thumbsViewer->addAction(invertSelectionAction);
@@ -772,8 +772,8 @@ void Phototonic::createToolBars() {
     editToolBar->addAction(cutAction);
     editToolBar->addAction(copyAction);
     editToolBar->addAction(pasteAction);
-    editToolBar->addAction(deleteAction);
     editToolBar->addAction(moveToTrashAction);
+    editToolBar->addAction(deleteAction);
     editToolBar->addAction(showClipboardAction);
     connect(editToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setEditToolBarVisibility()));
 
@@ -832,8 +832,8 @@ void Phototonic::createToolBars() {
     imageToolBar->addSeparator();
     imageToolBar->addAction(saveAction);
     imageToolBar->addAction(saveAsAction);
-    imageToolBar->addAction(deleteAction);
     imageToolBar->addAction(moveToTrashAction);
+    imageToolBar->addAction(deleteAction);
     imageToolBar->addSeparator();
     imageToolBar->addAction(zoomInAction);
     imageToolBar->addAction(zoomOutAction);
@@ -897,8 +897,8 @@ void Phototonic::createFileSystemDock() {
     fileSystemTree = new FileSystemTree(fileSystemDock);
     fileSystemTree->addAction(createDirectoryAction);
     fileSystemTree->addAction(renameAction);
-    fileSystemTree->addAction(deleteAction);
     fileSystemTree->addAction(moveToTrashAction);
+    fileSystemTree->addAction(deleteAction);
     addMenuSeparator(fileSystemTree);
     fileSystemTree->addAction(pasteAction);
     addMenuSeparator(fileSystemTree);
@@ -1679,8 +1679,7 @@ void Phototonic::loadCurrentImage(int currentRow) {
     thumbsViewer->setImageViewerWindowTitle();
 }
 
-void Phototonic::deleteFromThumbsViewer(bool trash)
-{
+void Phototonic::deleteFromThumbsViewer(bool trash) {
     // Deleting selected thumbnails
     if (thumbsViewer->selectionModel()->selectedIndexes().size() < 1) {
         setStatus(tr("No selection"));
@@ -1689,7 +1688,7 @@ void Phototonic::deleteFromThumbsViewer(bool trash)
 
     if (Settings::deleteConfirm) {
         QMessageBox msgBox;
-        msgBox.setText(trash ? tr("Move selected images to trash can?") : tr("Permanently delete selected images?"));
+        msgBox.setText(trash ? tr("Move selected images to the trash?") : tr("Permanently delete selected images?"));
         msgBox.setWindowTitle(tr("Delete images"));
         msgBox.setIcon(QMessageBox::Warning);
         msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
@@ -1732,7 +1731,9 @@ void Phototonic::deleteFromThumbsViewer(bool trash)
             thumbsViewer->thumbsViewerModel->removeRow(row);
         } else {
             QMessageBox msgBox;
-            msgBox.critical(this, tr("Error"), (trash ? tr("Failed to move image to trash can") : tr("Failed to delete image.")) + "\n" + deleteError );
+            msgBox.critical(this, tr("Error"),
+                            (trash ? tr("Failed to move image to the trash.") : tr("Failed to delete image.")) + "\n" +
+                            deleteError);
             break;
         }
 
@@ -1797,7 +1798,8 @@ void Phototonic::viewerDeleteFromViewer(bool trash) {
         int currentRow = thumbsViewer->getCurrentRow();
 
         QString trashError;
-        ok = trash ? (Trash::moveToTrash(imageViewer->viewerImageFullPath, trashError) == Trash::Success) : QFile::remove(imageViewer->viewerImageFullPath);
+        ok = trash ? (Trash::moveToTrash(imageViewer->viewerImageFullPath, trashError) == Trash::Success)
+                   : QFile::remove(imageViewer->viewerImageFullPath);
         if (ok) {
             thumbsViewer->thumbsViewerModel->removeRow(currentRow);
             imageViewer->setFeedback(tr("Deleted ") + fileName);
@@ -1842,8 +1844,7 @@ void Phototonic::deleteOperation() {
     deleteFromThumbsViewer(false);
 }
 
-void Phototonic::moveToTrashOperation()
-{
+void Phototonic::moveToTrashOperation() {
     if (QApplication::focusWidget() == fileSystemTree) {
         deleteDirectory(true);
         return;
@@ -2035,10 +2036,10 @@ void Phototonic::writeSettings() {
 
     /* Action shortcuts */
     Settings::appSettings->beginGroup(Settings::optionShortcuts);
-    QMapIterator<QString, QAction *> scIter(Settings::actionKeys);
-    while (scIter.hasNext()) {
-        scIter.next();
-        Settings::appSettings->setValue(scIter.key(), scIter.value()->shortcut().toString());
+    QMapIterator<QString, QAction *> shortcutsIterator(Settings::actionKeys);
+    while (shortcutsIterator.hasNext()) {
+        shortcutsIterator.next();
+        Settings::appSettings->setValue(shortcutsIterator.key(), shortcutsIterator.value()->shortcut().toString());
     }
     Settings::appSettings->endGroup();
 
@@ -2248,6 +2249,7 @@ void Phototonic::loadShortcuts() {
     Settings::actionKeys[copyAction->objectName()] = copyAction;
     Settings::actionKeys[nextImageAction->objectName()] = nextImageAction;
     Settings::actionKeys[prevImageAction->objectName()] = prevImageAction;
+    Settings::actionKeys[moveToTrashAction->objectName()] = moveToTrashAction;
     Settings::actionKeys[deleteAction->objectName()] = deleteAction;
     Settings::actionKeys[saveAction->objectName()] = saveAction;
     Settings::actionKeys[saveAsAction->objectName()] = saveAsAction;
@@ -2326,7 +2328,8 @@ void Phototonic::loadShortcuts() {
         exitAction->setShortcut(QKeySequence("Ctrl+Q"));
         cutAction->setShortcut(QKeySequence("Ctrl+X"));
         copyAction->setShortcut(QKeySequence("Ctrl+C"));
-        deleteAction->setShortcut(QKeySequence("Del"));
+        moveToTrashAction->setShortcut(QKeySequence("Del"));
+        deleteAction->setShortcut(QKeySequence("Shift+Del"));
         saveAction->setShortcut(QKeySequence("Ctrl+S"));
         copyImageAction->setShortcut(QKeySequence("Ctrl+Shift+C"));
         pasteImageAction->setShortcut(QKeySequence("Ctrl+Shift+V"));
@@ -3203,7 +3206,8 @@ void Phototonic::deleteDirectory(bool trash) {
     QString deletePath = fileSystemTree->fileSystemModel->filePath(selectedDirs[0]);
     QModelIndex idxAbove = fileSystemTree->indexAbove(selectedDirs[0]);
     QFileInfo dirInfo = QFileInfo(deletePath);
-    QString question = (trash ? tr("Move the directory %1 to trash can?") : tr("Permanently delete the directory %1 and all of its contents?")).arg(
+    QString question = (trash ? tr("Move directory %1 to the trash?") : tr(
+            "Permanently delete the directory %1 and all of its contents?")).arg(
             dirInfo.completeBaseName());
 
     QMessageBox msgBox;
@@ -3212,7 +3216,7 @@ void Phototonic::deleteDirectory(bool trash) {
     msgBox.setIcon(QMessageBox::Warning);
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
     msgBox.setDefaultButton(QMessageBox::Cancel);
-    msgBox.setButtonText(QMessageBox::Yes, tr("Delete Directory"));
+    msgBox.setButtonText(QMessageBox::Yes, trash? tr("OK") : tr("Delete Directory"));
     msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));
     int ret = msgBox.exec();
 
@@ -3229,7 +3233,8 @@ void Phototonic::deleteDirectory(bool trash) {
     }
 
     if (!removeDirectoryOk) {
-        msgBox.critical(this, tr("Error"), trash ? tr("Failed to move directory to trash can: %1").arg(trashError) : tr("Failed to delete directory."));
+        msgBox.critical(this, tr("Error"), trash ? tr("Failed to move directory to the trash: %1").arg(trashError)
+                                                 : tr("Failed to delete directory."));
         selectCurrentViewDir();
         return;
     }
