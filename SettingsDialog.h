@@ -41,7 +41,7 @@ private slots:
 
     void pickStartupDir();
 
-    void pickBgImage();
+    void pickBackgroundImage();
 
 public slots:
 

@@ -31,7 +31,7 @@ FileListWidget::FileListWidget(QWidget *parent) : QTreeWidget(parent) {
 void FileListWidget::addFileListEntry() {
     QTreeWidgetItem *item = new QTreeWidgetItem(this);
     item->setText(0, "File List");
-    item->setIcon(0, QIcon::fromTheme("edit-select-all"));
+    item->setIcon(0, style()->standardIcon(QStyle::SP_FileDialogDetailedView));
     insertTopLevelItem(0, item);
 }
 

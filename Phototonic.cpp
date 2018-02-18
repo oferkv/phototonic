@@ -937,7 +937,6 @@ void Phototonic::createFileSystemDock() {
     connect(fileSystemDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setFileSystemDockVisibility()));
     connect(fileSystemDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setFileSystemDockVisibility()));
     addDockWidget(Qt::LeftDockWidgetArea, fileSystemDock);
-
 }
 
 void Phototonic::createBookmarksDock() {
@@ -967,7 +966,7 @@ void Phototonic::createImagePreviewDock() {
     imagePreviewDock->setObjectName("ImagePreview");
     imagePreviewDock->setWidget(thumbsViewer->imagePreview);
     connect(imagePreviewDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setImagePreviewDockVisibility()));
-
+    connect(imagePreviewDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setImagePreviewDockVisibility()));
     addDockWidget(Qt::RightDockWidgetArea, imagePreviewDock);
 }
 
@@ -2027,6 +2026,7 @@ void Phototonic::writeSettings() {
     Settings::appSettings->setValue(Settings::optionFileSystemDockVisible, (bool) Settings::fileSystemDockVisible);
     Settings::appSettings->setValue(Settings::optionImageInfoDockVisible, (bool) Settings::imageInfoDockVisible);
     Settings::appSettings->setValue(Settings::optionBookmarksDockVisible, (bool) Settings::bookmarksDockVisible);
+    Settings::appSettings->setValue(Settings::optionTagsDockVisible, (bool) Settings::tagsDockVisible);
     Settings::appSettings->setValue(Settings::optionImagePreviewDockVisible, (bool) Settings::imagePreviewDockVisible);
     Settings::appSettings->setValue(Settings::optionStartupDir, (int) Settings::startupDir);
     Settings::appSettings->setValue(Settings::optionSpecifiedStartDir, Settings::specifiedStartDir);
@@ -2112,6 +2112,7 @@ void Phototonic::readSettings() {
         Settings::appSettings->setValue(Settings::optionImageToolBarVisible, (bool) false);
         Settings::appSettings->setValue(Settings::optionFileSystemDockVisible, (bool) true);
         Settings::appSettings->setValue(Settings::optionBookmarksDockVisible, (bool) true);
+        Settings::appSettings->setValue(Settings::optionTagsDockVisible, (bool) true);
         Settings::appSettings->setValue(Settings::optionImagePreviewDockVisible, (bool) true);
         Settings::appSettings->setValue(Settings::optionImageInfoDockVisible, (bool) true);
         Settings::appSettings->setValue(Settings::optionShowImageName, (bool) false);
@@ -2154,6 +2155,7 @@ void Phototonic::readSettings() {
     imageToolBarVisible = Settings::appSettings->value(Settings::optionImageToolBarVisible).toBool();
     Settings::fileSystemDockVisible = Settings::appSettings->value(Settings::optionFileSystemDockVisible).toBool();
     Settings::bookmarksDockVisible = Settings::appSettings->value(Settings::optionBookmarksDockVisible).toBool();
+    Settings::tagsDockVisible = Settings::appSettings->value(Settings::optionTagsDockVisible).toBool();
     Settings::imagePreviewDockVisible = Settings::appSettings->value(Settings::optionImagePreviewDockVisible).toBool();
     Settings::imageInfoDockVisible = Settings::appSettings->value(Settings::optionImageInfoDockVisible).toBool();
     Settings::startupDir = (Settings::StartupDir) Settings::appSettings->value(Settings::optionStartupDir).toInt();

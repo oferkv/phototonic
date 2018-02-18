@@ -49,6 +49,7 @@ namespace Settings {
     const char optionFileSystemDockVisible[] = "fileSystemDockVisible";
     const char optionBookmarksDockVisible[] = "bookmarksDockVisible";
     const char optionImagePreviewDockVisible[] = "imagePreviewDockVisible";
+    const char optionTagsDockVisible[] = "tagsDockVisible";
     const char optionImageInfoDockVisible[] = "imageInfoDockVisible";
     const char optionSmallToolbarIcons[] = "smallToolbarIcons";
     const char optionHideDockTitlebars[] = "hideDockTitlebars";

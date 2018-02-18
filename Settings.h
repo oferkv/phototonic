@@ -66,6 +66,7 @@ namespace Settings {
     extern const char optionFileSystemDockVisible[];
     extern const char optionBookmarksDockVisible[];
     extern const char optionImagePreviewDockVisible[];
+    extern const char optionTagsDockVisible[];
     extern const char optionImageInfoDockVisible[];
     extern const char optionSmallToolbarIcons[];
     extern const char optionHideDockTitlebars[];

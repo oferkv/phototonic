@@ -146,7 +146,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     chooseThumbsBackImageButton->setIcon(QIcon::fromTheme("document-open", QIcon(":/images/open.png")));
     chooseThumbsBackImageButton->setFixedSize(26, 26);
     chooseThumbsBackImageButton->setIconSize(QSize(16, 16));
-    connect(chooseThumbsBackImageButton, SIGNAL(clicked()), this, SLOT(pickBgImage()));
+    connect(chooseThumbsBackImageButton, SIGNAL(clicked()), this, SLOT(pickBackgroundImage()));
 
     QHBoxLayout *thumbsBackgroundImageLayout = new QHBoxLayout;
     thumbsBackgroundImageLayout->addWidget(thumbsBackgroundImageLabel);
@@ -408,7 +408,7 @@ void SettingsDialog::pickStartupDir() {
     startupDirLineEdit->setText(dirName);
 }
 
-void SettingsDialog::pickBgImage() {
+void SettingsDialog::pickBackgroundImage() {
     QString dirName = QFileDialog::getOpenFileName(this, tr("Open File"), "",
                                                    tr("Images") +
                                                    " (*.jpg *.jpeg *.jpe *.png *.bmp *.tiff *.tif *.ppm *.xbm *.xpm)");
