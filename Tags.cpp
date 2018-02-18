@@ -169,7 +169,7 @@ bool ImageTags::writeTagsToImage(QString &imageFileName, QSet<QString> &newTags)
         exifImage->writeMetadata();
     }
     catch (Exiv2::Error &error) {
-        QMessageBox msgBox;
+        QMessageBox msgBox(this);
         msgBox.critical(this, tr("Error"), tr("Failed to save tags to ") + imageFileName);
         return false;
     }
@@ -460,7 +460,7 @@ void ImageTags::addNewTag() {
     }
 
     if (newTagName.isEmpty()) {
-        QMessageBox msgBox;
+        QMessageBox msgBox(this);
         msgBox.critical(this, tr("Error"), tr("No name entered"));
         return;
     }
@@ -469,7 +469,7 @@ void ImageTags::addNewTag() {
     while (knownTagsIt.hasNext()) {
         QString tag = knownTagsIt.next();
         if (newTagName == tag) {
-            QMessageBox msgBox;
+            QMessageBox msgBox(this);
             msgBox.critical(this, tr("Error"), tr("Tag ") + newTagName + tr(" already exists"));
             return;
         }
@@ -485,11 +485,10 @@ void ImageTags::removeTag() {
         return;
     }
 
-    QMessageBox msgBox;
+    QMessageBox msgBox(this);
     msgBox.setText(tr("Remove selected tags(s)?"));
     msgBox.setWindowTitle(tr("Remove tag"));
     msgBox.setIcon(QMessageBox::Warning);
-    msgBox.setWindowIcon(QIcon(":/images/tag.png"));
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
     msgBox.setDefaultButton(QMessageBox::Cancel);
     msgBox.setButtonText(QMessageBox::Yes, tr("Yes"));

@@ -623,7 +623,6 @@ void ImageViewer::reload() {
         viewerPixmap = QPixmap::fromImage(viewerImage);
         imageLabel->setPixmap(viewerPixmap);
         pasteImage();
-        phototonic->setWindowTitle(tr("Clipboard") + " - Phototonic");
         return;
     }
 
@@ -964,7 +963,7 @@ void ImageViewer::saveImage() {
     QImageReader imageReader(viewerImageFullPath);
     if (!viewerPixmap.save(viewerImageFullPath, imageReader.format().toUpper(),
                            Settings::defaultSaveQuality)) {
-        QMessageBox msgBox;
+        QMessageBox msgBox(this);
         msgBox.critical(this, tr("Error"), tr("Failed to save image."));
         return;
     }
@@ -974,7 +973,7 @@ void ImageViewer::saveImage() {
             image->writeMetadata();
         }
         catch (Exiv2::Error &error) {
-            QMessageBox msgBox;
+            QMessageBox msgBox(this);
             msgBox.critical(this, tr("Error"), tr("Failed to save Exif metadata."));
         }
     }
@@ -1007,7 +1006,7 @@ void ImageViewer::saveImageAs() {
 
 
         if (!viewerPixmap.save(fileName, 0, Settings::defaultSaveQuality)) {
-            QMessageBox msgBox;
+            QMessageBox msgBox(this);
             msgBox.critical(this, tr("Error"), tr("Failed to save image."));
         } else {
             if (!exifError) {
@@ -1061,6 +1060,10 @@ void ImageViewer::pasteImage() {
     if (!QApplication::clipboard()->image().isNull()) {
         origImage = QApplication::clipboard()->image();
         refresh();
+    }
+    phototonic->setWindowTitle(tr("Clipboard") + " - Phototonic");
+    if (Settings::setWindowIcon) {
+        phototonic->setWindowIcon(phototonic->getDefaultWindowIcon());
     }
 }
 

@@ -254,10 +254,11 @@ void ThumbsViewer::updateImageInfoViewer(QString imageFullPath) {
 }
 
 void ThumbsViewer::onSelectionChanged(const QItemSelection &) {
-
     infoView->clear();
     imagePreview->clear();
-    phototonic->setDefaultWindowIcon();
+    if (Settings::setWindowIcon && Settings::layoutMode == Phototonic::ThumbViewWidget) {
+        phototonic->setWindowIcon(phototonic->getDefaultWindowIcon());
+    }
 
     QModelIndexList indexesList = selectionModel()->selectedIndexes();
     int selectedThumbs = indexesList.size();
@@ -267,7 +268,7 @@ void ThumbsViewer::onSelectionChanged(const QItemSelection &) {
         setCurrentRow(currentRow);
         updateImageInfoViewer(thumbFullPath);
         QPixmap imagePreviewPixmap = imagePreview->loadImage(thumbFullPath);
-        if (Settings::setWindowIcon) {
+        if (Settings::setWindowIcon && Settings::layoutMode == Phototonic::ThumbViewWidget) {
             phototonic->setWindowIcon(imagePreviewPixmap.scaled(32, 32, Qt::KeepAspectRatio, Qt::SmoothTransformation));
         }
     }

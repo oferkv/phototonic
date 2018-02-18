@@ -48,7 +48,12 @@ public:
 
     void showBusyAnimation(bool busy);
 
-    void setDefaultWindowIcon();
+    QIcon &getDefaultWindowIcon();
+
+    enum CentralWidgets {
+        ThumbViewWidget = 0,
+        ImageViewWidget
+    };
 
 protected:
     void mouseDoubleClickEvent(QMouseEvent *event);
@@ -407,11 +412,6 @@ private:
     FileListWidget *fileListWidget;
     QStackedLayout *stackedLayout;
 
-    enum CentralWidgets {
-        ThumbViewWidget = 0,
-        ImageViewWidget
-    };
-
     int currentHistoryIdx;
     bool needHistoryRecord;
     bool initComplete;
@@ -428,6 +428,7 @@ private:
     ResizeDialog *resizeDialog;
     ColorsDialog *colorsDialog;
     CropDialog *cropDialog;
+    QIcon defaultApplicationIcon;
 
     void refreshThumbs(bool noScroll);
 

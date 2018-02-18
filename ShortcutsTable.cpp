@@ -75,7 +75,7 @@ void ShortcutsTable::keyPressEvent(QKeyEvent *keyEvent) {
 
     if ((keyEvent->modifiers() & Qt::AltModifier) &&
         (keyEvent->key() > Qt::Key_0 && keyEvent->key() <= Qt::Key_Colon)) {
-        QMessageBox msgBox;
+        QMessageBox msgBox(this);
         msgBox.warning(this, tr("Set shortcut"),
                        tr("\"%1\" is reserved for shortcuts to external applications.").arg(keySequenceText));
         return;
@@ -106,11 +106,10 @@ void ShortcutsTable::keyPressEvent(QKeyEvent *keyEvent) {
 }
 
 bool ShortcutsTable::confirmOverwriteShortcut(QString action, QString shortcut) {
-    QMessageBox msgBox;
-    msgBox.setText(tr("%1 already assigned to %2, reassign?").arg(shortcut).arg(action));
+    QMessageBox msgBox(this);
+    msgBox.setText(tr("%1 is already assigned to %2, reassign?").arg(shortcut).arg(action));
     msgBox.setWindowTitle(tr("Overwrite Shortcut"));
     msgBox.setIcon(QMessageBox::Warning);
-    msgBox.setWindowIcon(QIcon(":/images/tag.png"));
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
     msgBox.setDefaultButton(QMessageBox::Cancel);
     msgBox.setButtonText(QMessageBox::Yes, tr("Yes"));
