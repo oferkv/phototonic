@@ -66,5 +66,6 @@ TRANSLATIONS = 	translations/phototonic_en.ts \
 		translations/phototonic_fr.ts \
 		translations/phototonic_bs.ts \
 		translations/phototonic_hr.ts \
-		translations/phototonic_sr.ts
+		translations/phototonic_sr.ts \
+		translations/phototonic_pt.ts
 
