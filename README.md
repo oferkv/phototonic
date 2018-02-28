@@ -16,13 +16,19 @@ Phototonic is an image viewer and organizer built with Qt and Exiv2, released un
 + Does not depend on any desktop environment.
 
 ### Latest Updates:
+
+##### 28 Feb 2018 - v2.0
++ Move to Trash
++ File List support
++ Bug fixes
+
 ##### 15 Jan 2018
 + Back after a long break
-+ Code cleanup and removal of useless features.
-+ Lots of bug fixes.
-+ Added Remove Image Metadata action.
-+ Enhanced keyboard settings.
-+ Enhanced image info.
++ Code cleanup and removal of useless features
++ Lots of bug fixes
++ Added Remove Image Metadata action
++ Enhanced keyboard settings
++ Enhanced image info
 
 ##### 12 Nov 2015 - v1.7.1
 + Changes to the way layouts are being switched, now faster and more efficient
