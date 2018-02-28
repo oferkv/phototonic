@@ -29,7 +29,7 @@ static void showHelp() {
 int main(int argc, char *argv[]) {
     QApplication QApp(argc, argv);
     QStringList arguments = QCoreApplication::arguments();
-    QString language;
+    QLocale locale = QLocale::system();
     int argumentsStartAt = 1;
 
     if (arguments.size() == 2) {
@@ -38,20 +38,16 @@ int main(int argc, char *argv[]) {
             return -1;
         }
     } else if (arguments.size() >= 3 && (arguments.at(1) == "-l" || arguments.at(1) == "--lang")) {
-        language = arguments.at(2);
+        locale = QLocale(arguments.at(2));
         argumentsStartAt = 3;
     }
 
-    if (!language.size()) {
-        language = QLocale::system().name();
-    }
-
     QTranslator qTranslator;
-    qTranslator.load("qt_" + language, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    qTranslator.load(locale, "qt", "_", QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     QApp.installTranslator(&qTranslator);
 
     QTranslator qTranslatorPhototonic;
-    qTranslatorPhototonic.load(":/translations/phototonic_" + language);
+    qTranslatorPhototonic.load(locale, "phototonic", "_", ":/translations");
     QApp.installTranslator(&qTranslatorPhototonic);
 
     Phototonic phototonic(arguments, argumentsStartAt);
