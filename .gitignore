@@ -7,3 +7,4 @@ moc_*.cpp
 qrc_phototonic.cpp
 *.pro.user
 Makefile
+mingw

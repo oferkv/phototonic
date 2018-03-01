@@ -20,7 +20,17 @@ TEMPLATE = app
 TARGET = phototonic
 INCLUDEPATH += .
 INCLUDEPATH += /usr/local/include
-LIBS += -L/usr/local/lib -lexiv2
+win32-g++ {
+MINGWEXIVPATH = $$PWD/mingw
+
+LIBS += -L$$MINGWEXIVPATH/lib/ -lexiv2 -lexpat -lz
+
+INCLUDEPATH += $$MINGWEXIVPATH/include
+DEPENDPATH += $$MINGWEXIVPATH/include
+
+PRE_TARGETDEPS += $$MINGWEXIVPATH/lib/libexiv2.a $$MINGWEXIVPATH/lib/libexpat.a $$MINGWEXIVPATH/lib/libz.a
+}
+else: LIBS += -L/usr/local/lib -lexiv2
 QT += widgets
 QMAKE_CXXFLAGS += $$(CXXFLAGS)
 QMAKE_CFLAGS += $$(CFLAGS)
@@ -68,4 +78,3 @@ TRANSLATIONS = 	translations/phototonic_en.ts \
 		translations/phototonic_hr.ts \
 		translations/phototonic_sr.ts \
 		translations/phototonic_pt.ts
-

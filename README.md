@@ -75,3 +75,13 @@ $ make
 $ make install
 $ sudo make install
 ```
+
+#### Build on Windows
+For now the project file supports only building with mingw (the source code itself is probably compatible with msvc, just nobody bothered with supporting msvc in the project file yet).
+You must get an exiv2 library. You can get binary version from http://www.exiv2.org/download.html (download mingw version) or compile it youself.
+
+Note that Qt libraries must be built against the same major mingw version as exiv2 is built against (i.e. Qt built with mingw 5 and higher won't be compatible with exiv2 built with mingw 4.9).
+Currently exiv2 binary package for mingw is built with mingw 4.9 therefore the latest compatible Qt version available in binary is 5.6.3 (available via Qt Maintenance Tool).
+
+If you got binary package from exiv2 website unpack `mingw` directory to the root of the repo (actually only mingw/lib and mingw/include are essential).
+Then build phototonic as usual - via qmake + mingw32-make in console or via QtCreator (just remember to choose the compatible Qt Kit)
