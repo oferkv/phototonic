@@ -66,7 +66,7 @@ Phototonic is an image viewer and organizer built with Qt and Exiv2, released un
 + qt5-imageformats (TIFF and TGA support)
 + qt5-svg (SVG support)
 
-##### Quick and Dirty Build Instructions
+##### Quick Build Instructions on Linux
 ```
 $ tar -zxvf phototonic.tar.gz
 $ cd phototonic
@@ -76,12 +76,12 @@ $ make install
 $ sudo make install
 ```
 
-#### Build on Windows
-For now the project file supports only building with mingw (the source code itself is probably compatible with msvc, just nobody bothered with supporting msvc in the project file yet).
-You must get an exiv2 library. You can get binary version from http://www.exiv2.org/download.html (download mingw version) or compile it youself.
+##### Building on Windows
+Building on Windows is only supported with mingw at the moment (the source code is probably compatible with msvc, but this was not tested yet).
+First get the exiv2 library. Binary version is available from http://www.exiv2.org/download.html (download mingw version) or build it manually.
 
 Note that Qt libraries must be built against the same major mingw version as exiv2 is built against (i.e. Qt built with mingw 5 and higher won't be compatible with exiv2 built with mingw 4.9).
 Currently exiv2 binary package for mingw is built with mingw 4.9 therefore the latest compatible Qt version available in binary is 5.6.3 (available via Qt Maintenance Tool).
 
-If you got binary package from exiv2 website unpack `mingw` directory to the root of the repo (actually only mingw/lib and mingw/include are essential).
-Then build phototonic as usual - via qmake + mingw32-make in console or via QtCreator (just remember to choose the compatible Qt Kit)
+If using the binary package from exiv2 website, unpack the `mingw` directory to the root of the repository (only mingw/lib and mingw/include are essential).
+Then build phototonic as usual - via qmake + mingw32-make in the console, or via QtCreator (remember to choose the compatible Qt Kit).
