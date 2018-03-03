@@ -29,6 +29,7 @@
 #include "FileListWidget.h"
 #include "RenameDialog.h"
 #include "Trashcan.h"
+#include "MessageBox.h"
 
 Phototonic::Phototonic(QStringList argumentsList, int filesStartAt, QWidget *parent) : QMainWindow(parent) {
     Settings::appSettings = new QSettings("phototonic", "phototonic");
@@ -979,7 +980,6 @@ void Phototonic::createImageTagsDock() {
     connect(tagsDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setTagsDockVisibility()));
     connect(tagsDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setTagsDockVisibility()));
     connect(thumbsViewer->imageTags, SIGNAL(reloadThumbs()), this, SLOT(onReloadThumbs()));
-    connect(thumbsViewer->imageTags->removeTagAction, SIGNAL(triggered()), this, SLOT(deleteOperation()));
 }
 
 void Phototonic::sortThumbnails() {
@@ -1068,7 +1068,8 @@ void Phototonic::about() {
                           + "<p>Phototonic is licensed under the GNU General Public License version 3</p>"
                           + "<p>Copyright &copy; 2013-2018 Ofer Kashayov</p>";
 
-    QMessageBox::about(this, tr("About") + " Phototonic", aboutString);
+    MessageBox messageBox(this);
+    messageBox.about(aboutString);
 }
 
 void Phototonic::filterImagesFocus() {
@@ -1098,8 +1099,8 @@ void Phototonic::cleanupSender() {
 }
 
 void Phototonic::externalAppError() {
-    QMessageBox msgBox(this);
-    msgBox.critical(this, tr("Error"), tr("Failed to start external application."));
+    MessageBox msgBox(this);
+    msgBox.critical(tr("Error"), tr("Failed to start external application."));
 }
 
 void Phototonic::runExternalApp() {
@@ -1109,7 +1110,7 @@ void Phototonic::runExternalApp() {
 
     if (Settings::layoutMode == ImageViewWidget) {
         if (imageViewer->isNewImage()) {
-            showNewImageWarning(this);
+            showNewImageWarning();
             return;
         }
 
@@ -1304,7 +1305,7 @@ void Phototonic::copyOrMoveImages(bool isMoveOperation) {
             pasteThumbs();
         } else {
             if (imageViewer->isNewImage()) {
-                showNewImageWarning(this);
+                showNewImageWarning();
                 if (isFullScreen()) {
                     imageViewer->setCursorHiding(true);
                 }
@@ -1321,8 +1322,8 @@ void Phototonic::copyOrMoveImages(bool isMoveOperation) {
                                                         destFile, copyMoveToDialog->selectedPath);
 
             if (!result) {
-                QMessageBox msgBox(this);
-                msgBox.critical(this, tr("Error"), tr("Failed to copy or move image."));
+                MessageBox msgBox(this);
+                msgBox.critical(tr("Error"), tr("Failed to copy or move image."));
             } else {
                 if (!copyMoveToDialog->copyOp) {
                     int currentRow = thumbsViewer->getCurrentRow();
@@ -1603,8 +1604,8 @@ void Phototonic::pasteThumbs() {
     }
 
     if (!isValidPath(destDir)) {
-        QMessageBox msgBox(this);
-        msgBox.critical(this, tr("Error"), tr("Can not copy or move to ") + destDir);
+        MessageBox msgBox(this);
+        msgBox.critical(tr("Error"), tr("Can not copy or move to ") + destDir);
         selectCurrentViewDir();
         return;
     }
@@ -1615,8 +1616,8 @@ void Phototonic::pasteThumbs() {
         for (int thumb = 0; thumb < Settings::copyCutFileList.size(); ++thumb) {
             fileInfo = QFileInfo(Settings::copyCutFileList[thumb]);
             if (fileInfo.absolutePath() == destDir) {
-                QMessageBox msgBox(this);
-                msgBox.critical(this, tr("Error"), tr("Can not move to the same directory"));
+                MessageBox msgBox(this);
+                msgBox.critical(tr("Error"), tr("Can not move to the same directory"));
                 return;
             }
         }
@@ -1683,7 +1684,7 @@ void Phototonic::loadCurrentImage(int currentRow) {
     thumbsViewer->setImageViewerWindowTitle();
 }
 
-void Phototonic::deleteFromThumbsViewer(bool trash) {
+void Phototonic::deleteImages(bool trash) {
     // Deleting selected thumbnails
     if (thumbsViewer->selectionModel()->selectedIndexes().size() < 1) {
         setStatus(tr("No selection"));
@@ -1691,16 +1692,16 @@ void Phototonic::deleteFromThumbsViewer(bool trash) {
     }
 
     if (Settings::deleteConfirm) {
-        QMessageBox msgBox(this);
+        MessageBox msgBox(this);
         msgBox.setText(trash ? tr("Move selected images to the trash?") : tr("Permanently delete selected images?"));
         msgBox.setWindowTitle(tr("Delete images"));
-        msgBox.setIcon(QMessageBox::Warning);
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
-        msgBox.setDefaultButton(QMessageBox::Yes);
-        msgBox.setButtonText(QMessageBox::Yes, tr("Yes"));
-        msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));
+        msgBox.setIcon(MessageBox::Warning);
+        msgBox.setStandardButtons(MessageBox::Yes | MessageBox::Cancel);
+        msgBox.setDefaultButton(MessageBox::Yes);
+        msgBox.setButtonText(MessageBox::Yes, tr("Yes"));
+        msgBox.setButtonText(MessageBox::Cancel, tr("Cancel"));
 
-        if (msgBox.exec() != QMessageBox::Yes) {
+        if (msgBox.exec() != MessageBox::Yes) {
             return;
         }
     }
@@ -1734,8 +1735,8 @@ void Phototonic::deleteFromThumbsViewer(bool trash) {
             rows << row;
             thumbsViewer->thumbsViewerModel->removeRow(row);
         } else {
-            QMessageBox msgBox(this);
-            msgBox.critical(this, tr("Error"),
+            MessageBox msgBox(this);
+            msgBox.critical(tr("Error"),
                             (trash ? tr("Failed to move image to the trash.") : tr("Failed to delete image.")) + "\n" +
                             deleteError);
             break;
@@ -1769,7 +1770,7 @@ void Phototonic::deleteFromThumbsViewer(bool trash) {
 
 void Phototonic::viewerDeleteFromViewer(bool trash) {
     if (imageViewer->isNewImage()) {
-        showNewImageWarning(this);
+        showNewImageWarning();
         return;
     }
 
@@ -1784,16 +1785,16 @@ void Phototonic::viewerDeleteFromViewer(bool trash) {
 
     bool deleteConfirmed = true;
     if (Settings::deleteConfirm) {
-        QMessageBox msgBox(this);
+        MessageBox msgBox(this);
         msgBox.setText(trash ? tr("Move %1 to the trash").arg(fileName) : tr("Permanently delete %1").arg(fileName));
         msgBox.setWindowTitle(tr("Delete image"));
-        msgBox.setIcon(QMessageBox::Warning);
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
-        msgBox.setDefaultButton(QMessageBox::Yes);
-        msgBox.setButtonText(QMessageBox::Yes, tr("Yes"));
-        msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));
+        msgBox.setIcon(MessageBox::Warning);
+        msgBox.setStandardButtons(MessageBox::Yes | MessageBox::Cancel);
+        msgBox.setDefaultButton(MessageBox::Yes);
+        msgBox.setButtonText(MessageBox::Yes, tr("Yes"));
+        msgBox.setButtonText(MessageBox::Cancel, tr("Cancel"));
 
-        if (msgBox.exec() != QMessageBox::Yes) {
+        if (msgBox.exec() != MessageBox::Yes) {
             deleteConfirmed = false;
         }
     }
@@ -1808,8 +1809,8 @@ void Phototonic::viewerDeleteFromViewer(bool trash) {
             thumbsViewer->thumbsViewerModel->removeRow(currentRow);
             imageViewer->setFeedback(tr("Deleted ") + fileName);
         } else {
-            QMessageBox msgBox(this);
-            msgBox.critical(this, tr("Error"), trash ? trashError : tr("Failed to delete image"));
+            MessageBox msgBox(this);
+            msgBox.critical(tr("Error"), trash ? trashError : tr("Failed to delete image"));
             if (isFullScreen()) {
                 imageViewer->setCursorHiding(true);
             }
@@ -1845,7 +1846,7 @@ void Phototonic::deleteOperation() {
         return;
     }
 
-    deleteFromThumbsViewer(false);
+    deleteImages(false);
 }
 
 void Phototonic::moveToTrashOperation() {
@@ -1857,7 +1858,7 @@ void Phototonic::moveToTrashOperation() {
         viewerDeleteFromViewer(true);
         return;
     }
-    deleteFromThumbsViewer(true);
+    deleteImages(true);
 }
 
 void Phototonic::goTo(QString path) {
@@ -1882,8 +1883,8 @@ void Phototonic::goPathBarDir() {
 
     QDir checkPath(pathLineEdit->text());
     if (!checkPath.exists() || !checkPath.isReadable()) {
-        QMessageBox msgBox(this);
-        msgBox.critical(this, tr("Error"), tr("Invalid Path:") + " " + pathLineEdit->text());
+        MessageBox msgBox(this);
+        msgBox.critical(tr("Error"), tr("Invalid Path:") + " " + pathLineEdit->text());
         pathLineEdit->setText(Settings::currentDirectory);
         return;
     }
@@ -2625,8 +2626,8 @@ void Phototonic::loadSelectedThumbImage(const QModelIndex &idx) {
 void Phototonic::loadImageFromCliArguments(QString cliFileName) {
     QFile imageFile(cliFileName);
     if (!imageFile.exists()) {
-        QMessageBox msgBox(this);
-        msgBox.critical(this, tr("Error"), tr("Failed to open file %1, file not found.").arg(cliFileName));
+        MessageBox msgBox(this);
+        msgBox.critical(tr("Error"), tr("Failed to open file %1, file not found.").arg(cliFileName));
         return;
     }
 
@@ -2871,7 +2872,6 @@ void Phototonic::goTop() {
 void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString copyMoveDirPath) {
     QApplication::restoreOverrideCursor();
     Settings::isCopyOperation = (keyMods == Qt::ControlModifier);
-    QMessageBox msgBox(this);
     QString destDir;
 
     if (QObject::sender() == fileSystemTree) {
@@ -2888,14 +2888,15 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString copyM
         return;
     }
 
+    MessageBox msgBox(this);
     if (!isValidPath(destDir)) {
-        msgBox.critical(this, tr("Error"), tr("Can not move or copy images to this directory."));
+        msgBox.critical(tr("Error"), tr("Can not move or copy images to this directory."));
         selectCurrentViewDir();
         return;
     }
 
     if (destDir == Settings::currentDirectory) {
-        msgBox.critical(this, tr("Error"), tr("Destination directory is the same as the source directory."));
+        msgBox.critical(tr("Error"), tr("Destination directory is the same as the source directory."));
         return;
     }
 
@@ -2905,21 +2906,21 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString copyM
 
         QString question = tr("Move directory %1 to %2?").arg(dirOnly).arg(destDir);
 
-        QMessageBox moveDirMessageBox;
+        MessageBox moveDirMessageBox(this);
         moveDirMessageBox.setText(question);
         moveDirMessageBox.setWindowTitle(tr("Move directory"));
-        moveDirMessageBox.setIcon(QMessageBox::Warning);
-        moveDirMessageBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
-        moveDirMessageBox.setDefaultButton(QMessageBox::Cancel);
-        moveDirMessageBox.setButtonText(QMessageBox::Yes, tr("Move Directory"));
-        moveDirMessageBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));
+        moveDirMessageBox.setIcon(MessageBox::Warning);
+        moveDirMessageBox.setStandardButtons(MessageBox::Yes | MessageBox::Cancel);
+        moveDirMessageBox.setDefaultButton(MessageBox::Cancel);
+        moveDirMessageBox.setButtonText(MessageBox::Yes, tr("Move Directory"));
+        moveDirMessageBox.setButtonText(MessageBox::Cancel, tr("Cancel"));
         int ret = moveDirMessageBox.exec();
 
-        if (ret == QMessageBox::Yes) {
+        if (ret == MessageBox::Yes) {
             QFile dir(copyMoveDirPath);
-            bool ok = dir.rename(destDir + QDir::separator() + dirOnly);
-            if (!ok) {
-                moveDirMessageBox.critical(this, tr("Error"), tr("Failed to move directory."));
+            bool moveOk = dir.rename(destDir + QDir::separator() + dirOnly);
+            if (!moveOk) {
+                moveDirMessageBox.critical(tr("Error"), tr("Failed to move directory."));
             }
             setStatus(tr("Directory moved"));
         }
@@ -3009,8 +3010,8 @@ void Phototonic::onReloadThumbs() {
 
         QDir checkPath(Settings::currentDirectory);
         if (!checkPath.exists() || !checkPath.isReadable()) {
-            QMessageBox msgBox(this);
-            msgBox.critical(this, tr("Error"), tr("Failed to open directory ") + Settings::currentDirectory);
+            MessageBox msgBox(this);
+            msgBox.critical(tr("Error"), tr("Failed to open directory ") + Settings::currentDirectory);
             setStatus(tr("No directory selected"));
             return;
         }
@@ -3059,8 +3060,8 @@ void Phototonic::renameDir() {
     }
 
     if (newDirName.isEmpty()) {
-        QMessageBox msgBox(this);
-        msgBox.critical(this, tr("Error"), tr("Invalid name entered."));
+        MessageBox msgBox(this);
+        msgBox.critical(tr("Error"), tr("Invalid name entered."));
         selectCurrentViewDir();
         return;
     }
@@ -3069,8 +3070,8 @@ void Phototonic::renameDir() {
     QString newFullPathName = dirInfo.absolutePath() + QDir::separator() + newDirName;
     renameOk = dir.rename(newFullPathName);
     if (!renameOk) {
-        QMessageBox msgBox(this);
-        msgBox.critical(this, tr("Error"), tr("Failed to rename directory."));
+        MessageBox msgBox(this);
+        msgBox.critical(tr("Error"), tr("Failed to rename directory."));
         selectCurrentViewDir();
         return;
     }
@@ -3090,7 +3091,7 @@ void Phototonic::rename() {
 
     if (Settings::layoutMode == ImageViewWidget) {
         if (imageViewer->isNewImage()) {
-            showNewImageWarning(this);
+            showNewImageWarning();
             return;
         }
 
@@ -3124,8 +3125,8 @@ void Phototonic::rename() {
     delete (renameDialog);
 
     if (renameConfirmed && newFileName.isEmpty()) {
-        QMessageBox msgBox(this);
-        msgBox.critical(this, tr("Error"), tr("No name entered."));
+        MessageBox msgBox(this);
+        msgBox.critical(tr("Error"), tr("No name entered."));
         renameConfirmed = 0;
     }
 
@@ -3149,8 +3150,8 @@ void Phototonic::rename() {
                 thumbsViewer->setImageViewerWindowTitle();
             }
         } else {
-            QMessageBox msgBox(this);
-            msgBox.critical(this, tr("Error"), tr("Failed to rename image."));
+            MessageBox msgBox(this);
+            msgBox.critical(tr("Error"), tr("Failed to rename image."));
         }
     }
 
@@ -3179,17 +3180,17 @@ void Phototonic::removeMetadata() {
         toggleSlideShow();
     }
 
-    QMessageBox msgBox(this);
+    MessageBox msgBox(this);
     msgBox.setText(tr("Permanently remove all Exif metadata from selected images?"));
     msgBox.setWindowTitle(tr("Remove Metadata"));
-    msgBox.setIcon(QMessageBox::Warning);
-    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
-    msgBox.setDefaultButton(QMessageBox::Cancel);
-    msgBox.setButtonText(QMessageBox::Yes, tr("Remove Metadata"));
-    msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));
+    msgBox.setIcon(MessageBox::Warning);
+    msgBox.setStandardButtons(MessageBox::Yes | MessageBox::Cancel);
+    msgBox.setDefaultButton(MessageBox::Cancel);
+    msgBox.setButtonText(MessageBox::Yes, tr("Remove Metadata"));
+    msgBox.setButtonText(MessageBox::Cancel, tr("Cancel"));
     int ret = msgBox.exec();
 
-    if (ret == QMessageBox::Yes) {
+    if (ret == MessageBox::Yes) {
         for (int file = 0; file < fileList.size(); ++file) {
             Exiv2::Image::AutoPtr image;
             try {
@@ -3199,7 +3200,7 @@ void Phototonic::removeMetadata() {
                 metadataCache->removeImage(fileList[file]);
             }
             catch (Exiv2::Error &error) {
-                msgBox.critical(this, tr("Error"), tr("Failed to remove Exif metadata."));
+                msgBox.critical(tr("Error"), tr("Failed to remove Exif metadata."));
                 return;
             }
         }
@@ -3221,18 +3222,18 @@ void Phototonic::deleteDirectory(bool trash) {
             "Permanently delete the directory %1 and all of its contents?")).arg(
             dirInfo.completeBaseName());
 
-    QMessageBox msgBox(this);
+    MessageBox msgBox(this);
     msgBox.setText(question);
     msgBox.setWindowTitle(tr("Delete directory"));
-    msgBox.setIcon(QMessageBox::Warning);
-    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
-    msgBox.setDefaultButton(QMessageBox::Cancel);
-    msgBox.setButtonText(QMessageBox::Yes, trash ? tr("OK") : tr("Delete Directory"));
-    msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));
+    msgBox.setIcon(MessageBox::Warning);
+    msgBox.setStandardButtons(MessageBox::Yes | MessageBox::Cancel);
+    msgBox.setDefaultButton(MessageBox::Cancel);
+    msgBox.setButtonText(MessageBox::Yes, trash ? tr("OK") : tr("Delete Directory"));
+    msgBox.setButtonText(MessageBox::Cancel, tr("Cancel"));
     int ret = msgBox.exec();
 
     QString trashError;
-    if (ret == QMessageBox::Yes) {
+    if (ret == MessageBox::Yes) {
         if (trash) {
             removeDirectoryOk = Trash::moveToTrash(deletePath, trashError) == Trash::Success;
         } else {
@@ -3244,7 +3245,7 @@ void Phototonic::deleteDirectory(bool trash) {
     }
 
     if (!removeDirectoryOk) {
-        msgBox.critical(this, tr("Error"), trash ? tr("Failed to move directory to the trash: %1").arg(trashError)
+        msgBox.critical(tr("Error"), trash ? tr("Failed to move directory to the trash: %1").arg(trashError)
                                                  : tr("Failed to delete directory."));
         selectCurrentViewDir();
         return;
@@ -3276,8 +3277,8 @@ void Phototonic::createSubDirectory() {
     }
 
     if (newDirName.isEmpty()) {
-        QMessageBox msgBox(this);
-        msgBox.critical(this, tr("Error"), tr("Invalid name entered."));
+        MessageBox msgBox(this);
+        msgBox.critical(tr("Error"), tr("Invalid name entered."));
         selectCurrentViewDir();
         return;
     }
@@ -3286,8 +3287,8 @@ void Phototonic::createSubDirectory() {
     ok = dir.mkdir(dirInfo.absoluteFilePath() + QDir::separator() + newDirName);
 
     if (!ok) {
-        QMessageBox msgBox(this);
-        msgBox.critical(this, tr("Error"), tr("Failed to create new directory."));
+        MessageBox msgBox(this);
+        msgBox.critical(tr("Error"), tr("Failed to create new directory."));
         selectCurrentViewDir();
         return;
     }
@@ -3330,9 +3331,9 @@ void Phototonic::wheelEvent(QWheelEvent *event) {
     }
 }
 
-void Phototonic::showNewImageWarning(QWidget *parent) {
-    QMessageBox msgBox(this);
-    msgBox.warning(parent, tr("Warning"), tr("Cannot perform action with temporary image."));
+void Phototonic::showNewImageWarning() {
+    MessageBox msgBox(this);
+    msgBox.warning(tr("Warning"), tr("Cannot perform action with temporary image."));
 }
 
 bool Phototonic::removeDirectoryOperation(QString dirToDelete) {

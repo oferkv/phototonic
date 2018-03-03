@@ -31,7 +31,7 @@
 #include "FileSystemTree.h"
 #include <QStackedLayout>
 
-#define VERSION "Phototonic v2.0 Snapshot"
+#define VERSION "Phototonic v2.1 Snapshot"
 
 class Phototonic : public QMainWindow {
 Q_OBJECT
@@ -436,7 +436,7 @@ private:
 
     void setupDocks();
 
-    void deleteFromThumbsViewer(bool trash);
+    void deleteImages(bool trash);
 
     void viewerDeleteFromViewer(bool trash);
 
@@ -490,7 +490,7 @@ private:
 
     void copyOrCutThumbs(bool copy);
 
-    void showNewImageWarning(QWidget *parent);
+    void showNewImageWarning();
 
     bool removeDirectoryOperation(QString dirToDelete);
 

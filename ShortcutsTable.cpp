@@ -18,6 +18,7 @@
 
 #include "ShortcutsTable.h"
 #include "Settings.h"
+#include "MessageBox.h"
 
 ShortcutsTable::ShortcutsTable() {
     keysModel = new QStandardItemModel();
@@ -75,9 +76,8 @@ void ShortcutsTable::keyPressEvent(QKeyEvent *keyEvent) {
 
     if ((keyEvent->modifiers() & Qt::AltModifier) &&
         (keyEvent->key() > Qt::Key_0 && keyEvent->key() <= Qt::Key_Colon)) {
-        QMessageBox msgBox(this);
-        msgBox.warning(this, tr("Set shortcut"),
-                       tr("\"%1\" is reserved for shortcuts to external applications.").arg(keySequenceText));
+        MessageBox msgBox(this);
+        msgBox.warning(tr("Set shortcut"), tr("%1 is reserved for launching external applications.").arg(keySequenceText));
         return;
     }
 
@@ -106,16 +106,16 @@ void ShortcutsTable::keyPressEvent(QKeyEvent *keyEvent) {
 }
 
 bool ShortcutsTable::confirmOverwriteShortcut(QString action, QString shortcut) {
-    QMessageBox msgBox(this);
-    msgBox.setText(tr("%1 is already assigned to %2, reassign?").arg(shortcut).arg(action));
+    MessageBox msgBox(this);
+    msgBox.setText(tr("%1 is already assigned to %2, reassign shortcut?").arg(shortcut).arg(action));
     msgBox.setWindowTitle(tr("Overwrite Shortcut"));
-    msgBox.setIcon(QMessageBox::Warning);
-    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
-    msgBox.setDefaultButton(QMessageBox::Cancel);
-    msgBox.setButtonText(QMessageBox::Yes, tr("Yes"));
-    msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));
+    msgBox.setIcon(MessageBox::Warning);
+    msgBox.setStandardButtons(MessageBox::Yes | MessageBox::Cancel);
+    msgBox.setDefaultButton(MessageBox::Cancel);
+    msgBox.setButtonText(MessageBox::Yes, tr("Yes"));
+    msgBox.setButtonText(MessageBox::Cancel, tr("Cancel"));
 
-    return (msgBox.exec() == QMessageBox::Yes);
+    return (msgBox.exec() == MessageBox::Yes);
 }
 
 void ShortcutsTable::clearSelectedShortcut() {

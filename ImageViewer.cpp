@@ -18,6 +18,7 @@
 
 #include "ImageViewer.h"
 #include "Phototonic.h"
+#include "MessageBox.h"
 
 #define CLIPBOARD_IMAGE_NAME "clipboard.png"
 #define ROUND(x) ((int) ((x) + 0.5))
@@ -25,7 +26,7 @@
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
 ImageViewer::ImageViewer(QWidget *parent, MetadataCache *metadataCache) : QWidget(parent) {
-    this->phototonic = (Phototonic *)parent;
+    this->phototonic = (Phototonic *) parent;
     this->metadataCache = metadataCache;
     cursorIsHidden = false;
     moveImageLocked = false;
@@ -822,8 +823,9 @@ void ImageViewer::cropToSelection() {
         cropRubberBand->hide();
         refresh();
     } else {
-        QMessageBox messageBox;
-        messageBox.warning(this, tr("No selection"), tr("Hold down the Ctrl key and select a region using the mouse."));
+        MessageBox messageBox(this);
+        messageBox.warning(tr("No selection for cropping"),
+                           tr("To make a selection, hold down the Ctrl key and select a region using the mouse."));
     }
 }
 
@@ -961,10 +963,9 @@ void ImageViewer::saveImage() {
     }
 
     QImageReader imageReader(viewerImageFullPath);
-    if (!viewerPixmap.save(viewerImageFullPath, imageReader.format().toUpper(),
-                           Settings::defaultSaveQuality)) {
-        QMessageBox msgBox(this);
-        msgBox.critical(this, tr("Error"), tr("Failed to save image."));
+    if (!viewerPixmap.save(viewerImageFullPath, imageReader.format().toUpper(), Settings::defaultSaveQuality)) {
+        MessageBox msgBox(this);
+        msgBox.critical(tr("Error"), tr("Failed to save image."));
         return;
     }
 
@@ -973,8 +974,8 @@ void ImageViewer::saveImage() {
             image->writeMetadata();
         }
         catch (Exiv2::Error &error) {
-            QMessageBox msgBox(this);
-            msgBox.critical(this, tr("Error"), tr("Failed to save Exif metadata."));
+            MessageBox msgBox(this);
+            msgBox.critical(tr("Error"), tr("Failed to save Exif metadata."));
         }
     }
 
@@ -1006,8 +1007,8 @@ void ImageViewer::saveImageAs() {
 
 
         if (!viewerPixmap.save(fileName, 0, Settings::defaultSaveQuality)) {
-            QMessageBox msgBox(this);
-            msgBox.critical(this, tr("Error"), tr("Failed to save image."));
+            MessageBox msgBox(this);
+            msgBox.critical(tr("Error"), tr("Failed to save image."));
         } else {
             if (!exifError) {
                 try {

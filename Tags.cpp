@@ -19,6 +19,7 @@
 #include "Tags.h"
 #include "Settings.h"
 #include "ProgressDialog.h"
+#include "MessageBox.h"
 
 ImageTags::ImageTags(QWidget *parent, ThumbsViewer *thumbsViewer, MetadataCache *metadataCache) : QWidget(parent) {
     tagsTree = new QTreeWidget;
@@ -169,8 +170,8 @@ bool ImageTags::writeTagsToImage(QString &imageFileName, QSet<QString> &newTags)
         exifImage->writeMetadata();
     }
     catch (Exiv2::Error &error) {
-        QMessageBox msgBox(this);
-        msgBox.critical(this, tr("Error"), tr("Failed to save tags to ") + imageFileName);
+        MessageBox msgBox(this);
+        msgBox.critical(tr("Error"), tr("Failed to save tags to ") + imageFileName);
         return false;
     }
 
@@ -460,8 +461,8 @@ void ImageTags::addNewTag() {
     }
 
     if (newTagName.isEmpty()) {
-        QMessageBox msgBox(this);
-        msgBox.critical(this, tr("Error"), tr("No name entered"));
+        MessageBox msgBox(this);
+        msgBox.critical(tr("Error"), tr("No name entered"));
         return;
     }
 
@@ -469,8 +470,8 @@ void ImageTags::addNewTag() {
     while (knownTagsIt.hasNext()) {
         QString tag = knownTagsIt.next();
         if (newTagName == tag) {
-            QMessageBox msgBox(this);
-            msgBox.critical(this, tr("Error"), tr("Tag ") + newTagName + tr(" already exists"));
+            MessageBox msgBox(this);
+            msgBox.critical(tr("Error"), tr("Tag ") + newTagName + tr(" already exists"));
             return;
         }
     }
@@ -485,16 +486,16 @@ void ImageTags::removeTag() {
         return;
     }
 
-    QMessageBox msgBox(this);
+    MessageBox msgBox(this);
     msgBox.setText(tr("Remove selected tags(s)?"));
     msgBox.setWindowTitle(tr("Remove tag"));
-    msgBox.setIcon(QMessageBox::Warning);
-    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
-    msgBox.setDefaultButton(QMessageBox::Cancel);
-    msgBox.setButtonText(QMessageBox::Yes, tr("Yes"));
-    msgBox.setButtonText(QMessageBox::Cancel, tr("Cancel"));
+    msgBox.setIcon(MessageBox::Warning);
+    msgBox.setStandardButtons(MessageBox::Yes | MessageBox::Cancel);
+    msgBox.setDefaultButton(MessageBox::Cancel);
+    msgBox.setButtonText(MessageBox::Yes, tr("Yes"));
+    msgBox.setButtonText(MessageBox::Cancel, tr("Cancel"));
 
-    if (msgBox.exec() != QMessageBox::Yes) {
+    if (msgBox.exec() != MessageBox::Yes) {
         return;
     }
 
