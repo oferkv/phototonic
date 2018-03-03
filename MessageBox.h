@@ -31,7 +31,7 @@ public:
 
     void warning(const QString &title, const QString &message);
 
-    void about(const QString &aboutMessage);
+    void about();
 
 };
 
