@@ -154,7 +154,7 @@ private slots:
 
     void deleteOperation();
 
-    void moveToTrashOperation();
+    void deletePermanentlyOperation();
 
     void cutThumbs();
 
@@ -296,7 +296,7 @@ private:
     QAction *copyToAction;
     QAction *moveToAction;
     QAction *deleteAction;
-    QAction *moveToTrashAction;
+    QAction *deletePermanentlyAction;
     QAction *saveAction;
     QAction *saveAsAction;
     QAction *renameAction;
@@ -438,7 +438,7 @@ private:
 
     void deleteImages(bool trash);
 
-    void viewerDeleteFromViewer(bool trash);
+    void deleteFromViewer(bool trash);
 
     void loadCurrentImage(int currentRow);
 
@@ -481,10 +481,6 @@ private:
     QString getSelectedPath();
 
     void setCopyCutActions(bool setEnabled);
-
-    void setDeleteAction(bool setEnabled);
-
-    void setMoveToTrashAction(bool setEnabled);
 
     void wheelEvent(QWheelEvent *event);
 

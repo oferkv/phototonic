@@ -101,7 +101,7 @@ private slots:
 
     void applyTagFiltering();
 
-    void showMenu(QPoint pt);
+    void showMenu(QPoint point);
 
     void addNewTag();
 

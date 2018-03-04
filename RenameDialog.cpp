@@ -47,6 +47,7 @@ RenameDialog::RenameDialog(QWidget *parent) : QDialog(parent) {
     mainLayout->addLayout(renameLayout);
     mainLayout->addLayout(buttonsLayout);
     setLayout(mainLayout);
+    setWindowIcon(QIcon(":/images/phototonic.png"));
 }
 
 void RenameDialog::ok() {

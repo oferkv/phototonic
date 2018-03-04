@@ -95,12 +95,12 @@ void ImageTags::redrawTagTree() {
     tagsTree->sortItems(0, Qt::AscendingOrder);
 }
 
-void ImageTags::showMenu(QPoint pt) {
-    QTreeWidgetItem *item = tagsTree->itemAt(pt);
-    addToSelectionAction->setEnabled(item ? true : false);
-    removeFromSelectionAction->setEnabled(item ? true : false);
-    removeTagAction->setEnabled(item ? true : false);
-    tagsMenu->popup(tagsTree->viewport()->mapToGlobal(pt));
+void ImageTags::showMenu(QPoint point) {
+    QTreeWidgetItem *item = tagsTree->itemAt(point);
+    addToSelectionAction->setEnabled(item != NULL);
+    removeFromSelectionAction->setEnabled(item != NULL);
+    removeTagAction->setEnabled(item != NULL);
+    tagsMenu->popup(tagsTree->viewport()->mapToGlobal(point));
 }
 
 void ImageTags::setTagIcon(QTreeWidgetItem *tagItem, TagIcons icon) {

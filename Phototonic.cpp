@@ -187,8 +187,8 @@ void Phototonic::createImageViewer() {
     imageViewer->addAction(saveAsAction);
     imageViewer->addAction(copyImageAction);
     imageViewer->addAction(pasteImageAction);
-    imageViewer->addAction(moveToTrashAction);
     imageViewer->addAction(deleteAction);
+    imageViewer->addAction(deletePermanentlyAction);
     imageViewer->addAction(renameAction);
     imageViewer->addAction(CloseImageAction);
     imageViewer->addAction(fullScreenAction);
@@ -271,8 +271,8 @@ void Phototonic::createImageViewer() {
     imageViewer->ImagePopUpMenu->addAction(saveAction);
     imageViewer->ImagePopUpMenu->addAction(saveAsAction);
     imageViewer->ImagePopUpMenu->addAction(renameAction);
-    imageViewer->ImagePopUpMenu->addAction(moveToTrashAction);
     imageViewer->ImagePopUpMenu->addAction(deleteAction);
+    imageViewer->ImagePopUpMenu->addAction(deletePermanentlyAction);
     imageViewer->ImagePopUpMenu->addAction(openWithMenuAction);
 
     addMenuSeparator(imageViewer->ImagePopUpMenu);
@@ -363,15 +363,15 @@ void Phototonic::createActions() {
     moveToAction->setObjectName("moveTo");
     connect(moveToAction, SIGNAL(triggered()), this, SLOT(moveImagesTo()));
 
-    deleteAction = new QAction(tr("Delete"), this);
-    deleteAction->setObjectName("delete");
-    deleteAction->setIcon(QIcon::fromTheme("edit-delete", QIcon(":/images/delete.png")));
+    deleteAction = new QAction(tr("Move to Trash"), this);
+    deleteAction->setObjectName("moveToTrash");
+    deleteAction->setIcon(style()->standardIcon(QStyle::SP_TrashIcon));
     connect(deleteAction, SIGNAL(triggered()), this, SLOT(deleteOperation()));
 
-    moveToTrashAction = new QAction(tr("Move to Trash"), this);
-    moveToTrashAction->setObjectName("moveToTrash");
-    moveToTrashAction->setIcon(style()->standardIcon(QStyle::SP_TrashIcon));
-    connect(moveToTrashAction, SIGNAL(triggered()), this, SLOT(moveToTrashOperation()));
+    deletePermanentlyAction = new QAction(tr("Delete"), this);
+    deletePermanentlyAction->setObjectName("delete");
+    deletePermanentlyAction->setIcon(QIcon::fromTheme("edit-delete", QIcon(":/images/delete.png")));
+    connect(deletePermanentlyAction, SIGNAL(triggered()), this, SLOT(deletePermanentlyOperation()));
 
     saveAction = new QAction(tr("Save"), this);
     saveAction->setObjectName("save");
@@ -702,8 +702,8 @@ void Phototonic::createMenus() {
     editMenu->addAction(pasteAction);
     editMenu->addAction(renameAction);
     editMenu->addAction(removeMetadataAction);
-    editMenu->addAction(moveToTrashAction);
     editMenu->addAction(deleteAction);
+    editMenu->addAction(deletePermanentlyAction);
     editMenu->addSeparator();
     editMenu->addAction(selectAllAction);
     editMenu->addAction(invertSelectionAction);
@@ -757,8 +757,8 @@ void Phototonic::createMenus() {
     thumbsViewer->addAction(moveToAction);
     thumbsViewer->addAction(renameAction);
     thumbsViewer->addAction(removeMetadataAction);
-    thumbsViewer->addAction(moveToTrashAction);
     thumbsViewer->addAction(deleteAction);
+    thumbsViewer->addAction(deletePermanentlyAction);
     addMenuSeparator(thumbsViewer);
     thumbsViewer->addAction(selectAllAction);
     thumbsViewer->addAction(invertSelectionAction);
@@ -773,8 +773,8 @@ void Phototonic::createToolBars() {
     editToolBar->addAction(cutAction);
     editToolBar->addAction(copyAction);
     editToolBar->addAction(pasteAction);
-    editToolBar->addAction(moveToTrashAction);
     editToolBar->addAction(deleteAction);
+    editToolBar->addAction(deletePermanentlyAction);
     editToolBar->addAction(showClipboardAction);
     connect(editToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setEditToolBarVisibility()));
 
@@ -833,8 +833,8 @@ void Phototonic::createToolBars() {
     imageToolBar->addSeparator();
     imageToolBar->addAction(saveAction);
     imageToolBar->addAction(saveAsAction);
-    imageToolBar->addAction(moveToTrashAction);
     imageToolBar->addAction(deleteAction);
+    imageToolBar->addAction(deletePermanentlyAction);
     imageToolBar->addSeparator();
     imageToolBar->addAction(zoomInAction);
     imageToolBar->addAction(zoomOutAction);
@@ -898,8 +898,8 @@ void Phototonic::createFileSystemDock() {
     fileSystemTree = new FileSystemTree(fileSystemDock);
     fileSystemTree->addAction(createDirectoryAction);
     fileSystemTree->addAction(renameAction);
-    fileSystemTree->addAction(moveToTrashAction);
     fileSystemTree->addAction(deleteAction);
+    fileSystemTree->addAction(deletePermanentlyAction);
     addMenuSeparator(fileSystemTree);
     fileSystemTree->addAction(pasteAction);
     addMenuSeparator(fileSystemTree);
@@ -952,8 +952,7 @@ void Phototonic::createBookmarksDock() {
     connect(removeBookmarkAction, SIGNAL(triggered()), bookmarks, SLOT(removeBookmark()));
     connect(bookmarks, SIGNAL(dropOp(Qt::KeyboardModifiers, bool, QString)),
             this, SLOT(dropOp(Qt::KeyboardModifiers, bool, QString)));
-    connect(bookmarks, SIGNAL(itemSelectionChanged()),
-            this, SLOT(updateActions()));
+
     addDockWidget(Qt::LeftDockWidgetArea, bookmarksDock);
 
     bookmarks->addAction(pasteAction);
@@ -1731,7 +1730,7 @@ void Phototonic::deleteImages(bool trash) {
     setStatus(state);
 }
 
-void Phototonic::viewerDeleteFromViewer(bool trash) {
+void Phototonic::deleteFromViewer(bool trash) {
     if (imageViewer->isNewImage()) {
         showNewImageWarning();
         return;
@@ -1800,25 +1799,25 @@ void Phototonic::deleteOperation() {
     }
 
     if (QApplication::focusWidget() == fileSystemTree) {
-        deleteDirectory(false);
-        return;
-    }
-
-    if (Settings::layoutMode == ImageViewWidget) {
-        viewerDeleteFromViewer(false);
-        return;
-    }
-
-    deleteImages(false);
-}
-
-void Phototonic::moveToTrashOperation() {
-    if (QApplication::focusWidget() == fileSystemTree) {
         deleteDirectory(true);
         return;
     }
+
     if (Settings::layoutMode == ImageViewWidget) {
-        viewerDeleteFromViewer(true);
+        deleteFromViewer(true);
+        return;
+    }
+
+    deleteImages(true);
+}
+
+void Phototonic::deletePermanentlyOperation() {
+    if (QApplication::focusWidget() == fileSystemTree) {
+        deleteDirectory(false);
+        return;
+    }
+    if (Settings::layoutMode == ImageViewWidget) {
+        deleteFromViewer(false);
         return;
     }
     deleteImages(true);
@@ -1907,37 +1906,18 @@ void Phototonic::setCopyCutActions(bool setEnabled) {
     copyAction->setEnabled(setEnabled);
 }
 
-void Phototonic::setDeleteAction(bool setEnabled) {
-    deleteAction->setEnabled(setEnabled);
-}
-
-void Phototonic::setMoveToTrashAction(bool setEnabled) {
-    moveToTrashAction->setEnabled(setEnabled);
-}
-
 void Phototonic::updateActions() {
     if (QApplication::focusWidget() == thumbsViewer) {
         bool hasSelectedItems = thumbsViewer->selectionModel()->selectedIndexes().size() > 0;
         setCopyCutActions(hasSelectedItems);
-        setDeleteAction(hasSelectedItems);
-        setMoveToTrashAction(hasSelectedItems);
     } else if (QApplication::focusWidget() == bookmarks) {
         setCopyCutActions(false);
-        setDeleteAction(bookmarks->selectionModel()->selectedIndexes().size() > 0);
-        setMoveToTrashAction(false);
     } else if (QApplication::focusWidget() == fileSystemTree) {
-        bool hasSelectedItems = fileSystemTree->selectionModel()->selectedIndexes().size() > 0;
         setCopyCutActions(false);
-        setDeleteAction(hasSelectedItems);
-        setMoveToTrashAction(hasSelectedItems);
     } else if (Settings::layoutMode == ImageViewWidget || QApplication::focusWidget() == imageViewer->scrollArea) {
         setCopyCutActions(false);
-        setDeleteAction(true);
-        setMoveToTrashAction(true);
     } else {
         setCopyCutActions(false);
-        setDeleteAction(false);
-        setMoveToTrashAction(false);
     }
 
     if (Settings::layoutMode == ImageViewWidget && !interfaceDisabled) {
@@ -2222,7 +2202,7 @@ void Phototonic::loadShortcuts() {
     Settings::actionKeys[copyAction->objectName()] = copyAction;
     Settings::actionKeys[nextImageAction->objectName()] = nextImageAction;
     Settings::actionKeys[prevImageAction->objectName()] = prevImageAction;
-    Settings::actionKeys[moveToTrashAction->objectName()] = moveToTrashAction;
+    Settings::actionKeys[deletePermanentlyAction->objectName()] = deletePermanentlyAction;
     Settings::actionKeys[deleteAction->objectName()] = deleteAction;
     Settings::actionKeys[saveAction->objectName()] = saveAction;
     Settings::actionKeys[saveAsAction->objectName()] = saveAsAction;
@@ -2301,8 +2281,8 @@ void Phototonic::loadShortcuts() {
         exitAction->setShortcut(QKeySequence("Ctrl+Q"));
         cutAction->setShortcut(QKeySequence("Ctrl+X"));
         copyAction->setShortcut(QKeySequence("Ctrl+C"));
-        moveToTrashAction->setShortcut(QKeySequence("Del"));
-        deleteAction->setShortcut(QKeySequence("Shift+Del"));
+        deleteAction->setShortcut(QKeySequence("Del"));
+        deletePermanentlyAction->setShortcut(QKeySequence("Shift+Del"));
         saveAction->setShortcut(QKeySequence("Ctrl+S"));
         copyImageAction->setShortcut(QKeySequence("Ctrl+Shift+C"));
         pasteImageAction->setShortcut(QKeySequence("Ctrl+Shift+V"));
@@ -2554,8 +2534,6 @@ void Phototonic::showViewer() {
             QApplication::processEvents();
         }
         imageViewer->setFocus(Qt::OtherFocusReason);
-
-        updateActions();
     }
 }
 
@@ -2820,8 +2798,6 @@ void Phototonic::hideViewer() {
     thumbsViewer->setFocus(Qt::OtherFocusReason);
     showBusyAnimation(false);
     setContextMenuPolicy(Qt::DefaultContextMenu);
-
-    updateActions();
 }
 
 void Phototonic::goBottom() {
@@ -3351,7 +3327,7 @@ void Phototonic::setInterfaceEnabled(bool enable) {
     copyToAction->setEnabled(enable);
     moveToAction->setEnabled(enable);
     deleteAction->setEnabled(enable);
-    moveToTrashAction->setEnabled(enable);
+    deletePermanentlyAction->setEnabled(enable);
     settingsAction->setEnabled(enable);
     viewImageAction->setEnabled(enable);
 
@@ -3370,7 +3346,6 @@ void Phototonic::setInterfaceEnabled(bool enable) {
         if (isFullScreen()) {
             imageViewer->setCursorHiding(true);
         }
-        updateActions();
     } else {
         imageViewer->setCursorHiding(false);
     }
