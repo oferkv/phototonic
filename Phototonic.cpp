@@ -1187,6 +1187,7 @@ void Phototonic::showSettings() {
         if (!Settings::setWindowIcon) {
             setWindowIcon(defaultApplicationIcon);
         }
+        writeSettings();
     }
 
     if (isFullScreen()) {
@@ -1832,12 +1833,13 @@ void Phototonic::goTo(QString path) {
     refreshThumbs(true);
 }
 
-void Phototonic::goSelectedDir(const QModelIndex &) {
+void Phototonic::goSelectedDir(const QModelIndex &idx) {
     Settings::isFileListLoaded = false;
     fileListWidget->clearSelection();
     thumbsViewer->setNeedToScroll(true);
     Settings::currentDirectory = getSelectedPath();
     refreshThumbs(true);
+    fileSystemTree->expand(idx);
 }
 
 void Phototonic::goPathBarDir() {
@@ -2336,7 +2338,6 @@ void Phototonic::closeEvent(QCloseEvent *event) {
     thumbsViewer->abort();
     writeSettings();
     hide();
-    qInfo() << "Phototonic: releasing clipboard...";
     if (!QApplication::clipboard()->image().isNull()) {
         QApplication::clipboard()->clear();
     }
@@ -2753,8 +2754,6 @@ void Phototonic::updateIndexByViewerImage() {
 }
 
 void Phototonic::hideViewer() {
-    showBusyAnimation(true);
-
     if (isFullScreen()) {
         showNormal();
         if (shouldMaximize) {
@@ -2762,6 +2761,9 @@ void Phototonic::hideViewer() {
         }
         imageViewer->setCursorHiding(false);
     }
+
+    restoreGeometry(Settings::appSettings->value(Settings::optionGeometry).toByteArray());
+    restoreState(Settings::appSettings->value(Settings::optionWindowState).toByteArray());
 
     Settings::layoutMode = ThumbViewWidget;
     stackedLayout->setCurrentWidget(thumbsViewer);
@@ -2796,7 +2798,6 @@ void Phototonic::hideViewer() {
 
     imageViewer->clearImage();
     thumbsViewer->setFocus(Qt::OtherFocusReason);
-    showBusyAnimation(false);
     setContextMenuPolicy(Qt::DefaultContextMenu);
 }
 
