@@ -212,6 +212,7 @@ void Phototonic::createImageViewer() {
     imageViewer->addAction(resizeAction);
     imageViewer->addAction(viewImageAction);
     imageViewer->addAction(exitAction);
+    imageViewer->addAction(showViewerToolbarAction);
 
     // Actions
     addMenuSeparator(imageViewer->ImagePopUpMenu);
@@ -391,7 +392,7 @@ void Phototonic::createActions() {
     connect(renameAction, SIGNAL(triggered()), this, SLOT(rename()));
 
     removeMetadataAction = new QAction(tr("Remove Metadata"), this);
-    removeMetadataAction->setObjectName("rename");
+    removeMetadataAction->setObjectName("removeMetadata");
     connect(removeMetadataAction, SIGNAL(triggered()), this, SLOT(removeMetadata()));
 
     selectAllAction = new QAction(tr("Select All"), this);
@@ -403,15 +404,15 @@ void Phototonic::createActions() {
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(about()));
 
     // Sort actions
-    sortByNameAction = new QAction(tr("Name"), this);
+    sortByNameAction = new QAction(tr("Sort by Name"), this);
     sortByNameAction->setObjectName("name");
-    sortByTimeAction = new QAction(tr("Time"), this);
+    sortByTimeAction = new QAction(tr("Sort by Time"), this);
     sortByTimeAction->setObjectName("time");
-    sortBySizeAction = new QAction(tr("Size"), this);
+    sortBySizeAction = new QAction(tr("Sort by Size"), this);
     sortBySizeAction->setObjectName("size");
-    sortByTypeAction = new QAction(tr("Type"), this);
+    sortByTypeAction = new QAction(tr("Sort by Type"), this);
     sortByTypeAction->setObjectName("type");
-    sortReverseAction = new QAction(tr("Reverse"), this);
+    sortReverseAction = new QAction(tr("Reverse Order"), this);
     sortReverseAction->setObjectName("reverse");
     sortByNameAction->setCheckable(true);
     sortByTimeAction->setCheckable(true);
@@ -680,7 +681,7 @@ void Phototonic::createActions() {
     filterImagesFocusAction = new QAction(tr("Filter by Name"), this);
     filterImagesFocusAction->setObjectName("filterImagesFocus");
     connect(filterImagesFocusAction, SIGNAL(triggered()), this, SLOT(filterImagesFocus()));
-    setPathFocusAction = new QAction(tr("Set Path"), this);
+    setPathFocusAction = new QAction(tr("Edit Current Path"), this);
     setPathFocusAction->setObjectName("setPathFocus");
     connect(setPathFocusAction, SIGNAL(triggered()), this, SLOT(setPathFocus()));
 }
@@ -731,7 +732,7 @@ void Phototonic::createMenus() {
 
     viewMenu->addAction(thumbsZoomInAction);
     viewMenu->addAction(thumbsZoomOutAction);
-    sortMenu = viewMenu->addMenu(tr("Sort By"));
+    sortMenu = viewMenu->addMenu(tr("Thumbnails Sorting"));
     sortTypesGroup = new QActionGroup(this);
     sortTypesGroup->addAction(sortByNameAction);
     sortTypesGroup->addAction(sortByTimeAction);
@@ -2251,7 +2252,20 @@ void Phototonic::loadShortcuts() {
     Settings::actionKeys[resizeAction->objectName()] = resizeAction;
     Settings::actionKeys[filterImagesFocusAction->objectName()] = filterImagesFocusAction;
     Settings::actionKeys[setPathFocusAction->objectName()] = setPathFocusAction;
-    Settings::actionKeys[keepTransformAction->objectName()] = keepTransformAction;
+    Settings::actionKeys[invertSelectionAction->objectName()] = invertSelectionAction;
+    Settings::actionKeys[includeSubDirectoriesAction->objectName()] = includeSubDirectoriesAction;
+    Settings::actionKeys[createDirectoryAction->objectName()] = createDirectoryAction;
+    Settings::actionKeys[addBookmarkAction->objectName()] = addBookmarkAction;
+    Settings::actionKeys[removeMetadataAction->objectName()] = removeMetadataAction;
+    Settings::actionKeys[externalAppsAction->objectName()] = externalAppsAction;
+    Settings::actionKeys[goHomeAction->objectName()] = goHomeAction;
+    Settings::actionKeys[sortByNameAction->objectName()] = sortByNameAction;
+    Settings::actionKeys[sortBySizeAction->objectName()] = sortBySizeAction;
+    Settings::actionKeys[sortByTimeAction->objectName()] = sortByTimeAction;
+    Settings::actionKeys[sortByTypeAction->objectName()] = sortByTypeAction;
+    Settings::actionKeys[sortReverseAction->objectName()] = sortReverseAction;
+    Settings::actionKeys[showHiddenFilesAction->objectName()] = showHiddenFilesAction;
+    Settings::actionKeys[showViewerToolbarAction->objectName()] = showViewerToolbarAction;
 
     Settings::appSettings->beginGroup(Settings::optionShortcuts);
     QStringList groupKeys = Settings::appSettings->childKeys();
@@ -2329,6 +2343,7 @@ void Phototonic::loadShortcuts() {
         filterImagesFocusAction->setShortcut(QKeySequence("Ctrl+F"));
         setPathFocusAction->setShortcut(QKeySequence("Ctrl+L"));
         keepTransformAction->setShortcut(QKeySequence("Ctrl+K"));
+        showHiddenFilesAction->setShortcut(QKeySequence("Ctrl+H"));
     }
 
     Settings::appSettings->endGroup();
@@ -3233,7 +3248,7 @@ void Phototonic::createSubDirectory() {
         return;
     }
 
-    setStatus(tr("Created \"%1\"").arg(newDirName));
+    setStatus(tr("Created %1").arg(newDirName));
     fileSystemTree->expand(selectedDirs[0]);
 }
 
