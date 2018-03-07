@@ -131,7 +131,7 @@ void ThumbsViewer::setCurrentRow(int row) {
 }
 
 void ThumbsViewer::setImageViewerWindowTitle() {
-    QString title = thumbsViewerModel->item(currentRow)->data(FileNameRole).toString()
+    QString title = thumbsViewerModel->item(currentRow)->data(Qt::DisplayRole).toString()
                     + " - ["
                     + QString::number(currentRow + 1)
                     + "/"

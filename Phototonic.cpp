@@ -1659,11 +1659,11 @@ void Phototonic::deleteImages(bool trash) {
     if (Settings::deleteConfirm) {
         MessageBox msgBox(this);
         msgBox.setText(trash ? tr("Move selected images to the trash?") : tr("Permanently delete selected images?"));
-        msgBox.setWindowTitle(tr("Delete images"));
+        msgBox.setWindowTitle(trash ? tr("Move to Trash") : tr("Delete images"));
         msgBox.setIcon(MessageBox::Warning);
         msgBox.setStandardButtons(MessageBox::Yes | MessageBox::Cancel);
         msgBox.setDefaultButton(MessageBox::Yes);
-        msgBox.setButtonText(MessageBox::Yes, tr("Delete"));
+        msgBox.setButtonText(MessageBox::Yes, tr("Yes"));
         msgBox.setButtonText(MessageBox::Cancel, tr("Cancel"));
 
         if (msgBox.exec() != MessageBox::Yes) {
@@ -1752,7 +1752,7 @@ void Phototonic::deleteFromViewer(bool trash) {
     if (Settings::deleteConfirm) {
         MessageBox msgBox(this);
         msgBox.setText(trash ? tr("Move %1 to the trash").arg(fileName) : tr("Permanently delete %1").arg(fileName));
-        msgBox.setWindowTitle(tr("Delete image"));
+        msgBox.setWindowTitle(trash ? tr("Move to Trash") : tr("Delete images"));
         msgBox.setIcon(MessageBox::Warning);
         msgBox.setStandardButtons(MessageBox::Yes | MessageBox::Cancel);
         msgBox.setDefaultButton(MessageBox::Yes);
