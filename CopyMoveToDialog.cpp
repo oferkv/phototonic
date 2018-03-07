@@ -116,7 +116,7 @@ CopyMoveToDialog::CopyMoveToDialog(QWidget *parent, QString thumbsPath, bool mov
     QHBoxLayout *addRemoveHbox = new QHBoxLayout;
     QPushButton *addButton = new QPushButton(tr("Browse..."));
     connect(addButton, SIGNAL(clicked()), this, SLOT(add()));
-    QPushButton *removeButton = new QPushButton(tr("Remove"));
+    QPushButton *removeButton = new QPushButton(tr("Delete Bookmark"));
     connect(removeButton, SIGNAL(clicked()), this, SLOT(remove()));
     addRemoveHbox->addWidget(removeButton, 0, Qt::AlignLeft);
     addRemoveHbox->addStretch(1);

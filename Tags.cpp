@@ -68,7 +68,7 @@ ImageTags::ImageTags(QWidget *parent, ThumbsViewer *thumbsViewer, MetadataCache 
     actionAddTag->setIcon(QIcon(":/images/new_tag.png"));
     connect(actionAddTag, SIGNAL(triggered()), this, SLOT(addNewTag()));
 
-    removeTagAction = new QAction(tr("Remove Tag"), this);
+    removeTagAction = new QAction(tr("Delete Tag"), this);
     removeTagAction->setIcon(QIcon::fromTheme("edit-delete", QIcon(":/images/delete.png")));
 
     actionClearTagsFilter = new QAction(tr("Clear Filters"), this);
@@ -487,8 +487,8 @@ void ImageTags::removeTag() {
     }
 
     MessageBox msgBox(this);
-    msgBox.setText(tr("Remove selected tags(s)?"));
-    msgBox.setWindowTitle(tr("Remove tag"));
+    msgBox.setText(tr("Delete selected tags(s)?"));
+    msgBox.setWindowTitle(tr("Delete tag"));
     msgBox.setIcon(MessageBox::Warning);
     msgBox.setStandardButtons(MessageBox::Yes | MessageBox::Cancel);
     msgBox.setDefaultButton(MessageBox::Cancel);

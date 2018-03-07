@@ -49,7 +49,7 @@ ExternalAppsDialog::ExternalAppsDialog(QWidget *parent) : QDialog(parent) {
     entryButton->setIcon(QIcon::fromTheme("list-add"));
     connect(entryButton, SIGNAL(clicked()), this, SLOT(entry()));
     externalAppsLayout->addWidget(entryButton, 0, Qt::AlignRight);
-    QPushButton *removeButton = new QPushButton(tr("Remove"));
+    QPushButton *removeButton = new QPushButton(tr("Delete"));
     removeButton->setIcon(QIcon::fromTheme("list-remove"));
     connect(removeButton, SIGNAL(clicked()), this, SLOT(remove()));
     externalAppsLayout->addWidget(removeButton, 0, Qt::AlignRight);

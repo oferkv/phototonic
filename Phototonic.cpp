@@ -557,8 +557,8 @@ void Phototonic::createActions() {
     addBookmarkAction->setIcon(QIcon(":/images/new_bookmark.png"));
     connect(addBookmarkAction, SIGNAL(triggered()), this, SLOT(addNewBookmark()));
 
-    removeBookmarkAction = new QAction(tr("Remove Bookmark"), this);
-    removeBookmarkAction->setObjectName("removeBookmark");
+    removeBookmarkAction = new QAction(tr("Delete Bookmark"), this);
+    removeBookmarkAction->setObjectName("deleteBookmark");
     removeBookmarkAction->setIcon(QIcon::fromTheme("edit-delete", QIcon(":/images/delete.png")));
 
     zoomOutAction = new QAction(tr("Zoom Out"), this);
@@ -979,6 +979,7 @@ void Phototonic::createImageTagsDock() {
     connect(tagsDock->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setTagsDockVisibility()));
     connect(tagsDock, SIGNAL(visibilityChanged(bool)), this, SLOT(setTagsDockVisibility()));
     connect(thumbsViewer->imageTags, SIGNAL(reloadThumbs()), this, SLOT(onReloadThumbs()));
+    connect(thumbsViewer->imageTags->removeTagAction, SIGNAL(triggered()), this, SLOT(deleteOperation()));
 }
 
 void Phototonic::sortThumbnails() {
@@ -1662,7 +1663,7 @@ void Phototonic::deleteImages(bool trash) {
         msgBox.setIcon(MessageBox::Warning);
         msgBox.setStandardButtons(MessageBox::Yes | MessageBox::Cancel);
         msgBox.setDefaultButton(MessageBox::Yes);
-        msgBox.setButtonText(MessageBox::Yes, tr("Yes"));
+        msgBox.setButtonText(MessageBox::Yes, tr("Delete"));
         msgBox.setButtonText(MessageBox::Cancel, tr("Cancel"));
 
         if (msgBox.exec() != MessageBox::Yes) {
@@ -1818,11 +1819,13 @@ void Phototonic::deletePermanentlyOperation() {
         deleteDirectory(false);
         return;
     }
+
     if (Settings::layoutMode == ImageViewWidget) {
         deleteFromViewer(false);
         return;
     }
-    deleteImages(true);
+
+    deleteImages(false);
 }
 
 void Phototonic::goTo(QString path) {
