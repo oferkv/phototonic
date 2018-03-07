@@ -124,12 +124,10 @@ CopyMoveToDialog::CopyMoveToDialog(QWidget *parent, QString thumbsPath, bool mov
 
     QHBoxLayout *buttonsHbox = new QHBoxLayout;
     QPushButton *cancelButton = new QPushButton(tr("Cancel"));
-    cancelButton->setIcon(QIcon::fromTheme("dialog-cancel"));
     cancelButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(cancelButton, SIGNAL(clicked()), this, SLOT(justClose()));
 
     QPushButton *okButton = new QPushButton(tr("OK"));
-    okButton->setIcon(QIcon::fromTheme("dialog-ok"));
     okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     okButton->setDefault(true);
 

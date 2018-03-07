@@ -31,7 +31,6 @@ RenameDialog::RenameDialog(QWidget *parent) : QDialog(parent) {
     okButton->setDefault(true);
 
     QPushButton *cancelButton = new QPushButton(tr("Cancel"));
-    cancelButton->setIcon(QIcon::fromTheme("dialog-cancel"));
     connect(cancelButton, SIGNAL(clicked()), this, SLOT(abort()));
     buttonsLayout->addWidget(cancelButton, 1, Qt::AlignRight);
     buttonsLayout->addWidget(okButton, 0, Qt::AlignRight);
@@ -48,6 +47,7 @@ RenameDialog::RenameDialog(QWidget *parent) : QDialog(parent) {
     mainLayout->addLayout(buttonsLayout);
     setLayout(mainLayout);
     setWindowIcon(QIcon(":/images/phototonic.png"));
+    setMinimumWidth(480);
 }
 
 void RenameDialog::ok() {

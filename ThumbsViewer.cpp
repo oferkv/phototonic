@@ -484,7 +484,7 @@ void ThumbsViewer::loadSubDirectories() {
 
 void ThumbsViewer::applyFilter() {
     fileFilters->clear();
-    QString textFilter("");
+    QString textFilter("*");
     textFilter += filterString;
     *fileFilters << textFilter + "*.bmp"
                  << textFilter + "*.cur"

@@ -42,22 +42,18 @@ ExternalAppsDialog::ExternalAppsDialog(QWidget *parent) : QDialog(parent) {
 
     QHBoxLayout *externalAppsLayout = new QHBoxLayout;
     QPushButton *addButton = new QPushButton(tr("Choose"));
-    addButton->setIcon(QIcon::fromTheme("list-add"));
     connect(addButton, SIGNAL(clicked()), this, SLOT(add()));
     externalAppsLayout->addWidget(addButton, 0, Qt::AlignRight);
     QPushButton *entryButton = new QPushButton(tr("Add manually"));
-    entryButton->setIcon(QIcon::fromTheme("list-add"));
     connect(entryButton, SIGNAL(clicked()), this, SLOT(entry()));
     externalAppsLayout->addWidget(entryButton, 0, Qt::AlignRight);
     QPushButton *removeButton = new QPushButton(tr("Delete"));
-    removeButton->setIcon(QIcon::fromTheme("list-remove"));
     connect(removeButton, SIGNAL(clicked()), this, SLOT(remove()));
     externalAppsLayout->addWidget(removeButton, 0, Qt::AlignRight);
     externalAppsLayout->addStretch(1);
 
     QHBoxLayout *buttonsLayout = new QHBoxLayout;
     QPushButton *okButton = new QPushButton(tr("OK"));
-    okButton->setIcon(QIcon::fromTheme("dialog-ok"));
     okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
     buttonsLayout->addWidget(okButton, 0, Qt::AlignRight);

@@ -29,10 +29,8 @@ CropDialog::CropDialog(QWidget *parent, ImageViewer *imageViewer) : QDialog(pare
 
     QHBoxLayout *buttonsHbox = new QHBoxLayout;
     QPushButton *resetButton = new QPushButton(tr("Reset"));
-    resetButton->setIcon(QIcon::fromTheme("document-revert"));
     connect(resetButton, SIGNAL(clicked()), this, SLOT(reset()));
     QPushButton *okButton = new QPushButton(tr("OK"));
-    okButton->setIcon(QIcon::fromTheme("dialog-ok"));
     connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
     okButton->setDefault(true);
     buttonsHbox->addWidget(resetButton, 0, Qt::AlignLeft);

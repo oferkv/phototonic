@@ -39,11 +39,9 @@ ResizeDialog::ResizeDialog(QWidget *parent, ImageViewer *imageViewer) : QDialog(
 
     QHBoxLayout *buttonsHbox = new QHBoxLayout;
     QPushButton *okButton = new QPushButton(tr("Scale"));
-    okButton->setIcon(QIcon::fromTheme("dialog-ok"));
     connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
     okButton->setDefault(true);
     QPushButton *cancelButton = new QPushButton(tr("Cancel"));
-    cancelButton->setIcon(QIcon::fromTheme("dialog-cancel"));
     connect(cancelButton, SIGNAL(clicked()), this, SLOT(abort()));
     buttonsHbox->addWidget(cancelButton, 1, Qt::AlignRight);
     buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);

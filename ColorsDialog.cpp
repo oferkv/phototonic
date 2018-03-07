@@ -34,11 +34,9 @@ ColorsDialog::ColorsDialog(QWidget *parent, ImageViewer *imageViewer) : QDialog(
     QHBoxLayout *buttonsHbox = new QHBoxLayout;
     QPushButton *resetButton = new QPushButton(tr("Reset"));
     resetButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    resetButton->setIcon(QIcon::fromTheme("document-revert"));
     connect(resetButton, SIGNAL(clicked()), this, SLOT(reset()));
     buttonsHbox->addWidget(resetButton, 0, Qt::AlignLeft);
     QPushButton *okButton = new QPushButton(tr("OK"));
-    okButton->setIcon(QIcon::fromTheme("dialog-ok"));
     okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
     buttonsHbox->addWidget(okButton, 0, Qt::AlignRight);

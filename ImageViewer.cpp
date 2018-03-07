@@ -994,7 +994,7 @@ void ImageViewer::saveImageAs() {
                                                     tr("Save image as"),
                                                     viewerImageFullPath,
                                                     tr("Images") +
-                                                    " (*.jpg *.jpeg *.jpe *.png *.bmp *.ppm *.pgm *.pbm *.xbm *.xpm)");
+                                                    " (*.jpg *.jpeg *.png *.bmp *.tif *.tiff *.ppm *.pgm *.pbm *.xbm *.xpm *.cur *.ico *.icns *.wbmp *.webp)");
 
     if (!fileName.isEmpty()) {
         try {

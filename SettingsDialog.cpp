@@ -284,12 +284,10 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     /* Confirmation buttons */
     QHBoxLayout *confirmSettingsLayout = new QHBoxLayout;
     QPushButton *okButton = new QPushButton(tr("OK"));
-    okButton->setIcon(QIcon::fromTheme("dialog-ok"));
     okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(okButton, SIGNAL(clicked()), this, SLOT(saveSettings()));
     okButton->setDefault(true);
     QPushButton *closeButton = new QPushButton(tr("Cancel"));
-    closeButton->setIcon(QIcon::fromTheme("dialog-cancel"));
     closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(closeButton, SIGNAL(clicked()), this, SLOT(abort()));
     confirmSettingsLayout->addWidget(closeButton, 1, Qt::AlignRight);

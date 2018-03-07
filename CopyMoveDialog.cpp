@@ -63,7 +63,6 @@ CopyMoveDialog::CopyMoveDialog(QWidget *parent) : QDialog(parent) {
     opLabel = new QLabel("");
 
     cancelButton = new QPushButton(tr("Cancel"));
-    cancelButton->setIcon(QIcon::fromTheme("dialog-cancel"));
     cancelButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(cancelButton, SIGNAL(clicked()), this, SLOT(abort()));
 
