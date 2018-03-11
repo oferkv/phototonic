@@ -15,7 +15,17 @@ Phototonic is an image viewer and organizer built with Qt and Exiv2, released un
 + Display image information and metadata
 + Does not depend on any desktop environment
 
+### Screenshot
+
+<img src="images/screenshot.jpg" width="300">
+
 ### Updates:
+
+##### 11 Mar 2018 - v2.1
++ Rotate preview by Exif rotation
++ Fixed bug in image filtering
++ Bug fixes for multiple UI issues and actions
++ Add shortcuts for all missing actions
 
 ##### 28 Feb 2018 - v2.0
 + Move to Trash
@@ -50,6 +60,8 @@ Phototonic is an image viewer and organizer built with Qt and Exiv2, released un
 + Added Negativity settings per color channel
 + Fixed colors manipulations for images with alpha channel and non animated GIF images
 + Other Bug fixes
+
+[Older updates](HISTORY.md)
 
 ##### Optional Dependencies
 + qt5-imageformats (TIFF and TGA support)
