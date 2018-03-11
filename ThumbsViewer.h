@@ -33,7 +33,8 @@ class Phototonic;
 
 class ImageViewer;
 
-#define BAD_IMAGE_SIZE    64
+#define BAD_IMAGE_SIZE 64
+#define WINDOW_ICON_SIZE 48
 
 class ImageTags;
 
@@ -93,7 +94,7 @@ public:
 
     QString getSingleSelectionFilename();
 
-    void setImageView(ImageViewer *imageViewer);
+    void setImageViewer(ImageViewer *imageViewer);
 
     InfoView *infoView;
     ImagePreview *imagePreview;

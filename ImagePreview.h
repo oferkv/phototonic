@@ -20,6 +20,7 @@
 #define IMAGE_PREVIEW_H
 
 #include <QtWidgets>
+#include "ImageViewer.h"
 
 class ImagePreview : public QWidget {
 Q_OBJECT
@@ -27,13 +28,15 @@ Q_OBJECT
 public:
     ImagePreview(QWidget *parent);
 
-    QPixmap& loadImage(QString imageFileName);
+    QPixmap &loadImage(QString imageFileName);
 
     void resizeImagePreview();
 
     void setBackgroundColor();
 
     void clear();
+
+    void setImageViewer(ImageViewer *imageViewer);
 
     QScrollArea *scrollArea;
 
@@ -43,6 +46,7 @@ protected:
 private:
     QLabel *imageLabel;
     QPixmap previewPixmap;
+    ImageViewer *imageViewer;
 
 };
 

@@ -213,6 +213,7 @@ void Phototonic::createImageViewer() {
     imageViewer->addAction(viewImageAction);
     imageViewer->addAction(exitAction);
     imageViewer->addAction(showViewerToolbarAction);
+    imageViewer->addAction(externalAppsAction);
 
     // Actions
     addMenuSeparator(imageViewer->ImagePopUpMenu);
@@ -296,7 +297,7 @@ void Phototonic::createImageViewer() {
     imageViewer->setContextMenuPolicy(Qt::DefaultContextMenu);
     Settings::isFullScreen = Settings::appSettings->value(Settings::optionFullScreenMode).toBool();
     fullScreenAction->setChecked(Settings::isFullScreen);
-    thumbsViewer->setImageView(imageViewer);
+    thumbsViewer->imagePreview->setImageViewer(imageViewer);
 }
 
 void Phototonic::createActions() {

@@ -655,14 +655,15 @@ void ImageViewer::reload() {
         viewerPixmap = QPixmap::fromImage(viewerImage);
     } else {
         viewerPixmap = QIcon::fromTheme("image-missing",
-                                        QIcon(":/images/error_image.png")).pixmap(128, 128);
+                                        QIcon(":/images/error_image.png")).pixmap(BAD_IMAGE_SIZE, BAD_IMAGE_SIZE);
         setInfo(imageReader.errorString());
     }
 
     imageLabel->setPixmap(viewerPixmap);
     resizeImage();
     if (Settings::setWindowIcon) {
-        phototonic->setWindowIcon(viewerPixmap.scaled(48, 48, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        phototonic->setWindowIcon(viewerPixmap.scaled(WINDOW_ICON_SIZE, WINDOW_ICON_SIZE,
+                                                      Qt::KeepAspectRatio, Qt::SmoothTransformation));
     }
 }
 

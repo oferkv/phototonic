@@ -269,7 +269,8 @@ void ThumbsViewer::onSelectionChanged(const QItemSelection &) {
         updateImageInfoViewer(thumbFullPath);
         QPixmap imagePreviewPixmap = imagePreview->loadImage(thumbFullPath);
         if (Settings::setWindowIcon && Settings::layoutMode == Phototonic::ThumbViewWidget) {
-            phototonic->setWindowIcon(imagePreviewPixmap.scaled(48, 48, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+            phototonic->setWindowIcon(imagePreviewPixmap.scaled(WINDOW_ICON_SIZE, WINDOW_ICON_SIZE,
+                                                                Qt::KeepAspectRatio, Qt::SmoothTransformation));
         }
     }
 
@@ -751,7 +752,7 @@ void ThumbsViewer::setNeedToScroll(bool needToScroll) {
     this->isNeedToScroll = needToScroll;
 }
 
-void ThumbsViewer::setImageView(ImageViewer *imageViewer) {
+void ThumbsViewer::setImageViewer(ImageViewer *imageViewer) {
     this->imageViewer = imageViewer;
 }
 

@@ -18,6 +18,7 @@
 
 #include "ImagePreview.h"
 #include "Settings.h"
+#include "ThumbsViewer.h"
 
 ImagePreview::ImagePreview(QWidget *parent) : QWidget(parent) {
 
@@ -51,9 +52,13 @@ QPixmap& ImagePreview::loadImage(QString imageFileName) {
         resize.scale(QSize(imageLabel->width(), imageLabel->height()), Qt::KeepAspectRatio);
         QImage previewImage;
         imageReader.read(&previewImage);
+        if (Settings::exifRotationEnabled) {
+            imageViewer->rotateByExifRotation(previewImage, imageFileName);
+        }
         previewPixmap = QPixmap::fromImage(previewImage);
     } else {
-        previewPixmap = QIcon::fromTheme("image-missing", QIcon(":/images/error_image.png")).pixmap(128, 128);
+        previewPixmap = QIcon::fromTheme("image-missing",
+                                         QIcon(":/images/error_image.png")).pixmap(BAD_IMAGE_SIZE, BAD_IMAGE_SIZE);
     }
 
     imageLabel->setPixmap(previewPixmap);
@@ -94,6 +99,6 @@ void ImagePreview::setBackgroundColor() {
     scrollArea->setStyleSheet(ss);
 }
 
-
-
-
+void ImagePreview::setImageViewer(ImageViewer *imageViewer) {
+    this->imageViewer = imageViewer;
+}
