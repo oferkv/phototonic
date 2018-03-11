@@ -61,6 +61,8 @@ Phototonic is an image viewer and organizer built with Qt and Exiv2, released un
 + Fixed colors manipulations for images with alpha channel and non animated GIF images
 + Other Bug fixes
 
+[Older updates](HISTORY.md)
+
 ##### Optional Dependencies
 + qt5-imageformats (TIFF and TGA support)
 + qt5-svg (SVG support)
