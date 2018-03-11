@@ -7,15 +7,15 @@
 Phototonic is an image viewer and organizer built with Qt and Exiv2, released under GNU General Public License v3.
 
 ### Features
-+ Supports common image formats and GIF animation.
-+ Supports tagging images and filtering images by tags (IPTC).
-+ Load thumbnails and browse recursively down a folder tree.
-+ Dynamic thumbnails loading.
-+ Image transformation and color manipulation.
++ Support for common image formats and GIF animation
++ Supports tagging images, and filtering images by tags (IPTC)
++ Browse thumbnails recursively down a folder tree
++ Dynamic thumbnails loading
++ Image transformation and color manipulation
 + Display image information and metadata
-+ Does not depend on any desktop environment.
++ Does not depend on any desktop environment
 
-### Latest Updates:
+### Updates:
 
 ##### 28 Feb 2018 - v2.0
 + Move to Trash
@@ -50,17 +50,6 @@ Phototonic is an image viewer and organizer built with Qt and Exiv2, released un
 + Added Negativity settings per color channel
 + Fixed colors manipulations for images with alpha channel and non animated GIF images
 + Other Bug fixes
-
-##### 4 Jul 2015 - v1.6.6
-+ Improved tags usability and performance
-+ Bug fixes
-
-##### 6 Jun 2015 - v1.6.2
-+ Image tags, tagging images and filtering images by tags
-+ Delete confirmation is now configurable
-+ Improvements to drag and drop
-+ A more sophisticated Dir-completer
-+ Many many more fixes and improvements, thanks to the contributors!
 
 ##### Optional Dependencies
 + qt5-imageformats (TIFF and TGA support)
