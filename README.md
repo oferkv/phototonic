@@ -32,7 +32,7 @@ Phototonic is an image viewer and organizer built with Qt and Exiv2, released un
 + File List support
 + Bug fixes
 
-##### 15 Jan 2018
+##### 15 Jan 2018 - v2.0 - Snapshot
 + Back after a long break
 + Code cleanup and removal of useless features
 + Lots of bug fixes
