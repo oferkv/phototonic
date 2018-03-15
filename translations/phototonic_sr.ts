@@ -1000,7 +1000,7 @@
     <message>
         <location filename="../Phototonic.cpp" line="388"/>
         <source>Paste Image</source>
-        <translation>Залијепи слику</translation>
+        <translation>Залепи слику</translation>
     </message>
     <message>
         <location filename="../Phototonic.cpp" line="395"/>
@@ -1032,7 +1032,7 @@
     <message>
         <location filename="../Phototonic.cpp" line="416"/>
         <source>Reverse Order</source>
-        <translation>Обрни редослијед</translation>
+        <translation>Обрни редослед</translation>
     </message>
     <message>
         <location filename="../Phototonic.cpp" line="446"/>
@@ -1052,7 +1052,7 @@
     <message>
         <location filename="../Phototonic.cpp" line="513"/>
         <source>Next Image</source>
-        <translation>Сљедећа слика</translation>
+        <translation>Следећа слика</translation>
     </message>
     <message>
         <location filename="../Phototonic.cpp" line="518"/>
@@ -1067,7 +1067,7 @@
     <message>
         <location filename="../Phototonic.cpp" line="528"/>
         <source>Last Image</source>
-        <translation>Посљедња слика</translation>
+        <translation>Последња слика</translation>
     </message>
     <message>
         <location filename="../Phototonic.cpp" line="533"/>
