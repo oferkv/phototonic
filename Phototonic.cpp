@@ -2425,6 +2425,15 @@ void Phototonic::mousePressEvent(QMouseEvent *event) {
     }
 }
 
+void Phototonic::keyPressEvent(QKeyEvent *event) {
+	if (event->key() == Qt::Key_Left) {
+		loadPreviousImage();
+   } else if (event->key() == Qt::Key_Right) {
+		loadNextImage();
+   }
+   event->accept();
+}
+
 void Phototonic::newImage() {
     if (Settings::layoutMode == ThumbViewWidget) {
         showViewer();
