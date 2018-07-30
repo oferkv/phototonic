@@ -23,6 +23,7 @@
 #include <exiv2/exiv2.hpp>
 #include "Settings.h"
 #include "CropRubberband.h"
+#include "ImageWidget.h"
 #include "MetadataCache.h"
 
 class Phototonic;
@@ -129,8 +130,8 @@ protected:
 
 private:
     Phototonic *phototonic;
-    QLabel *imageLabel;
-    QPixmap viewerPixmap;
+    QLabel *movieWidget = nullptr;
+    ImageWidget *imageWidget = nullptr;
     QImage origImage;
     QImage viewerImage;
     QImage mirrorImage;
@@ -139,6 +140,7 @@ private:
     bool newImage;
     bool cursorIsHidden;
     bool moveImageLocked;
+    qreal initialRotation = 0;
     int mouseX;
     int mouseY;
     int layoutX;

@@ -95,7 +95,7 @@ namespace Settings {
     extern bool enableAnimations;
     extern float imageZoomFactor;
     extern bool keepZoomFactor;
-    extern int rotation;
+    extern qreal rotation;
     extern bool keepTransform;
     extern bool flipH;
     extern bool flipV;

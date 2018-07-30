@@ -78,7 +78,7 @@ namespace Settings {
     bool enableAnimations;
     float imageZoomFactor;
     bool keepZoomFactor;
-    int rotation;
+    qreal rotation;
     bool keepTransform;
     bool flipH;
     bool flipV;
