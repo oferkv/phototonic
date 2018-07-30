@@ -92,6 +92,8 @@ public:
 
     void setBackgroundColor();
 
+    QPoint getContextMenuPosition();
+
 public slots:
 
     void monitorCursorState();
@@ -144,6 +146,7 @@ private:
     bool isAnimation;
     QLabel *feedbackLabel;
     QPoint cropOrigin;
+    QPoint contextMenuPosition;
     MetadataCache *metadataCache;
 
     void setMouseMoveData(bool lockMove, int lMouseX, int lMouseY);

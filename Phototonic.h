@@ -208,6 +208,10 @@ private slots:
 
     void flipHorizontal();
 
+    void addVerticalGuide();
+
+    void addHorizontalGuide();
+
     void moveRight();
 
     void moveLeft();
@@ -285,6 +289,7 @@ private:
     QMenu *transformSubMenu;
     QMenu *viewSubMenu;
     QMenu *MirroringSubMenu;
+    QMenu *guideSubMenu;
     QMenu *openWithSubMenu;
 
     QToolBar *viewToolBar;
@@ -351,6 +356,9 @@ private:
     QAction *mirrorTripleAction;
     QAction *mirrorDualVerticalAction;
     QAction *mirrorQuadAction;
+    QAction *guideSubMenuAction;
+    QAction *guideAddVerticalAction;
+    QAction *guideAddHorizontalAction;
     QAction *moveLeftAction;
     QAction *moveRightAction;
     QAction *moveUpAction;

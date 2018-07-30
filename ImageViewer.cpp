@@ -1034,8 +1034,8 @@ void ImageViewer::contextMenuEvent(QContextMenuEvent *) {
     while (QApplication::overrideCursor()) {
         QApplication::restoreOverrideCursor();
     }
-
-    ImagePopUpMenu->exec(QCursor::pos());
+    contextMenuPosition = QCursor::pos() - window()->geometry().topLeft();
+    ImagePopUpMenu->exec(contextMenuPosition);
 }
 
 int ImageViewer::getImageWidthPreCropped() {
@@ -1077,5 +1077,9 @@ void ImageViewer::setBackgroundColor() {
 
     QString styleSheet = "QWidget { " + bgColor + " }";
     scrollArea->setStyleSheet(styleSheet);
+}
+
+QPoint ImageViewer::getContextMenuPosition() {
+    return contextMenuPosition;
 }
 

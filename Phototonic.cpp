@@ -27,6 +27,7 @@
 #include "ProgressDialog.h"
 #include "ImagePreview.h"
 #include "FileListWidget.h"
+#include "GuideWidget.h"
 #include "RenameDialog.h"
 #include "Trashcan.h"
 #include "MessageBox.h"
@@ -248,6 +249,16 @@ void Phototonic::createImageViewer() {
     mirroringActionGroup->addAction(mirrorQuadAction);
     MirroringSubMenu->addActions(mirroringActionGroup->actions());
 
+    guideSubMenu = new QMenu(tr("Guides"));
+    guideSubMenuAction = new QAction(tr("Guides"), this);
+    guideSubMenuAction->setMenu(guideSubMenu);
+    guideAddVerticalAction = new QAction(tr("Add vertical guide"), this);
+    guideAddHorizontalAction = new QAction(tr("Add horizontal guide"), this);
+    guideSubMenu->addAction(guideAddVerticalAction);
+    guideSubMenu->addAction(guideAddHorizontalAction);
+    connect(guideAddVerticalAction, &QAction::triggered, this, &Phototonic::addVerticalGuide);
+    connect(guideAddHorizontalAction, &QAction::triggered, this, &Phototonic::addHorizontalGuide);
+
     transformSubMenu = new QMenu(tr("Transform"));
     transformSubMenuAction = new QAction(tr("Transform"), this);
     transformSubMenuAction->setMenu(transformSubMenu);
@@ -266,6 +277,7 @@ void Phototonic::createImageViewer() {
     addMenuSeparator(transformSubMenu);
     transformSubMenu->addAction(keepTransformAction);
     imageViewer->ImagePopUpMenu->addAction(mirrorSubMenuAction);
+    imageViewer->ImagePopUpMenu->addAction(guideSubMenuAction);
 
     addMenuSeparator(imageViewer->ImagePopUpMenu);
     imageViewer->ImagePopUpMenu->addAction(copyToAction);
@@ -1429,6 +1441,20 @@ void Phototonic::flipHorizontal() {
     Settings::flipH = !Settings::flipH;
     imageViewer->refresh();
     imageViewer->setFeedback(Settings::flipH ? tr("Flipped Horizontally") : tr("Unflipped Horizontally"));
+}
+
+void Phototonic::addVerticalGuide()
+{
+    GuideWidget *g = new GuideWidget(imageViewer, true);
+    g->move(imageViewer->getContextMenuPosition().x() - GuideWidget::halfThickness(), 0);
+    g->show();
+}
+
+void Phototonic::addHorizontalGuide()
+{
+    GuideWidget *g = new GuideWidget(imageViewer, false);
+    g->move(0, imageViewer->getContextMenuPosition().y() - GuideWidget::halfThickness());
+    g->show();
 }
 
 void Phototonic::cropImage() {
