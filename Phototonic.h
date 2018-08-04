@@ -114,6 +114,8 @@ private slots:
 
     void createSubDirectory();
 
+    void setSaveDirectory();
+
     void checkDirState(const QModelIndex &, int, int);
 
     void goSelectedDir(const QModelIndex &currDir);
@@ -372,6 +374,7 @@ private:
 
     QAction *pasteAction;
     QAction *createDirectoryAction;
+    QAction *setSaveDirectoryAction;
 
     QAction *goBackAction;
     QAction *goFrwdAction;

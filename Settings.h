@@ -157,6 +157,7 @@ namespace Settings {
     extern bool tagsDockVisible;
     extern bool imageInfoDockVisible;
     extern QString currentDirectory;
+    extern QString saveDirectory;
     extern QString thumbsBackgroundImage;
     extern QStringList filesList;
     extern bool isFileListLoaded;

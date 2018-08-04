@@ -140,6 +140,7 @@ namespace Settings {
     bool imagePreviewDockVisible;
     bool imageInfoDockVisible;
     QString currentDirectory;
+    QString saveDirectory;
     QString thumbsBackgroundImage;
     QStringList filesList;
     bool isFileListLoaded;

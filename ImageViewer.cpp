@@ -986,7 +986,12 @@ void ImageViewer::saveImage() {
     }
 
     QImageReader imageReader(viewerImageFullPath);
-    if (!viewerImage.save(viewerImageFullPath, imageReader.format().toUpper(), Settings::defaultSaveQuality)) {
+    QString savePath = viewerImageFullPath;
+    if (!Settings::saveDirectory.isEmpty()) {
+        QDir saveDir(Settings::saveDirectory);
+        savePath = saveDir.filePath(QFileInfo(viewerImageFullPath).fileName());
+    }
+    if (!viewerImage.save(savePath, imageReader.format().toUpper(), Settings::defaultSaveQuality)) {
         MessageBox msgBox(this);
         msgBox.critical(tr("Error"), tr("Failed to save image."));
         return;
@@ -994,7 +999,13 @@ void ImageViewer::saveImage() {
 
     if (!exifError) {
         try {
-            image->writeMetadata();
+            if (Settings::saveDirectory.isEmpty()) {
+                image->writeMetadata();
+            } else {
+                Exiv2::Image::AutoPtr imageOut = Exiv2::ImageFactory::open(savePath.toStdString());
+                imageOut->setMetadata(*image);
+                imageOut->writeMetadata();
+            }
         }
         catch (Exiv2::Error &error) {
             MessageBox msgBox(this);
