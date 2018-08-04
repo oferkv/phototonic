@@ -969,6 +969,7 @@ void ImageViewer::keyMoveEvent(int direction) {
 void ImageViewer::saveImage() {
     Exiv2::Image::AutoPtr image;
     bool exifError = false;
+    static bool showExifError = true;
 
     if (newImage) {
         saveImageAs();
@@ -1008,8 +1009,15 @@ void ImageViewer::saveImage() {
             }
         }
         catch (Exiv2::Error &error) {
-            MessageBox msgBox(this);
-            msgBox.critical(tr("Error"), tr("Failed to save Exif metadata."));
+            if (showExifError) {
+                MessageBox msgBox(this);
+                QCheckBox cb(tr("Don't show this message again"));
+                msgBox.setCheckBox(&cb);
+                msgBox.critical(tr("Error"), tr("Failed to save Exif metadata."));
+                showExifError = !(cb.isChecked());
+            } else {
+                qWarning() << tr("Failed to safe Exif metadata:") << error.what();
+            }
         }
     }
 
