@@ -16,6 +16,8 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <QProgressDialog>
+
 #include "ThumbsViewer.h"
 #include "Phototonic.h"
 
@@ -607,15 +609,38 @@ void ThumbsViewer::selectThumbByRow(int row) {
     selectCurrentIndex();
 }
 
+void ThumbsViewer::selectByBrightness(qreal min, qreal max) {
+    loadAllThumbs();
+    QItemSelection sel;
+    for (int row = 0; row < thumbsViewerModel->rowCount(); ++row) {
+        QModelIndex idx = thumbsViewerModel->index(row, 0);
+        QVariant brightness = thumbsViewerModel->data(idx, BrightnessRole);
+        if (brightness.isValid()) {
+            qreal val = brightness.toReal();
+            if (val >= min && val <= max)
+                sel.select(idx, idx);
+        }
+    }
+    selectionModel()->select(sel, QItemSelectionModel::Select);
+}
+
+void ThumbsViewer::loadAllThumbs() {
+    QProgressDialog progress(tr("Loading thumbnails..."), tr("Abort"), 0, thumbFileInfoList.count(), this);
+    for (int i = 0; i < thumbFileInfoList.count(); ++i) {
+        progress.setValue(i);
+        if (progress.wasCanceled())
+            break;
+        if (thumbsViewerModel->item(i)->data(LoadedRole).toBool())
+            continue;
+        loadThumb(i);
+        QApplication::processEvents();
+    }
+}
+
 void ThumbsViewer::loadThumbsRange() {
     static bool isInProgress = false;
-    QImageReader thumbReader;
-    static QSize currentThumbSize;
     static int currentRowCount;
-    static QString imageFileName;
-    QImage thumb;
     int currThumb;
-    bool imageReadOk;
 
     if (isInProgress) {
         isAbortThumbsLoading = true;
@@ -630,51 +655,58 @@ void ThumbsViewer::loadThumbsRange() {
          (scrolledForward ? currThumb <= thumbsRangeLast : currThumb >= thumbsRangeFirst);
          scrolledForward ? ++currThumb : --currThumb) {
 
-        if (isAbortThumbsLoading || thumbsViewerModel->rowCount() != currentRowCount || currThumb < 0) {
+        if (isAbortThumbsLoading || thumbsViewerModel->rowCount() != currentRowCount || currThumb < 0)
             break;
-        }
 
-        if (thumbsViewerModel->item(currThumb)->data(LoadedRole).toBool()) {
+        if (thumbsViewerModel->item(currThumb)->data(LoadedRole).toBool())
             continue;
-        }
 
-        imageFileName = thumbsViewerModel->item(currThumb)->data(FileNameRole).toString();
-        thumbReader.setFileName(imageFileName);
-        currentThumbSize = thumbReader.size();
-        imageReadOk = false;
-
-        if (currentThumbSize.isValid()) {
-            if (currentThumbSize.width() > thumbSize || currentThumbSize.height() > thumbSize) {
-                currentThumbSize.scale(QSize(thumbSize, thumbSize), Qt::KeepAspectRatio);
-            }
-
-            thumbReader.setScaledSize(currentThumbSize);
-            imageReadOk = thumbReader.read(&thumb);
-        }
-
-        if (imageReadOk) {
-            if (Settings::exifThumbRotationEnabled) {
-                imageViewer->rotateByExifRotation(thumb, imageFileName);
-                currentThumbSize = thumb.size();
-                currentThumbSize.scale(QSize(thumbSize, thumbSize), Qt::KeepAspectRatio);
-            }
-
-            thumbsViewerModel->item(currThumb)->setIcon(QPixmap::fromImage(thumb));
-            thumbsViewerModel->item(currThumb)->setData(qGray(thumb.scaled(1, 1).pixel(0, 0)) / 255.0, BrightnessRole);
-        } else {
-            thumbsViewerModel->item(currThumb)->setIcon(QIcon::fromTheme("image-missing",
-                                                                         QIcon(":/images/error_image.png")).pixmap(
-                    BAD_IMAGE_SIZE, BAD_IMAGE_SIZE));
-            currentThumbSize.setHeight(BAD_IMAGE_SIZE);
-            currentThumbSize.setWidth(BAD_IMAGE_SIZE);
-        }
-
-        thumbsViewerModel->item(currThumb)->setData(true, LoadedRole);
+        loadThumb(currThumb);
         QApplication::processEvents();
     }
 
     isInProgress = false;
     isAbortThumbsLoading = false;
+}
+
+bool ThumbsViewer::loadThumb(int currThumb) {
+    static QSize currentThumbSize;
+    QImageReader thumbReader;
+    QString imageFileName = thumbsViewerModel->item(currThumb)->data(FileNameRole).toString();
+    QImage thumb;
+    bool imageReadOk = false;
+
+    thumbReader.setFileName(imageFileName);
+    currentThumbSize = thumbReader.size();
+
+    if (currentThumbSize.isValid()) {
+        if (currentThumbSize.width() > thumbSize || currentThumbSize.height() > thumbSize) {
+            currentThumbSize.scale(QSize(thumbSize, thumbSize), Qt::KeepAspectRatio);
+        }
+
+        thumbReader.setScaledSize(currentThumbSize);
+        imageReadOk = thumbReader.read(&thumb);
+    }
+
+    if (imageReadOk) {
+        if (Settings::exifThumbRotationEnabled) {
+            imageViewer->rotateByExifRotation(thumb, imageFileName);
+            currentThumbSize = thumb.size();
+            currentThumbSize.scale(QSize(thumbSize, thumbSize), Qt::KeepAspectRatio);
+        }
+
+        thumbsViewerModel->item(currThumb)->setIcon(QPixmap::fromImage(thumb));
+        thumbsViewerModel->item(currThumb)->setData(qGray(thumb.scaled(1, 1).pixel(0, 0)) / 255.0, BrightnessRole);
+        thumbsViewerModel->item(currThumb)->setData(true, LoadedRole);
+    } else {
+        thumbsViewerModel->item(currThumb)->setIcon(QIcon::fromTheme("image-missing",
+                                                                     QIcon(":/images/error_image.png")).pixmap(
+                BAD_IMAGE_SIZE, BAD_IMAGE_SIZE));
+        currentThumbSize.setHeight(BAD_IMAGE_SIZE);
+        currentThumbSize.setWidth(BAD_IMAGE_SIZE);
+        return false;
+    }
+    return true;
 }
 
 void ThumbsViewer::addThumb(QString &imageFullPath) {

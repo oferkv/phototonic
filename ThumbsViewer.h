@@ -81,6 +81,8 @@ public:
 
     void selectThumbByRow(int row);
 
+    void selectByBrightness(qreal min, qreal max);
+
     int getNextRow();
 
     int getPrevRow();
@@ -118,6 +120,8 @@ protected:
 private:
     void initThumbs();
 
+    bool loadThumb(int row);
+
     int getFirstVisibleThumb();
 
     int getLastVisibleThumb();
@@ -151,6 +155,8 @@ public slots:
 private slots:
 
     void loadThumbsRange();
+
+    void loadAllThumbs();
 };
 
 #endif // THUMBS_VIEWER_H

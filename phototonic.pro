@@ -41,14 +41,16 @@ HEADERS += Phototonic.h ThumbsViewer.h ImageViewer.h CropRubberband.h SettingsDi
 			FileSystemTree.h Bookmarks.h DirCompleter.h Tags.h MetadataCache.h ShortcutsTable.h CopyMoveDialog.h \
 			CopyMoveToDialog.h CropDialog.h ProgressDialog.h ColorsDialog.h ResizeDialog.h ExternalAppsDialog.h \
 			ImagePreview.h ImageWidget.h FileSystemModel.h FileListWidget.h RenameDialog.h Trashcan.h MessageBox.h \
-			GuideWidget.h
+			GuideWidget.h RangeInputDialog.h
 
 SOURCES += main.cpp Phototonic.cpp ThumbsViewer.cpp ImageViewer.cpp CropRubberband.cpp SettingsDialog.cpp \
 			Settings.cpp InfoViewer.cpp FileSystemTree.cpp Bookmarks.cpp DirCompleter.cpp Tags.cpp \
 			MetadataCache.cpp ShortcutsTable.cpp CopyMoveDialog.cpp CopyMoveToDialog.cpp CropDialog.cpp \
 			ProgressDialog.cpp ExternalAppsDialog.cpp ColorsDialog.cpp ResizeDialog.cpp ImagePreview.cpp \
 			ImageWidget.cpp FileSystemModel.cpp FileListWidget.cpp RenameDialog.cpp Trashcan.cpp MessageBox.cpp \
-			GuideWidget.cpp
+			GuideWidget.cpp RangeInputDialog.cpp
+
+FORMS += RangeInputDialog.ui
 
 RESOURCES += phototonic.qrc
 
@@ -78,3 +80,4 @@ TRANSLATIONS = 	translations/phototonic_en.ts \
 		translations/phototonic_hr.ts \
 		translations/phototonic_sr.ts \
 		translations/phototonic_pt.ts
+
