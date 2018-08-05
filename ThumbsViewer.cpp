@@ -163,8 +163,8 @@ bool ThumbsViewer::setCurrentIndexByRow(int row) {
     return false;
 }
 
-void ThumbsViewer::updateImageInfoViewer(QString imageFullPath) {
-
+void ThumbsViewer::updateImageInfoViewer(int row) {
+    QString imageFullPath = thumbsViewerModel->item(row)->data(FileNameRole).toString();
     QImageReader imageInfoReader(imageFullPath);
     QString key;
     QString val;
@@ -202,6 +202,10 @@ void ThumbsViewer::updateImageInfoViewer(QString imageFullPath) {
         key = tr("Megapixel");
         val = QString::number((imageInfoReader.size().width() * imageInfoReader.size().height()) / 1000000.0, 'f',
                               2);
+        infoView->addEntry(key, val);
+
+        key = tr("Average brightness");
+        val = QString::number(thumbsViewerModel->item(row)->data(BrightnessRole).toReal(), 'f', 2);
         infoView->addEntry(key, val);
     } else {
         imageInfoReader.read();
@@ -266,7 +270,7 @@ void ThumbsViewer::onSelectionChanged(const QItemSelection &) {
         int currentRow = indexesList.first().row();
         QString thumbFullPath = thumbsViewerModel->item(currentRow)->data(FileNameRole).toString();
         setCurrentRow(currentRow);
-        updateImageInfoViewer(thumbFullPath);
+        updateImageInfoViewer(currentRow);
         QPixmap imagePreviewPixmap = imagePreview->loadImage(thumbFullPath);
         if (Settings::setWindowIcon && Settings::layoutMode == Phototonic::ThumbViewWidget) {
             phototonic->setWindowIcon(imagePreviewPixmap.scaled(WINDOW_ICON_SIZE, WINDOW_ICON_SIZE,
@@ -656,6 +660,7 @@ void ThumbsViewer::loadThumbsRange() {
             }
 
             thumbsViewerModel->item(currThumb)->setIcon(QPixmap::fromImage(thumb));
+            thumbsViewerModel->item(currThumb)->setData(qGray(thumb.scaled(1, 1).pixel(0, 0)) / 255.0, BrightnessRole);
         } else {
             thumbsViewerModel->item(currThumb)->setIcon(QIcon::fromTheme("image-missing",
                                                                          QIcon(":/images/error_image.png")).pixmap(

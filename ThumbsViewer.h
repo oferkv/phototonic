@@ -45,7 +45,8 @@ public:
     enum UserRoles {
         FileNameRole = Qt::UserRole + 1,
         SortRole,
-        LoadedRole
+        LoadedRole,
+        BrightnessRole
     };
 
     ThumbsViewer(QWidget *parent, MetadataCache *metadataCache);
@@ -123,7 +124,7 @@ private:
 
     void updateThumbsCount();
 
-    void updateImageInfoViewer(QString imageFullPath);
+    void updateImageInfoViewer(int row);
 
     QFileInfo thumbFileInfo;
     QFileInfoList thumbFileInfoList;
