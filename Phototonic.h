@@ -198,6 +198,8 @@ private slots:
 
     void freeRotateRight();
 
+    void batchTransform();
+
     void showColorsDialog();
 
     void setMirrorDisabled();
@@ -291,6 +293,7 @@ private:
     QMenu *helpMenu;
     QMenu *zoomSubMenu;
     QMenu *transformSubMenu;
+    QMenu *batchSubMenu;
     QMenu *viewSubMenu;
     QMenu *MirroringSubMenu;
     QMenu *guideSubMenu;
@@ -343,6 +346,7 @@ private:
     QAction *keepZoomAction;
     QAction *keepTransformAction;
     QAction *transformSubMenuAction;
+    QAction *batchSubMenuAction;
     QAction *viewSubMenuAction;
     QAction *rotateLeftAction;
     QAction *rotateRightAction;
@@ -397,6 +401,7 @@ private:
     QAction *openWithMenuAction;
     QAction *externalAppsAction;
     QAction *invertSelectionAction;
+    QAction *batchTransformAction;
 
     QLineEdit *pathLineEdit;
     QLineEdit *filterLineEdit;

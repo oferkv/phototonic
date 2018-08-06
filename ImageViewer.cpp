@@ -612,19 +612,24 @@ void ImageViewer::reload() {
         Settings::flipH = Settings::flipV = false;
     }
     Settings::scaledWidth = Settings::scaledHeight = 0;
-    Settings::cropLeft = Settings::cropTop = Settings::cropWidth = Settings::cropHeight = 0;
-
-    if (newImage || viewerImageFullPath.isEmpty()) {
-        newImage = true;
-        viewerImageFullPath = CLIPBOARD_IMAGE_NAME;
-        origImage.load(":/images/no_image.png");
-        viewerImage = origImage;
-        imageWidget->setImage(viewerImage);
-        pasteImage();
-        return;
+    if (!batchMode) {
+        Settings::cropLeft = Settings::cropTop = Settings::cropWidth = Settings::cropHeight = 0;
+        if (newImage || viewerImageFullPath.isEmpty()) {
+            newImage = true;
+            viewerImageFullPath = CLIPBOARD_IMAGE_NAME;
+            origImage.load(":/images/no_image.png");
+            viewerImage = origImage;
+            imageWidget->setImage(viewerImage);
+            pasteImage();
+            return;
+        }
     }
 
     QImageReader imageReader(viewerImageFullPath);
+    if (batchMode && imageReader.supportsAnimation()) {
+        qWarning() << tr("skipping animation in batch mode:") << viewerImageFullPath;
+        return;
+    }
     if (Settings::enableAnimations && imageReader.supportsAnimation()) {
         if (animation) {
             delete animation;

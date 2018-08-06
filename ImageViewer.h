@@ -33,6 +33,7 @@ Q_OBJECT
 
 public:
     bool tempDisableResize;
+    bool batchMode = false;
     int mirrorLayout;
     QString viewerImageFullPath;
     QMenu *ImagePopUpMenu;

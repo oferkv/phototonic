@@ -702,6 +702,16 @@ void Phototonic::createActions() {
     invertSelectionAction->setObjectName("invertSelection");
     connect(invertSelectionAction, SIGNAL(triggered()), thumbsViewer, SLOT(invertSelection()));
 
+    // There could be a Batch submenu if we had any more items to put there
+    batchSubMenu = new QMenu(tr("Batch"));
+    batchSubMenuAction = new QAction(tr("Batch"), this);
+    batchSubMenuAction->setMenu(batchSubMenu);
+    batchTransformAction = new QAction(tr("Repeat Rotate and Crop"), this);
+//    batchTransformAction->setEnabled(false);
+    batchTransformAction->setObjectName("batchTransform");
+    connect(batchTransformAction, SIGNAL(triggered()), this, SLOT(batchTransform()));
+    batchSubMenu->addAction(batchTransformAction);
+
     filterImagesFocusAction = new QAction(tr("Filter by Name"), this);
     filterImagesFocusAction->setObjectName("filterImagesFocus");
     connect(filterImagesFocusAction, SIGNAL(triggered()), this, SLOT(filterImagesFocus()));
@@ -734,6 +744,7 @@ void Phototonic::createMenus() {
     editMenu->addAction(selectAllAction);
     editMenu->addAction(selectByBrightnesAction);
     editMenu->addAction(invertSelectionAction);
+    editMenu->addAction(batchSubMenuAction);
     addAction(filterImagesFocusAction);
     addAction(setPathFocusAction);
     editMenu->addSeparator();
@@ -790,6 +801,7 @@ void Phototonic::createMenus() {
     thumbsViewer->addAction(selectAllAction);
     thumbsViewer->addAction(selectByBrightnesAction);
     thumbsViewer->addAction(invertSelectionAction);
+    thumbsViewer->addAction(batchSubMenuAction);
     thumbsViewer->setContextMenuPolicy(Qt::ActionsContextMenu);
     menuBar()->setVisible(true);
 }
@@ -1527,6 +1539,38 @@ void Phototonic::freeRotateRight() {
         Settings::rotation = 1;
     imageViewer->refresh();
     imageViewer->setFeedback(tr("Rotation %1°").arg(QString::number(Settings::rotation)));
+}
+
+void Phototonic::batchTransform() {
+    QModelIndexList idxs = thumbsViewer->selectionModel()->selectedIndexes();
+    MessageBox msgBox(this);
+    if (idxs.count() < 1) {
+        msgBox.critical(tr("No images selected"), tr("Please select the images to transform."));
+        return;
+    }
+    QString saveMessage = tr("overwiting the original files");
+    if (!Settings::saveDirectory.isEmpty())
+        saveMessage = tr("saving the transformed images to %1").arg(Settings::saveDirectory);
+    QString message(tr("Rotate %1 images by %2 degrees, then crop them to %3, %4 %5 x %6, %7?")
+                    .arg(idxs.count()).arg(Settings::rotation, 0, 'f', 2)
+                    .arg(Settings::cropLeft).arg(Settings::cropTop).arg(Settings::cropWidth).arg(Settings::cropHeight)
+                    .arg(saveMessage));
+    msgBox.setText(tr("Perform batch transformation?"));
+    msgBox.setInformativeText(message);
+    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    if (msgBox.exec() == QMessageBox::Ok) {
+        bool keepTransformWas = Settings::keepTransform;
+        imageViewer->batchMode = true;
+        Settings::keepTransform = true;
+        for (QModelIndex i : idxs) {
+            qDebug() << thumbsViewer->model()->data(i, ThumbsViewer::FileNameRole);
+            loadSelectedThumbImage(i);
+            imageViewer->saveImage();
+        }
+        Settings::keepTransform = keepTransformWas;
+        imageViewer->batchMode = false;
+    }
 }
 
 void Phototonic::showColorsDialog() {
