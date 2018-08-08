@@ -3298,9 +3298,11 @@ void Phototonic::createSubDirectory() {
     fileSystemTree->expand(selectedDirs[0]);
 }
 
-void Phototonic::setSaveDirectory() {
-    Settings::saveDirectory = QFileDialog::getExistingDirectory(this, tr("Directory to save images into:"),
-            QString(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+void Phototonic::setSaveDirectory(QString path) {
+    Settings::saveDirectory = path.isEmpty() ?
+        QFileDialog::getExistingDirectory(this, tr("Directory to save images into:"),
+            QString(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks) :
+        path;
 }
 
 QString Phototonic::getSelectedPath() {

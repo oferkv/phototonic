@@ -78,6 +78,8 @@ public slots:
 
     void hideViewer();
 
+    void setSaveDirectory(QString path = QString());
+
 private slots:
 
     void about();
@@ -113,8 +115,6 @@ private slots:
     void deleteDirectory(bool trash);
 
     void createSubDirectory();
-
-    void setSaveDirectory();
 
     void checkDirState(const QModelIndex &, int, int);
 

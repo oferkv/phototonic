@@ -18,29 +18,35 @@
 
 #include "Phototonic.h"
 #include <QApplication>
-
-static void showHelp() {
-    qInfo() << VERSION << "image viewer.";
-    qInfo() << "Usage: phototonic [OPTION] [FILE... | DIRECTORY]";
-    qInfo() << "  -h, --help\t\t\tshow this help and exit";
-    qInfo() << "  -l, --lang=LANGUAGE\t\tstart with a specific translation";
-}
+#include <QCommandLineParser>
 
 int main(int argc, char *argv[]) {
     QApplication QApp(argc, argv);
-    QStringList arguments = QCoreApplication::arguments();
     QLocale locale = QLocale::system();
-    int argumentsStartAt = 1;
+    QCoreApplication::setApplicationVersion(VERSION);
 
-    if (arguments.size() == 2) {
-        if (arguments.at(1).startsWith("-")) {
-            showHelp();
-            return -1;
-        }
-    } else if (arguments.size() >= 3 && (arguments.at(1) == "-l" || arguments.at(1) == "--lang")) {
-        locale = QLocale(arguments.at(2));
-        argumentsStartAt = 3;
-    }
+    QCommandLineParser parser;
+    parser.setApplicationDescription(VERSION " image viewer.");
+    parser.addHelpOption();
+    parser.addVersionOption();
+    parser.addPositionalArgument(QCoreApplication::translate("main", "files or directory"),
+                                 QCoreApplication::translate("main", "files or directory to open"),
+                                 QCoreApplication::translate("main", "[FILE...] | [DIRECTORY]"));
+
+    QCommandLineOption langOption(QStringList() << "l" << "lang",
+                                             QCoreApplication::translate("main", "start with a specific translation"),
+                                             QCoreApplication::translate("main", "language"));
+    parser.addOption(langOption);
+
+    QCommandLineOption targetDirectoryOption(QStringList() << "o" << "output-directory",
+            QCoreApplication::translate("main", "Copy all modified images into <directory>."),
+            QCoreApplication::translate("main", "directory"));
+    parser.addOption(targetDirectoryOption);
+
+    parser.process(QApp);
+
+    if (parser.isSet(langOption))
+        locale = QLocale(parser.value(langOption));
 
     QTranslator qTranslator;
     qTranslator.load(locale, "qt", "_", QLibraryInfo::location(QLibraryInfo::TranslationsPath));
@@ -50,8 +56,9 @@ int main(int argc, char *argv[]) {
     qTranslatorPhototonic.load(locale, "phototonic", "_", ":/translations");
     QApp.installTranslator(&qTranslatorPhototonic);
 
-    Phototonic phototonic(arguments, argumentsStartAt);
+    Phototonic phototonic(parser.positionalArguments(), 0);
+    if (parser.isSet(targetDirectoryOption))
+        phototonic.setSaveDirectory(parser.value(targetDirectoryOption));
     phototonic.show();
     return QApp.exec();
 }
-
