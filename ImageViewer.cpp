@@ -613,7 +613,8 @@ void ImageViewer::reload() {
     }
     Settings::scaledWidth = Settings::scaledHeight = 0;
     if (!batchMode) {
-        Settings::cropLeft = Settings::cropTop = Settings::cropWidth = Settings::cropHeight = 0;
+        if (!Settings::keepTransform)
+            Settings::cropLeft = Settings::cropTop = Settings::cropWidth = Settings::cropHeight = 0;
         if (newImage || viewerImageFullPath.isEmpty()) {
             newImage = true;
             viewerImageFullPath = CLIPBOARD_IMAGE_NAME;
@@ -661,7 +662,6 @@ void ImageViewer::reload() {
 
     if (imageReader.size().isValid() && imageReader.read(&origImage)) {
         viewerImage = origImage;
-        transform();
         if (Settings::colorsActive || Settings::keepTransform) {
             colorize();
         }
@@ -676,6 +676,11 @@ void ImageViewer::reload() {
 
     imageWidget->setImage(viewerImage);
     resizeImage();
+    if (Settings::keepTransform) {
+        if (Settings::cropLeft || Settings::cropTop || Settings::cropWidth || Settings::cropHeight)
+            cropRubberBand->show();
+        imageWidget->setRotation(Settings::rotation);
+    }
     if (Settings::setWindowIcon) {
         QPixmap icon;
         icon.convertFromImage(viewerImage.scaled(WINDOW_ICON_SIZE, WINDOW_ICON_SIZE,
@@ -795,17 +800,13 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event) {
                         + "x"
                         + QString::number(cropRubberBand->height()));
         }
-        if (!qFuzzyCompare(imageWidget->rotation(), 0)) {
-            Settings::rotation += imageWidget->rotation();
-            refresh();
-            imageWidget->setRotation(0);
-        }
     }
 
     QWidget::mouseReleaseEvent(event);
 }
 
-void ImageViewer::cropToSelection() {
+void ImageViewer::applyCropAndRotation() {
+    bool didSomething = false;
     if (cropRubberBand && cropRubberBand->isVisible()) {
 
         QPoint bandTopLeft = mapToGlobal(cropRubberBand->geometry().topLeft());
@@ -823,30 +824,26 @@ void ImageViewer::cropToSelection() {
         bandBottomRight.setX(int(bandBottomRight.x() * scaledX));
         bandBottomRight.setY(int(bandBottomRight.y() * scaledY));
 
-        int cropLeft = bandTopLeft.x();
-        int cropTop = bandTopLeft.y();
-        int cropWidth = viewerImage.width() - bandBottomRight.x();
-        int cropHeight = viewerImage.height() - bandBottomRight.y();
-
-        if (cropLeft > 0) {
-            Settings::cropLeft += cropLeft;
-        }
-        if (cropTop > 0) {
-            Settings::cropTop += cropTop;
-        }
-        if (cropWidth > 0) {
-            Settings::cropWidth += cropWidth;
-        }
-        if (cropHeight > 0) {
-            Settings::cropHeight += cropHeight;
-        }
+        Settings::cropLeft = bandTopLeft.x();
+        Settings::cropTop = bandTopLeft.y();
+        Settings::cropWidth = viewerImage.width() - bandBottomRight.x();
+        Settings::cropHeight = viewerImage.height() - bandBottomRight.y();
+        Settings::rotation = imageWidget->rotation();
 
         cropRubberBand->hide();
         refresh();
-    } else {
+        didSomething = true;
+    }
+    if (!qFuzzyCompare(imageWidget->rotation(), 0)) {
+        refresh();
+        imageWidget->setRotation(0);
+        didSomething = true;
+    }
+    if (!didSomething) {
         MessageBox messageBox(this);
-        messageBox.warning(tr("No selection for cropping"),
-                           tr("To make a selection, hold down the Ctrl key and select a region using the mouse."));
+        messageBox.warning(tr("No selection for cropping, and no rotation"),
+                           tr("To make a selection, hold down the Ctrl key and select a region using the mouse. "
+                              "To rotate, hold down the Ctrl and Shift keys and drag the mouse near the right edge."));
     }
 }
 

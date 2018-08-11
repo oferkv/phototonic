@@ -108,7 +108,7 @@ public slots:
 
     void pasteImage();
 
-    void cropToSelection();
+    void applyCropAndRotation();
 
 private slots:
 

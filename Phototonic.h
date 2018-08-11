@@ -353,7 +353,7 @@ private:
     QAction *flipHorizontalAction;
     QAction *flipVerticalAction;
     QAction *cropAction;
-    QAction *cropToSelectionAction;
+    QAction *applyCropAndRotationAction;
     QAction *resizeAction;
     QAction *freeRotateLeftAction;
     QAction *freeRotateRightAction;

@@ -162,7 +162,7 @@ void Phototonic::createImageViewer() {
     connect(saveAsAction, SIGNAL(triggered()), imageViewer, SLOT(saveImageAs()));
     connect(copyImageAction, SIGNAL(triggered()), imageViewer, SLOT(copyImage()));
     connect(pasteImageAction, SIGNAL(triggered()), imageViewer, SLOT(pasteImage()));
-    connect(cropToSelectionAction, SIGNAL(triggered()), imageViewer, SLOT(cropToSelection()));
+    connect(applyCropAndRotationAction, SIGNAL(triggered()), imageViewer, SLOT(applyCropAndRotation()));
     imageViewer->ImagePopUpMenu = new QMenu();
 
     // Widget actions
@@ -183,7 +183,7 @@ void Phototonic::createImageViewer() {
     imageViewer->addAction(flipHorizontalAction);
     imageViewer->addAction(flipVerticalAction);
     imageViewer->addAction(cropAction);
-    imageViewer->addAction(cropToSelectionAction);
+    imageViewer->addAction(applyCropAndRotationAction);
     imageViewer->addAction(resizeAction);
     imageViewer->addAction(saveAction);
     imageViewer->addAction(saveAsAction);
@@ -264,7 +264,7 @@ void Phototonic::createImageViewer() {
     transformSubMenuAction = new QAction(tr("Transform"), this);
     transformSubMenuAction->setMenu(transformSubMenu);
     imageViewer->ImagePopUpMenu->addAction(resizeAction);
-    imageViewer->ImagePopUpMenu->addAction(cropToSelectionAction);
+    imageViewer->ImagePopUpMenu->addAction(applyCropAndRotationAction);
     imageViewer->ImagePopUpMenu->addAction(transformSubMenuAction);
     transformSubMenu->addAction(colorsAction);
     transformSubMenu->addAction(rotateRightAction);
@@ -635,9 +635,9 @@ void Phototonic::createActions() {
     cropAction->setIcon(QIcon(":/images/crop.png"));
     connect(cropAction, SIGNAL(triggered()), this, SLOT(cropImage()));
 
-    cropToSelectionAction = new QAction(tr("Crop to Selection"), this);
-    cropToSelectionAction->setObjectName("cropToSelection");
-    cropToSelectionAction->setIcon(QIcon(":/images/crop.png"));
+    applyCropAndRotationAction = new QAction(tr("Apply Crop and Rotation"), this);
+    applyCropAndRotationAction->setObjectName("applyCropAndRotation");
+    applyCropAndRotationAction->setIcon(QIcon(":/images/crop.png"));
 
     resizeAction = new QAction(tr("Scale Image"), this);
     resizeAction->setObjectName("resize");
@@ -707,7 +707,6 @@ void Phototonic::createActions() {
     batchSubMenuAction = new QAction(tr("Batch"), this);
     batchSubMenuAction->setMenu(batchSubMenu);
     batchTransformAction = new QAction(tr("Repeat Rotate and Crop"), this);
-//    batchTransformAction->setEnabled(false);
     batchTransformAction->setObjectName("batchTransform");
     connect(batchTransformAction, SIGNAL(triggered()), this, SLOT(batchTransform()));
     batchSubMenu->addAction(batchTransformAction);
@@ -1566,6 +1565,7 @@ void Phototonic::batchTransform() {
         for (QModelIndex i : idxs) {
             qDebug() << thumbsViewer->model()->data(i, ThumbsViewer::FileNameRole);
             loadSelectedThumbImage(i);
+            imageViewer->applyCropAndRotation();
             imageViewer->saveImage();
         }
         Settings::keepTransform = keepTransformWas;
@@ -2332,7 +2332,7 @@ void Phototonic::loadShortcuts() {
     Settings::actionKeys[flipHorizontalAction->objectName()] = flipHorizontalAction;
     Settings::actionKeys[flipVerticalAction->objectName()] = flipVerticalAction;
     Settings::actionKeys[cropAction->objectName()] = cropAction;
-    Settings::actionKeys[cropToSelectionAction->objectName()] = cropToSelectionAction;
+    Settings::actionKeys[applyCropAndRotationAction->objectName()] = applyCropAndRotationAction;
     Settings::actionKeys[colorsAction->objectName()] = colorsAction;
     Settings::actionKeys[mirrorDisabledAction->objectName()] = mirrorDisabledAction;
     Settings::actionKeys[mirrorDualAction->objectName()] = mirrorDualAction;
@@ -2423,7 +2423,7 @@ void Phototonic::loadShortcuts() {
         flipHorizontalAction->setShortcut(QKeySequence("Ctrl+Down"));
         flipVerticalAction->setShortcut(QKeySequence("Ctrl+Up"));
         cropAction->setShortcut(QKeySequence("Ctrl+G"));
-        cropToSelectionAction->setShortcut(QKeySequence("Ctrl+R"));
+        applyCropAndRotationAction->setShortcut(QKeySequence("Ctrl+R"));
         colorsAction->setShortcut(QKeySequence("Ctrl+O"));
         mirrorDisabledAction->setShortcut(QKeySequence("Ctrl+1"));
         mirrorDualAction->setShortcut(QKeySequence("Ctrl+2"));
