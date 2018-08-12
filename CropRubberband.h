@@ -22,8 +22,12 @@
 #include <QtWidgets>
 
 class CropRubberBand : public QWidget {
+    Q_OBJECT
 public:
     CropRubberBand(QWidget *parent = 0);
+
+signals:
+    void selectionChanged(QRect sel);
 
 private:
     QRubberBand *rubberband;

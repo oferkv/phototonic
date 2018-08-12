@@ -55,5 +55,6 @@ CropRubberBand::CropRubberBand(QWidget *parent) : QWidget(parent) {
 
 void CropRubberBand::resizeEvent(QResizeEvent *) {
     rubberband->resize(size());
+    emit selectionChanged(rubberband->geometry());
 }
 

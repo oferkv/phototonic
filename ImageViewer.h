@@ -90,7 +90,7 @@ public:
 
     void setInfo(QString infoString);
 
-    void setFeedback(QString feedbackString);
+    void setFeedback(QString feedbackString, bool timeLimited = true);
 
     void setBackgroundColor();
 
@@ -113,6 +113,8 @@ public slots:
 private slots:
 
     void unsetFeedback();
+
+    void updateRubberBandFeedback(QRect geom);
 
 protected:
     void resizeEvent(QResizeEvent *event);

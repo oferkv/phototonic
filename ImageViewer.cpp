@@ -699,7 +699,9 @@ void ImageViewer::unsetFeedback() {
     feedbackLabel->setVisible(false);
 }
 
-void ImageViewer::setFeedback(QString feedbackString) {
+void ImageViewer::setFeedback(QString feedbackString, bool timeLimited) {
+    if (feedbackString.isEmpty())
+        return;
     feedbackLabel->setText(feedbackString);
     feedbackLabel->setVisible(true);
 
@@ -707,7 +709,8 @@ void ImageViewer::setFeedback(QString feedbackString) {
     feedbackLabel->move(10, margin);
 
     feedbackLabel->adjustSize();
-    QTimer::singleShot(3000, this, SLOT(unsetFeedback()));
+    if (timeLimited)
+        QTimer::singleShot(3000, this, SLOT(unsetFeedback()));
 }
 
 void ImageViewer::loadImage(QString imageFileName) {
@@ -771,6 +774,8 @@ void ImageViewer::mousePressEvent(QMouseEvent *event) {
             cropOrigin = event->pos();
             if (!cropRubberBand) {
                 cropRubberBand = new CropRubberBand(this);
+                connect(cropRubberBand, &CropRubberBand::selectionChanged,
+                        this, &ImageViewer::updateRubberBandFeedback);
             }
             cropRubberBand->show();
             cropRubberBand->setGeometry(QRect(cropOrigin, event->pos()).normalized());
@@ -793,16 +798,22 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event) {
         while (QApplication::overrideCursor()) {
             QApplication::restoreOverrideCursor();
         }
-
-        if (cropRubberBand && cropRubberBand->isVisible()) {
-            setFeedback(tr("Selection size: ")
-                        + QString::number(cropRubberBand->width())
-                        + "x"
-                        + QString::number(cropRubberBand->height()));
-        }
     }
 
     QWidget::mouseReleaseEvent(event);
+}
+
+void ImageViewer::updateRubberBandFeedback(QRect geom) {
+    QPoint bandTopLeft = imageWidget->mapToImage(imageWidget->mapFromGlobal(mapToGlobal(cropRubberBand->geometry().topLeft())));
+
+    setFeedback(tr("Selection: ")
+                + QString::number(geom.width())
+                + "x"
+                + QString::number(geom.height())
+                + (bandTopLeft.x() < 0 ? "" : "+")
+                + QString::number(bandTopLeft.x())
+                + (bandTopLeft.y() < 0 ? "" : "+")
+                + QString::number(bandTopLeft.y()), false);
 }
 
 void ImageViewer::applyCropAndRotation() {
