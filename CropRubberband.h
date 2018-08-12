@@ -29,6 +29,10 @@ public:
 signals:
     void selectionChanged(QRect sel);
 
+protected:
+    void showEvent(QShowEvent *event);
+    void keyPressEvent(QKeyEvent *event);
+
 private:
     QRubberBand *rubberband;
 

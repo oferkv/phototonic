@@ -48,9 +48,84 @@ CropRubberBand::CropRubberBand(QWidget *parent) : QWidget(parent) {
     mainLayout->addLayout(topLayout);
     mainLayout->addLayout(bottomLayout);
 
+    setFocusPolicy(Qt::ClickFocus);
+
     rubberband = new QRubberBand(QRubberBand::Rectangle, this);
     rubberband->setStyleSheet("background-color: rgb(255, 255, 255)");
     rubberband->show();
+}
+
+void CropRubberBand::showEvent(QShowEvent *) {
+    setFocus();
+}
+
+void CropRubberBand::keyPressEvent(QKeyEvent *event) {
+    QPoint cursorPosGlobal = QCursor::pos();
+    QPoint cursorPos = mapFromGlobal(cursorPosGlobal);
+    QRect geom = geometry();
+qDebug() << "cursor" << cursorPos << "geom" << geom;
+    switch (event->key()) {
+    case Qt::LeftArrow:
+    case Qt::Key_H:
+        if (cursorPos.x() > -10 && cursorPos.x() < 10) {
+            geom.setLeft(geom.left() - 1);
+            QCursor::setPos(cursorPosGlobal.x() - 1, cursorPosGlobal.y());
+        } else if (cursorPos.x() > width() - 10 && cursorPos.x() < width() + 10) {
+            geom.setRight(geom.right() - 1);
+            QCursor::setPos(cursorPosGlobal.x() - 1, cursorPosGlobal.y());
+        } else if (QRect(geom).translated(-geom.x(), -geom.y()).contains(cursorPos)) {
+            geom.moveLeft(geom.x() - 1);
+        }
+        setGeometry(geom);
+        emit selectionChanged(geom);
+        event->accept();
+        break;
+    case Qt::DownArrow:
+    case Qt::Key_J:
+        if (cursorPos.y() > -10 && cursorPos.y() < 10) {
+            geom.setTop(geom.top() + 1);
+            QCursor::setPos(cursorPosGlobal.x(), cursorPosGlobal.y() + 1);
+        } else if (cursorPos.y() > height() - 10 && cursorPos.y() < height() + 10) {
+            geom.setBottom(geom.bottom() + 1);
+            QCursor::setPos(cursorPosGlobal.x(), cursorPosGlobal.y() + 1);
+        } else if (QRect(geom).translated(-geom.x(), -geom.y()).contains(cursorPos)) {
+            geom.moveTop(geom.top() + 1);
+        }
+        setGeometry(geom);
+        emit selectionChanged(geom);
+        event->accept();
+        break;
+    case Qt::UpArrow:
+    case Qt::Key_K:
+        if (cursorPos.y() > -10 && cursorPos.y() < 10) {
+            geom.setTop(geom.top() - 1);
+            QCursor::setPos(cursorPosGlobal.x(), cursorPosGlobal.y() - 1);
+        } else if (cursorPos.y() > height() - 10 && cursorPos.y() < height() + 10) {
+            geom.setBottom(geom.bottom() - 1);
+            QCursor::setPos(cursorPosGlobal.x(), cursorPosGlobal.y() - 1);
+        } else if (QRect(geom).translated(-geom.x(), -geom.y()).contains(cursorPos)) {
+            geom.moveTop(geom.top() - 1);
+        }
+        setGeometry(geom);
+        emit selectionChanged(geom);
+        event->accept();
+        break;
+    case Qt::RightArrow:
+    case Qt::Key_L:
+        if (cursorPos.x() > -10 && cursorPos.x() < 10) {
+            geom.setLeft(geom.left() + 1);
+            QCursor::setPos(cursorPosGlobal.x() + 1, cursorPosGlobal.y());
+        } else if (cursorPos.x() > width() - 10 && cursorPos.x() < width() + 10) {
+            geom.setRight(geom.right() + 1);
+            QCursor::setPos(cursorPosGlobal.x() + 1, cursorPosGlobal.y());
+        } else if (QRect(geom).translated(-geom.x(), -geom.y()).contains(cursorPos)) {
+            geom.moveLeft(geom.x() + 1);
+        }
+        setGeometry(geom);
+        emit selectionChanged(geom);
+        event->accept();
+        break;
+    }
 }
 
 void CropRubberBand::resizeEvent(QResizeEvent *) {
