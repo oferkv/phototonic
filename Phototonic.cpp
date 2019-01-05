@@ -297,6 +297,7 @@ void Phototonic::createImageViewer() {
     imageViewer->setContextMenuPolicy(Qt::DefaultContextMenu);
     Settings::isFullScreen = Settings::appSettings->value(Settings::optionFullScreenMode).toBool();
     fullScreenAction->setChecked(Settings::isFullScreen);
+    thumbsViewer->setImageViewer(imageViewer);
     thumbsViewer->imagePreview->setImageViewer(imageViewer);
 }
 
