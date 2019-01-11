@@ -1493,7 +1493,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="1758"/>
         <source>Deleted </source>
-        <translation>Supprimé</translation>
+        <translation>Supprimé </translation>
     </message>
     <message>
         <source>Invalid Path: </source>
@@ -1986,7 +1986,7 @@
     </message>
 </context>
 <context>
-    <name>ShortcutsTableView</name>
+    <name>ShortcutsTable</name>
     <message>
         <location filename="../dialogs.cpp" line="170"/>
         <source>Action</source>
