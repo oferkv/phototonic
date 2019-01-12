@@ -1493,7 +1493,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="1758"/>
         <source>Deleted </source>
-        <translation>Supprimé</translation>
+        <translation>Supprimé </translation>
     </message>
     <message>
         <source>Invalid Path: </source>
