@@ -7,7 +7,7 @@
 Phototonic is an image viewer and organizer built with Qt and Exiv2, released under GNU General Public License v3.
 
 ### Features
-+ Support for common image formats and GIF animation
++ Support for [common image formats](https://doc.qt.io/qt-5/qimage.html#reading-and-writing-image-files) and GIF animation
 + Supports tagging images, and filtering images by tags (IPTC)
 + Browse thumbnails recursively down a folder tree
 + Dynamic thumbnails loading
