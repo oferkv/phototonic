@@ -38,6 +38,12 @@ class ImageViewer;
 
 class ImageTags;
 
+struct DuplicateImage
+{
+    QString filePath;
+    int duplicates;
+};
+
 class ThumbsViewer : public QListView {
 Q_OBJECT
 
@@ -60,6 +66,8 @@ public:
     void applyFilter();
 
     void reLoad();
+
+    void loadDuplicates();
 
     void loadFileList();
 
@@ -126,11 +134,15 @@ private:
 
     bool loadThumb(int row);
 
+    void findDupes(bool resetCounters);
+
     int getFirstVisibleThumb();
 
     int getLastVisibleThumb();
 
     void updateThumbsCount();
+
+    void updateFoundDupesState(int duplicates, int filesScanned, int originalImages);
 
     void updateImageInfoViewer(int row);
 
@@ -141,6 +153,7 @@ private:
     Phototonic *phototonic;
     MetadataCache *metadataCache;
     ImageViewer *imageViewer;
+    QHash<QBitArray, DuplicateImage> dupImageHashes;
     bool isAbortThumbsLoading;
     bool isNeedToScroll;
     int currentRow;

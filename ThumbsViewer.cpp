@@ -573,6 +573,39 @@ void ThumbsViewer::loadPrepare() {
     imageTags->resetTagsState();
 }
 
+void ThumbsViewer::loadDuplicates()
+{
+    isBusy = true;
+    phototonic->showBusyAnimation(true);
+    loadPrepare();
+
+    phototonic->setStatus(tr("Searching duplicate images..."));
+
+    dupImageHashes.clear();
+    findDupes(true);
+
+    if (Settings::includeSubDirectories) {
+        QDirIterator iterator(Settings::currentDirectory, QDirIterator::Subdirectories);
+        while (iterator.hasNext()) {
+            iterator.next();
+            if (iterator.fileInfo().isDir() && iterator.fileName() != "." && iterator.fileName() != "..") {
+                thumbsDir->setPath(iterator.filePath());
+
+                findDupes(false);
+                if (isAbortThumbsLoading) {
+                    goto finish;
+                }
+            }
+            QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+        }
+    }
+
+finish:
+    isBusy = false;
+    phototonic->showBusyAnimation(false);
+    return;
+}
+
 void ThumbsViewer::initThumbs() {
     thumbFileInfoList = thumbsDir->entryInfoList();
 
@@ -655,6 +688,83 @@ void ThumbsViewer::updateThumbsCount() {
 void ThumbsViewer::selectThumbByRow(int row) {
     setCurrentIndexByRow(row);
     selectCurrentIndex();
+}
+
+void ThumbsViewer::updateFoundDupesState(int duplicates, int filesScanned, int originalImages)
+{
+    QString state;
+    state = tr("Scanned %1, displaying %2 (%3 and %4)")
+                .arg(tr("%n image(s)", "", filesScanned))
+                .arg(tr("%n image(s)", "", originalImages + duplicates))
+                .arg(tr("%n original(s)", "", originalImages))
+                .arg(tr("%n duplicate(s)", "", duplicates));
+    phototonic->setStatus(state);
+}
+
+void ThumbsViewer::findDupes(bool resetCounters)
+{
+    thumbFileInfoList = thumbsDir->entryInfoList();
+    int processEventsCounter = 0;
+    static int originalImages;
+    static int foundDups;
+    static int totalFiles;
+    if (resetCounters) {
+        originalImages = totalFiles = foundDups = 0;
+    }
+
+    for (int currThumb = 0; currThumb < thumbFileInfoList.size(); ++currThumb) {
+        thumbFileInfo = thumbFileInfoList.at(currThumb);
+        QImage image = QImage(thumbFileInfo.absoluteFilePath());
+        if (image.isNull()) {
+            qWarning() << "invalid image" << thumbFileInfo.fileName();
+            continue;
+        }
+
+        QBitArray imageHash(64);
+        image = image.convertToFormat(QImage::Format_Grayscale8).scaled(9, 9, Qt::KeepAspectRatioByExpanding);
+        for (int y=0; y<8; y++) {
+            const uchar *line = image.scanLine(y);
+            const uchar *nextLine = image.scanLine(y+1);
+            for (int x=0; x<8; x++) {
+                imageHash.setBit(y * 8 + x, line[x] > line[x+1]);
+                //imageHash.setBit(y * 8 + x + 64, line[x] > nextLine[x]);
+            }
+        }
+
+        QString currentFilePath = thumbFileInfo.filePath();
+
+        totalFiles++;
+
+        if (dupImageHashes.contains(imageHash)) {
+            if (dupImageHashes[imageHash].duplicates < 1) {
+                addThumb(dupImageHashes[imageHash].filePath);
+                originalImages++;
+            }
+
+            foundDups++;
+            dupImageHashes[imageHash].duplicates++;
+            addThumb(currentFilePath);
+        } else {
+            DuplicateImage dupImage;
+            dupImage.filePath = currentFilePath;
+            dupImage.duplicates = 0;
+            dupImageHashes.insert(imageHash, dupImage);
+        }
+
+        ++processEventsCounter;
+        if (processEventsCounter > 9) {
+            processEventsCounter = 0;
+            QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+        }
+
+        updateFoundDupesState(foundDups, totalFiles, originalImages);
+
+        if (isAbortThumbsLoading) {
+            break;
+        }
+    }
+
+    updateFoundDupesState(foundDups, totalFiles, originalImages);
 }
 
 void ThumbsViewer::selectByBrightness(qreal min, qreal max) {
