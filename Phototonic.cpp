@@ -1765,6 +1765,10 @@ void Phototonic::deleteImages(bool trash) {
         }
     }
 
+    // To only show progress dialog if deleting actually takes time
+    QElapsedTimer timer;
+    timer.start();
+
     // Avoid a lot of not interesting updates while deleting
     QSignalBlocker fsBlocker(fileSystemTree->fileSystemModel);
     QSignalBlocker scrollbarBlocker(thumbsViewer->verticalScrollBar());
@@ -1773,7 +1777,6 @@ void Phototonic::deleteImages(bool trash) {
     thumbsViewer->isBusy = true;
 
     ProgressDialog *progressDialog = new ProgressDialog(this);
-    progressDialog->show();
 
     int deleteFilesCount = 0;
     bool deleteOk;
@@ -1783,7 +1786,14 @@ void Phototonic::deleteImages(bool trash) {
     while ((indexesList = thumbsViewer->selectionModel()->selectedIndexes()).size()) {
         QString fileNameFullPath = thumbsViewer->thumbsViewerModel->item(
                 indexesList.first().row())->data(thumbsViewer->FileNameRole).toString();
-        progressDialog->opLabel->setText("Deleting " + fileNameFullPath);
+
+        // Only show if it takes a lot of time, since popping this up for just
+        // deleting a single image is annoying
+        if (timer.elapsed() > 100) {
+            progressDialog->opLabel->setText("Deleting " + fileNameFullPath);
+            progressDialog->show();
+        }
+
         QString deleteError;
         if (trash) {
             deleteOk = Trash::moveToTrash(fileNameFullPath, deleteError) == Trash::Success;
