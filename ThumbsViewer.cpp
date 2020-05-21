@@ -45,8 +45,18 @@ ThumbsViewer::ThumbsViewer(QWidget *parent, MetadataCache *metadataCache) : QLis
     setModel(thumbsViewerModel);
 
     connect(verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(loadVisibleThumbs(int)));
-    connect(this->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)),
-            this, SLOT(onSelectionChanged(QItemSelection)));
+    m_selectionChangedTimer.setInterval(10);
+    m_selectionChangedTimer.setSingleShot(true);
+    connect(&m_selectionChangedTimer, &QTimer::timeout, this, &ThumbsViewer::onSelectionChanged);
+    connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, this, [=]() {
+        if (!m_selectionChangedTimer.isActive()) {
+            m_selectionChangedTimer.start();
+        }
+    });
+
+    m_loadThumbTimer.setInterval(10);
+    m_loadThumbTimer.setSingleShot(true);
+    connect(&m_loadThumbTimer, &QTimer::timeout, this, &ThumbsViewer::loadThumbsRange);
     connect(this, SIGNAL(doubleClicked(
                                  const QModelIndex &)), parent, SLOT(loadSelectedThumbImage(
                                                                              const QModelIndex &)));
@@ -59,7 +69,6 @@ ThumbsViewer::ThumbsViewer(QWidget *parent, MetadataCache *metadataCache) : QLis
     qsrand((uint) time.msec());
     phototonic = (Phototonic *) parent;
     infoView = new InfoView(this);
-    connect(infoView, SIGNAL(updateInfo(QItemSelection)), this, SLOT(onSelectionChanged(QItemSelection)));
 
     imagePreview = new ImagePreview(this);
 }
@@ -260,7 +269,7 @@ void ThumbsViewer::updateImageInfoViewer(int row) {
     }
 }
 
-void ThumbsViewer::onSelectionChanged(const QItemSelection &) {
+void ThumbsViewer::onSelectionChanged() {
     infoView->clear();
     imagePreview->clear();
     if (Settings::setWindowIcon && Settings::layoutMode == Phototonic::ThumbViewWidget) {
@@ -490,8 +499,7 @@ void ThumbsViewer::loadSubDirectories() {
         QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
     }
 
-    QItemSelection dummy;
-    onSelectionChanged(dummy);
+    onSelectionChanged();
 }
 
 void ThumbsViewer::applyFilter() {

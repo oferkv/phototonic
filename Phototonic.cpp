@@ -3285,8 +3285,7 @@ void Phototonic::removeMetadata() {
             }
         }
 
-        QItemSelection dummy;
-        thumbsViewer->onSelectionChanged(dummy);
+        thumbsViewer->onSelectionChanged();
         QString state = QString(tr("Metadata removed from selected images"));
         setStatus(state);
     }

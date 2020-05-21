@@ -144,11 +144,14 @@ private:
     int thumbsRangeFirst;
     int thumbsRangeLast;
 
+    QTimer m_selectionChangedTimer;
+    QTimer m_loadThumbTimer;
+
 public slots:
 
     void loadVisibleThumbs(int scrollBarValue = 0);
 
-    void onSelectionChanged(const QItemSelection &selection);
+    void onSelectionChanged();
 
     void invertSelection();
 

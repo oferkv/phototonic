@@ -100,8 +100,7 @@ void InfoView::showEvent(QShowEvent *event)
 {
     Q_UNUSED(event);
 
-    QItemSelection dummy;
-    emit updateInfo(dummy);
+    emit updateInfo();
 }
 
 void InfoView::copyEntry() {
@@ -111,6 +110,5 @@ void InfoView::copyEntry() {
 }
 
 void InfoView::filterItems() {
-    QItemSelection dummy;
-    emit updateInfo(dummy);
+    emit updateInfo();
 }

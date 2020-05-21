@@ -36,7 +36,7 @@ public:
 
 signals:
 
-    void updateInfo(QItemSelection dummy);
+    void updateInfo();
 
 public slots:
 
