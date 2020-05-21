@@ -1765,6 +1765,10 @@ void Phototonic::deleteImages(bool trash) {
         }
     }
 
+    // Avoid a lot of not interesting updates while deleting
+    QSignalBlocker fsBlocker(fileSystemTree->fileSystemModel);
+    QSignalBlocker scrollbarBlocker(thumbsViewer->verticalScrollBar());
+
     // Avoid reloading thumbnails all the time
     thumbsViewer->isBusy = true;
 
