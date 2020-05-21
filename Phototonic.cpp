@@ -1826,7 +1826,7 @@ void Phototonic::deleteImages(bool trash) {
     }
 
     if (thumbsViewer->thumbsViewerModel->rowCount() && rows.count()) {
-        qSort(rows.begin(), rows.end());
+        std::sort(rows.begin(), rows.end());
         row = rows.at(0);
 
         if (row >= thumbsViewer->thumbsViewerModel->rowCount()) {
