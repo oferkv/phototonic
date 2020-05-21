@@ -48,6 +48,7 @@
         <file>images/tag_filter_on.png</file>
         <file>images/tag_filter_negate.png</file>
         <file>images/tag_filter_off.png</file>
+        <file>images/duplicates.png</file>
         <file>images/busy.gif</file>
         <file>translations/phototonic_pl.qm</file>
         <file>translations/phototonic_de.qm</file>

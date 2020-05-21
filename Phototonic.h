@@ -98,6 +98,8 @@ private slots:
 
     void onReloadThumbs();
 
+    void findDuplicateImages();
+
     void renameDir();
 
     void setThumbsViewerWindowTitle();
@@ -405,6 +407,7 @@ private:
     QAction *viewImageAction;
     QAction *filterImagesFocusAction;
     QAction *setPathFocusAction;
+    QAction *findDupesAction;
 
     QAction *openWithMenuAction;
     QAction *externalAppsAction;

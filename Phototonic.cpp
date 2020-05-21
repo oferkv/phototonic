@@ -669,6 +669,12 @@ void Phototonic::createActions() {
     connect(colorsAction, SIGNAL(triggered()), this, SLOT(showColorsDialog()));
     colorsAction->setIcon(QIcon(":/images/colors.png"));
 
+    findDupesAction = new QAction(tr("Find Duplicate Images"), this);
+    findDupesAction->setObjectName("findDupes");
+    findDupesAction->setIcon(QIcon(":/images/duplicates.png"));
+    findDupesAction->setCheckable(true);
+    connect(findDupesAction, SIGNAL(triggered()), this, SLOT(findDuplicateImages()));
+
     mirrorDisabledAction = new QAction(tr("Disable Mirror"), this);
     mirrorDisabledAction->setObjectName("mirrorDisabled");
     mirrorDualAction = new QAction(tr("Dual Mirror"), this);
@@ -800,6 +806,9 @@ void Phototonic::createMenus() {
     viewMenu->addAction(showHiddenFilesAction);
     viewMenu->addSeparator();
     viewMenu->addAction(refreshAction);
+    viewMenu->addSeparator();
+
+    viewMenu->addAction(findDupesAction);
 
     // thumbs viewer context menu
     thumbsViewer->addAction(viewImageAction);
@@ -852,6 +861,7 @@ void Phototonic::createToolBars() {
     connect(pathLineEdit, SIGNAL(returnPressed()), this, SLOT(goPathBarDir()));
     goToolBar->addWidget(pathLineEdit);
     goToolBar->addAction(includeSubDirectoriesAction);
+    goToolBar->addAction(findDupesAction);
     connect(goToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setGoToolBarVisibility()));
 
     /* View */
@@ -1068,6 +1078,7 @@ void Phototonic::sortThumbnails() {
 }
 
 void Phototonic::reload() {
+    findDupesAction->setChecked(false);
     if (Settings::layoutMode == ThumbViewWidget) {
         refreshThumbs(false);
     } else {
@@ -1076,6 +1087,7 @@ void Phototonic::reload() {
 }
 
 void Phototonic::setIncludeSubDirs() {
+    findDupesAction->setChecked(false);
     Settings::includeSubDirectories = includeSubDirectoriesAction->isChecked();
     refreshThumbs(false);
 }
@@ -1970,6 +1982,7 @@ void Phototonic::deletePermanentlyOperation() {
 }
 
 void Phototonic::goTo(QString path) {
+    findDupesAction->setChecked(false);
     Settings::isFileListLoaded = false;
     fileListWidget->clearSelection();
     thumbsViewer->setNeedToScroll(true);
@@ -1979,6 +1992,7 @@ void Phototonic::goTo(QString path) {
 }
 
 void Phototonic::goSelectedDir(const QModelIndex &idx) {
+    findDupesAction->setChecked(false);
     Settings::isFileListLoaded = false;
     fileListWidget->clearSelection();
     thumbsViewer->setNeedToScroll(true);
@@ -1988,6 +2002,7 @@ void Phototonic::goSelectedDir(const QModelIndex &idx) {
 }
 
 void Phototonic::goPathBarDir() {
+    findDupesAction->setChecked(false);
     thumbsViewer->setNeedToScroll(true);
 
     QDir checkPath(pathLineEdit->text());
@@ -3144,12 +3159,18 @@ void Phototonic::onReloadThumbs() {
         setThumbsViewerWindowTitle();
     }
 
-    thumbsViewer->reLoad();
+    if (findDupesAction->isChecked()) {
+        thumbsViewer->loadDuplicates();
+    } else {
+        thumbsViewer->reLoad();
+    }
 }
 
 void Phototonic::setThumbsViewerWindowTitle() {
 
-    if (Settings::isFileListLoaded) {
+    if (findDupesAction->isChecked()) {
+        setWindowTitle(tr("Duplicate images in %1").arg(Settings::currentDirectory) + " - Phototonic");
+    } else if (Settings::isFileListLoaded) {
         setWindowTitle(tr("Files List") + " - Phototonic");
     } else {
         setWindowTitle(Settings::currentDirectory + " - Phototonic");
@@ -3537,4 +3558,9 @@ void Phototonic::addNewBookmark() {
 void Phototonic::addBookmark(QString path) {
     Settings::bookmarkPaths.insert(path);
     bookmarks->reloadBookmarks();
+}
+
+void Phototonic::findDuplicateImages()
+{
+    refreshThumbs(true);
 }
