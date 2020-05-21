@@ -35,6 +35,7 @@ ThumbsViewer::ThumbsViewer(QWidget *parent, MetadataCache *metadataCache) : QLis
     setSelectionMode(QAbstractItemView::ExtendedSelection);
     setResizeMode(QListView::Adjust);
     setWordWrap(true);
+    setWrapping(true);
     setDragEnabled(true);
     setEditTriggers(QAbstractItemView::NoEditTriggers);
     setUniformItemSizes(false);
