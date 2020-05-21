@@ -371,6 +371,18 @@ void Phototonic::createActions() {
     connect(copyAction, SIGNAL(triggered()), this, SLOT(copyThumbs()));
     copyAction->setEnabled(false);
 
+    setClassicThumbsAction = new QAction(tr("Show classic thumbnails"), this);
+    setClassicThumbsAction->setCheckable(true);
+    setClassicThumbsAction->setChecked(Settings::thumbsLayout == ThumbsViewer::Classic);
+    setClassicThumbsAction->setObjectName("setClassicThumbs");
+    connect(setClassicThumbsAction, SIGNAL(triggered()), this, SLOT(setClassicThumbs()));
+
+    setSquareThumbsAction = new QAction(tr("Show square thumbnails"), this);
+    setSquareThumbsAction->setCheckable(true);
+    setSquareThumbsAction->setChecked(Settings::thumbsLayout == ThumbsViewer::Squares);
+    setSquareThumbsAction->setObjectName("setSquareThumbs");
+    connect(setSquareThumbsAction, SIGNAL(triggered()), this, SLOT(setSquareThumbs()));
+
     copyToAction = new QAction(tr("Copy to..."), this);
     copyToAction->setObjectName("copyTo");
     connect(copyToAction, SIGNAL(triggered()), this, SLOT(copyImagesTo()));
@@ -766,6 +778,12 @@ void Phototonic::createMenus() {
     viewMenu->addAction(slideShowAction);
     viewMenu->addSeparator();
 
+    thumbLayoutsGroup = new QActionGroup(this);
+    thumbLayoutsGroup->addAction(setClassicThumbsAction);
+    thumbLayoutsGroup->addAction(setSquareThumbsAction);
+    viewMenu->addActions(thumbLayoutsGroup->actions());
+    viewMenu->addSeparator();
+
     viewMenu->addAction(thumbsZoomInAction);
     viewMenu->addAction(thumbsZoomOutAction);
     sortMenu = viewMenu->addMenu(tr("Thumbnails Sorting"));
@@ -891,6 +909,16 @@ void Phototonic::createToolBars() {
     connect(imageToolBar->toggleViewAction(), SIGNAL(triggered()), this, SLOT(setImageToolBarVisibility()));
 
     setToolbarIconSize();
+}
+
+void Phototonic::setClassicThumbs() {
+    Settings::thumbsLayout = ThumbsViewer::Classic;
+    refreshThumbs(false);
+}
+
+void Phototonic::setSquareThumbs() {
+    Settings::thumbsLayout = ThumbsViewer::Squares;
+    refreshThumbs(false);
 }
 
 void Phototonic::setToolbarIconSize() {
@@ -2069,6 +2097,7 @@ void Phototonic::writeSettings() {
     Settings::appSettings->setValue(Settings::optionThumbsBackgroundColor, Settings::thumbsBackgroundColor);
     Settings::appSettings->setValue(Settings::optionThumbsTextColor, Settings::thumbsTextColor);
     Settings::appSettings->setValue(Settings::optionThumbsPagesReadCount, (int) Settings::thumbsPagesReadCount);
+    Settings::appSettings->setValue(Settings::optionThumbsLayout, (int) Settings::thumbsLayout);
     Settings::appSettings->setValue(Settings::optionEnableAnimations, (bool) Settings::enableAnimations);
     Settings::appSettings->setValue(Settings::optionExifRotationEnabled, (bool) Settings::exifRotationEnabled);
     Settings::appSettings->setValue(Settings::optionExifThumbRotationEnabled,
@@ -2156,6 +2185,7 @@ void Phototonic::readSettings() {
         Settings::appSettings->setValue(Settings::optionThumbsBackgroundColor, QColor(200, 200, 200));
         Settings::appSettings->setValue(Settings::optionThumbsTextColor, QColor(25, 25, 25));
         Settings::appSettings->setValue(Settings::optionThumbsPagesReadCount, (int) 2);
+        Settings::appSettings->setValue(Settings::optionThumbsLayout, (int) ThumbsViewer::Classic);
         Settings::appSettings->setValue(Settings::optionViewerZoomOutFlags, (int) 1);
         Settings::appSettings->setValue(Settings::optionViewerZoomInFlags, (int) 0);
         Settings::appSettings->setValue(Settings::optionWrapImageList, (bool) false);
@@ -2196,6 +2226,8 @@ void Phototonic::readSettings() {
     Settings::exifRotationEnabled = Settings::appSettings->value(Settings::optionExifRotationEnabled).toBool();
     Settings::exifThumbRotationEnabled = Settings::appSettings->value(
             Settings::optionExifThumbRotationEnabled).toBool();
+    Settings::thumbsLayout = Settings::appSettings->value(
+            Settings::optionThumbsLayout).toInt();
     Settings::reverseMouseBehavior = Settings::appSettings->value(Settings::optionReverseMouseBehavior).toBool();
     Settings::deleteConfirm = Settings::appSettings->value(Settings::optionDeleteConfirm).toBool();
     Settings::showHiddenFiles = Settings::appSettings->value(Settings::optionShowHiddenFiles).toBool();

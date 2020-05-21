@@ -284,6 +284,10 @@ private slots:
 
     void onFileListSelected();
 
+    void setSquareThumbs();
+
+    void setClassicThumbs();
+
 private:
     QMenu *fileMenu;
     QMenu *editMenu;
@@ -322,6 +326,10 @@ private:
     QAction *showClipboardAction;
     QAction *addBookmarkAction;
     QAction *removeBookmarkAction;
+
+    QActionGroup *thumbLayoutsGroup;
+    QAction *setClassicThumbsAction;
+    QAction *setSquareThumbsAction;
 
     QActionGroup *sortTypesGroup;
     QAction *sortByNameAction;

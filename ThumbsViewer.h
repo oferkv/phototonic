@@ -48,6 +48,10 @@ public:
         LoadedRole,
         BrightnessRole
     };
+    enum ThumbnailLayouts {
+        Classic,
+        Squares
+    };
 
     ThumbsViewer(QWidget *parent, MetadataCache *metadataCache);
 

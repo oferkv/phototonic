@@ -44,6 +44,7 @@ namespace Settings {
     extern const char optionThumbsBackgroundColor[];
     extern const char optionThumbsTextColor[];
     extern const char optionThumbsPagesReadCount[];
+    extern const char optionThumbsLayout[];
     extern const char optionViewerZoomOutFlags[];
     extern const char optionViewerZoomInFlags[];
     extern const char optionShowImageName[];
@@ -90,6 +91,7 @@ namespace Settings {
     extern QColor viewerBackgroundColor;
     extern QColor thumbsBackgroundColor;
     extern QColor thumbsTextColor;
+    extern unsigned int thumbsLayout;
     extern unsigned int thumbsPagesReadCount;
     extern bool wrapImageList;
     extern bool enableAnimations;

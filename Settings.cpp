@@ -27,6 +27,7 @@ namespace Settings {
     const char optionThumbsBackgroundColor[] = "optionThumbsBackgroundColor";
     const char optionThumbsTextColor[] = "optionThumbsTextColor";
     const char optionThumbsPagesReadCount[] = "optionThumbsPagesReadCount";
+    const char optionThumbsLayout[] = "optionThumbsLayout";
     const char optionViewerZoomOutFlags[] = "optionViewerZoomOutFlags";
     const char optionViewerZoomInFlags[] = "optionViewerZoomInFlags";
     const char optionShowImageName[] = "optionShowImageName";
@@ -73,6 +74,7 @@ namespace Settings {
     QColor viewerBackgroundColor;
     QColor thumbsBackgroundColor;
     QColor thumbsTextColor;
+    unsigned int thumbsLayout;
     unsigned int thumbsPagesReadCount;
     bool wrapImageList;
     bool enableAnimations;
