@@ -1018,6 +1018,9 @@ void ImageViewer::saveImage() {
             } else {
                 Exiv2::Image::AutoPtr imageOut = Exiv2::ImageFactory::open(savePath.toStdString());
                 imageOut->setMetadata(*image);
+                Exiv2::ExifThumb thumb(imageOut->exifData());
+                thumb.erase();
+                // TODO: thumb.setJpegThumbnail(thumbnailPath);
                 imageOut->writeMetadata();
             }
         }
