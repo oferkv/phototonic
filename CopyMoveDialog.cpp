@@ -130,7 +130,7 @@ void CopyMoveDialog::exec(ThumbsViewer *thumbView, QString &destDir, bool pasteI
         }
 
         if (!Settings::isCopyOperation) {
-            qSort(rowList);
+            std::sort(rowList.begin(), rowList.end());
             for (int t = rowList.size() - 1; t >= 0; --t)
                 thumbView->thumbsViewerModel->removeRow(rowList.at(t));
         }

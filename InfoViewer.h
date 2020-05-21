@@ -36,13 +36,16 @@ public:
 
 signals:
 
-    void updateInfo(QItemSelection dummy);
+    void updateInfo();
 
 public slots:
 
     void showInfoViewMenu(QPoint pt);
 
     void copyEntry();
+
+protected:
+    void showEvent(QShowEvent *event) override;
 
 private slots:
 

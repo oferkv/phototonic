@@ -20,7 +20,7 @@
 #define SETTINGS_H
 
 #define THUMB_SIZE_MIN 25
-#define THUMB_SIZE_MAX 450
+#define THUMB_SIZE_MAX 512
 
 #include <QSettings>
 #include <QModelIndexList>
@@ -44,6 +44,7 @@ namespace Settings {
     extern const char optionThumbsBackgroundColor[];
     extern const char optionThumbsTextColor[];
     extern const char optionThumbsPagesReadCount[];
+    extern const char optionThumbsLayout[];
     extern const char optionViewerZoomOutFlags[];
     extern const char optionViewerZoomInFlags[];
     extern const char optionShowImageName[];
@@ -90,12 +91,13 @@ namespace Settings {
     extern QColor viewerBackgroundColor;
     extern QColor thumbsBackgroundColor;
     extern QColor thumbsTextColor;
+    extern unsigned int thumbsLayout;
     extern unsigned int thumbsPagesReadCount;
     extern bool wrapImageList;
     extern bool enableAnimations;
     extern float imageZoomFactor;
     extern bool keepZoomFactor;
-    extern int rotation;
+    extern qreal rotation;
     extern bool keepTransform;
     extern bool flipH;
     extern bool flipV;
@@ -157,6 +159,7 @@ namespace Settings {
     extern bool tagsDockVisible;
     extern bool imageInfoDockVisible;
     extern QString currentDirectory;
+    extern QString saveDirectory;
     extern QString thumbsBackgroundImage;
     extern QStringList filesList;
     extern bool isFileListLoaded;

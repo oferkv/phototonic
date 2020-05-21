@@ -78,6 +78,8 @@ public slots:
 
     void hideViewer();
 
+    void setSaveDirectory(QString path = QString());
+
 private slots:
 
     void about();
@@ -95,6 +97,8 @@ private slots:
     void updateActions();
 
     void onReloadThumbs();
+
+    void findDuplicateImages();
 
     void renameDir();
 
@@ -154,6 +158,8 @@ private slots:
 
     void selectAllThumbs();
 
+    void selectByBrightness();
+
     void deleteOperation();
 
     void deletePermanentlyOperation();
@@ -194,6 +200,8 @@ private slots:
 
     void freeRotateRight();
 
+    void batchTransform();
+
     void showColorsDialog();
 
     void setMirrorDisabled();
@@ -207,6 +215,10 @@ private slots:
     void setMirrorQuad();
 
     void flipHorizontal();
+
+    void addVerticalGuide();
+
+    void addHorizontalGuide();
 
     void moveRight();
 
@@ -274,6 +286,10 @@ private slots:
 
     void onFileListSelected();
 
+    void setSquareThumbs();
+
+    void setClassicThumbs();
+
 private:
     QMenu *fileMenu;
     QMenu *editMenu;
@@ -283,8 +299,10 @@ private:
     QMenu *helpMenu;
     QMenu *zoomSubMenu;
     QMenu *transformSubMenu;
+    QMenu *batchSubMenu;
     QMenu *viewSubMenu;
     QMenu *MirroringSubMenu;
+    QMenu *guideSubMenu;
     QMenu *openWithSubMenu;
 
     QToolBar *viewToolBar;
@@ -304,11 +322,16 @@ private:
     QAction *renameAction;
     QAction *removeMetadataAction;
     QAction *selectAllAction;
+    QAction *selectByBrightnesAction;
     QAction *copyImageAction;
     QAction *pasteImageAction;
     QAction *showClipboardAction;
     QAction *addBookmarkAction;
     QAction *removeBookmarkAction;
+
+    QActionGroup *thumbLayoutsGroup;
+    QAction *setClassicThumbsAction;
+    QAction *setSquareThumbsAction;
 
     QActionGroup *sortTypesGroup;
     QAction *sortByNameAction;
@@ -333,13 +356,14 @@ private:
     QAction *keepZoomAction;
     QAction *keepTransformAction;
     QAction *transformSubMenuAction;
+    QAction *batchSubMenuAction;
     QAction *viewSubMenuAction;
     QAction *rotateLeftAction;
     QAction *rotateRightAction;
     QAction *flipHorizontalAction;
     QAction *flipVerticalAction;
     QAction *cropAction;
-    QAction *cropToSelectionAction;
+    QAction *applyCropAndRotationAction;
     QAction *resizeAction;
     QAction *freeRotateLeftAction;
     QAction *freeRotateRightAction;
@@ -351,6 +375,9 @@ private:
     QAction *mirrorTripleAction;
     QAction *mirrorDualVerticalAction;
     QAction *mirrorQuadAction;
+    QAction *guideSubMenuAction;
+    QAction *guideAddVerticalAction;
+    QAction *guideAddHorizontalAction;
     QAction *moveLeftAction;
     QAction *moveRightAction;
     QAction *moveUpAction;
@@ -364,6 +391,7 @@ private:
 
     QAction *pasteAction;
     QAction *createDirectoryAction;
+    QAction *setSaveDirectoryAction;
 
     QAction *goBackAction;
     QAction *goFrwdAction;
@@ -379,10 +407,12 @@ private:
     QAction *viewImageAction;
     QAction *filterImagesFocusAction;
     QAction *setPathFocusAction;
+    QAction *findDupesAction;
 
     QAction *openWithMenuAction;
     QAction *externalAppsAction;
     QAction *invertSelectionAction;
+    QAction *batchTransformAction;
 
     QLineEdit *pathLineEdit;
     QLineEdit *filterLineEdit;

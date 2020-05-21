@@ -38,6 +38,12 @@ class ImageViewer;
 
 class ImageTags;
 
+struct DuplicateImage
+{
+    QString filePath;
+    int duplicates;
+};
+
 class ThumbsViewer : public QListView {
 Q_OBJECT
 
@@ -45,7 +51,12 @@ public:
     enum UserRoles {
         FileNameRole = Qt::UserRole + 1,
         SortRole,
-        LoadedRole
+        LoadedRole,
+        BrightnessRole
+    };
+    enum ThumbnailLayouts {
+        Classic,
+        Squares
     };
 
     ThumbsViewer(QWidget *parent, MetadataCache *metadataCache);
@@ -55,6 +66,8 @@ public:
     void applyFilter();
 
     void reLoad();
+
+    void loadDuplicates();
 
     void loadFileList();
 
@@ -79,6 +92,8 @@ public:
     void abort();
 
     void selectThumbByRow(int row);
+
+    void selectByBrightness(qreal min, qreal max);
 
     int getNextRow();
 
@@ -117,13 +132,19 @@ protected:
 private:
     void initThumbs();
 
+    bool loadThumb(int row);
+
+    void findDupes(bool resetCounters);
+
     int getFirstVisibleThumb();
 
     int getLastVisibleThumb();
 
     void updateThumbsCount();
 
-    void updateImageInfoViewer(QString imageFullPath);
+    void updateFoundDupesState(int duplicates, int filesScanned, int originalImages);
+
+    void updateImageInfoViewer(int row);
 
     QFileInfo thumbFileInfo;
     QFileInfoList thumbFileInfoList;
@@ -132,6 +153,7 @@ private:
     Phototonic *phototonic;
     MetadataCache *metadataCache;
     ImageViewer *imageViewer;
+    QHash<QBitArray, DuplicateImage> dupImageHashes;
     bool isAbortThumbsLoading;
     bool isNeedToScroll;
     int currentRow;
@@ -139,17 +161,22 @@ private:
     int thumbsRangeFirst;
     int thumbsRangeLast;
 
+    QTimer m_selectionChangedTimer;
+    QTimer m_loadThumbTimer;
+
 public slots:
 
     void loadVisibleThumbs(int scrollBarValue = 0);
 
-    void onSelectionChanged(const QItemSelection &selection);
+    void onSelectionChanged();
 
     void invertSelection();
 
 private slots:
 
     void loadThumbsRange();
+
+    void loadAllThumbs();
 };
 
 #endif // THUMBS_VIEWER_H

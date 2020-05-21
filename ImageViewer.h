@@ -23,6 +23,7 @@
 #include <exiv2/exiv2.hpp>
 #include "Settings.h"
 #include "CropRubberband.h"
+#include "ImageWidget.h"
 #include "MetadataCache.h"
 
 class Phototonic;
@@ -32,6 +33,7 @@ Q_OBJECT
 
 public:
     bool tempDisableResize;
+    bool batchMode = false;
     int mirrorLayout;
     QString viewerImageFullPath;
     QMenu *ImagePopUpMenu;
@@ -88,9 +90,11 @@ public:
 
     void setInfo(QString infoString);
 
-    void setFeedback(QString feedbackString);
+    void setFeedback(QString feedbackString, bool timeLimited = true);
 
     void setBackgroundColor();
+
+    QPoint getContextMenuPosition();
 
 public slots:
 
@@ -104,11 +108,13 @@ public slots:
 
     void pasteImage();
 
-    void cropToSelection();
+    void applyCropAndRotation();
 
 private slots:
 
     void unsetFeedback();
+
+    void updateRubberBandFeedback(QRect geom);
 
 protected:
     void resizeEvent(QResizeEvent *event);
@@ -127,8 +133,8 @@ protected:
 
 private:
     Phototonic *phototonic;
-    QLabel *imageLabel;
-    QPixmap viewerPixmap;
+    QLabel *movieWidget = nullptr;
+    ImageWidget *imageWidget = nullptr;
     QImage origImage;
     QImage viewerImage;
     QImage mirrorImage;
@@ -137,6 +143,7 @@ private:
     bool newImage;
     bool cursorIsHidden;
     bool moveImageLocked;
+    qreal initialRotation = 0;
     int mouseX;
     int mouseY;
     int layoutX;
@@ -144,6 +151,7 @@ private:
     bool isAnimation;
     QLabel *feedbackLabel;
     QPoint cropOrigin;
+    QPoint contextMenuPosition;
     MetadataCache *metadataCache;
 
     void setMouseMoveData(bool lockMove, int lMouseX, int lMouseY);

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2013-2014 Ofer Kashayov - oferkv@live.com
+ *  Copyright (C) 2018 Shawn Rutledge <s@ecloud.org>
  *  This file is part of Phototonic Image Viewer.
  *
  *  Phototonic is free software: you can redistribute it and/or modify
@@ -16,28 +16,29 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CROPRUBBERBAND_H
-#define CROPRUBBERBAND_H
+#ifndef GUIDEWIDGET_H
+#define GUIDEWIDGET_H
 
-#include <QtWidgets>
+#include <QWidget>
 
-class CropRubberBand : public QWidget {
+class QAction;
+
+class GuideWidget : public QWidget
+{
     Q_OBJECT
 public:
-    CropRubberBand(QWidget *parent = 0);
+    explicit GuideWidget(QWidget *parent = nullptr, bool vertical = false);
 
-signals:
-    void selectionChanged(QRect sel);
+    void resizeToParent();
+    static int halfThickness();
 
 protected:
-    void showEvent(QShowEvent *event);
-    void keyPressEvent(QKeyEvent *event);
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
 
 private:
-    QRubberBand *rubberband;
-
-    void resizeEvent(QResizeEvent *);
+    bool m_vertical;
+    static QAction *m_deleteAction;
 };
 
-#endif // CROPRUBBERBAND_H
-
+#endif // GUIDEWIDGET_H

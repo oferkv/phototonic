@@ -355,7 +355,6 @@ void ImageTags::applyUserAction(QTreeWidgetItem *item) {
 }
 
 void ImageTags::applyUserAction(QList<QTreeWidgetItem *> tagsList) {
-    int processEventsCounter = 0;
     ProgressDialog *progressDialog = new ProgressDialog(this);
     progressDialog->show();
 
@@ -381,11 +380,7 @@ void ImageTags::applyUserAction(QList<QTreeWidgetItem *> tagsList) {
             metadataCache->removeImage(imageName);
         }
 
-        ++processEventsCounter;
-        if (processEventsCounter > 9) {
-            processEventsCounter = 0;
-            QApplication::processEvents();
-        }
+        QApplication::processEvents();
 
         if (progressDialog->abortOp) {
             break;
