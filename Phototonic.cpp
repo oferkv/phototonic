@@ -2880,6 +2880,8 @@ void Phototonic::loadRandomImage() {
 }
 
 void Phototonic::setViewerKeyEventsEnabled(bool enabled) {
+    nextImageAction->setEnabled(enabled);
+    prevImageAction->setEnabled(enabled);
     moveLeftAction->setEnabled(enabled);
     moveRightAction->setEnabled(enabled);
     moveUpAction->setEnabled(enabled);
