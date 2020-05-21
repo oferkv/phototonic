@@ -1137,7 +1137,9 @@ void Phototonic::setPathFocus() {
 }
 
 void Phototonic::cleanupSender() {
-    delete QObject::sender();
+    if (QObject::sender()) {
+        QObject::sender()->deleteLater();
+    }
 }
 
 void Phototonic::externalAppError() {
@@ -1202,7 +1204,7 @@ void Phototonic::updateExternalApps() {
 
             openWithSubMenu->removeAction(action);
             imageViewer->removeAction(action);
-            delete action;
+            action->deleteLater();
         }
 
         openWithSubMenu->clear();
@@ -1235,7 +1237,7 @@ void Phototonic::chooseExternalApp() {
 
     externalAppsDialog->exec();
     updateExternalApps();
-    delete (externalAppsDialog);
+    externalAppsDialog->deleteLater();
 
     if (isFullScreen()) {
         imageViewer->setCursorHiding(true);
@@ -1273,7 +1275,7 @@ void Phototonic::showSettings() {
     if (isFullScreen()) {
         imageViewer->setCursorHiding(true);
     }
-    delete settingsDialog;
+    settingsDialog->deleteLater();
 }
 
 void Phototonic::toggleFullScreen() {
@@ -1387,8 +1389,8 @@ void Phototonic::copyOrMoveImages(bool isMoveOperation) {
     }
 
     bookmarks->reloadBookmarks();
-    delete (copyMoveToDialog);
-    copyMoveToDialog = 0;
+    copyMoveToDialog->deleteLater();
+    copyMoveToDialog = nullptr;
 
     if (isFullScreen()) {
         imageViewer->setCursorHiding(true);
@@ -1743,7 +1745,7 @@ void Phototonic::pasteThumbs() {
     QString state = QString((Settings::isCopyOperation ? tr("Copied") : tr("Moved")) + " " +
                             tr("%n image(s)", "", copyMoveDialog->nFiles));
     setStatus(state);
-    delete (copyMoveDialog);
+    copyMoveDialog->deleteLater();
     selectCurrentViewDir();
 
     copyCutThumbsCount = 0;
@@ -1878,7 +1880,7 @@ void Phototonic::deleteImages(bool trash) {
     }
 
     progressDialog->close();
-    delete (progressDialog);
+    progressDialog->deleteLater();
 
     QString state = QString(tr("Deleted") + " " + tr("%n image(s)", "", deleteFilesCount));
     setStatus(state);
@@ -2772,7 +2774,7 @@ void Phototonic::toggleSlideShow() {
         imageViewer->setFeedback(tr("Slide show stopped"));
 
         SlideShowTimer->stop();
-        delete SlideShowTimer;
+        SlideShowTimer->deleteLater();
         slideShowAction->setIcon(QIcon::fromTheme("media-playback-start", QIcon(":/images/play.png")));
     } else {
         if (thumbsViewer->thumbsViewerModel->rowCount() <= 0) {
@@ -3071,7 +3073,7 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString copyM
         QString stateString = QString((Settings::isCopyOperation ? tr("Copied") : tr("Moved")) + " " +
                                       tr("%n image(s)", "", copyMoveDialog->nFiles));
         setStatus(stateString);
-        delete (copyMoveDialog);
+        copyMoveDialog->deleteLater();
     }
 
     thumbsViewer->loadVisibleThumbs();
@@ -3255,7 +3257,7 @@ void Phototonic::rename() {
     renameConfirmed = renameDialog->exec();
 
     QString newFileName = renameDialog->getFileName();
-    delete (renameDialog);
+    renameDialog->deleteLater();
 
     if (renameConfirmed && newFileName.isEmpty()) {
         MessageBox msgBox(this);
@@ -3500,8 +3502,10 @@ void Phototonic::cleanupCropDialog() {
 }
 
 void Phototonic::cleanupResizeDialog() {
-    delete resizeDialog;
-    resizeDialog = 0;
+    if (resizeDialog) {
+        resizeDialog->deleteLater();
+    }
+    resizeDialog = nullptr;
     setInterfaceEnabled(true);
 }
 

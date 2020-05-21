@@ -428,7 +428,7 @@ private:
     ImageViewer *imageViewer;
     QList<QString> pathHistoryList;
     QTimer *SlideShowTimer;
-    CopyMoveToDialog *copyMoveToDialog;
+    QPointer<CopyMoveToDialog> copyMoveToDialog;
     QWidget *fileSystemDockOrigWidget;
     QWidget *bookmarksDockOrigWidget;
     QWidget *imagePreviewDockOrigWidget;
@@ -457,9 +457,9 @@ private:
 
     QMovie *busyMovie;
     QLabel *busyLabel;
-    ResizeDialog *resizeDialog;
-    ColorsDialog *colorsDialog;
-    CropDialog *cropDialog;
+    QPointer<ResizeDialog> resizeDialog;
+    QPointer<ColorsDialog> colorsDialog;
+    QPointer<CropDialog> cropDialog;
     QIcon defaultApplicationIcon;
 
     void refreshThumbs(bool noScroll);
