@@ -17,6 +17,7 @@
  */
 
 #include <QProgressDialog>
+#include <QMimeDatabase>
 
 #include "ThumbsViewer.h"
 #include "Phototonic.h"
@@ -506,30 +507,20 @@ void ThumbsViewer::applyFilter() {
     fileFilters->clear();
     QString textFilter("*");
     textFilter += filterString;
-    *fileFilters << textFilter + "*.bmp"
-                 << textFilter + "*.cur"
-                 << textFilter + "*.dds"
-                 << textFilter + "*.gif"
-                 << textFilter + "*.icns"
-                 << textFilter + "*.ico"
-                 << textFilter + "*.jpeg"
-                 << textFilter + "*.jpg"
-                 << textFilter + "*.jp2"
-                 << textFilter + "*.jpe"
-                 << textFilter + "*.mng"
-                 << textFilter + "*.pbm"
-                 << textFilter + "*.pgm"
-                 << textFilter + "*.png"
-                 << textFilter + "*.ppm"
-                 << textFilter + "*.svg"
-                 << textFilter + "*.svgz"
-                 << textFilter + "*.tga"
-                 << textFilter + "*.tif"
-                 << textFilter + "*.tiff"
-                 << textFilter + "*.wbmp"
-                 << textFilter + "*.webp"
-                 << textFilter + "*.xbm"
-                 << textFilter + "*.xpm";
+
+    // Get all patterns supported by QImageReader
+    static QStringList imageTypeGlobs;
+    // Not threadsafe, but whatever
+    if (imageTypeGlobs.isEmpty()) {
+        QMimeDatabase db;
+        for (const QString &type : QImageReader::supportedMimeTypes()) {
+            imageTypeGlobs.append(db.mimeTypeForName(type).globPatterns());
+        }
+    }
+    for (const QString &glob : imageTypeGlobs) {
+        fileFilters->append(textFilter + glob);
+    }
+
     thumbsDir->setNameFilters(*fileFilters);
     thumbsDir->setFilter(QDir::Files);
     if (Settings::showHiddenFiles) {
