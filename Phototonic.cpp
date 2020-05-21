@@ -2919,9 +2919,7 @@ void Phototonic::hideViewer() {
 
     setThumbsViewerWindowTitle();
 
-    for (int i = 0; i <= 10 && qApp->hasPendingEvents(); ++i) {
-        QApplication::processEvents();
-    }
+    QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
 
     if (needThumbsRefresh) {
         needThumbsRefresh = false;
