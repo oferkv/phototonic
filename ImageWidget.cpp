@@ -73,6 +73,7 @@ void ImageWidget::paintEvent(QPaintEvent *)
     float scale = qMax(float(width()) / m_image.width(), float(height()) / m_image.height());
 
     QPainter painter(this);
+    painter.scale(scale, scale);
     painter.setRenderHint(QPainter::Antialiasing);
     QPoint center(width() / 2, height() / 2);
     painter.translate(center);

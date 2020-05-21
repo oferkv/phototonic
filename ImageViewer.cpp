@@ -77,7 +77,7 @@ ImageViewer::ImageViewer(QWidget *parent, MetadataCache *metadataCache) : QWidge
     scrollArea->horizontalScrollBar()->blockSignals(true);
     scrollArea->setFrameStyle(0);
     scrollArea->setWidget(imageWidget);
-    scrollArea->setWidgetResizable(true);
+    scrollArea->setWidgetResizable(false);
     setBackgroundColor();
 
     QVBoxLayout *scrollLayout = new QVBoxLayout;
@@ -272,12 +272,7 @@ void ImageViewer::showEvent(QShowEvent *event) {
 }
 
 void ImageViewer::centerImage(QSize &imgSize) {
-    int newX = (this->size().width() - imgSize.width()) / 2;
-    int newY = (this->size().height() - imgSize.height()) / 2;
-
-    if (newX != imageWidget->pos().x() || newY != imageWidget->pos().y()) {
-        imageWidget->move(newX, newY);
-    }
+    scrollArea->ensureVisible(imgSize.width()/2, imgSize.height()/2, width()/2, height()/2);
 }
 
 void ImageViewer::rotateByExifRotation(QImage &image, QString &imageFullPath) {
