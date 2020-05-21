@@ -151,7 +151,7 @@ void ImageViewer::resizeImage() {
 
     int imageViewWidth = this->size().width();
     int imageViewHeight = this->size().height();
-    QSize imageSize = isAnimation ? animation->currentPixmap().size() : imageWidget->size();
+    QSize imageSize = isAnimation ? animation->currentPixmap().size() : imageWidget->imageSize();
 
     if (tempDisableResize) {
         imageSize.scale(imageSize.width(), imageSize.height(), Qt::KeepAspectRatio);
