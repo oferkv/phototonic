@@ -96,6 +96,14 @@ void InfoView::addTitleEntry(QString title) {
     itemKey->setData(boldFont, Qt::FontRole);
 }
 
+void InfoView::showEvent(QShowEvent *event)
+{
+    Q_UNUSED(event);
+
+    QItemSelection dummy;
+    emit updateInfo(dummy);
+}
+
 void InfoView::copyEntry() {
     if (selectedEntry.isValid()) {
         QApplication::clipboard()->setText(imageInfoModel->itemFromIndex(selectedEntry)->toolTip());

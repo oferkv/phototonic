@@ -44,6 +44,9 @@ public slots:
 
     void copyEntry();
 
+protected:
+    void showEvent(QShowEvent *event) override;
+
 private slots:
 
     void filterItems();

@@ -273,7 +273,11 @@ void ThumbsViewer::onSelectionChanged(const QItemSelection &) {
         int currentRow = indexesList.first().row();
         QString thumbFullPath = thumbsViewerModel->item(currentRow)->data(FileNameRole).toString();
         setCurrentRow(currentRow);
-        updateImageInfoViewer(currentRow);
+
+        if (infoView->isVisible()) {
+            updateImageInfoViewer(currentRow);
+        }
+
         QPixmap imagePreviewPixmap = imagePreview->loadImage(thumbFullPath);
         if (Settings::setWindowIcon && Settings::layoutMode == Phototonic::ThumbViewWidget) {
             phototonic->setWindowIcon(imagePreviewPixmap.scaled(WINDOW_ICON_SIZE, WINDOW_ICON_SIZE,
@@ -281,7 +285,7 @@ void ThumbsViewer::onSelectionChanged(const QItemSelection &) {
         }
     }
 
-    if (imageTags->currentDisplayMode == SelectionTagsDisplay) {
+    if (imageTags->isVisible() && imageTags->currentDisplayMode == SelectionTagsDisplay) {
         imageTags->showSelectedImagesTags();
     }
 
