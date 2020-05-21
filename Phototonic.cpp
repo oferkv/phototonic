@@ -1765,6 +1765,9 @@ void Phototonic::deleteImages(bool trash) {
         }
     }
 
+    // Avoid reloading thumbnails all the time
+    thumbsViewer->isBusy = true;
+
     ProgressDialog *progressDialog = new ProgressDialog(this);
     progressDialog->show();
 
@@ -1825,6 +1828,8 @@ void Phototonic::deleteImages(bool trash) {
 
     QString state = QString(tr("Deleted") + " " + tr("%n image(s)", "", deleteFilesCount));
     setStatus(state);
+
+    thumbsViewer->isBusy = false;
 }
 
 void Phototonic::deleteFromViewer(bool trash) {
