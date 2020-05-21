@@ -496,7 +496,7 @@ void ThumbsViewer::loadSubDirectories() {
                 return;
             }
         }
-        QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+        QApplication::processEvents();
     }
 
     onSelectionChanged();
@@ -596,7 +596,7 @@ void ThumbsViewer::loadDuplicates()
                     goto finish;
                 }
             }
-            QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+            QApplication::processEvents();
         }
     }
 
@@ -662,7 +662,7 @@ void ThumbsViewer::initThumbs() {
         ++thumbsAddedCounter;
         if (thumbsAddedCounter > 100) {
             thumbsAddedCounter = 1;
-            QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+            QApplication::processEvents();
         }
     }
 
@@ -754,7 +754,7 @@ void ThumbsViewer::findDupes(bool resetCounters)
         ++processEventsCounter;
         if (processEventsCounter > 9) {
             processEventsCounter = 0;
-            QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+            QApplication::processEvents();
         }
 
         updateFoundDupesState(foundDups, totalFiles, originalImages);
@@ -791,7 +791,12 @@ void ThumbsViewer::loadAllThumbs() {
         if (thumbsViewerModel->item(i)->data(LoadedRole).toBool())
             continue;
         loadThumb(i);
-        QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+
+        if (isAbortThumbsLoading) {
+            break;
+        }
+
+        QApplication::processEvents();
     }
 }
 
@@ -820,7 +825,8 @@ void ThumbsViewer::loadThumbsRange() {
             continue;
 
         loadThumb(currThumb);
-        QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+
+        QApplication::processEvents();
     }
 
     isInProgress = false;

@@ -72,29 +72,39 @@ bool MetadataCache::loadImageMetadata(const QString &imageFullPath) {
         exifImage = Exiv2::ImageFactory::open(imageFullPath.toStdString());
         exifImage->readMetadata();
     } catch (Exiv2::Error &error) {
+        qWarning() << "Error loading image for reading metadata" << error.what();
         return false;
     }
 
-    try {
-        Exiv2::ExifData &exifData = exifImage->exifData();
-        if (!exifData.empty()) {
-            orientation = exifData["Exif.Image.Orientation"].value().toLong();
-        }
-    } catch (Exiv2::Error &error) {
-        qWarning() << "Failed to read Exif metadata";
+    if (!exifImage->good()) {
+        return false;
     }
 
-    try {
+    if (exifImage->supportsMetadata(Exiv2::mdExif)) try {
+        Exiv2::ExifData::const_iterator it = Exiv2::orientation(exifImage->exifData());
+        if (it != exifImage->exifData().end()) {
+            orientation = it->toLong();
+        }
+    } catch (Exiv2::Error &error) {
+        qWarning() << "Failed to read Exif metadata" << error.what();
+    }
+
+    if (exifImage->supportsMetadata(Exiv2::mdIptc)) try {
         Exiv2::IptcData &iptcData = exifImage->iptcData();
         if (!iptcData.empty()) {
             QString key;
             Exiv2::IptcData::iterator end = iptcData.end();
-            for (Exiv2::IptcData::iterator iptcIt = iptcData.begin(); iptcIt != end; ++iptcIt) {
-                if (iptcIt->tagName() == "Keywords") {
-                    QString tagName = QString::fromUtf8(iptcIt->toString().c_str());
-                    tags.insert(tagName);
-                    Settings::knownTags.insert(tagName);
+
+            // Finds the first ID, but we need to loop over the rest in case there are more
+            Exiv2::IptcData::iterator iptcIt = iptcData.findId(Exiv2::IptcDataSets::Keywords);
+            for (; iptcIt != end; ++iptcIt) {
+                if (iptcIt->tag() != Exiv2::IptcDataSets::Keywords) {
+                    continue;
                 }
+
+                QString tagName = QString::fromUtf8(iptcIt->toString().c_str());
+                tags.insert(tagName);
+                Settings::knownTags.insert(tagName);
             }
         }
     } catch (Exiv2::Error &error) {

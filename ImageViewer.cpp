@@ -25,7 +25,40 @@
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
+namespace { // anonymous, not visible outside of this file
+Q_DECLARE_LOGGING_CATEGORY(PHOTOTONIC_EXIV2_LOG)
+Q_LOGGING_CATEGORY(PHOTOTONIC_EXIV2_LOG, "phototonic.exif", QtCriticalMsg)
+
+struct Exiv2LogHandler {
+    static void handleMessage(int level, const char *message) {
+        switch(level) {
+            case Exiv2::LogMsg::debug:
+                qCDebug(PHOTOTONIC_EXIV2_LOG) << message;
+                break;
+            case Exiv2::LogMsg::info:
+                qCInfo(PHOTOTONIC_EXIV2_LOG) << message;
+                break;
+            case Exiv2::LogMsg::warn:
+            case Exiv2::LogMsg::error:
+            case Exiv2::LogMsg::mute:
+                qCWarning(PHOTOTONIC_EXIV2_LOG) << message;
+                break;
+            default:
+                qCWarning(PHOTOTONIC_EXIV2_LOG) << "unhandled log level" << level << message;
+                break;
+        }
+    }
+
+    Exiv2LogHandler() {
+        Exiv2::LogMsg::setHandler(&Exiv2LogHandler::handleMessage);
+    }
+};
+}
+
 ImageViewer::ImageViewer(QWidget *parent, MetadataCache *metadataCache) : QWidget(parent) {
+    // This is a threadsafe way to ensure that we only register it once
+    static Exiv2LogHandler handler;
+
     this->phototonic = (Phototonic *) parent;
     this->metadataCache = metadataCache;
     cursorIsHidden = false;
@@ -44,7 +77,7 @@ ImageViewer::ImageViewer(QWidget *parent, MetadataCache *metadataCache) : QWidge
     scrollArea->horizontalScrollBar()->blockSignals(true);
     scrollArea->setFrameStyle(0);
     scrollArea->setWidget(imageWidget);
-    scrollArea->setWidgetResizable(true);
+    scrollArea->setWidgetResizable(false);
     setBackgroundColor();
 
     QVBoxLayout *scrollLayout = new QVBoxLayout;
@@ -118,7 +151,7 @@ void ImageViewer::resizeImage() {
 
     int imageViewWidth = this->size().width();
     int imageViewHeight = this->size().height();
-    QSize imageSize = isAnimation ? animation->currentPixmap().size() : imageWidget->size();
+    QSize imageSize = isAnimation ? animation->currentPixmap().size() : imageWidget->imageSize();
 
     if (tempDisableResize) {
         imageSize.scale(imageSize.width(), imageSize.height(), Qt::KeepAspectRatio);
@@ -239,12 +272,7 @@ void ImageViewer::showEvent(QShowEvent *event) {
 }
 
 void ImageViewer::centerImage(QSize &imgSize) {
-    int newX = (this->size().width() - imgSize.width()) / 2;
-    int newY = (this->size().height() - imgSize.height()) / 2;
-
-    if (newX != imageWidget->pos().x() || newY != imageWidget->pos().y()) {
-        imageWidget->move(newX, newY);
-    }
+    scrollArea->ensureVisible(imgSize.width()/2, imgSize.height()/2, width()/2, height()/2);
 }
 
 void ImageViewer::rotateByExifRotation(QImage &image, QString &imageFullPath) {

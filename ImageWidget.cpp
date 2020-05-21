@@ -70,16 +70,19 @@ QSize ImageWidget::sizeHint() const
 
 void ImageWidget::paintEvent(QPaintEvent *)
 {
+    float scale = qMax(float(width()) / m_image.width(), float(height()) / m_image.height());
+
     QPainter painter(this);
+    painter.scale(scale, scale);
     painter.setRenderHint(QPainter::Antialiasing);
     QPoint center(width() / 2, height() / 2);
     painter.translate(center);
     painter.rotate(m_rotation);
     painter.translate(center * -1);
     QPoint upperLeft;
-    if (width() > m_image.width())
-        upperLeft.setX(center.x() - m_image.width() / 2);
-    if (height() > m_image.height())
-        upperLeft.setY(center.y() - m_image.height() / 2);
+    if (width() > m_image.width() * scale)
+        upperLeft.setX(center.x() - scale*m_image.width() / 2);
+    if (height() > m_image.height() * scale)
+        upperLeft.setY(center.y() - scale*m_image.height() / 2);
     painter.drawImage(upperLeft, m_image);
 }
