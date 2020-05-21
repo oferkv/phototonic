@@ -533,7 +533,12 @@ void ThumbsViewer::applyFilter() {
     if (tempThumbsSortFlags & QDir::Size || tempThumbsSortFlags & QDir::Time) {
         tempThumbsSortFlags ^= QDir::Reversed;
     }
-    thumbsDir->setSorting(tempThumbsSortFlags);
+
+    if (thumbsSortFlags & QDir::Time || thumbsSortFlags & QDir::Size || thumbsSortFlags & QDir::Type) {
+        thumbsDir->setSorting(tempThumbsSortFlags);
+    } else { // by name
+        thumbsDir->setSorting(QDir::NoSort);
+    }
 }
 
 void ThumbsViewer::loadPrepare() {
@@ -556,6 +561,26 @@ void ThumbsViewer::loadPrepare() {
 
 void ThumbsViewer::initThumbs() {
     thumbFileInfoList = thumbsDir->entryInfoList();
+
+    if (!(thumbsSortFlags & QDir::Time) && !(thumbsSortFlags & QDir::Size) && !(thumbsSortFlags & QDir::Type)) {
+        QCollator collator;
+        if (thumbsSortFlags & QDir::IgnoreCase) {
+            collator.setCaseSensitivity(Qt::CaseInsensitive);
+        }
+
+        collator.setNumericMode(true);
+
+        if (thumbsSortFlags & QDir::Reversed) {
+            std::sort(thumbFileInfoList.begin(), thumbFileInfoList.end(), [&](const QFileInfo &a, const QFileInfo &b) {
+                    return collator.compare(a.fileName(), b.fileName()) > 0;
+                    });
+        } else {
+            std::sort(thumbFileInfoList.begin(), thumbFileInfoList.end(), [&](const QFileInfo &a, const QFileInfo &b) {
+                    return collator.compare(a.fileName(), b.fileName()) < 0;
+                    });
+        }
+    }
+
     static QStandardItem *thumbItem;
     static int fileIndex;
     static QPixmap emptyPixMap;
