@@ -41,6 +41,10 @@ ThumbsViewer::ThumbsViewer(QWidget *parent, MetadataCache *metadataCache) : QLis
     setEditTriggers(QAbstractItemView::NoEditTriggers);
     setUniformItemSizes(false);
 
+    // This is the default but set for clarity. Could make it configurable to use
+    // QAbstractItemView::ScrollPerPixel instead.
+    setVerticalScrollMode(QAbstractItemView::ScrollPerItem);
+
     thumbsViewerModel = new QStandardItemModel(this);
     thumbsViewerModel->setSortRole(SortRole);
     setModel(thumbsViewerModel);
@@ -925,14 +929,6 @@ void ThumbsViewer::addThumb(QString &imageFullPath) {
     }
 
     thumbsViewerModel->appendRow(thumbItem);
-}
-
-void ThumbsViewer::wheelEvent(QWheelEvent *event) {
-    if (event->delta() < 0) {
-        verticalScrollBar()->setValue(verticalScrollBar()->value() + thumbSize);
-    } else {
-        verticalScrollBar()->setValue(verticalScrollBar()->value() - thumbSize);
-    }
 }
 
 void ThumbsViewer::mousePressEvent(QMouseEvent *event) {
