@@ -1313,10 +1313,19 @@ void Phototonic::copyOrCutThumbs(bool isCopyOperation) {
     copyCutThumbsCount = Settings::copyCutIndexList.size();
 
     Settings::copyCutFileList.clear();
+
+    QList<QUrl> urlList;
     for (int thumb = 0; thumb < copyCutThumbsCount; ++thumb) {
-        Settings::copyCutFileList.append(thumbsViewer->thumbsViewerModel->item(Settings::copyCutIndexList[thumb].
-                row())->data(thumbsViewer->FileNameRole).toString());
+        const QString filePath = thumbsViewer->thumbsViewerModel->item(Settings::copyCutIndexList[thumb].
+                row())->data(thumbsViewer->FileNameRole).toString();
+        Settings::copyCutFileList.append(filePath);
+
+        urlList.append(QUrl::fromLocalFile(filePath)); // The standard apparently is URLs even for local files...
     }
+
+    QMimeData *mimedata = new QMimeData;
+    mimedata->setUrls(urlList);
+    QGuiApplication::clipboard()->setMimeData(mimedata);
 
     Settings::isCopyOperation = isCopyOperation;
     pasteAction->setEnabled(true);
