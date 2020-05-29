@@ -47,8 +47,9 @@ QModelIndex FileSystemTree::getCurrentIndex() {
     return selectedIndexes().first();
 }
 
-void FileSystemTree::resizeTreeColumn(const QModelIndex &) {
+void FileSystemTree::resizeTreeColumn(const QModelIndex &index) {
     resizeColumnToContents(0);
+    scrollTo(index);
 }
 
 void FileSystemTree::dragEnterEvent(QDragEnterEvent *event) {

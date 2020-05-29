@@ -997,6 +997,7 @@ void Phototonic::createFileSystemDock() {
             this, SLOT(dropOp(Qt::KeyboardModifiers, bool, QString)));
 
     fileSystemTree->setCurrentIndex(fileSystemTree->fileSystemModel->index(QDir::currentPath()));
+    fileSystemTree->scrollTo(fileSystemTree->fileSystemModel->index(QDir::currentPath()));
 
     connect(fileSystemTree->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)),
             this, SLOT(updateActions()));
@@ -3083,6 +3084,7 @@ void Phototonic::selectCurrentViewDir() {
     QModelIndex idx = fileSystemTree->fileSystemModel->index(Settings::currentDirectory);
     if (idx.isValid()) {
         fileSystemTree->setCurrentIndex(idx);
+        fileSystemTree->scrollTo(idx);
     }
 }
 
