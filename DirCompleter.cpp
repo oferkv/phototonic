@@ -16,21 +16,23 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QDirModel>
+#include <QFileSystemModel>
 #include "DirCompleter.h"
 
-DirCompleter::DirCompleter(QObject *parent) : QCompleter(parent) {
-    QDirModel *model = new QDirModel;
-    model->setFilter(QDir::AllDirs | QDir::NoDotAndDotDot);
-    model->setLazyChildCount(true);
+DirCompleter::DirCompleter(QObject *parent) : QCompleter(parent)
+{
+    QFileSystemModel *model = new QFileSystemModel;
+    model->setFilter(QDir::AllDirs | QDir::Dirs | QDir::NoDotAndDotDot);
     setModel(model);
 }
 
-QString DirCompleter::pathFromIndex(const QModelIndex &index) const {
+QString DirCompleter::pathFromIndex(const QModelIndex &index) const
+{
     return QCompleter::pathFromIndex(index) + "/";
 }
 
-QStringList DirCompleter::splitPath(const QString &path) const {
+QStringList DirCompleter::splitPath(const QString &path) const
+{
     if (path.startsWith("~")) {
         return QCompleter::splitPath(QString(path).replace(0, 1, QDir::homePath()));
     }
