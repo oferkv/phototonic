@@ -120,7 +120,7 @@ void Phototonic::loadStartupFileList(QStringList argumentsList, int filesStartAt
         }
     }
     fileSystemTree->clearSelection();
-    fileListWidget->setItemSelected(fileListWidget->itemAt(0, 0), true);
+    fileListWidget->itemAt(0, 0)->setSelected(true);
     Settings::isFileListLoaded = true;
 }
 
