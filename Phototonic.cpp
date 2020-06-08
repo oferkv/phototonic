@@ -3458,16 +3458,19 @@ QString Phototonic::getSelectedPath() {
         return "";
 }
 
-void Phototonic::wheelEvent(QWheelEvent *event) {
+void Phototonic::wheelEvent(QWheelEvent *event)
+{
+    const int scrollDelta = event->angleDelta().y();
+
     if (Settings::layoutMode == ImageViewWidget) {
         if (event->modifiers() == Qt::ControlModifier) {
-            if (event->delta() < 0) {
+            if (scrollDelta < 0) {
                 zoomOut();
             } else {
                 zoomIn();
             }
         } else if (nextImageAction->isEnabled()) {
-            if (event->delta() < 0) {
+            if (scrollDelta < 0) {
                 loadNextImage();
             } else {
                 loadPreviousImage();
@@ -3475,7 +3478,7 @@ void Phototonic::wheelEvent(QWheelEvent *event) {
         }
         event->accept();
     } else if (event->modifiers() == Qt::ControlModifier && QApplication::focusWidget() == thumbsViewer) {
-        if (event->delta() < 0) {
+        if (scrollDelta < 0) {
             thumbsZoomOut();
         } else {
             thumbsZoomIn();
