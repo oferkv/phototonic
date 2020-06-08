@@ -16,8 +16,9 @@
  *  along with Phototonic.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QProgressDialog>
 #include <QMimeDatabase>
+#include <QProgressDialog>
+#include <QRandomGenerator>
 
 #include "ThumbsViewer.h"
 #include "Phototonic.h"
@@ -70,8 +71,6 @@ ThumbsViewer::ThumbsViewer(QWidget *parent, MetadataCache *metadataCache) : QLis
     fileFilters = new QStringList;
     emptyImg.load(":/images/no_image.png");
 
-    QTime time = QTime::currentTime();
-    qsrand((uint) time.msec());
     phototonic = (Phototonic *) parent;
     infoView = new InfoView(this);
 
@@ -132,7 +131,7 @@ int ThumbsViewer::getLastRow() {
 }
 
 int ThumbsViewer::getRandomRow() {
-    return qrand() % (thumbsViewerModel->rowCount());
+    return QRandomGenerator::global()->bounded(thumbsViewerModel->rowCount());
 }
 
 int ThumbsViewer::getCurrentRow() {
@@ -719,7 +718,7 @@ void ThumbsViewer::findDupes(bool resetCounters)
         image = image.convertToFormat(QImage::Format_Grayscale8).scaled(9, 9, Qt::KeepAspectRatioByExpanding);
         for (int y=0; y<8; y++) {
             const uchar *line = image.scanLine(y);
-            const uchar *nextLine = image.scanLine(y+1);
+            //const uchar *nextLine = image.scanLine(y+1);
             for (int x=0; x<8; x++) {
                 imageHash.setBit(y * 8 + x, line[x] > line[x+1]);
                 //imageHash.setBit(y * 8 + x + 64, line[x] > nextLine[x]);
