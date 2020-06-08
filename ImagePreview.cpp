@@ -20,7 +20,8 @@
 #include "Settings.h"
 #include "ThumbsViewer.h"
 
-ImagePreview::ImagePreview(QWidget *parent) : QWidget(parent) {
+ImagePreview::ImagePreview(QWidget *parent) : QWidget(parent)
+{
 
     imageLabel = new QLabel;
     imageLabel->setScaledContents(true);
@@ -70,13 +71,23 @@ void ImagePreview::clear() {
     imageLabel->clear();
 }
 
-void ImagePreview::resizeImagePreview() {
+void ImagePreview::resizeImagePreview()
+{
+#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
     const QPixmap *pixmap = imageLabel->pixmap();
     if (!pixmap) {
         return;
     }
 
     QSize previewSizePixmap = pixmap->size();
+#else
+    const QPixmap pixmap = imageLabel->pixmap();
+    if (pixmap.isNull()) {
+        return;
+    }
+    QSize previewSizePixmap = pixmap.size();
+#endif
+
     if (previewSizePixmap.width() > scrollArea->width() || previewSizePixmap.height() > scrollArea->height()) {
         previewSizePixmap.scale(scrollArea->width(), scrollArea->height(), Qt::KeepAspectRatio);
     }
