@@ -81,7 +81,7 @@ void ImagePreview::resizeImagePreview()
 
     QSize previewSizePixmap = pixmap->size();
 #else
-    const QPixmap pixmap = imageLabel->pixmap();
+    const QPixmap pixmap = imageLabel->pixmap(Qt::ReturnByValue);
     if (pixmap.isNull()) {
         return;
     }
