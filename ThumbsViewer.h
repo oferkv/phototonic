@@ -52,7 +52,10 @@ public:
         FileNameRole = Qt::UserRole + 1,
         SortRole,
         LoadedRole,
-        BrightnessRole
+        BrightnessRole,
+        TypeRole,
+        SizeRole,
+        TimeRole
     };
     enum ThumbnailLayouts {
         Classic,

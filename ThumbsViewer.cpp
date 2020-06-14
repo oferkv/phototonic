@@ -377,9 +377,13 @@ void ThumbsViewer::abort() {
 void ThumbsViewer::loadVisibleThumbs(int scrollBarValue) {
     static int lastScrollBarValue = 0;
 
-    scrolledForward = (scrollBarValue >= lastScrollBarValue);
-
-    lastScrollBarValue = scrollBarValue;
+    if (scrollBarValue >= 0) {
+        scrolledForward = (scrollBarValue >= lastScrollBarValue);
+        lastScrollBarValue = scrollBarValue;
+    } else {
+        loadThumbsRange();
+        return;
+    }
 
     for (;;) {
         int firstVisible = getFirstVisibleThumb();
@@ -644,6 +648,9 @@ void ThumbsViewer::initThumbs() {
         thumbItem = new QStandardItem();
         thumbItem->setData(false, LoadedRole);
         thumbItem->setData(fileIndex, SortRole);
+        thumbItem->setData(thumbFileInfo.size(), SizeRole);
+        thumbItem->setData(thumbFileInfo.suffix(), TypeRole);
+        thumbItem->setData(thumbFileInfo.lastModified(), TimeRole);
         thumbItem->setData(thumbFileInfo.filePath(), FileNameRole);
         thumbItem->setSizeHint(hintSize);
         if (Settings::thumbsLayout == Classic) {
@@ -896,6 +903,9 @@ void ThumbsViewer::addThumb(QString &imageFullPath) {
     thumbFileInfo = QFileInfo(imageFullPath);
     thumbItem->setData(true, LoadedRole);
     thumbItem->setData(0, SortRole);
+    thumbItem->setData(thumbFileInfo.size(), SizeRole);
+    thumbItem->setData(thumbFileInfo.lastModified(), TimeRole);
+    thumbItem->setData(thumbFileInfo.suffix(), TypeRole);
     thumbItem->setData(thumbFileInfo.filePath(), FileNameRole);
     thumbItem->setTextAlignment(Qt::AlignTop | Qt::AlignHCenter);
     thumbItem->setData(thumbFileInfo.fileName(), Qt::DisplayRole);
@@ -916,6 +926,7 @@ void ThumbsViewer::addThumb(QString &imageFullPath) {
             currThumbSize = thumb.size();
             currThumbSize.scale(QSize(thumbSize, thumbSize), Settings::thumbsLayout == Squares ? Qt::KeepAspectRatioByExpanding : Qt::KeepAspectRatio);
         }
+        thumbItem->setData(qGray(thumb.scaled(1, 1).pixel(0, 0)) / 255.0, BrightnessRole);
 
         thumbItem->setIcon(QPixmap::fromImage(thumb));
     } else {

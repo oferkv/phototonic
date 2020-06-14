@@ -1063,19 +1063,16 @@ void Phototonic::sortThumbnails() {
     thumbsViewer->thumbsSortFlags = QDir::IgnoreCase;
 
     if (sortByNameAction->isChecked()) {
-        thumbsViewer->thumbsSortFlags |= QDir::Name;
+        thumbsViewer->thumbsViewerModel->setSortRole(ThumbsViewer::SortRole);
     } else if (sortByTimeAction->isChecked()) {
-        thumbsViewer->thumbsSortFlags |= QDir::Time;
+        thumbsViewer->thumbsViewerModel->setSortRole(ThumbsViewer::TimeRole);
     } else if (sortBySizeAction->isChecked()) {
-        thumbsViewer->thumbsSortFlags |= QDir::Size;
+        thumbsViewer->thumbsViewerModel->setSortRole(ThumbsViewer::SizeRole);
     } else if (sortByTypeAction->isChecked()) {
-        thumbsViewer->thumbsSortFlags |= QDir::Type;
+        thumbsViewer->thumbsViewerModel->setSortRole(ThumbsViewer::TypeRole);
     }
-
-    if (sortReverseAction->isChecked()) {
-        thumbsViewer->thumbsSortFlags |= QDir::Reversed;
-    }
-    refreshThumbs(false);
+    thumbsViewer->thumbsViewerModel->sort(0, sortReverseAction->isChecked() ? Qt::AscendingOrder : Qt::DescendingOrder);
+    thumbsViewer->loadVisibleThumbs(-1);
 }
 
 void Phototonic::reload() {
