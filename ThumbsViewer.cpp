@@ -769,6 +769,7 @@ void ThumbsViewer::findDupes(bool resetCounters)
 }
 
 void ThumbsViewer::selectByBrightness(qreal min, qreal max) {
+    loadAllThumbs();
     QItemSelection sel;
     for (int row = 0; row < thumbsViewerModel->rowCount(); ++row) {
         QModelIndex idx = thumbsViewerModel->index(row, 0);
