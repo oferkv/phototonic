@@ -838,7 +838,7 @@ bool ThumbsViewer::loadThumb(int currThumb) {
     currentThumbSize = thumbReader.size();
 
     if (currentThumbSize.isValid()) {
-        if (currentThumbSize.width() > thumbSize || currentThumbSize.height() > thumbSize) {
+        if (currentThumbSize.width() != thumbSize || currentThumbSize.height() != thumbSize) {
             currentThumbSize.scale(QSize(thumbSize, thumbSize), Settings::thumbsLayout == Squares ? Qt::KeepAspectRatioByExpanding : Qt::KeepAspectRatio);
         }
 
