@@ -779,7 +779,7 @@ void ThumbsViewer::selectByBrightness(qreal min, qreal max) {
                 sel.select(idx, idx);
         }
     }
-    selectionModel()->select(sel, QItemSelectionModel::Select);
+    selectionModel()->select(sel, QItemSelectionModel::ClearAndSelect);
 }
 
 void ThumbsViewer::loadAllThumbs() {
