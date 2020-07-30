@@ -1072,7 +1072,7 @@ void Phototonic::sortThumbnails() {
         thumbsViewer->thumbsViewerModel->setSortRole(ThumbsViewer::TypeRole);
     }
     thumbsViewer->thumbsViewerModel->sort(0, sortReverseAction->isChecked() ? Qt::AscendingOrder : Qt::DescendingOrder);
-    thumbsViewer->loadVisibleThumbs(-1);
+    thumbsViewer->loadThumbsRange();
 }
 
 void Phototonic::reload() {

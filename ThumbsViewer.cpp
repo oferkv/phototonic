@@ -50,7 +50,7 @@ ThumbsViewer::ThumbsViewer(QWidget *parent, MetadataCache *metadataCache) : QLis
     thumbsViewerModel->setSortRole(SortRole);
     setModel(thumbsViewerModel);
 
-    connect(verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(loadVisibleThumbs(int)));
+    connect(verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(loadVisibleThumbs()), Qt::QueuedConnection);
     m_selectionChangedTimer.setInterval(10);
     m_selectionChangedTimer.setSingleShot(true);
     connect(&m_selectionChangedTimer, &QTimer::timeout, this, &ThumbsViewer::onSelectionChanged);
@@ -374,8 +374,13 @@ void ThumbsViewer::abort() {
     isAbortThumbsLoading = true;
 }
 
-void ThumbsViewer::loadVisibleThumbs(int scrollBarValue) {
-    static int lastScrollBarValue = 0;
+void ThumbsViewer::loadVisibleThumbs() {
+    const int scrollBarValue = verticalScrollBar()->value();
+
+    static int lastScrollBarValue = -1;
+    if (scrollBarValue == lastScrollBarValue) {
+        return;
+    }
 
     if (scrollBarValue >= 0) {
         scrolledForward = (scrollBarValue >= lastScrollBarValue);
