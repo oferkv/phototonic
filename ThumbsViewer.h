@@ -167,15 +167,15 @@ private:
 
 public slots:
 
-    void loadVisibleThumbs();
+    void loadVisibleThumbs(int scrollBarValue = 0);
 
     void onSelectionChanged();
 
     void invertSelection();
 
-    void loadThumbsRange();
-
 private slots:
+
+    void loadThumbsRange();
 
     void loadAllThumbs();
 };
