@@ -17,6 +17,18 @@
  */
 
 #include "FileSystemModel.h"
+#include "IconProvider.h"
+
+FileSystemModel::FileSystemModel(QObject *parent) : QFileSystemModel(parent)
+{
+    m_iconProvider = new IconProvider;
+    setIconProvider(m_iconProvider);
+}
+
+FileSystemModel::~FileSystemModel()
+{
+    delete m_iconProvider;
+}
 
 bool FileSystemModel::hasChildren(const QModelIndex &parent) const {
     if (parent.column() > 0) {

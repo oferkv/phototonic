@@ -21,12 +21,19 @@
 
 #include <QtWidgets/QtWidgets>
 
+class IconProvider;
+
 class FileSystemModel : public QFileSystemModel {
 
 Q_OBJECT
 
 public:
+    FileSystemModel(QObject *parent = nullptr);
+    ~FileSystemModel();
     bool hasChildren(const QModelIndex &parent) const;
+
+private:
+    IconProvider *m_iconProvider;
 };
 
 #endif // FILE_SYSTEM_MODEL_H

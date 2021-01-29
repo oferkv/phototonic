@@ -48,7 +48,7 @@ SOURCES += main.cpp Phototonic.cpp ThumbsViewer.cpp ImageViewer.cpp CropRubberba
 			MetadataCache.cpp ShortcutsTable.cpp CopyMoveDialog.cpp CopyMoveToDialog.cpp CropDialog.cpp \
 			ProgressDialog.cpp ExternalAppsDialog.cpp ColorsDialog.cpp ResizeDialog.cpp ImagePreview.cpp \
 			ImageWidget.cpp FileSystemModel.cpp FileListWidget.cpp RenameDialog.cpp Trashcan.cpp MessageBox.cpp \
-			GuideWidget.cpp RangeInputDialog.cpp
+			GuideWidget.cpp RangeInputDialog.cpp IconProvider.cpp
 
 FORMS += RangeInputDialog.ui
 

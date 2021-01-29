@@ -1612,7 +1612,6 @@ void Phototonic::batchTransform() {
         imageViewer->batchMode = true;
         Settings::keepTransform = true;
         for (QModelIndex i : idxs) {
-            qDebug() << thumbsViewer->model()->data(i, ThumbsViewer::FileNameRole);
             loadSelectedThumbImage(i);
             imageViewer->applyCropAndRotation();
             imageViewer->saveImage();
