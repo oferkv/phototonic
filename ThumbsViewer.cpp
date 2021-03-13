@@ -377,6 +377,18 @@ void ThumbsViewer::abort() {
 }
 
 void ThumbsViewer::loadVisibleThumbs(int scrollBarValue) {
+
+    // Hack:
+    // when a paint even is requested Qt first calls updateGeometry() on
+    // everything.
+    // qscrollbar emits valueChanged() in its updateGeometry(), leading to us
+    // possibly recursing when calling processEvents.
+    static bool processing = false;
+    if (processing) {
+        return;
+    }
+    processing = true;
+
     static int lastScrollBarValue = 0;
 
     if (scrollBarValue >= 0) {
@@ -384,6 +396,7 @@ void ThumbsViewer::loadVisibleThumbs(int scrollBarValue) {
         lastScrollBarValue = scrollBarValue;
     } else {
         loadThumbsRange();
+        processing = false;
         return;
     }
 
@@ -391,6 +404,7 @@ void ThumbsViewer::loadVisibleThumbs(int scrollBarValue) {
         int firstVisible = getFirstVisibleThumb();
         int lastVisible = getLastVisibleThumb();
         if (isAbortThumbsLoading || firstVisible < 0 || lastVisible < 0) {
+            processing = false;
             return;
         }
 
@@ -412,6 +426,7 @@ void ThumbsViewer::loadVisibleThumbs(int scrollBarValue) {
         }
 
         if (thumbsRangeFirst == firstVisible && thumbsRangeLast == lastVisible) {
+            processing = false;
             return;
         }
 
@@ -420,9 +435,11 @@ void ThumbsViewer::loadVisibleThumbs(int scrollBarValue) {
 
         loadThumbsRange();
         if (isAbortThumbsLoading) {
+            processing = false;
             break;
         }
     }
+    processing = false;
 }
 
 int ThumbsViewer::getFirstVisibleThumb() {
