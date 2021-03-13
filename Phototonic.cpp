@@ -1147,21 +1147,15 @@ void Phototonic::setPathFocus() {
     }
 }
 
-void Phototonic::cleanupSender() {
-    if (QObject::sender()) {
-        QObject::sender()->deleteLater();
-    }
-}
-
 void Phototonic::externalAppError() {
     MessageBox msgBox(this);
     msgBox.critical(tr("Error"), tr("Failed to start external application."));
 }
 
 void Phototonic::runExternalApp() {
-    QString execCommand;
-    QString selectedFileNames("");
-    execCommand = Settings::externalApps[((QAction *) sender())->text()];
+    const QString execCommand = Settings::externalApps[((QAction *) sender())->text()];
+
+    QStringList arguments;
 
     if (Settings::layoutMode == ImageViewWidget) {
         if (imageViewer->isNewImage()) {
@@ -1169,10 +1163,10 @@ void Phototonic::runExternalApp() {
             return;
         }
 
-        execCommand += " \"" + imageViewer->viewerImageFullPath + "\"";
+        arguments += imageViewer->viewerImageFullPath;
     } else {
         if (QApplication::focusWidget() == fileSystemTree) {
-            selectedFileNames += " \"" + getSelectedPath() + "\"";
+            arguments += " \"" + getSelectedPath() + "\"";
         } else {
 
             QModelIndexList selectedIdxList = thumbsViewer->selectionModel()->selectedIndexes();
@@ -1181,23 +1175,19 @@ void Phototonic::runExternalApp() {
                 return;
             }
 
-            selectedFileNames += " ";
             for (int tn = selectedIdxList.size() - 1; tn >= 0; --tn) {
-                selectedFileNames += "\"" +
+                arguments +=
                                      thumbsViewer->thumbsViewerModel->item(selectedIdxList[tn].row())->data(
                                              thumbsViewer->FileNameRole).toString();
-                if (tn)
-                    selectedFileNames += "\" ";
             }
         }
-
-        execCommand += selectedFileNames;
     }
 
     QProcess *externalProcess = new QProcess();
-    connect(externalProcess, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(cleanupSender()));
+    externalProcess->setProcessChannelMode(QProcess::ForwardedChannels);
+    connect(externalProcess, SIGNAL(finished(int, QProcess::ExitStatus)), externalProcess, SLOT(deleteLater()));
     connect(externalProcess, SIGNAL(error(QProcess::ProcessError)), this, SLOT(externalAppError()));
-    externalProcess->start(execCommand);
+    externalProcess->start(execCommand, arguments);
 }
 
 void Phototonic::updateExternalApps() {

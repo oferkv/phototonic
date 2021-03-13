@@ -246,8 +246,6 @@ private slots:
 
     void runExternalApp();
 
-    void cleanupSender();
-
     void externalAppError();
 
     void setEditToolBarVisibility();
