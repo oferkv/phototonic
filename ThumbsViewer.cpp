@@ -23,6 +23,8 @@
 #include "ThumbsViewer.h"
 #include "Phototonic.h"
 
+#define BATCH_SIZE 10
+
 ThumbsViewer::ThumbsViewer(QWidget *parent, MetadataCache *metadataCache) : QListView(parent) {
     this->metadataCache = metadataCache;
     Settings::thumbsBackgroundColor = Settings::appSettings->value(
@@ -491,6 +493,8 @@ void ThumbsViewer::reLoad() {
 
 void ThumbsViewer::loadSubDirectories() {
     QDirIterator dirIterator(Settings::currentDirectory, QDirIterator::Subdirectories);
+
+    int processed = 0;
     while (dirIterator.hasNext()) {
         dirIterator.next();
         if (dirIterator.fileInfo().isDir() && dirIterator.fileName() != "." && dirIterator.fileName() != "..") {
@@ -504,7 +508,10 @@ void ThumbsViewer::loadSubDirectories() {
                 return;
             }
         }
-        QApplication::processEvents();
+        if (++processed > BATCH_SIZE) {
+            QApplication::processEvents();
+            processed = 0;
+        }
     }
 
     onSelectionChanged();
@@ -583,6 +590,7 @@ void ThumbsViewer::loadDuplicates()
     findDupes(true);
 
     if (Settings::includeSubDirectories) {
+        int processed = 0;
         QDirIterator iterator(Settings::currentDirectory, QDirIterator::Subdirectories);
         while (iterator.hasNext()) {
             iterator.next();
@@ -594,7 +602,10 @@ void ThumbsViewer::loadDuplicates()
                     goto finish;
                 }
             }
-            QApplication::processEvents();
+            if (++processed > BATCH_SIZE) {
+                QApplication::processEvents();
+                processed = 0;
+            }
         }
     }
 
@@ -630,7 +641,7 @@ void ThumbsViewer::initThumbs() {
     static int fileIndex;
     static QPixmap emptyPixMap;
     static QSize hintSize;
-    int thumbsAddedCounter = 1;
+    int processed = 0;
 
     emptyPixMap = QPixmap::fromImage(emptyImg).scaled(thumbSize, thumbSize);
     hintSize = Settings::thumbsLayout == Classic ?
@@ -660,10 +671,9 @@ void ThumbsViewer::initThumbs() {
 
         thumbsViewerModel->appendRow(thumbItem);
 
-        ++thumbsAddedCounter;
-        if (thumbsAddedCounter > 100) {
-            thumbsAddedCounter = 1;
+        if (++processed > BATCH_SIZE) {
             QApplication::processEvents();
+            processed = 0;
         }
     }
 
@@ -705,7 +715,6 @@ void ThumbsViewer::updateFoundDupesState(int duplicates, int filesScanned, int o
 void ThumbsViewer::findDupes(bool resetCounters)
 {
     thumbFileInfoList = thumbsDir->entryInfoList();
-    int processEventsCounter = 0;
     static int originalImages;
     static int foundDups;
     static int totalFiles;
@@ -713,7 +722,13 @@ void ThumbsViewer::findDupes(bool resetCounters)
         originalImages = totalFiles = foundDups = 0;
     }
 
+    int processed = 0;
     for (int currThumb = 0; currThumb < thumbFileInfoList.size(); ++currThumb) {
+        if (++processed > BATCH_SIZE) {
+            QApplication::processEvents();
+            processed = 0;
+        }
+
         thumbFileInfo = thumbFileInfoList.at(currThumb);
         QImage image = QImage(thumbFileInfo.absoluteFilePath());
         if (image.isNull()) {
@@ -752,11 +767,6 @@ void ThumbsViewer::findDupes(bool resetCounters)
             dupImageHashes.insert(imageHash, dupImage);
         }
 
-        ++processEventsCounter;
-        if (processEventsCounter > 9) {
-            processEventsCounter = 0;
-            QApplication::processEvents();
-        }
 
         updateFoundDupesState(foundDups, totalFiles, originalImages);
 
@@ -785,6 +795,7 @@ void ThumbsViewer::selectByBrightness(qreal min, qreal max) {
 
 void ThumbsViewer::loadAllThumbs() {
     QProgressDialog progress(tr("Loading thumbnails..."), tr("Abort"), 0, thumbFileInfoList.count(), this);
+    int processed = 0;
     for (int i = 0; i < thumbFileInfoList.count(); ++i) {
         progress.setValue(i);
         if (progress.wasCanceled())
@@ -797,7 +808,10 @@ void ThumbsViewer::loadAllThumbs() {
             break;
         }
 
-        QApplication::processEvents();
+        if (++processed > BATCH_SIZE) {
+            QApplication::processEvents();
+            processed = 0;
+        }
     }
 }
 
@@ -815,6 +829,7 @@ void ThumbsViewer::loadThumbsRange() {
     isInProgress = true;
     currentRowCount = thumbsViewerModel->rowCount();
 
+    int processed = 0;
     for (scrolledForward ? currThumb = thumbsRangeFirst : currThumb = thumbsRangeLast;
          (scrolledForward ? currThumb <= thumbsRangeLast : currThumb >= thumbsRangeFirst);
          scrolledForward ? ++currThumb : --currThumb) {
@@ -827,7 +842,10 @@ void ThumbsViewer::loadThumbsRange() {
 
         loadThumb(currThumb);
 
-        QApplication::processEvents();
+        if (++processed > BATCH_SIZE) {
+            QApplication::processEvents();
+            processed = 0;
+        }
     }
 
     isInProgress = false;
