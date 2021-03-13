@@ -984,23 +984,36 @@ void Phototonic::createFileSystemDock() {
     fileSystemTree->addAction(addBookmarkAction);
     fileSystemTree->setContextMenuPolicy(Qt::ActionsContextMenu);
 
-    connect(fileSystemTree, SIGNAL(clicked(
-                                           const QModelIndex&)), this, SLOT(goSelectedDir(
-                                                                                    const QModelIndex &)));
+    connect(
+            fileSystemTree,
+                SIGNAL(clicked(const QModelIndex&)),
+            this,
+                SLOT(goSelectedDir(const QModelIndex &))
+        );
 
-    connect(fileSystemTree->fileSystemModel, SIGNAL(rowsRemoved(
-                                                            const QModelIndex &, int, int)),
-            this, SLOT(checkDirState(
-                               const QModelIndex &, int, int)));
+    connect(
+            fileSystemTree->fileSystemModel,
+                SIGNAL(rowsRemoved(const QModelIndex &, int, int)),
+            this,
+                SLOT(checkDirState(const QModelIndex &, int, int))
+        );
 
-    connect(fileSystemTree, SIGNAL(dropOp(Qt::KeyboardModifiers, bool, QString)),
-            this, SLOT(dropOp(Qt::KeyboardModifiers, bool, QString)));
+    connect(
+            fileSystemTree,
+                SIGNAL(dropOp(Qt::KeyboardModifiers, bool, QString)),
+            this,
+                SLOT(dropOp(Qt::KeyboardModifiers, bool, QString))
+        );
 
     fileSystemTree->setCurrentIndex(fileSystemTree->fileSystemModel->index(QDir::currentPath()));
     fileSystemTree->scrollTo(fileSystemTree->fileSystemModel->index(QDir::currentPath()));
 
-    connect(fileSystemTree->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)),
-            this, SLOT(updateActions()));
+    connect(
+            fileSystemTree->selectionModel(),
+                SIGNAL(selectionChanged(QItemSelection, QItemSelection)),
+            this,
+                SLOT(updateActions())
+        );
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->setContentsMargins(0, 0, 0, 0);
