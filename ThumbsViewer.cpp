@@ -284,7 +284,7 @@ void ThumbsViewer::onSelectionChanged() {
 
     QModelIndexList indexesList = selectionModel()->selectedIndexes();
     int selectedThumbs = indexesList.size();
-    if (selectedThumbs == 1) {
+    if (selectedThumbs > 0) {
         int currentRow = indexesList.first().row();
         QString thumbFullPath = thumbsViewerModel->item(currentRow)->data(FileNameRole).toString();
         setCurrentRow(currentRow);
