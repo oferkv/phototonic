@@ -68,7 +68,10 @@ iconPixmaps.path = /usr/share/pixmaps
 desktop.files = phototonic.desktop
 desktop.path = /usr/share/applications
 
-INSTALLS += target icon icon16 iconPixmaps desktop
+metainfo.files = phototonic.appdata.xml
+metainfo.path = /usr/share/metainfo
+
+INSTALLS += target icon icon16 iconPixmaps desktop metainfo
 
 TRANSLATIONS = 	translations/phototonic_en.ts \
 		translations/phototonic_pl.ts \
