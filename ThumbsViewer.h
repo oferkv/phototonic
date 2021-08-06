@@ -42,6 +42,7 @@ struct DuplicateImage
 {
     QString filePath;
     int duplicates;
+    int id = 0;
 };
 
 class ThumbsViewer : public QListView {

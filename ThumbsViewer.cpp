@@ -605,6 +605,7 @@ void ThumbsViewer::loadDuplicates()
 
     dupImageHashes.clear();
     findDupes(true);
+    thumbsViewerModel->setSortRole(SortRole);
 
     if (Settings::includeSubDirectories) {
         int processed = 0;
@@ -627,6 +628,7 @@ void ThumbsViewer::loadDuplicates()
     }
 
 finish:
+    thumbsViewerModel->sort(0);
     isBusy = false;
     phototonic->showBusyAnimation(false);
     return;
@@ -742,6 +744,7 @@ void ThumbsViewer::findDupes(bool resetCounters)
     int processed = 0;
     for (int currThumb = 0; currThumb < thumbFileInfoList.size(); ++currThumb) {
         if (++processed > BATCH_SIZE) {
+            thumbsViewerModel->sort(0);
             QApplication::processEvents();
             processed = 0;
         }
@@ -769,18 +772,26 @@ void ThumbsViewer::findDupes(bool resetCounters)
         totalFiles++;
 
         if (dupImageHashes.contains(imageHash)) {
+            QStandardItem *item = nullptr;
             if (dupImageHashes[imageHash].duplicates < 1) {
-                addThumb(dupImageHashes[imageHash].filePath);
+                item = addThumb(dupImageHashes[imageHash].filePath);
+                if (item) {
+                    item->setData(dupImageHashes[imageHash].id, SortRole);
+                }
                 originalImages++;
             }
 
             foundDups++;
             dupImageHashes[imageHash].duplicates++;
-            addThumb(currentFilePath);
+            item = addThumb(currentFilePath);
+            if (item) {
+                item->setData(dupImageHashes[imageHash].id, SortRole);
+            }
         } else {
             DuplicateImage dupImage;
             dupImage.filePath = currentFilePath;
             dupImage.duplicates = 0;
+            dupImage.id = dupImageHashes.count();
             dupImageHashes.insert(imageHash, dupImage);
         }
 
