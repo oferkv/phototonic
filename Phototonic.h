@@ -336,6 +336,7 @@ private:
     QAction *sortByTimeAction;
     QAction *sortBySizeAction;
     QAction *sortByTypeAction;
+    QAction *sortBySimilarityAction;
     QAction *sortReverseAction;
     QAction *refreshAction;
     QAction *includeSubDirectoriesAction;

@@ -45,6 +45,36 @@ struct DuplicateImage
     int id = 0;
 };
 
+struct Histogram
+{
+    float red[256]{};
+    float green[256]{};
+    float blue[256]{};
+
+    inline float compareChannel(const float hist1[256], const float hist2[256])
+    {
+        float len1 = 0.f, len2 = 0.f, corr = 0.f;
+
+        for (uint16_t i=0; i<256; i++) {
+            len1 += hist1[i];
+            len2 += hist2[i];
+            corr += std::sqrt(hist1[i] * hist2[i]);
+        }
+
+        const float part1 = 1.f / std::sqrt(len1 * len2);
+
+        return std::sqrt(1.f - part1 * corr);
+    }
+
+    inline float compare(const Histogram &other)
+    {
+        return compareChannel(red, other.red) +
+            compareChannel(green, other.green) +
+            compareChannel(blue, other.blue);
+    }
+};
+Q_DECLARE_METATYPE(Histogram);
+
 class ThumbsViewer : public QListView {
 Q_OBJECT
 
@@ -56,7 +86,8 @@ public:
         BrightnessRole,
         TypeRole,
         SizeRole,
-        TimeRole
+        TimeRole,
+        HistogramRole
     };
     enum ThumbnailLayouts {
         Classic,
@@ -91,7 +122,7 @@ public:
 
     void selectCurrentIndex();
 
-    void addThumb(QString &imageFullPath);
+    QStandardItem *addThumb(QString &imageFullPath);
 
     void abort();
 
@@ -114,6 +145,8 @@ public:
     QString getSingleSelectionFilename();
 
     void setImageViewer(ImageViewer *imageViewer);
+
+    void sortBySimilarity();
 
     InfoView *infoView;
     ImagePreview *imagePreview;
@@ -150,6 +183,8 @@ private:
 
     QFileInfo thumbFileInfo;
     QFileInfoList thumbFileInfoList;
+    QList<Histogram> histograms;
+    QList<QString> histFiles;
     QImage emptyImg;
     QModelIndex currentIndex;
     Phototonic *phototonic;

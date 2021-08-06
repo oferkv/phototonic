@@ -443,17 +443,21 @@ void Phototonic::createActions() {
     sortBySizeAction->setObjectName("size");
     sortByTypeAction = new QAction(tr("Sort by Type"), this);
     sortByTypeAction->setObjectName("type");
+    sortBySimilarityAction = new QAction(tr("Sort by Similarity"), this);
+    sortBySimilarityAction->setObjectName("similarity");
     sortReverseAction = new QAction(tr("Reverse Order"), this);
     sortReverseAction->setObjectName("reverse");
     sortByNameAction->setCheckable(true);
     sortByTimeAction->setCheckable(true);
     sortBySizeAction->setCheckable(true);
     sortByTypeAction->setCheckable(true);
+    sortBySimilarityAction->setCheckable(true);
     sortReverseAction->setCheckable(true);
     connect(sortByNameAction, SIGNAL(triggered()), this, SLOT(sortThumbnails()));
     connect(sortByTimeAction, SIGNAL(triggered()), this, SLOT(sortThumbnails()));
     connect(sortBySizeAction, SIGNAL(triggered()), this, SLOT(sortThumbnails()));
     connect(sortByTypeAction, SIGNAL(triggered()), this, SLOT(sortThumbnails()));
+    connect(sortBySimilarityAction, SIGNAL(triggered()), this, SLOT(sortThumbnails()));
     connect(sortReverseAction, SIGNAL(triggered()), this, SLOT(sortThumbnails()));
 
     if (thumbsViewer->thumbsSortFlags & QDir::Time) {
@@ -760,6 +764,7 @@ void Phototonic::createMenus() {
     editMenu->addSeparator();
     editMenu->addAction(selectAllAction);
     editMenu->addAction(selectByBrightnesAction);
+    editMenu->addAction(sortBySimilarityAction);
     editMenu->addAction(invertSelectionAction);
     editMenu->addAction(batchSubMenuAction);
     addAction(filterImagesFocusAction);
@@ -798,6 +803,7 @@ void Phototonic::createMenus() {
     sortTypesGroup->addAction(sortByTimeAction);
     sortTypesGroup->addAction(sortBySizeAction);
     sortTypesGroup->addAction(sortByTypeAction);
+    sortTypesGroup->addAction(sortBySimilarityAction);
     sortMenu->addActions(sortTypesGroup->actions());
     sortMenu->addSeparator();
     sortMenu->addAction(sortReverseAction);
@@ -1083,6 +1089,8 @@ void Phototonic::sortThumbnails() {
         thumbsViewer->thumbsViewerModel->setSortRole(ThumbsViewer::SizeRole);
     } else if (sortByTypeAction->isChecked()) {
         thumbsViewer->thumbsViewerModel->setSortRole(ThumbsViewer::TypeRole);
+    } else if (sortBySimilarityAction->isChecked()) {
+        thumbsViewer->sortBySimilarity();
     }
     thumbsViewer->thumbsViewerModel->sort(0, sortReverseAction->isChecked() ? Qt::AscendingOrder : Qt::DescendingOrder);
     thumbsViewer->loadVisibleThumbs(-1);
@@ -2437,6 +2445,7 @@ void Phototonic::loadShortcuts() {
     Settings::actionKeys[sortBySizeAction->objectName()] = sortBySizeAction;
     Settings::actionKeys[sortByTimeAction->objectName()] = sortByTimeAction;
     Settings::actionKeys[sortByTypeAction->objectName()] = sortByTypeAction;
+    Settings::actionKeys[sortBySimilarityAction->objectName()] = sortBySimilarityAction;
     Settings::actionKeys[sortReverseAction->objectName()] = sortReverseAction;
     Settings::actionKeys[showHiddenFilesAction->objectName()] = showHiddenFilesAction;
     Settings::actionKeys[showViewerToolbarAction->objectName()] = showViewerToolbarAction;
