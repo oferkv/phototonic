@@ -1119,7 +1119,7 @@ void ImageViewer::contextMenuEvent(QContextMenuEvent *) {
     while (QApplication::overrideCursor()) {
         QApplication::restoreOverrideCursor();
     }
-    contextMenuPosition = QCursor::pos() - window()->geometry().topLeft();
+    contextMenuPosition = QCursor::pos();
     ImagePopUpMenu->exec(contextMenuPosition);
 }
 
