@@ -336,7 +336,7 @@ void ThumbsViewer::startDrag(Qt::DropActions) {
     QList<QUrl> urls;
     for (QModelIndexList::const_iterator it = indexesList.constBegin(),
                  end = indexesList.constEnd(); it != end; ++it) {
-        urls << QUrl(thumbsViewerModel->item(it->row())->data(FileNameRole).toString());
+        urls << QUrl::fromLocalFile(thumbsViewerModel->item(it->row())->data(FileNameRole).toString());
     }
     mimeData->setUrls(urls);
     drag->setMimeData(mimeData);
