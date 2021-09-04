@@ -22,6 +22,7 @@
 
 #include "ThumbsViewer.h"
 #include "Phototonic.h"
+#include "SmartCrop.h"
 
 #define BATCH_SIZE 10
 
@@ -1037,13 +1038,13 @@ bool ThumbsViewer::loadThumb(int currThumb) {
             currentThumbSize.scale(QSize(thumbSize, thumbSize), Settings::thumbsLayout == Squares ? Qt::KeepAspectRatioByExpanding : Qt::KeepAspectRatio);
         }
 
+        thumbsViewerModel->item(currThumb)->setData(qGray(thumb.scaled(1, 1).pixel(0, 0)) / 255.0, BrightnessRole);
+
         if (Settings::thumbsLayout == Squares) {
-            const QRect subRect((currentThumbSize.width() - thumbSize) / 2, (currentThumbSize.height() - thumbSize) / 2, thumbSize, thumbSize);
-            thumb = thumb.scaled(QSize(thumbSize, thumbSize), Qt::KeepAspectRatioByExpanding).copy(subRect);
+            thumb = SmartCrop::crop(thumb, QSize(thumbSize, thumbSize));
         }
 
         thumbsViewerModel->item(currThumb)->setIcon(QPixmap::fromImage(thumb));
-        thumbsViewerModel->item(currThumb)->setData(qGray(thumb.scaled(1, 1).pixel(0, 0)) / 255.0, BrightnessRole);
         thumbsViewerModel->item(currThumb)->setData(true, LoadedRole);
         histograms.append(calcHist(thumb));
         histFiles.append(imageFileName);
