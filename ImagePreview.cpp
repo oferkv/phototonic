@@ -88,7 +88,7 @@ void ImagePreview::resizeImagePreview()
     QSize previewSizePixmap = pixmap.size();
 #endif
 
-    if (previewSizePixmap.width() > scrollArea->width() || previewSizePixmap.height() > scrollArea->height()) {
+    if (Settings::upscalePreview || previewSizePixmap.width() > scrollArea->width() || previewSizePixmap.height() > scrollArea->height()) {
         previewSizePixmap.scale(scrollArea->width(), scrollArea->height(), Qt::KeepAspectRatio);
     }
 

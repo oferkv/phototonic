@@ -2165,6 +2165,7 @@ void Phototonic::writeSettings() {
     Settings::appSettings->setValue(Settings::optionHideDockTitlebars, (bool) Settings::hideDockTitlebars);
     Settings::appSettings->setValue(Settings::optionShowViewerToolbar, (bool) Settings::showViewerToolbar);
     Settings::appSettings->setValue(Settings::optionSetWindowIcon, (bool) Settings::setWindowIcon);
+    Settings::appSettings->setValue(Settings::optionUpscalePreview, (bool) Settings::upscalePreview);
 
     /* Action shortcuts */
     Settings::appSettings->beginGroup(Settings::optionShortcuts);
@@ -2247,6 +2248,7 @@ void Phototonic::readSettings() {
         Settings::appSettings->setValue(Settings::optionHideDockTitlebars, (bool) false);
         Settings::appSettings->setValue(Settings::optionShowViewerToolbar, (bool) false);
         Settings::appSettings->setValue(Settings::optionSmallToolbarIcons, (bool) true);
+        Settings::appSettings->setValue(Settings::optionUpscalePreview, (bool) false);
         Settings::bookmarkPaths.insert(QDir::homePath());
         const QString picturesLocation = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
         if (!picturesLocation.isEmpty()) {
@@ -2295,6 +2297,7 @@ void Phototonic::readSettings() {
     Settings::hideDockTitlebars = Settings::appSettings->value(Settings::optionHideDockTitlebars).toBool();
     Settings::showViewerToolbar = Settings::appSettings->value(Settings::optionShowViewerToolbar).toBool();
     Settings::setWindowIcon = Settings::appSettings->value(Settings::optionSetWindowIcon).toBool();
+    Settings::upscalePreview = Settings::appSettings->value(Settings::optionUpscalePreview).toBool();
 
     /* read external apps */
     Settings::appSettings->beginGroup(Settings::optionExternalApps);

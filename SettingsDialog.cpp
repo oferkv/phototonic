@@ -93,6 +93,10 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     showImageNameCheckBox = new QCheckBox(tr("Show image file name in viewer"), this);
     showImageNameCheckBox->setChecked(Settings::showImageName);
 
+    // Upscale preview image
+    upscalePreviewCheckBox = new QCheckBox(tr("Scale up small images in preview"), this);
+    upscalePreviewCheckBox->setChecked(Settings::upscalePreview);
+
     // Viewer options
     QVBoxLayout *viewerOptsBox = new QVBoxLayout;
     QHBoxLayout *zoomOptsBox = new QHBoxLayout;
@@ -107,6 +111,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     viewerOptsBox->addWidget(showImageNameCheckBox);
     viewerOptsBox->addWidget(wrapListCheckBox);
     viewerOptsBox->addWidget(enableAnimCheckBox);
+    viewerOptsBox->addWidget(upscalePreviewCheckBox);
     viewerOptsBox->addLayout(saveQualityHbox);
     viewerOptsBox->addStretch(1);
 
@@ -353,6 +358,7 @@ void SettingsDialog::saveSettings() {
     Settings::reverseMouseBehavior = reverseMouseCheckBox->isChecked();
     Settings::deleteConfirm = deleteConfirmCheckBox->isChecked();
     Settings::setWindowIcon = setWindowIconCheckBox->isChecked();
+    Settings::upscalePreview = upscalePreviewCheckBox->isChecked();
 
     if (startupDirectoryRadioButtons[Settings::RememberLastDir]->isChecked()) {
         Settings::startupDir = Settings::RememberLastDir;
