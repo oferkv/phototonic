@@ -287,7 +287,7 @@ QRect smartCropRect(const QImage &input, CropOptions options)
     }
     image = image.convertToFormat(QImage::Format_RGBA8888);
 
-    QImage filtered = image;
+    QImage filtered = image.copy();
     if (filtered.isNull()) {
         qWarning() << "Failed to copy image!";
         return input.rect();
