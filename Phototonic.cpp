@@ -2536,11 +2536,12 @@ void Phototonic::loadShortcuts() {
 }
 
 void Phototonic::closeEvent(QCloseEvent *event) {
-    thumbsViewer->abort();
+    thumbsViewer->abort(true);
     writeSettings();
     hide();
-    if (!QApplication::clipboard()->image().isNull()) {
-        QApplication::clipboard()->clear();
+    QClipboard *clip = QApplication::clipboard();
+    if (clip->ownsClipboard() && !clip->image().isNull()) {
+        clip->clear();
     }
     event->accept();
 }
