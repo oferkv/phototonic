@@ -1,6 +1,7 @@
 #include "SmartCrop.h"
 #include <QDebug>
 #include <QtMath>
+#include <QElapsedTimer>
 
 namespace SmartCrop {
 

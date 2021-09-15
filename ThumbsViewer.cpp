@@ -995,7 +995,9 @@ void ThumbsViewer::loadThumbsRange() {
     isInProgress = true;
     currentRowCount = thumbsViewerModel->rowCount();
 
-    int processed = 0;
+    QElapsedTimer timer;
+    timer.start();
+
     for (scrolledForward ? currThumb = thumbsRangeFirst : currThumb = thumbsRangeLast;
          (scrolledForward ? currThumb <= thumbsRangeLast : currThumb >= thumbsRangeFirst);
          scrolledForward ? ++currThumb : --currThumb) {
@@ -1008,9 +1010,9 @@ void ThumbsViewer::loadThumbsRange() {
 
         loadThumb(currThumb);
 
-        if (++processed > BATCH_SIZE) {
+        if (timer.elapsed() > 10) {
             QApplication::processEvents();
-            processed = 0;
+            timer.restart();
         }
     }
 
@@ -1029,6 +1031,7 @@ bool ThumbsViewer::loadThumb(int currThumb) {
     bool imageReadOk = false;
 
     thumbReader.setFileName(imageFileName);
+    thumbReader.setQuality(50); // 50 is the threshold where Qt does fast decoding, but still good scaling
     currentThumbSize = thumbReader.size();
 
     if (currentThumbSize.isValid()) {
