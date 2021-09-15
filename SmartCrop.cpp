@@ -40,6 +40,9 @@ static void edgeDetect(const QImage &i, QImage &o) {
 
 static qreal skinColor(const CropOptions &options, qreal r,qreal g, qreal b) {
     qreal mag = sqrt(r * r + g * g + b * b);
+    if (Q_UNLIKELY(mag == 0.)) {
+        return 0.;
+    }
     qreal rd = r / mag - options.skinColor[0];
     qreal gd = g / mag - options.skinColor[1];
     qreal bd = b / mag - options.skinColor[2];
