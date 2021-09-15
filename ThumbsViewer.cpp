@@ -53,7 +53,6 @@ ThumbsViewer::ThumbsViewer(QWidget *parent, const std::shared_ptr<MetadataCache>
     thumbsViewerModel->setSortRole(SortRole);
     setModel(thumbsViewerModel);
 
-    connect(verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(loadVisibleThumbs(int)));
     m_selectionChangedTimer.setInterval(10);
     m_selectionChangedTimer.setSingleShot(true);
     connect(&m_selectionChangedTimer, &QTimer::timeout, this, &ThumbsViewer::onSelectionChanged);
@@ -488,6 +487,7 @@ void ThumbsViewer::loadFileList() {
 }
 
 void ThumbsViewer::reLoad() {
+    disconnect(verticalScrollBar(), &QScrollBar::valueChanged, this, &ThumbsViewer::loadVisibleThumbs);
 
     isBusy = true;
     phototonic->showBusyAnimation(true);
@@ -509,6 +509,8 @@ void ThumbsViewer::reLoad() {
 
     phototonic->showBusyAnimation(false);
     isBusy = false;
+
+    connect(verticalScrollBar(), &QScrollBar::valueChanged, this, &ThumbsViewer::loadVisibleThumbs);
 }
 
 void ThumbsViewer::loadSubDirectories() {
