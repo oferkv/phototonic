@@ -124,7 +124,7 @@ public:
 
     QStandardItem *addThumb(QString &imageFullPath);
 
-    void abort();
+    void abort(bool permanent = false);
 
     void selectThumbByRow(int row);
 
@@ -191,10 +191,11 @@ private:
     MetadataCache *metadataCache;
     ImageViewer *imageViewer;
     QHash<QBitArray, DuplicateImage> dupImageHashes;
-    bool isAbortThumbsLoading;
-    bool isNeedToScroll;
-    int currentRow;
-    bool scrolledForward;
+    bool isAbortThumbsLoading = false;
+    bool isClosing = false;
+    bool isNeedToScroll = false;
+    int currentRow = 0;
+    bool scrolledForward = false;
     int thumbsRangeFirst;
     int thumbsRangeLast;
 

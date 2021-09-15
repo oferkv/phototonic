@@ -373,8 +373,12 @@ void ThumbsViewer::startDrag(Qt::DropActions) {
     drag->exec(Qt::CopyAction | Qt::MoveAction | Qt::LinkAction, Qt::IgnoreAction);
 }
 
-void ThumbsViewer::abort() {
+void ThumbsViewer::abort(bool permanent) {
     isAbortThumbsLoading = true;
+
+    if (!isClosing && permanent) {
+        isClosing = true;
+    }
 }
 
 void ThumbsViewer::loadVisibleThumbs(int scrollBarValue) {
@@ -588,7 +592,9 @@ void ThumbsViewer::loadPrepare() {
         scrollToTop();
     }
 
-    isAbortThumbsLoading = false;
+    if (!isClosing) {
+        isAbortThumbsLoading = false;
+    }
 
     thumbsRangeFirst = -1;
     thumbsRangeLast = -1;
@@ -1009,7 +1015,10 @@ void ThumbsViewer::loadThumbsRange() {
     }
 
     isInProgress = false;
-    isAbortThumbsLoading = false;
+
+    if (!isClosing) {
+        isAbortThumbsLoading = false;
+    }
 }
 
 bool ThumbsViewer::loadThumb(int currThumb) {
