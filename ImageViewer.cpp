@@ -55,7 +55,7 @@ struct Exiv2LogHandler {
 };
 }
 
-ImageViewer::ImageViewer(QWidget *parent, MetadataCache *metadataCache) : QWidget(parent) {
+ImageViewer::ImageViewer(QWidget *parent, const std::shared_ptr<MetadataCache> &metadataCache) : QWidget(parent) {
     // This is a threadsafe way to ensure that we only register it once
     static Exiv2LogHandler handler;
 

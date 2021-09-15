@@ -26,7 +26,7 @@
 
 #define BATCH_SIZE 10
 
-ThumbsViewer::ThumbsViewer(QWidget *parent, MetadataCache *metadataCache) : QListView(parent) {
+ThumbsViewer::ThumbsViewer(QWidget *parent, const std::shared_ptr<MetadataCache> &metadataCache) : QListView(parent) {
     this->metadataCache = metadataCache;
     Settings::thumbsBackgroundColor = Settings::appSettings->value(
             Settings::optionThumbsBackgroundColor).value<QColor>();
@@ -70,8 +70,6 @@ ThumbsViewer::ThumbsViewer(QWidget *parent, MetadataCache *metadataCache) : QLis
                                  const QModelIndex &)), parent, SLOT(loadSelectedThumbImage(
                                                                              const QModelIndex &)));
 
-    thumbsDir = new QDir();
-    fileFilters = new QStringList;
     emptyImg.load(":/images/no_image.png");
 
     phototonic = (Phototonic *) parent;
@@ -520,7 +518,7 @@ void ThumbsViewer::loadSubDirectories() {
     while (dirIterator.hasNext()) {
         dirIterator.next();
         if (dirIterator.fileInfo().isDir() && dirIterator.fileName() != "." && dirIterator.fileName() != "..") {
-            thumbsDir->setPath(dirIterator.filePath());
+            thumbsDir.setPath(dirIterator.filePath());
 
             initThumbs();
             updateThumbsCount();
@@ -540,7 +538,7 @@ void ThumbsViewer::loadSubDirectories() {
 }
 
 void ThumbsViewer::applyFilter() {
-    fileFilters->clear();
+    fileFilters.clear();
     QString textFilter("*");
     textFilter += filterString;
 
@@ -554,25 +552,25 @@ void ThumbsViewer::applyFilter() {
         }
     }
     for (const QString &glob : imageTypeGlobs) {
-        fileFilters->append(textFilter + glob);
+        fileFilters.append(textFilter + glob);
     }
 
-    thumbsDir->setNameFilters(*fileFilters);
-    thumbsDir->setFilter(QDir::Files);
+    thumbsDir.setNameFilters(fileFilters);
+    thumbsDir.setFilter(QDir::Files);
     if (Settings::showHiddenFiles) {
-        thumbsDir->setFilter(thumbsDir->filter() | QDir::Hidden);
+        thumbsDir.setFilter(thumbsDir.filter() | QDir::Hidden);
     }
 
-    thumbsDir->setPath(Settings::currentDirectory);
+    thumbsDir.setPath(Settings::currentDirectory);
     QDir::SortFlags tempThumbsSortFlags = thumbsSortFlags;
     if (tempThumbsSortFlags & QDir::Size || tempThumbsSortFlags & QDir::Time) {
         tempThumbsSortFlags ^= QDir::Reversed;
     }
 
     if (thumbsSortFlags & QDir::Time || thumbsSortFlags & QDir::Size || thumbsSortFlags & QDir::Type) {
-        thumbsDir->setSorting(tempThumbsSortFlags);
+        thumbsDir.setSorting(tempThumbsSortFlags);
     } else { // by name
-        thumbsDir->setSorting(QDir::NoSort);
+        thumbsDir.setSorting(QDir::NoSort);
     }
 }
 
@@ -620,7 +618,7 @@ void ThumbsViewer::loadDuplicates()
         while (iterator.hasNext()) {
             iterator.next();
             if (iterator.fileInfo().isDir() && iterator.fileName() != "." && iterator.fileName() != "..") {
-                thumbsDir->setPath(iterator.filePath());
+                thumbsDir.setPath(iterator.filePath());
 
                 findDupes(false);
                 if (isAbortThumbsLoading) {
@@ -642,7 +640,7 @@ finish:
 }
 
 void ThumbsViewer::initThumbs() {
-    thumbFileInfoList = thumbsDir->entryInfoList();
+    thumbFileInfoList = thumbsDir.entryInfoList();
 
     if (!(thumbsSortFlags & QDir::Time) && !(thumbsSortFlags & QDir::Size) && !(thumbsSortFlags & QDir::Type)) {
         QCollator collator;
@@ -718,7 +716,7 @@ void ThumbsViewer::updateThumbsCount() {
     } else {
         state = tr("No images");
     }
-    thumbsDir->setPath(Settings::currentDirectory);
+    thumbsDir.setPath(Settings::currentDirectory);
     phototonic->setStatus(state);
 }
 
@@ -740,7 +738,7 @@ void ThumbsViewer::updateFoundDupesState(int duplicates, int filesScanned, int o
 
 void ThumbsViewer::findDupes(bool resetCounters)
 {
-    thumbFileInfoList = thumbsDir->entryInfoList();
+    thumbFileInfoList = thumbsDir.entryInfoList();
     static int originalImages;
     static int foundDups;
     static int totalFiles;

@@ -94,7 +94,7 @@ public:
         Squares
     };
 
-    ThumbsViewer(QWidget *parent, MetadataCache *metadataCache);
+    ThumbsViewer(QWidget *parent, const std::shared_ptr<MetadataCache> &metadataCache);
 
     void loadPrepare();
 
@@ -151,8 +151,8 @@ public:
     InfoView *infoView;
     ImagePreview *imagePreview;
     ImageTags *imageTags;
-    QDir *thumbsDir;
-    QStringList *fileFilters;
+    QDir thumbsDir;
+    QStringList fileFilters;
     QStandardItemModel *thumbsViewerModel;
     QDir::SortFlags thumbsSortFlags;
     int thumbSize;
@@ -188,7 +188,7 @@ private:
     QImage emptyImg;
     QModelIndex currentIndex;
     Phototonic *phototonic;
-    MetadataCache *metadataCache;
+    std::shared_ptr<MetadataCache> metadataCache;
     ImageViewer *imageViewer;
     QHash<QBitArray, DuplicateImage> dupImageHashes;
     bool isAbortThumbsLoading = false;

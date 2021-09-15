@@ -31,6 +31,8 @@
 #include "FileSystemTree.h"
 #include <QStackedLayout>
 
+#include <memory>
+
 #define VERSION "Phototonic v2.1"
 
 class Phototonic : public QMainWindow {
@@ -439,7 +441,7 @@ private:
     QWidget *tagsDockEmptyWidget;
     QWidget *imageInfoDockEmptyWidget;
     bool interfaceDisabled;
-    MetadataCache *metadataCache;
+    std::shared_ptr<MetadataCache> metadataCache;
     FileListWidget *fileListWidget;
     QStackedLayout *stackedLayout;
 

@@ -134,7 +134,7 @@ bool Phototonic::event(QEvent *event) {
 }
 
 void Phototonic::createThumbsViewer() {
-    metadataCache = new MetadataCache;
+    metadataCache = std::make_shared<MetadataCache>();
     thumbsViewer = new ThumbsViewer(this, metadataCache);
     thumbsViewer->thumbsSortFlags = (QDir::SortFlags) Settings::appSettings->value(
             Settings::optionThumbsSortFlags).toInt();
@@ -957,6 +957,7 @@ void Phototonic::createStatusBar() {
     busyMovie = new QMovie(":/images/busy.gif");
     busyLabel = new QLabel(this);
     busyLabel->setMovie(busyMovie);
+    busyMovie->setParent(busyLabel);
     statusBar()->addWidget(busyLabel);
     busyLabel->setVisible(false);
 

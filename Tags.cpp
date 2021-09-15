@@ -21,7 +21,7 @@
 #include "ProgressDialog.h"
 #include "MessageBox.h"
 
-ImageTags::ImageTags(QWidget *parent, ThumbsViewer *thumbsViewer, MetadataCache *metadataCache) : QWidget(parent) {
+ImageTags::ImageTags(QWidget *parent, ThumbsViewer *thumbsViewer, const std::shared_ptr<MetadataCache> &metadataCache) : QWidget(parent) {
     tagsTree = new QTreeWidget;
     tagsTree->setColumnCount(2);
     tagsTree->setDragEnabled(false);

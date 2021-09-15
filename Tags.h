@@ -44,7 +44,7 @@ class ImageTags : public QWidget {
 Q_OBJECT
 
 public:
-    ImageTags(QWidget *parent, ThumbsViewer *thumbsViewer, MetadataCache *metadataCache);
+    ImageTags(QWidget *parent, ThumbsViewer *thumbsViewer, const std::shared_ptr<MetadataCache> &metadataCache);
 
     void addTag(QString tagName, bool tagChecked);
 
@@ -90,7 +90,7 @@ private:
     QTreeWidgetItem *lastChangedTagItem;
     ThumbsViewer *thumbView;
     QTabBar *tabs;
-    MetadataCache *metadataCache;
+    std::shared_ptr<MetadataCache> metadataCache;
     bool negateFilterEnabled;
 
 private slots:

@@ -64,7 +64,7 @@ public:
         MoveRight
     };
 
-    ImageViewer(QWidget *parent, MetadataCache *metadataCache);
+    ImageViewer(QWidget *parent, const std::shared_ptr<MetadataCache> &metadataCache);
 
     void loadImage(QString imageFileName);
 
@@ -152,7 +152,7 @@ private:
     QLabel *feedbackLabel;
     QPoint cropOrigin;
     QPoint contextMenuPosition;
-    MetadataCache *metadataCache;
+    std::shared_ptr<MetadataCache> metadataCache;
 
     void setMouseMoveData(bool lockMove, int lMouseX, int lMouseY);
 
