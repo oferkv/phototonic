@@ -1069,6 +1069,51 @@ QString ThumbsViewer::locateThumbnail(const QString &originalPath) const
     return QString();
 }
 
+void ThumbsViewer::storeThumbnail(const QString &originalPath, QImage thumbnail) const {
+#if defined(Q_OS_MAC) || defined(Q_OS_WIN)
+    return;
+#endif
+    const QString canonicalPath = QFileInfo(originalPath).canonicalFilePath();
+    if (canonicalPath.isEmpty()) {
+        qWarning() << "Asked to store thumbnail for non-existent path" << originalPath;
+        return;
+    }
+
+    QString folder = QStringLiteral("normal/");
+    const int maxSize = qMax(thumbnail.width(), thumbnail.height());
+    if (maxSize < 64) {
+        qDebug() << "Refusing to store tiny thumbnail" << thumbnail.size();
+        return;
+    }
+    if (maxSize >= 1024) {
+        folder = QStringLiteral("xx-large/");
+        thumbnail = thumbnail.scaled(1024, 1024, Qt::KeepAspectRatio);
+    } else if (maxSize >= 512) {
+        folder = QStringLiteral("x-large/");
+        thumbnail = thumbnail.scaled(512, 512, Qt::KeepAspectRatio);
+    } else if (maxSize >= 256) {
+        folder = QStringLiteral("large/");
+        thumbnail = thumbnail.scaled(256, 256, Qt::KeepAspectRatio);
+    } else if (maxSize >= 128) {
+        folder = QStringLiteral("normal/");
+        thumbnail = thumbnail.scaled(128, 128, Qt::KeepAspectRatio);
+    } else {
+        qWarning() << "Thumbnail too small" << thumbnail.size();
+        return;
+    }
+
+    const QString filename = thumbnailFileName(originalPath);
+    const QString basePath = QStandardPaths::writableLocation(QStandardPaths::GenericCacheLocation) +
+        QLatin1String("/thumbnails/");
+    const QString fullPath = basePath + folder + filename;
+
+    const time_t modified = QFileInfo(originalPath).lastModified().toTime_t();
+    thumbnail.setText(QStringLiteral("Thumb::MTime"), QString::number(modified));
+    QUrl url = QUrl::fromLocalFile(canonicalPath).adjusted(QUrl::RemovePassword);
+    thumbnail.setText(QStringLiteral("Thumb::URI"), url.url());
+    thumbnail.save(fullPath);
+}
+
 bool ThumbsViewer::loadThumb(int currThumb) {
     static QSize currentThumbSize;
     QImageReader thumbReader;
@@ -1080,6 +1125,11 @@ bool ThumbsViewer::loadThumb(int currThumb) {
     QString thumbnailPath = locateThumbnail(imageFileName);
     if (!thumbnailPath.isEmpty()) {
         thumbReader.setFileName(thumbnailPath);
+        if (!thumbReader.canRead()) {
+            // Should we delete it? I don't trust myself enough
+            qWarning() << "Invalid thumbnail" << thumbnailPath;
+            thumbReader.setFileName(imageFileName);
+        }
     } else {
         thumbReader.setFileName(imageFileName);
         shouldStoreThumbnail = true;
@@ -1097,6 +1147,9 @@ bool ThumbsViewer::loadThumb(int currThumb) {
     }
 
     if (imageReadOk) {
+        if (shouldStoreThumbnail) {
+            storeThumbnail(imageFileName, thumb);
+        }
         if (Settings::exifThumbRotationEnabled) {
             imageViewer->rotateByExifRotation(thumb, imageFileName);
             currentThumbSize = thumb.size();
