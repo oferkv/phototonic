@@ -84,6 +84,7 @@ namespace Settings {
     extern const char optionKnownTags[];
     extern const char optionSetWindowIcon[];
     extern const char optionUpscalePreview[];
+    extern const char optionScrollZooms[];
 
     extern QSettings *appSettings;
     extern unsigned int layoutMode;
@@ -166,6 +167,7 @@ namespace Settings {
     extern bool isFileListLoaded;
     extern bool setWindowIcon;
     extern bool upscalePreview;
+    extern bool scrollZooms;
 }
 
 #endif // SETTINGS_H

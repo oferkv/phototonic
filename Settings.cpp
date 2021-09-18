@@ -67,6 +67,7 @@ namespace Settings {
     const char optionKnownTags[] = "KnownTags";
     const char optionSetWindowIcon[] = "setWindowIcon";
     const char optionUpscalePreview[] = "upscalePreview";
+    const char optionScrollZooms[] = "scrollZooms";
 
     QSettings *appSettings;
     unsigned int layoutMode;
@@ -149,5 +150,6 @@ namespace Settings {
     bool isFileListLoaded;
     bool setWindowIcon;
     bool upscalePreview;
+    bool scrollZooms;
 }
 

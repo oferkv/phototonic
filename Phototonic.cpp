@@ -1436,34 +1436,37 @@ void Phototonic::thumbsZoomOut() {
     }
 }
 
-void Phototonic::zoomOut() {
+void Phototonic::zoomOut(const float multiplier) {
     if (Settings::imageZoomFactor <= 4.0 && Settings::imageZoomFactor > 0.25) {
-        Settings::imageZoomFactor -= 0.25;
+        Settings::imageZoomFactor -= 0.1 * multiplier;
     } else if (Settings::imageZoomFactor <= 8.0 && Settings::imageZoomFactor >= 4.0) {
-        Settings::imageZoomFactor -= 0.50;
+        Settings::imageZoomFactor -= 0.50 * multiplier;
     } else if (Settings::imageZoomFactor <= 16.0 && Settings::imageZoomFactor >= 8.0) {
-        Settings::imageZoomFactor -= 1.0;
+        Settings::imageZoomFactor -= 1.0 * multiplier;
     } else {
         imageViewer->setFeedback(tr("Minimum zoom"));
         return;
     }
+
+    Settings::imageZoomFactor = qMax(Settings::imageZoomFactor, 0.25f);
 
     imageViewer->tempDisableResize = false;
     imageViewer->resizeImage();
     imageViewer->setFeedback(tr("Zoom %1%").arg(QString::number(Settings::imageZoomFactor * 100)));
 }
 
-void Phototonic::zoomIn() {
+void Phototonic::zoomIn(const float multiplier) {
     if (Settings::imageZoomFactor < 4.0 && Settings::imageZoomFactor >= 0.25) {
-        Settings::imageZoomFactor += 0.25;
+        Settings::imageZoomFactor += 0.1 * multiplier;
     } else if (Settings::imageZoomFactor < 8.0 && Settings::imageZoomFactor >= 4.0) {
-        Settings::imageZoomFactor += 0.50;
+        Settings::imageZoomFactor += 0.50 * multiplier;
     } else if (Settings::imageZoomFactor < 16.0 && Settings::imageZoomFactor >= 8.0) {
-        Settings::imageZoomFactor += 1.00;
+        Settings::imageZoomFactor += 1.00 * multiplier;
     } else {
         imageViewer->setFeedback(tr("Maximum zoom"));
         return;
     }
+    Settings::imageZoomFactor = qMin(Settings::imageZoomFactor, 16.f);
 
     imageViewer->tempDisableResize = false;
     imageViewer->resizeImage();
@@ -2138,6 +2141,7 @@ void Phototonic::writeSettings() {
     Settings::appSettings->setValue(Settings::optionExifThumbRotationEnabled,
                                     (bool) Settings::exifThumbRotationEnabled);
     Settings::appSettings->setValue(Settings::optionReverseMouseBehavior, (bool) Settings::reverseMouseBehavior);
+    Settings::appSettings->setValue(Settings::optionScrollZooms, (bool) Settings::scrollZooms);
     Settings::appSettings->setValue(Settings::optionDeleteConfirm, (bool) Settings::deleteConfirm);
     Settings::appSettings->setValue(Settings::optionShowHiddenFiles, (bool) Settings::showHiddenFiles);
     Settings::appSettings->setValue(Settings::optionWrapImageList, (bool) Settings::wrapImageList);
@@ -2231,6 +2235,7 @@ void Phototonic::readSettings() {
         Settings::appSettings->setValue(Settings::optionExifRotationEnabled, (bool) true);
         Settings::appSettings->setValue(Settings::optionExifThumbRotationEnabled, (bool) false);
         Settings::appSettings->setValue(Settings::optionReverseMouseBehavior, (bool) false);
+        Settings::appSettings->setValue(Settings::optionScrollZooms, (bool) false);
         Settings::appSettings->setValue(Settings::optionDeleteConfirm, (bool) true);
         Settings::appSettings->setValue(Settings::optionShowHiddenFiles, (bool) false);
         Settings::appSettings->setValue(Settings::optionSlideShowDelay, (int) 5);
@@ -2266,6 +2271,7 @@ void Phototonic::readSettings() {
     Settings::thumbsLayout = Settings::appSettings->value(
             Settings::optionThumbsLayout).toInt();
     Settings::reverseMouseBehavior = Settings::appSettings->value(Settings::optionReverseMouseBehavior).toBool();
+    Settings::scrollZooms = Settings::appSettings->value(Settings::optionScrollZooms).toBool();
     Settings::deleteConfirm = Settings::appSettings->value(Settings::optionDeleteConfirm).toBool();
     Settings::showHiddenFiles = Settings::appSettings->value(Settings::optionShowHiddenFiles).toBool();
     Settings::wrapImageList = Settings::appSettings->value(Settings::optionWrapImageList).toBool();
@@ -3474,13 +3480,16 @@ QString Phototonic::getSelectedPath() {
 void Phototonic::wheelEvent(QWheelEvent *event)
 {
     const int scrollDelta = event->angleDelta().y();
+    if (scrollDelta == 0) {
+        return;
+    }
 
     if (Settings::layoutMode == ImageViewWidget) {
-        if (event->modifiers() == Qt::ControlModifier) {
+        if (event->modifiers() == Qt::ControlModifier || Settings::scrollZooms) {
             if (scrollDelta < 0) {
-                zoomOut();
+                zoomOut(scrollDelta / -120.);
             } else {
-                zoomIn();
+                zoomIn(scrollDelta / 120.);
             }
         } else if (nextImageAction->isEnabled()) {
             if (scrollDelta < 0) {

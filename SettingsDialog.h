@@ -66,6 +66,7 @@ private:
     QCheckBox *enableThumbExifCheckBox;
     QCheckBox *showImageNameCheckBox;
     QCheckBox *reverseMouseCheckBox;
+    QCheckBox *scrollZoomCheckBox;
     QCheckBox *deleteConfirmCheckBox;
     QSpinBox *slideDelaySpinBox;
     QCheckBox *slideRandomCheckBox;

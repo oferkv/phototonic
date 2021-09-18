@@ -187,6 +187,9 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     reverseMouseCheckBox = new QCheckBox(tr("Swap mouse double-click and middle-click actions"), this);
     reverseMouseCheckBox->setChecked(Settings::reverseMouseBehavior);
 
+    scrollZoomCheckBox = new QCheckBox(tr("Use scroll wheel for zooming in image viewer"), this);
+    scrollZoomCheckBox->setChecked(Settings::scrollZooms);
+
     // Delete confirmation setting
     deleteConfirmCheckBox = new QCheckBox(tr("Delete confirmation"), this);
     deleteConfirmCheckBox->setChecked(Settings::deleteConfirm);
@@ -259,6 +262,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     generalSettingsLayout->addWidget(reverseMouseCheckBox);
     generalSettingsLayout->addWidget(deleteConfirmCheckBox);
     generalSettingsLayout->addWidget(startupDirGroupBox);
+    generalSettingsLayout->addWidget(scrollZoomCheckBox);
 
     // Slide show delay
     QLabel *slideDelayLab = new QLabel(tr("Delay between slides in seconds:"));
@@ -356,6 +360,7 @@ void SettingsDialog::saveSettings() {
     Settings::exifThumbRotationEnabled = enableThumbExifCheckBox->isChecked();
     Settings::showImageName = showImageNameCheckBox->isChecked();
     Settings::reverseMouseBehavior = reverseMouseCheckBox->isChecked();
+    Settings::scrollZooms = scrollZoomCheckBox->isChecked();
     Settings::deleteConfirm = deleteConfirmCheckBox->isChecked();
     Settings::setWindowIcon = setWindowIconCheckBox->isChecked();
     Settings::upscalePreview = upscalePreviewCheckBox->isChecked();
