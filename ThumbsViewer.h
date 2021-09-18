@@ -181,6 +181,10 @@ private:
 
     void updateImageInfoViewer(int row);
 
+    QString thumbnailFileName(const QString &path) const;
+    QString locateThumbnail(const QString &path) const;
+    void storeThumbnail(const QString &originalPath, const QImage &thumbnail) const;
+
     QFileInfo thumbFileInfo;
     QFileInfoList thumbFileInfoList;
     QList<Histogram> histograms;

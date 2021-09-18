@@ -1023,14 +1023,67 @@ void ThumbsViewer::loadThumbsRange() {
     }
 }
 
+QString ThumbsViewer::thumbnailFileName(const QString &originalPath) const
+{
+    QFileInfo info(originalPath);
+    QString canonicalPath = info.canonicalFilePath();
+    if (canonicalPath.isEmpty()) {
+        qWarning() << originalPath << "does not exist!";
+        canonicalPath = info.absoluteFilePath();
+    }
+    QUrl url = QUrl::fromLocalFile(canonicalPath);
+    QCryptographicHash md5(QCryptographicHash::Md5);
+    md5.addData(QFile::encodeName(url.adjusted(QUrl::RemovePassword).url()));
+    return QString::fromLatin1(md5.result().toHex()) + QStringLiteral(".png");
+}
+
+QString ThumbsViewer::locateThumbnail(const QString &originalPath) const
+{
+#if defined(Q_OS_MAC) || defined(Q_OS_WIN)
+    return "";
+#endif
+    QStringList folders = {
+        QStringLiteral("xx-large/"), // max 1024px
+        QStringLiteral("x-large/"), // max 512px
+        QStringLiteral("large/"), // max 256px, doesn't look too bad when upscaled to max
+    };
+
+    if (thumbSize <= 200) {
+        folders.append(QStringLiteral("normal/")); // 128px max
+    }
+
+    const QString filename = thumbnailFileName(originalPath);
+    const QString basePath = QStandardPaths::writableLocation(QStandardPaths::GenericCacheLocation) +
+        QLatin1String("/thumbnails/");
+    const QFileInfo originalInfo(originalPath);
+    for (const QString &folder : folders) {
+        QFileInfo info(basePath + folder + filename);
+        if (!info.exists()) {
+            continue;
+        }
+        if (originalInfo.lastModified() > info.lastModified()) {
+            continue;
+        }
+        return info.absoluteFilePath();
+    }
+    return QString();
+}
+
 bool ThumbsViewer::loadThumb(int currThumb) {
     static QSize currentThumbSize;
     QImageReader thumbReader;
     QString imageFileName = thumbsViewerModel->item(currThumb)->data(FileNameRole).toString();
     QImage thumb;
     bool imageReadOk = false;
+    bool shouldStoreThumbnail = false;
 
-    thumbReader.setFileName(imageFileName);
+    QString thumbnailPath = locateThumbnail(imageFileName);
+    if (!thumbnailPath.isEmpty()) {
+        thumbReader.setFileName(thumbnailPath);
+    } else {
+        thumbReader.setFileName(imageFileName);
+        shouldStoreThumbnail = true;
+    }
     thumbReader.setQuality(50); // 50 is the threshold where Qt does fast decoding, but still good scaling
     currentThumbSize = thumbReader.size();
 
