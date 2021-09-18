@@ -1105,6 +1105,11 @@ void ThumbsViewer::storeThumbnail(const QString &originalPath, QImage thumbnail)
     const QString filename = thumbnailFileName(originalPath);
     const QString basePath = QStandardPaths::writableLocation(QStandardPaths::GenericCacheLocation) +
         QLatin1String("/thumbnails/");
+
+    if (!QFileInfo::exists(basePath + folder)) {
+        QDir().mkpath(basePath + folder);
+    }
+
     const QString fullPath = basePath + folder + filename;
 
     const time_t modified = QFileInfo(originalPath).lastModified().toTime_t();
