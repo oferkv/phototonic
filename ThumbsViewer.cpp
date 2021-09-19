@@ -1061,6 +1061,9 @@ QString ThumbsViewer::locateThumbnail(const QString &originalPath) const
         if (!info.exists()) {
             continue;
         }
+        if (originalInfo.metadataChangeTime() > info.lastModified()) {
+            continue;
+        }
         if (originalInfo.lastModified() > info.lastModified()) {
             continue;
         }
