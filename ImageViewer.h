@@ -148,7 +148,6 @@ private:
     int mouseY;
     int layoutX;
     int layoutY;
-    bool isAnimation;
     QLabel *feedbackLabel;
     QPoint cropOrigin;
     QPoint contextMenuPosition;

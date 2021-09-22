@@ -65,7 +65,6 @@ ImageViewer::ImageViewer(QWidget *parent, const std::shared_ptr<MetadataCache> &
     moveImageLocked = false;
     mirrorLayout = LayNone;
     imageWidget = new ImageWidget;
-    isAnimation = false;
     animation = nullptr;
 
     scrollArea = new QScrollArea;
@@ -144,14 +143,17 @@ static inline int calcZoom(int size) {
 
 void ImageViewer::resizeImage() {
     static bool busy = false;
-    if (busy || ((!imageWidget || imageWidget->empty()) && !animation)) {
+    if (busy) {
+        return;
+    }
+    if  ((imageWidget && imageWidget->empty()) && !animation) {
         return;
     }
     busy = true;
 
     int imageViewWidth = this->size().width();
     int imageViewHeight = this->size().height();
-    QSize imageSize = isAnimation ? animation->currentPixmap().size() : imageWidget->imageSize();
+    QSize imageSize = animation ? animation->currentPixmap().size() : imageWidget->imageSize();
 
     if (tempDisableResize) {
         imageSize.scale(imageSize.width(), imageSize.height(), Qt::KeepAspectRatio);
@@ -648,7 +650,6 @@ QImage createImageWithOverlay(const QImage &baseImage, const QImage &overlayImag
 }
 
 void ImageViewer::reload() {
-    isAnimation = false;
     if (Settings::showImageName) {
         if (viewerImageFullPath.left(1) == ":") {
             setInfo("No Image");
@@ -693,7 +694,6 @@ void ImageViewer::reload() {
         animation = new QMovie(viewerImageFullPath);
 
         if (animation->frameCount() > 1) {
-            isAnimation = true;
             if (!movieWidget) {
                 movieWidget = new QLabel();
                 movieWidget->setScaledContents(true);
