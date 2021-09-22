@@ -139,7 +139,7 @@ private:
     QImage viewerImage;
     QImage mirrorImage;
     QTimer *mouseMovementTimer;
-    QMovie *animation;
+    QPointer<QMovie> animation;
     bool newImage;
     bool cursorIsHidden;
     bool moveImageLocked;
@@ -163,6 +163,7 @@ private:
     void mirror();
 
     void colorize();
+    void setImage(const QImage &image);
 };
 
 #endif // IMAGE_VIEWER_H

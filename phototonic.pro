@@ -37,6 +37,9 @@ QMAKE_CFLAGS += $$(CFLAGS)
 QMAKE_LFLAGS += $$(LDFLAGS)
 CONFIG += c++11
 
+# Let's get some basic optimization from the compiler, it's the safe ones by default
+CONFIG += optimize
+
 HEADERS += Phototonic.h ThumbsViewer.h ImageViewer.h CropRubberband.h SettingsDialog.h Settings.h InfoViewer.h \
 			FileSystemTree.h Bookmarks.h DirCompleter.h Tags.h MetadataCache.h ShortcutsTable.h CopyMoveDialog.h \
 			CopyMoveToDialog.h CropDialog.h ProgressDialog.h ColorsDialog.h ResizeDialog.h ExternalAppsDialog.h \

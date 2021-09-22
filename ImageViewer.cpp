@@ -144,7 +144,7 @@ static inline int calcZoom(int size) {
 
 void ImageViewer::resizeImage() {
     static bool busy = false;
-    if (busy || (imageWidget->empty() && !animation)) {
+    if (busy || ((!imageWidget || imageWidget->empty()) && !animation)) {
         return;
     }
     busy = true;
@@ -255,8 +255,13 @@ void ImageViewer::resizeImage() {
         }
     }
 
-    imageWidget->setFixedSize(imageSize);
-    imageWidget->adjustSize();
+    if (imageWidget) {
+        imageWidget->setFixedSize(imageSize);
+        imageWidget->adjustSize();
+    } else {
+        movieWidget->setFixedSize(imageSize);
+        movieWidget->adjustSize();
+    }
     centerImage(imageSize);
     busy = false;
 }
@@ -576,7 +581,7 @@ void ImageViewer::colorize() {
 }
 
 void ImageViewer::refresh() {
-    if (isAnimation) {
+    if (!imageWidget) {
         return;
     }
 
@@ -599,6 +604,17 @@ void ImageViewer::refresh() {
 
     imageWidget->setImage(viewerImage);
     resizeImage();
+}
+
+void ImageViewer::setImage(const QImage &image) {
+    if (movieWidget) {
+        delete movieWidget;
+        movieWidget = nullptr;
+        imageWidget = new ImageWidget;
+        scrollArea->setWidget(imageWidget);
+    }
+
+    imageWidget->setImage(image);
 }
 
 QImage createImageWithOverlay(const QImage &baseImage, const QImage &overlayImage, int x, int y) {
@@ -644,11 +660,12 @@ void ImageViewer::reload() {
         if (!Settings::keepTransform)
             Settings::cropLeft = Settings::cropTop = Settings::cropWidth = Settings::cropHeight = 0;
         if (newImage || viewerImageFullPath.isEmpty()) {
+
             newImage = true;
             viewerImageFullPath = CLIPBOARD_IMAGE_NAME;
             origImage.load(":/images/no_image.png");
             viewerImage = origImage;
-            imageWidget->setImage(viewerImage);
+            setImage(viewerImage);
             pasteImage();
             return;
         }
@@ -662,6 +679,7 @@ void ImageViewer::reload() {
     if (Settings::enableAnimations && imageReader.supportsAnimation()) {
         if (animation) {
             delete animation;
+            animation = nullptr;
         }
         animation = new QMovie(viewerImageFullPath);
 
@@ -674,6 +692,7 @@ void ImageViewer::reload() {
                 imageWidget = nullptr;
             }
             movieWidget->setMovie(animation);
+            animation->setParent(movieWidget);
             animation->start();
             resizeImage();
             return;
@@ -681,12 +700,6 @@ void ImageViewer::reload() {
     }
 
     // It's not a movie
-    if (movieWidget) {
-        delete movieWidget;
-        movieWidget = nullptr;
-        imageWidget = new ImageWidget;
-        scrollArea->setWidget(imageWidget);
-    }
 
     if (imageReader.size().isValid() && imageReader.read(&origImage)) {
         viewerImage = origImage;
@@ -702,7 +715,7 @@ void ImageViewer::reload() {
         setInfo(imageReader.errorString());
     }
 
-    imageWidget->setImage(viewerImage);
+    setImage(viewerImage);
     resizeImage();
     if (Settings::keepTransform) {
         if (Settings::cropLeft || Settings::cropTop || Settings::cropWidth || Settings::cropHeight)
@@ -757,7 +770,7 @@ void ImageViewer::loadImage(QString imageFileName) {
 void ImageViewer::clearImage() {
     origImage.load(":/images/no_image.png");
     viewerImage = origImage;
-    imageWidget->setImage(viewerImage);
+    setImage(viewerImage);
 }
 
 void ImageViewer::monitorCursorState() {
@@ -797,6 +810,9 @@ void ImageViewer::mouseDoubleClickEvent(QMouseEvent *event) {
 }
 
 void ImageViewer::mousePressEvent(QMouseEvent *event) {
+    if (!imageWidget) {
+        return;
+    }
     if (event->button() == Qt::LeftButton) {
         if (event->modifiers() == Qt::ControlModifier) {
             cropOrigin = event->pos();
@@ -832,6 +848,10 @@ void ImageViewer::mouseReleaseEvent(QMouseEvent *event) {
 }
 
 void ImageViewer::updateRubberBandFeedback(QRect geom) {
+    if (!imageWidget) {
+        return;
+    }
+
     QPoint bandTopLeft = imageWidget->mapToImage(imageWidget->mapFromGlobal(mapToGlobal(cropRubberBand->geometry().topLeft())));
 
     setFeedback(tr("Selection: ")
@@ -845,6 +865,10 @@ void ImageViewer::updateRubberBandFeedback(QRect geom) {
 }
 
 void ImageViewer::applyCropAndRotation() {
+    if (!imageWidget) {
+        return;
+    }
+
     bool didSomething = false;
     if (cropRubberBand && cropRubberBand->isVisible()) {
 
@@ -887,6 +911,9 @@ void ImageViewer::applyCropAndRotation() {
 }
 
 void ImageViewer::setMouseMoveData(bool lockMove, int lMouseX, int lMouseY) {
+    if (!imageWidget) {
+        return;
+    }
     moveImageLocked = lockMove;
     mouseX = lMouseX;
     mouseY = lMouseY;
@@ -895,6 +922,10 @@ void ImageViewer::setMouseMoveData(bool lockMove, int lMouseX, int lMouseY) {
 }
 
 void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
+    if (!imageWidget) {
+        return;
+    }
+
     if (event->modifiers() == Qt::ControlModifier) {
         if (cropRubberBand && cropRubberBand->isVisible()) {
             cropRubberBand->setGeometry(QRect(cropOrigin, event->pos()).normalized());
@@ -942,6 +973,10 @@ void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
 }
 
 void ImageViewer::keyMoveEvent(int direction) {
+    if (!imageWidget) {
+        return;
+    }
+
     int newX = layoutX = imageWidget->pos().x();
     int newY = layoutY = imageWidget->pos().y();
     bool needToMove = false;
@@ -1140,7 +1175,7 @@ void ImageViewer::copyImage() {
 }
 
 void ImageViewer::pasteImage() {
-    if (isAnimation) {
+    if (!imageWidget) {
         return;
     }
 
