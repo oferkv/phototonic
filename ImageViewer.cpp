@@ -519,8 +519,14 @@ void ImageViewer::colorize() {
     static unsigned char brightTransform[256];
     bool hasAlpha = viewerImage.hasAlphaChannel();
 
-    if (viewerImage.colorCount()) {
+    switch(viewerImage.format()) {
+    case QImage::Format_RGB32:
+    case QImage::Format_ARGB32:
+    case QImage::Format_ARGB32_Premultiplied:
+        break;
+    default:
         viewerImage = viewerImage.convertToFormat(QImage::Format_RGB32);
+
     }
 
     int i;
