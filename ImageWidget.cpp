@@ -19,6 +19,7 @@
 #include "ImageWidget.h"
 #include <QDebug>
 #include <QPainter>
+#include <QPaintEvent>
 
 ImageWidget::ImageWidget(QWidget *parent) : QWidget(parent)
 {
@@ -68,13 +69,33 @@ QSize ImageWidget::sizeHint() const
     return m_image.size();
 }
 
-void ImageWidget::paintEvent(QPaintEvent *)
+void ImageWidget::paintEvent(QPaintEvent *ev)
 {
     float scale = qMax(float(width()) / m_image.width(), float(height()) / m_image.height());
 
     QPainter painter(this);
+
+    if (qFuzzyIsNull(m_rotation)) {
+        const float sx = qMax(-x() / scale, 0.f);
+        const float sy = qMax(-y() / scale, 0.f);
+        const float sw = qMin<float>(width() / scale, m_image.width());
+        const float sh = qMin<float>(height() / scale, m_image.height());
+
+        QRectF sourceRect(sx, sy, sw, sh);
+        QRectF targetRect = rect();
+        targetRect &= ev->rect();
+        sourceRect &= QRectF(ev->rect().x() / scale, ev->rect().y() / scale, ev->rect().width() / scale, ev->rect().height() / scale);
+
+        if (sourceRect.width() * sourceRect.height() < 500 * 500) {
+            painter.drawImage(targetRect.topLeft(), m_image.copy(sourceRect.toRect()).scaled(targetRect.toRect().size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
+
+        } else {
+            painter.drawImage(targetRect, m_image, sourceRect);
+        }
+
+        return;
+    }
     painter.scale(scale, scale);
-    painter.setRenderHint(QPainter::Antialiasing);
     QPoint center(width() / 2, height() / 2);
     painter.translate(center);
     painter.rotate(m_rotation);
