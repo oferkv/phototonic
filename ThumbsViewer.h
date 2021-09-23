@@ -91,7 +91,8 @@ public:
     };
     enum ThumbnailLayouts {
         Classic,
-        Squares
+        Squares,
+        Compact
     };
 
     ThumbsViewer(QWidget *parent, const std::shared_ptr<MetadataCache> &metadataCache);
@@ -181,6 +182,8 @@ private:
 
     void updateImageInfoViewer(int row);
 
+    QSize itemSizeHint() const;
+
     QString thumbnailFileName(const QString &path) const;
     QString locateThumbnail(const QString &path) const;
     void storeThumbnail(const QString &originalPath, QImage thumbnail, const QSize &originalSize) const;
@@ -189,7 +192,7 @@ private:
     QFileInfoList thumbFileInfoList;
     QList<Histogram> histograms;
     QList<QString> histFiles;
-    QImage emptyImg;
+    QPixmap emptyImg;
     QModelIndex currentIndex;
     Phototonic *phototonic;
     std::shared_ptr<MetadataCache> metadataCache;

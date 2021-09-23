@@ -384,6 +384,12 @@ void Phototonic::createActions() {
     setSquareThumbsAction->setObjectName("setSquareThumbs");
     connect(setSquareThumbsAction, SIGNAL(triggered()), this, SLOT(setSquareThumbs()));
 
+    setCompactThumbsAction = new QAction(tr("Show compact thumbnails"), this);
+    setCompactThumbsAction->setCheckable(true);
+    setCompactThumbsAction->setChecked(Settings::thumbsLayout == ThumbsViewer::Compact);
+    setCompactThumbsAction->setObjectName("setCompactThumbs");
+    connect(setCompactThumbsAction, SIGNAL(triggered()), this, SLOT(setCompactThumbs()));
+
     copyToAction = new QAction(tr("Copy to..."), this);
     copyToAction->setObjectName("copyTo");
     connect(copyToAction, SIGNAL(triggered()), this, SLOT(copyImagesTo()));
@@ -793,6 +799,7 @@ void Phototonic::createMenus() {
     thumbLayoutsGroup = new QActionGroup(this);
     thumbLayoutsGroup->addAction(setClassicThumbsAction);
     thumbLayoutsGroup->addAction(setSquareThumbsAction);
+    thumbLayoutsGroup->addAction(setCompactThumbsAction);
     viewMenu->addActions(thumbLayoutsGroup->actions());
     viewMenu->addSeparator();
 
@@ -935,6 +942,11 @@ void Phototonic::setClassicThumbs() {
 
 void Phototonic::setSquareThumbs() {
     Settings::thumbsLayout = ThumbsViewer::Squares;
+    refreshThumbs(false);
+}
+
+void Phototonic::setCompactThumbs() {
+    Settings::thumbsLayout = ThumbsViewer::Compact;
     refreshThumbs(false);
 }
 

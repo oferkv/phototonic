@@ -581,16 +581,40 @@ void ThumbsViewer::applyFilter() {
     }
 }
 
+QSize ThumbsViewer::itemSizeHint() const
+{
+    switch(Settings::thumbsLayout) {
+    case Squares:
+        return QSize(thumbSize, thumbSize);
+    case Compact:
+        return QSize(thumbSize, thumbSize + ((int) (QFontMetrics(font()).height() * 2.5)));
+    case Classic:
+        return QSize(thumbSize, thumbSize + ((int) (QFontMetrics(font()).height() * 1.5)));
+    default:
+        qWarning() << "Invalid thumbs layout" << Settings::thumbsLayout;
+        return QSize(thumbSize, thumbSize);
+    }
+
+}
+
+
 void ThumbsViewer::loadPrepare() {
 
     thumbsViewerModel->clear();
     setIconSize(QSize(thumbSize, thumbSize));
+
     if (Settings::thumbsLayout == Squares) {
         setSpacing(0);
         setUniformItemSizes(true);
+        setGridSize(itemSizeHint());
+    } else if (Settings::thumbsLayout == Compact) {
+        setSpacing(0);
+        setUniformItemSizes(false);
+        setGridSize(itemSizeHint());
     } else {
         setSpacing(QFontMetrics(font()).height());
         setUniformItemSizes(false);
+        setGridSize(QSize());
     }
 
     if (isNeedToScroll) {
@@ -674,10 +698,8 @@ void ThumbsViewer::initThumbs() {
     static QSize hintSize;
     int processed = 0;
 
-    emptyPixMap = QPixmap::fromImage(emptyImg).scaled(thumbSize, thumbSize);
-    hintSize = Settings::thumbsLayout == Classic ?
-        QSize(thumbSize, thumbSize + ((int) (QFontMetrics(font()).height() * 1.5))) :
-        QSize(thumbSize, thumbSize);
+    emptyPixMap = emptyImg.scaled(thumbSize, thumbSize);
+    hintSize = itemSizeHint();
 
     for (fileIndex = 0; fileIndex < thumbFileInfoList.size(); ++fileIndex) {
         thumbFileInfo = thumbFileInfoList.at(fileIndex);
@@ -695,10 +717,8 @@ void ThumbsViewer::initThumbs() {
         thumbItem->setData(thumbFileInfo.lastModified(), TimeRole);
         thumbItem->setData(thumbFileInfo.filePath(), FileNameRole);
         thumbItem->setSizeHint(hintSize);
-        if (Settings::thumbsLayout == Classic) {
-            thumbItem->setTextAlignment(Qt::AlignTop | Qt::AlignHCenter);
-            thumbItem->setText(thumbFileInfo.fileName());
-        }
+        thumbItem->setTextAlignment(Qt::AlignTop | Qt::AlignHCenter);
+        thumbItem->setText(thumbFileInfo.fileName());
 
         thumbsViewerModel->appendRow(thumbItem);
 
@@ -1164,7 +1184,7 @@ bool ThumbsViewer::loadThumb(int currThumb) {
 
     if (currentThumbSize.isValid()) {
         if (currentThumbSize.width() != thumbSize || currentThumbSize.height() != thumbSize) {
-            currentThumbSize.scale(QSize(thumbSize, thumbSize), Settings::thumbsLayout == Squares ? Qt::KeepAspectRatioByExpanding : Qt::KeepAspectRatio);
+            currentThumbSize.scale(QSize(thumbSize, thumbSize), Settings::thumbsLayout != Classic ? Qt::KeepAspectRatioByExpanding : Qt::KeepAspectRatio);
         }
 
         thumbReader.setScaledSize(currentThumbSize);
@@ -1189,12 +1209,12 @@ bool ThumbsViewer::loadThumb(int currThumb) {
         if (Settings::exifThumbRotationEnabled) {
             imageViewer->rotateByExifRotation(thumb, imageFileName);
             currentThumbSize = thumb.size();
-            currentThumbSize.scale(QSize(thumbSize, thumbSize), Settings::thumbsLayout == Squares ? Qt::KeepAspectRatioByExpanding : Qt::KeepAspectRatio);
+            currentThumbSize.scale(QSize(thumbSize, thumbSize), Settings::thumbsLayout != Classic ? Qt::KeepAspectRatioByExpanding : Qt::KeepAspectRatio);
         }
 
         thumbsViewerModel->item(currThumb)->setData(qGray(thumb.scaled(1, 1).pixel(0, 0)) / 255.0, BrightnessRole);
 
-        if (Settings::thumbsLayout == Squares) {
+        if (Settings::thumbsLayout != Classic) {
             thumb = SmartCrop::crop(thumb, QSize(thumbSize, thumbSize));
         }
 
@@ -1202,9 +1222,7 @@ bool ThumbsViewer::loadThumb(int currThumb) {
         thumbsViewerModel->item(currThumb)->setData(true, LoadedRole);
         histograms.append(calcHist(thumb));
         histFiles.append(imageFileName);
-        if (Settings::thumbsLayout == Squares) {
-            thumbsViewerModel->item(currThumb)->setSizeHint(QSize(thumbSize, thumbSize));
-        }
+        thumbsViewerModel->item(currThumb)->setSizeHint(itemSizeHint());
     } else {
         thumbsViewerModel->item(currThumb)->setIcon(QIcon::fromTheme("image-missing",
                                                                      QIcon(":/images/error_image.png")).pixmap(
@@ -1225,14 +1243,8 @@ QStandardItem * ThumbsViewer::addThumb(QString &imageFullPath) {
 
     QStandardItem *thumbItem = new QStandardItem();
     QImageReader thumbReader;
-    QSize hintSize;
+    QSize hintSize = itemSizeHint();
     QSize currThumbSize;
-
-    if (Settings::thumbsLayout == Squares) {
-        hintSize = QSize(thumbSize, thumbSize);
-    } else {
-        hintSize = QSize(thumbSize, thumbSize + ((int) (QFontMetrics(font()).height() * 1.5)));
-    }
 
     thumbFileInfo = QFileInfo(imageFullPath);
     thumbItem->setData(true, LoadedRole);
@@ -1249,7 +1261,7 @@ QStandardItem * ThumbsViewer::addThumb(QString &imageFullPath) {
     currThumbSize = thumbReader.size();
     if (currThumbSize.isValid()) {
         if (currThumbSize.width() > thumbSize || currThumbSize.height() > thumbSize) {
-            currThumbSize.scale(QSize(thumbSize, thumbSize), Settings::thumbsLayout == Squares ? Qt::KeepAspectRatioByExpanding : Qt::KeepAspectRatio);
+            currThumbSize.scale(QSize(thumbSize, thumbSize), Settings::thumbsLayout != Classic ? Qt::KeepAspectRatioByExpanding : Qt::KeepAspectRatio);
         }
 
         thumbReader.setScaledSize(currThumbSize);
@@ -1258,7 +1270,7 @@ QStandardItem * ThumbsViewer::addThumb(QString &imageFullPath) {
         if (Settings::exifThumbRotationEnabled) {
             imageViewer->rotateByExifRotation(thumb, imageFullPath);
             currThumbSize = thumb.size();
-            currThumbSize.scale(QSize(thumbSize, thumbSize), Settings::thumbsLayout == Squares ? Qt::KeepAspectRatioByExpanding : Qt::KeepAspectRatio);
+            currThumbSize.scale(QSize(thumbSize, thumbSize), Settings::thumbsLayout != Classic ? Qt::KeepAspectRatioByExpanding : Qt::KeepAspectRatio);
         }
         thumbItem->setData(qGray(thumb.scaled(1, 1).pixel(0, 0)) / 255.0, BrightnessRole);
 

@@ -288,6 +288,8 @@ private slots:
 
     void setSquareThumbs();
 
+    void setCompactThumbs();
+
     void setClassicThumbs();
 
 private:
@@ -332,6 +334,7 @@ private:
     QActionGroup *thumbLayoutsGroup;
     QAction *setClassicThumbsAction;
     QAction *setSquareThumbsAction;
+    QAction *setCompactThumbsAction;
 
     QActionGroup *sortTypesGroup;
     QAction *sortByNameAction;
