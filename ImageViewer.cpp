@@ -333,10 +333,6 @@ void ImageViewer::rotateByExifRotation(QImage &image, QString &imageFullPath) {
 }
 
 void ImageViewer::transform() {
-    if (Settings::exifRotationEnabled) {
-        rotateByExifRotation(viewerImage, viewerImageFullPath);
-    }
-
     if (!qFuzzyCompare(Settings::rotation, 0)) {
         QTransform trans;
         trans.rotate(Settings::rotation);
@@ -721,7 +717,11 @@ void ImageViewer::reload() {
     // It's not a movie
 
     if (imageReader.size().isValid() && imageReader.read(&origImage)) {
+        if (Settings::exifRotationEnabled) {
+            rotateByExifRotation(origImage, viewerImageFullPath);
+        }
         viewerImage = origImage;
+
         if (Settings::colorsActive || Settings::keepTransform) {
             colorize();
         }
