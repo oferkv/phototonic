@@ -731,7 +731,7 @@ void ImageViewer::reload() {
     } else {
         viewerImage = QIcon::fromTheme("image-missing",
                                         QIcon(":/images/error_image.png")).pixmap(BAD_IMAGE_SIZE, BAD_IMAGE_SIZE).toImage();
-        setInfo(imageReader.errorString());
+        setInfo(QFileInfo(imageReader.fileName()).fileName() + ": " + imageReader.errorString());
     }
 
     setImage(viewerImage);
