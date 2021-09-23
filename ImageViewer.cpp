@@ -82,8 +82,6 @@ ImageViewer::ImageViewer(QWidget *parent, const std::shared_ptr<MetadataCache> &
     scrollArea->setAlignment(Qt::AlignCenter);
     scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    scrollArea->verticalScrollBar()->blockSignals(true);
-    scrollArea->horizontalScrollBar()->blockSignals(true);
     scrollArea->setFrameStyle(0);
     scrollArea->setWidget(imageWidget);
     scrollArea->setWidgetResizable(false);
@@ -164,6 +162,9 @@ void ImageViewer::resizeImage() {
     int imageViewWidth = this->size().width();
     int imageViewHeight = this->size().height();
     QSize imageSize = animation ? animation->currentPixmap().size() : imageWidget->imageSize();
+
+    float positionY = scrollArea->verticalScrollBar()->value() > 0 ? scrollArea->verticalScrollBar()->value() / float(scrollArea->verticalScrollBar()->maximum()) : 0;
+    float positionX = scrollArea->horizontalScrollBar()->value() > 0 ? scrollArea->horizontalScrollBar()->value() / float(scrollArea->horizontalScrollBar()->maximum()) : 0;
 
     if (tempDisableResize) {
         imageSize.scale(imageSize.width(), imageSize.height(), Qt::KeepAspectRatio);
@@ -267,14 +268,16 @@ void ImageViewer::resizeImage() {
         }
     }
 
-    if (imageWidget) {
-        imageWidget->setFixedSize(imageSize);
-        imageWidget->adjustSize();
+
+    QPointF newPosition = scrollArea->widget()->pos();
+    scrollArea->widget()->setFixedSize(imageSize);
+    scrollArea->widget()->adjustSize();
+    if (newPosition.isNull() || imageSize.width() < width() + 100 || imageSize.height() < height() + 100) {
+        centerImage(imageSize);
     } else {
-        movieWidget->setFixedSize(imageSize);
-        movieWidget->adjustSize();
+        scrollArea->horizontalScrollBar()->setValue(scrollArea->horizontalScrollBar()->maximum() * positionX);
+        scrollArea->verticalScrollBar()->setValue(scrollArea->verticalScrollBar()->maximum() * positionY);
     }
-    centerImage(imageSize);
     busy = false;
 }
 
@@ -985,7 +988,8 @@ void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
             }
 
             if (needToMove) {
-                imageWidget->move(newX, newY);
+                scrollArea->horizontalScrollBar()->setValue(-newX);
+                scrollArea->verticalScrollBar()->setValue(-newY);
             }
         }
     }
@@ -1038,26 +1042,8 @@ void ImageViewer::keyMoveEvent(int direction) {
     }
 
     if (needToMove) {
-        int i;
-
-        switch (direction) {
-            case MoveLeft:
-                for (i = imageWidget->pos().x(); i <= newX; ++i)
-                    imageWidget->move(newX, newY);
-                break;
-            case MoveRight:
-                for (i = imageWidget->pos().x(); i >= newX; --i)
-                    imageWidget->move(newX, newY);
-                break;
-            case MoveUp:
-                for (i = imageWidget->pos().y(); i <= newY; ++i)
-                    imageWidget->move(newX, newY);
-                break;
-            case MoveDown:
-                for (i = imageWidget->pos().y(); i >= newY; --i)
-                    imageWidget->move(newX, newY);
-                break;
-        }
+        scrollArea->horizontalScrollBar()->setValue(-newX);
+        scrollArea->verticalScrollBar()->setValue(-newY);
     }
 }
 
