@@ -554,21 +554,18 @@ void ImageViewer::colorize() {
     float contrast = ((float) Settings::contrastVal / 100.0);
     float brightness = ((float) Settings::brightVal / 100.0);
 
-    const int lowPoint = qBound<int>(0, 128.0f - 128.0f * tan(contrast), 256);
-    for (i = 0; i <= lowPoint; i++) {
-        contrastTransform[i] = 0;
-    }
-
-    const int highPoint = qBound<int>(0, 128.0f + 128.0f * tan(contrast), 256);
-    for (i = lowPoint + 1; i <= highPoint; ++i) {
-        contrastTransform[i] = (i - 128) / tan(contrast) + 128;
-    }
-    for (i = highPoint; i < 256; i++) {
-        contrastTransform[i] = 255;
+    for (i = 0; i < 256; ++i) {
+        if (i < (int) (128.0f + 128.0f * tan(contrast)) && i > (int) (128.0f - 128.0f * tan(contrast))) {
+            contrastTransform[i] = (i - 128) / tan(contrast) + 128;
+        } else if (i >= (int) (128.0f + 128.0f * tan(contrast))) {
+            contrastTransform[i] = 255;
+        } else {
+            contrastTransform[i] = 0;
+        }
     }
 
     for (i = 0; i < 256; ++i) {
-        brightTransform[i] = unsigned(255.0 * pow(i / 255.0, 1.0 / brightness) + 0.5);
+        brightTransform[i] = MIN(255, (int) ((255.0 * pow(i / 255.0, 1.0 / brightness)) + 0.5));
     }
 
     for (y = 0; y < viewerImage.height(); ++y) {
