@@ -161,9 +161,8 @@ public:
     bool isBusy;
 
 protected:
-    void startDrag(Qt::DropActions);
-
-    void mousePressEvent(QMouseEvent *event);
+    void startDrag(Qt::DropActions) override;
+    void mousePressEvent(QMouseEvent *event) override;
 
 private:
     void initThumbs();
