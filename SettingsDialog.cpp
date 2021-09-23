@@ -396,7 +396,7 @@ void SettingsDialog::setButtonBgColor(QColor &color, QToolButton *button) {
 }
 
 void SettingsDialog::pickThumbsColor() {
-    QColor userColor = QColorDialog::getColor(Settings::thumbsBackgroundColor, this);
+    QColor userColor = QColorDialog::getColor(Settings::thumbsBackgroundColor, this, tr("Select background color"), QColorDialog::ShowAlphaChannel);
     if (userColor.isValid()) {
         setButtonBgColor(userColor, thumbsColorPickerButton);
         thumbsBackgroundColor = userColor;

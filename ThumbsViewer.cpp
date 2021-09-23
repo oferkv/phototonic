@@ -83,9 +83,24 @@ void ThumbsViewer::setThumbColors() {
             .arg(Settings::thumbsBackgroundColor.green())
             .arg(Settings::thumbsBackgroundColor.blue());
 
-    QString styleSheet = "QListView { " + backgroundColor + "background-image: url("
-                         + Settings::thumbsBackgroundImage
-                         + "); background-attachment: fixed; }";
+    QString itemBackgroundColor = "background: rgba(%1, %2, %3, 0.5); ";
+    itemBackgroundColor = itemBackgroundColor.arg(Settings::thumbsBackgroundColor.red())
+            .arg(Settings::thumbsBackgroundColor.green())
+            .arg(Settings::thumbsBackgroundColor.blue());
+
+    QColor background = Settings::thumbsBackgroundColor;
+
+    QString styleSheet =
+            "QListView { "
+            "   background: " + background.name(QColor::HexRgb) + ";"
+            "   background-image: url(" + Settings::thumbsBackgroundImage + ");"
+            "   background-attachment: fixed; "
+            "} "
+            " QListView::item { "
+            "      background: " + background.name(QColor::HexArgb) + ";"
+            "      color: " + Settings::thumbsTextColor.name(QColor::HexArgb) + ";"
+            "}"
+            ;
     setStyleSheet(styleSheet);
 
     QPalette scrollBarOriginalPalette = verticalScrollBar()->palette();
