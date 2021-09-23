@@ -154,14 +154,22 @@ void ImageViewer::resizeImage() {
     if (busy) {
         return;
     }
-    if  ((imageWidget && imageWidget->empty()) && !animation) {
+    QSize imageSize;
+    if (animation) {
+        imageSize = animation->currentPixmap().size();
+    } else if (imageWidget) {
+        imageSize = imageWidget->imageSize();
+    } else {
         return;
     }
+    if (imageSize.isEmpty()) {
+        return;
+    }
+
     busy = true;
 
     int imageViewWidth = this->size().width();
     int imageViewHeight = this->size().height();
-    QSize imageSize = animation ? animation->currentPixmap().size() : imageWidget->imageSize();
 
     float positionY = scrollArea->verticalScrollBar()->value() > 0 ? scrollArea->verticalScrollBar()->value() / float(scrollArea->verticalScrollBar()->maximum()) : 0;
     float positionX = scrollArea->horizontalScrollBar()->value() > 0 ? scrollArea->horizontalScrollBar()->value() / float(scrollArea->horizontalScrollBar()->maximum()) : 0;
