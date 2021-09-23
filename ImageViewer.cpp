@@ -969,11 +969,21 @@ void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
         imageWidget->setRotation(initialRotation - vector.angle());
         // qDebug() << "image center" << fulcrum << "line" << vector << "angle" << vector.angle() << "geom" << imageWidget->geometry();
 
-    } else if (event->modifiers() == Qt::ControlModifier) {
-        if (cropRubberBand && cropRubberBand->isVisible()) {
-            cropRubberBand->setGeometry(QRect(cropOrigin, event->pos()).normalized());
+    } else if (event->modifiers() & Qt::ControlModifier) {
+        if (!cropRubberBand || !cropRubberBand->isVisible()) {
+            return;
         }
-    } else if (event->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier)) {
+        QRect newRect;
+        newRect = QRect(cropOrigin, event->pos());
+
+        // Force square
+        if (event->modifiers() & Qt::ShiftModifier) {
+            const int deltaX = cropOrigin.x() - event->pos().x();
+            const int deltaY = cropOrigin.y() - event->pos().y();
+            newRect.setSize(QSize(-deltaX, deltaY < 0 ? qAbs(deltaX) : -qAbs(deltaX)));
+        }
+
+        cropRubberBand->setGeometry(newRect.normalized());
     } else {
         if (moveImageLocked) {
             int newX = layoutX + (event->pos().x() - mouseX);
