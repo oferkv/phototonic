@@ -34,7 +34,7 @@ public:
 
     static int copyOrMoveFile(bool isCopy, QString &srcFile, QString &srcPath, QString &dstPath, QString &dstDir);
 
-    void exec(ThumbsViewer *thumbView, QString &destDir, bool pasteInCurrDir);
+    void execute(ThumbsViewer *thumbView, QString &destDir, bool pasteInCurrDir);
 
     int nFiles;
     int latestRow;

@@ -78,7 +78,7 @@ CopyMoveDialog::CopyMoveDialog(QWidget *parent) : QDialog(parent) {
     setLayout(mainLayout);
 }
 
-void CopyMoveDialog::exec(ThumbsViewer *thumbView, QString &destDir, bool pasteInCurrDir) {
+void CopyMoveDialog::execute(ThumbsViewer *thumbView, QString &destDir, bool pasteInCurrDir) {
     int res = 0;
     QString sourceFile;
     QFileInfo fileInfo;

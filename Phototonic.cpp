@@ -1747,7 +1747,7 @@ void Phototonic::pasteThumbs() {
     }
 
     CopyMoveDialog *copyMoveDialog = new CopyMoveDialog(this);
-    copyMoveDialog->exec(thumbsViewer, destDir, pasteInCurrDir);
+    copyMoveDialog->execute(thumbsViewer, destDir, pasteInCurrDir);
     if (pasteInCurrDir) {
         for (int thumb = 0; thumb < Settings::copyCutFileList.size(); ++thumb) {
             thumbsViewer->addThumb(Settings::copyCutFileList[thumb]);
@@ -3086,7 +3086,7 @@ void Phototonic::dropOp(Qt::KeyboardModifiers keyMods, bool dirOp, QString copyM
     } else {
         CopyMoveDialog *copyMoveDialog = new CopyMoveDialog(this);
         Settings::copyCutIndexList = thumbsViewer->selectionModel()->selectedIndexes();
-        copyMoveDialog->exec(thumbsViewer, destDir, false);
+        copyMoveDialog->execute(thumbsViewer, destDir, false);
 
         if (!Settings::isCopyOperation) {
             int row = copyMoveDialog->latestRow;
