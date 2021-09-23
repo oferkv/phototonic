@@ -671,6 +671,7 @@ finish:
 }
 
 void ThumbsViewer::initThumbs() {
+    phototonic->showBusyAnimation(true);
     thumbFileInfoList = thumbsDir.entryInfoList();
 
     if (!(thumbsSortFlags & QDir::Time) && !(thumbsSortFlags & QDir::Size) && !(thumbsSortFlags & QDir::Type)) {
@@ -733,6 +734,7 @@ void ThumbsViewer::initThumbs() {
     if (thumbFileInfoList.size() && selectionModel()->selectedIndexes().size() == 0) {
         selectThumbByRow(0);
     }
+    phototonic->showBusyAnimation(false);
 }
 
 void ThumbsViewer::updateThumbsCount() {
