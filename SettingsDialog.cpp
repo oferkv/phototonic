@@ -93,10 +93,6 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     showImageNameCheckBox = new QCheckBox(tr("Show image file name in viewer"), this);
     showImageNameCheckBox->setChecked(Settings::showImageName);
 
-    // Upscale preview image
-    upscalePreviewCheckBox = new QCheckBox(tr("Scale up small images in preview"), this);
-    upscalePreviewCheckBox->setChecked(Settings::upscalePreview);
-
     // Viewer options
     QVBoxLayout *viewerOptsBox = new QVBoxLayout;
     QHBoxLayout *zoomOptsBox = new QHBoxLayout;
@@ -111,7 +107,6 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     viewerOptsBox->addWidget(showImageNameCheckBox);
     viewerOptsBox->addWidget(wrapListCheckBox);
     viewerOptsBox->addWidget(enableAnimCheckBox);
-    viewerOptsBox->addWidget(upscalePreviewCheckBox);
     viewerOptsBox->addLayout(saveQualityHbox);
     viewerOptsBox->addStretch(1);
 
@@ -173,6 +168,10 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     enableThumbExifCheckBox = new QCheckBox(tr("Rotate thumbnail according to Exif orientation value"), this);
     enableThumbExifCheckBox->setChecked(Settings::exifThumbRotationEnabled);
 
+    // Upscale preview image
+    upscalePreviewCheckBox = new QCheckBox(tr("Scale up small images in preview"), this);
+    upscalePreviewCheckBox->setChecked(Settings::upscalePreview);
+
     // Thumbnail options
     QVBoxLayout *thumbsOptsBox = new QVBoxLayout;
     thumbsOptsBox->addLayout(thumbsBackgroundColorLayout);
@@ -181,6 +180,7 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     thumbsOptsBox->addLayout(thumbsLabelColorLayout);
     thumbsOptsBox->addWidget(enableThumbExifCheckBox);
     thumbsOptsBox->addLayout(thumbPagesReadLayout);
+    thumbsOptsBox->addWidget(upscalePreviewCheckBox);
     thumbsOptsBox->addStretch(1);
 
     // Mouse settings
