@@ -1077,7 +1077,7 @@ QString ThumbsViewer::locateThumbnail(const QString &originalPath) const
     return QString();
 }
 
-void ThumbsViewer::storeThumbnail(const QString &originalPath, QImage thumbnail) const {
+void ThumbsViewer::storeThumbnail(const QString &originalPath, QImage thumbnail, const QSize &originalSize) const {
 #if defined(Q_OS_MAC) || defined(Q_OS_WIN)
     return;
 #endif
@@ -1119,36 +1119,48 @@ void ThumbsViewer::storeThumbnail(const QString &originalPath, QImage thumbnail)
     }
 
     const QString fullPath = basePath + folder + filename;
+    QFileInfo info(fullPath);
 
-    const time_t modified = QFileInfo(originalPath).lastModified().toTime_t();
-    thumbnail.setText(QStringLiteral("Thumb::MTime"), QString::number(modified));
+    QDateTime lastModified = info.lastModified();
+    if (info.metadataChangeTime() > info.lastModified()) {
+        lastModified = info.metadataChangeTime();
+    }
+    thumbnail.setText(QStringLiteral("Thumb::MTime"), QString::number(lastModified.toTime_t()));
+
     QUrl url = QUrl::fromLocalFile(canonicalPath).adjusted(QUrl::RemovePassword);
     thumbnail.setText(QStringLiteral("Thumb::URI"), url.url());
+
+    thumbnail.setText(QStringLiteral("Thumb::Image::Width"), QString::number(originalSize.width()));
+    thumbnail.setText(QStringLiteral("Thumb::Image::Height"), QString::number(originalSize.height()));
+    thumbnail.setText("Software", "Phototonic");
+    thumbnail.convertToColorSpace(QColorSpace::SRgb);
+
     thumbnail.save(fullPath);
 }
 
 bool ThumbsViewer::loadThumb(int currThumb) {
-    static QSize currentThumbSize;
     QImageReader thumbReader;
     QString imageFileName = thumbsViewerModel->item(currThumb)->data(FileNameRole).toString();
     QImage thumb;
     bool imageReadOk = false;
     bool shouldStoreThumbnail = false;
 
+    thumbReader.setFileName(imageFileName);
+    thumbReader.setQuality(50); // 50 is the threshold where Qt does fast decoding, but still good scaling
+    const QSize origThumbSize = thumbReader.size();
+    QSize currentThumbSize = origThumbSize;
+
     QString thumbnailPath = locateThumbnail(imageFileName);
     if (!thumbnailPath.isEmpty()) {
-        thumbReader.setFileName(thumbnailPath);
-        if (!thumbReader.canRead()) {
-            // Should we delete it? I don't trust myself enough
+        if (QImageReader(thumbnailPath).canRead()) {
+            thumbReader.setFileName(thumbnailPath);
+        } else {
             qWarning() << "Invalid thumbnail" << thumbnailPath;
-            thumbReader.setFileName(imageFileName);
+            shouldStoreThumbnail = true;
         }
     } else {
-        thumbReader.setFileName(imageFileName);
         shouldStoreThumbnail = true;
     }
-    thumbReader.setQuality(50); // 50 is the threshold where Qt does fast decoding, but still good scaling
-    currentThumbSize = thumbReader.size();
 
     if (currentThumbSize.isValid()) {
         if (currentThumbSize.width() != thumbSize || currentThumbSize.height() != thumbSize) {
@@ -1157,11 +1169,22 @@ bool ThumbsViewer::loadThumb(int currThumb) {
 
         thumbReader.setScaledSize(currentThumbSize);
         imageReadOk = thumbReader.read(&thumb);
+
+        if (imageReadOk && !shouldStoreThumbnail) {
+            int w = thumb.text("Thumb::Image::Width").toInt();
+            int h = thumb.text("Thumb::Image::Height").toInt();
+            if (origThumbSize != QSize(w, h)) {
+                qWarning() << "Invalid size in stored thumbnail" << w << h << "vs" << origThumbSize;
+                thumbReader.setFileName(imageFileName);
+                imageReadOk = thumbReader.read(&thumb);
+            }
+
+        }
     }
 
     if (imageReadOk) {
         if (shouldStoreThumbnail) {
-            storeThumbnail(imageFileName, thumb);
+            storeThumbnail(imageFileName, thumb, origThumbSize);
         }
         if (Settings::exifThumbRotationEnabled) {
             imageViewer->rotateByExifRotation(thumb, imageFileName);

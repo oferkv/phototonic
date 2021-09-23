@@ -183,7 +183,7 @@ private:
 
     QString thumbnailFileName(const QString &path) const;
     QString locateThumbnail(const QString &path) const;
-    void storeThumbnail(const QString &originalPath, QImage thumbnail) const;
+    void storeThumbnail(const QString &originalPath, QImage thumbnail, const QSize &originalSize) const;
 
     QFileInfo thumbFileInfo;
     QFileInfoList thumbFileInfoList;
