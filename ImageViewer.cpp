@@ -53,7 +53,17 @@ struct Exiv2LogHandler {
         Exiv2::LogMsg::setHandler(&Exiv2LogHandler::handleMessage);
     }
 };
-}
+
+class MyScrollArea : public QScrollArea {
+protected:
+    void wheelEvent(QWheelEvent *event) override {
+        event->ignore();
+        return;
+    }
+};
+
+} // anonymous namespace
+
 
 ImageViewer::ImageViewer(QWidget *parent, const std::shared_ptr<MetadataCache> &metadataCache) : QWidget(parent) {
     // This is a threadsafe way to ensure that we only register it once
@@ -67,7 +77,7 @@ ImageViewer::ImageViewer(QWidget *parent, const std::shared_ptr<MetadataCache> &
     imageWidget = new ImageWidget;
     animation = nullptr;
 
-    scrollArea = new QScrollArea;
+    scrollArea = new MyScrollArea;
     scrollArea->setContentsMargins(0, 0, 0, 0);
     scrollArea->setAlignment(Qt::AlignCenter);
     scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);

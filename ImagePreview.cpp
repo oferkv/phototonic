@@ -54,7 +54,6 @@ QPixmap& ImagePreview::loadImage(QString imageFileName) {
     }
 
     QImageReader imageReader(imageFileName);
-    qDebug() << imageReader.transformation() << imageReader.autoTransform();
 
     if (!imageReader.size().isValid()) {
         previewPixmap = QIcon::fromTheme("image-missing",
