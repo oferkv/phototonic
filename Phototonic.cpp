@@ -2194,6 +2194,7 @@ void Phototonic::writeSettings() {
     Settings::appSettings->setValue(Settings::optionStartupDir, (int) Settings::startupDir);
     Settings::appSettings->setValue(Settings::optionSpecifiedStartDir, Settings::specifiedStartDir);
     Settings::appSettings->setValue(Settings::optionThumbsBackgroundImage, Settings::thumbsBackgroundImage);
+    Settings::appSettings->setValue(Settings::optionThumbsRepeatBackgroundImage, Settings::thumbsRepeatBackgroundImage);
     Settings::appSettings->setValue(Settings::optionLastDir,
                                     Settings::startupDir == Settings::RememberLastDir ? Settings::currentDirectory
                                                                                       : "");
@@ -2331,6 +2332,7 @@ void Phototonic::readSettings() {
     Settings::startupDir = (Settings::StartupDir) Settings::appSettings->value(Settings::optionStartupDir).toInt();
     Settings::specifiedStartDir = Settings::appSettings->value(Settings::optionSpecifiedStartDir).toString();
     Settings::thumbsBackgroundImage = Settings::appSettings->value(Settings::optionThumbsBackgroundImage).toString();
+    Settings::thumbsRepeatBackgroundImage = Settings::appSettings->value(Settings::optionThumbsRepeatBackgroundImage).toBool();
     Settings::showImageName = Settings::appSettings->value(Settings::optionShowImageName).toBool();
     Settings::smallToolbarIcons = Settings::appSettings->value(Settings::optionSmallToolbarIcons).toBool();
     Settings::hideDockTitlebars = Settings::appSettings->value(Settings::optionHideDockTitlebars).toBool();

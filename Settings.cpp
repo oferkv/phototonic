@@ -57,6 +57,7 @@ namespace Settings {
     const char optionStartupDir[] = "startupDir";
     const char optionSpecifiedStartDir[] = "specifiedStartDir";
     const char optionThumbsBackgroundImage[] = "thumbsBackgroundImage";
+    const char optionThumbsRepeatBackgroundImage[] = "thumbsRepeatBackgroundImage";
     const char optionShowViewerToolbar[] = "showViewerToolbar";
     const char optionLastDir[] = "lastDir";
     const char optionGeometry[] = "Geometry";
@@ -147,6 +148,7 @@ namespace Settings {
     QString currentDirectory;
     QString saveDirectory;
     QString thumbsBackgroundImage;
+    bool thumbsRepeatBackgroundImage;
     QStringList filesList;
     bool isFileListLoaded;
     bool setWindowIcon;

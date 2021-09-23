@@ -74,6 +74,7 @@ namespace Settings {
     extern const char optionStartupDir[];
     extern const char optionSpecifiedStartDir[];
     extern const char optionThumbsBackgroundImage[];
+    extern const char optionThumbsRepeatBackgroundImage[];
     extern const char optionShowViewerToolbar[];
     extern const char optionLastDir[];
     extern const char optionGeometry[];
@@ -164,6 +165,7 @@ namespace Settings {
     extern QString currentDirectory;
     extern QString saveDirectory;
     extern QString thumbsBackgroundImage;
+    extern bool thumbsRepeatBackgroundImage;
     extern QStringList filesList;
     extern bool isFileListLoaded;
     extern bool setWindowIcon;

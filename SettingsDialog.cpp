@@ -142,11 +142,16 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     thumbsBackgroundImageLineEdit->setClearButtonEnabled(true);
     thumbsBackgroundImageLineEdit->setMinimumWidth(200);
 
+
     QToolButton *chooseThumbsBackImageButton = new QToolButton();
     chooseThumbsBackImageButton->setIcon(QIcon::fromTheme("document-open", QIcon(":/images/open.png")));
     chooseThumbsBackImageButton->setFixedSize(26, 26);
     chooseThumbsBackImageButton->setIconSize(QSize(16, 16));
     connect(chooseThumbsBackImageButton, SIGNAL(clicked()), this, SLOT(pickBackgroundImage()));
+
+    // repeat background image
+    thumbsRepeatBackgroundImageCheckBox = new QCheckBox(tr("Repeat background"));
+    thumbsRepeatBackgroundImageCheckBox->setChecked(Settings::thumbsRepeatBackgroundImage);
 
     QHBoxLayout *thumbsBackgroundImageLayout = new QHBoxLayout;
     thumbsBackgroundImageLayout->addWidget(thumbsBackgroundImageLabel);
@@ -177,6 +182,8 @@ SettingsDialog::SettingsDialog(QWidget *parent) : QDialog(parent) {
     thumbsOptsBox->addLayout(thumbsBackgroundColorLayout);
 
     thumbsOptsBox->addLayout(thumbsBackgroundImageLayout);
+    thumbsOptsBox->addWidget(thumbsRepeatBackgroundImageCheckBox);
+
     thumbsOptsBox->addLayout(thumbsLabelColorLayout);
     thumbsOptsBox->addWidget(enableThumbExifCheckBox);
     thumbsOptsBox->addLayout(thumbPagesReadLayout);
@@ -350,6 +357,7 @@ void SettingsDialog::saveSettings() {
     Settings::thumbsBackgroundColor = thumbsBackgroundColor;
     Settings::thumbsTextColor = thumbsTextColor;
     Settings::thumbsBackgroundImage = thumbsBackgroundImageLineEdit->text();
+    Settings::thumbsRepeatBackgroundImage = thumbsRepeatBackgroundImageCheckBox->isChecked();
     Settings::thumbsPagesReadCount = (unsigned int) thumbPagesSpinBox->value();
     Settings::wrapImageList = wrapListCheckBox->isChecked();
     Settings::defaultSaveQuality = saveQualitySpinBox->value();

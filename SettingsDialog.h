@@ -73,6 +73,7 @@ private:
     QRadioButton *startupDirectoryRadioButtons[3];
     QLineEdit *startupDirLineEdit;
     QLineEdit *thumbsBackgroundImageLineEdit;
+    QCheckBox *thumbsRepeatBackgroundImageCheckBox;
     QCheckBox *setWindowIconCheckBox;
     QCheckBox *upscalePreviewCheckBox;
 

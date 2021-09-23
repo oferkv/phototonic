@@ -88,19 +88,37 @@ void ThumbsViewer::setThumbColors() {
             .arg(Settings::thumbsBackgroundColor.green())
             .arg(Settings::thumbsBackgroundColor.blue());
 
-    QColor background = Settings::thumbsBackgroundColor;
+    QString backgroundRepeat;
+    if (!Settings::thumbsRepeatBackgroundImage) {
+        backgroundRepeat =
+            "   background-repeat: no-repeat; "
+            "   background-position: center; ";
 
+    }
+
+
+    QColor background = Settings::thumbsLayout == Squares ? Qt::transparent : Settings::thumbsBackgroundColor;
     QString styleSheet =
             "QListView { "
             "   background: " + background.name(QColor::HexRgb) + ";"
             "   background-image: url(" + Settings::thumbsBackgroundImage + ");"
-            "   background-attachment: fixed; "
-            "} "
-            " QListView::item { "
-            "      background: " + background.name(QColor::HexArgb) + ";"
-            "      color: " + Settings::thumbsTextColor.name(QColor::HexArgb) + ";"
-            "}"
-            ;
+            "   background-attachment: fixed; " +
+            backgroundRepeat +
+            "} ";
+    if (Settings::thumbsLayout != Squares) {
+        if (!Settings::thumbsBackgroundImage.isEmpty()) {
+            styleSheet +=
+                "QListView::item { "
+                "   background: " + background.name(QColor::HexArgb) + ";"
+                "   color: " + Settings::thumbsTextColor.name(QColor::HexRgb) + ";"
+                "}"
+                "QListView::item:selected { "
+                "   background: " + background.name(QColor::HexRgb) + ";"
+                "}"
+                ;
+        }
+    }
+
     setStyleSheet(styleSheet);
 
     QPalette scrollBarOriginalPalette = verticalScrollBar()->palette();
@@ -733,8 +751,11 @@ void ThumbsViewer::initThumbs() {
         thumbItem->setData(thumbFileInfo.lastModified(), TimeRole);
         thumbItem->setData(thumbFileInfo.filePath(), FileNameRole);
         thumbItem->setSizeHint(hintSize);
-        thumbItem->setTextAlignment(Qt::AlignTop | Qt::AlignHCenter);
-        thumbItem->setText(thumbFileInfo.fileName());
+
+        if (Settings::thumbsLayout != Squares) {
+            thumbItem->setTextAlignment(Qt::AlignTop | Qt::AlignHCenter);
+            thumbItem->setText(thumbFileInfo.fileName());
+        }
 
         thumbsViewerModel->appendRow(thumbItem);
 
@@ -1270,8 +1291,10 @@ QStandardItem * ThumbsViewer::addThumb(QString &imageFullPath) {
     thumbItem->setData(thumbFileInfo.lastModified(), TimeRole);
     thumbItem->setData(thumbFileInfo.suffix(), TypeRole);
     thumbItem->setData(thumbFileInfo.filePath(), FileNameRole);
-    thumbItem->setTextAlignment(Qt::AlignTop | Qt::AlignHCenter);
-    thumbItem->setData(thumbFileInfo.fileName(), Qt::DisplayRole);
+    if (Settings::thumbsLayout != Squares) {
+        thumbItem->setTextAlignment(Qt::AlignTop | Qt::AlignHCenter);
+        thumbItem->setData(thumbFileInfo.fileName(), Qt::DisplayRole);
+    }
     thumbItem->setSizeHint(hintSize);
 
     thumbReader.setFileName(imageFullPath);
