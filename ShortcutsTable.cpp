@@ -21,7 +21,7 @@
 #include "MessageBox.h"
 
 ShortcutsTable::ShortcutsTable() {
-    keysModel = new QStandardItemModel();
+    keysModel = new QStandardItemModel(this);
     setModel(keysModel);
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setSelectionMode(QAbstractItemView::SingleSelection);
