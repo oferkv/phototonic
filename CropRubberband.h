@@ -32,9 +32,13 @@ signals:
 protected:
     void showEvent(QShowEvent *event);
     void keyPressEvent(QKeyEvent *event);
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+
 
 private:
     QRubberBand *rubberband;
+    QPoint prevPos;
 
     void resizeEvent(QResizeEvent *);
 };
