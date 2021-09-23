@@ -85,7 +85,8 @@ void Phototonic::processStartupArguments(QStringList argumentsList, int filesSta
     if (argumentsList.size() > filesStartAt) {
         QFileInfo firstArgument(argumentsList.at(filesStartAt));
         if (firstArgument.isDir()) {
-            Settings::currentDirectory = firstArgument.absolutePath();
+            // Confusingly we need the absoluteFile and not absolutePath if it's a directory
+            Settings::currentDirectory = firstArgument.absoluteFilePath();
         } else if (argumentsList.size() > filesStartAt + 1) {
             loadStartupFileList(argumentsList, filesStartAt);
             return;
