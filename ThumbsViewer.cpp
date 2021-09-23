@@ -230,12 +230,17 @@ void ThumbsViewer::updateImageInfoViewer(int row) {
         infoView->addEntry(key, val);
     }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     Exiv2::Image::AutoPtr exifImage;
+#pragma clang diagnostic pop
+
     try {
         exifImage = Exiv2::ImageFactory::open(imageFullPath.toStdString());
         exifImage->readMetadata();
     }
-    catch (Exiv2::Error &error) {
+    catch (const Exiv2::Error &error) {
+        qWarning() << "EXIV2:" << error.what();
         return;
     }
 

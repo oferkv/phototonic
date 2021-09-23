@@ -136,7 +136,11 @@ void ImageTags::addTag(QString tagName, bool tagChecked) {
 
 bool ImageTags::writeTagsToImage(QString &imageFileName, QSet<QString> &newTags) {
     QSet<QString> imageTags;
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     Exiv2::Image::AutoPtr exifImage;
+#pragma clang diagnostic pop
 
     try {
         exifImage = Exiv2::ImageFactory::open(imageFileName.toStdString());
@@ -160,7 +164,12 @@ bool ImageTags::writeTagsToImage(QString &imageFileName, QSet<QString> &newTags)
         QSetIterator<QString> newTagsIt(newTags);
         while (newTagsIt.hasNext()) {
             QString tag = newTagsIt.next();
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
             Exiv2::Value::AutoPtr value = Exiv2::Value::create(Exiv2::string);
+#pragma clang diagnostic pop
+
             value->read(tag.toStdString());
             Exiv2::IptcKey key("Iptc.Application2.Keywords");
             newIptcData.add(key, value.get());

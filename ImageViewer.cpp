@@ -1052,7 +1052,15 @@ void ImageViewer::keyMoveEvent(int direction) {
 }
 
 void ImageViewer::saveImage() {
+#if __clang__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
     Exiv2::Image::AutoPtr image;
+#if __clang__
+#pragma GCC diagnostic pop
+#endif
+
     bool exifError = false;
     static bool showExifError = true;
 
@@ -1067,7 +1075,8 @@ void ImageViewer::saveImage() {
         image = Exiv2::ImageFactory::open(viewerImageFullPath.toStdString());
         image->readMetadata();
     }
-    catch (Exiv2::Error &error) {
+    catch (const Exiv2::Error &error) {
+        qWarning() << "EXIV2:" << error.what();
         exifError = true;
     }
 
@@ -1088,7 +1097,11 @@ void ImageViewer::saveImage() {
             if (Settings::saveDirectory.isEmpty()) {
                 image->writeMetadata();
             } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
                 Exiv2::Image::AutoPtr imageOut = Exiv2::ImageFactory::open(savePath.toStdString());
+#pragma clang diagnostic pop
+
                 imageOut->setMetadata(*image);
                 Exiv2::ExifThumb thumb(imageOut->exifData());
                 thumb.erase();
@@ -1114,8 +1127,12 @@ void ImageViewer::saveImage() {
 }
 
 void ImageViewer::saveImageAs() {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     Exiv2::Image::AutoPtr exifImage;
     Exiv2::Image::AutoPtr newExifImage;
+#pragma clang diagnostic pop
+
     bool exifError = false;
 
     setCursorHiding(false);
@@ -1131,7 +1148,8 @@ void ImageViewer::saveImageAs() {
             exifImage = Exiv2::ImageFactory::open(viewerImageFullPath.toStdString());
             exifImage->readMetadata();
         }
-        catch (Exiv2::Error &error) {
+        catch (const Exiv2::Error &error) {
+            qWarning() << "EXIV2" << error.what();
             exifError = true;
         }
 

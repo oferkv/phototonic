@@ -3358,7 +3358,12 @@ void Phototonic::removeMetadata() {
 
     if (ret == MessageBox::Yes) {
         for (int file = 0; file < fileList.size(); ++file) {
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
             Exiv2::Image::AutoPtr image;
+#pragma clang diagnostic pop
+
             try {
                 image = Exiv2::ImageFactory::open(fileList[file].toStdString());
                 image->clearMetadata();

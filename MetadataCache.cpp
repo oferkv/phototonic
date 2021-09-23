@@ -64,7 +64,11 @@ void MetadataCache::clear() {
 }
 
 bool MetadataCache::loadImageMetadata(const QString &imageFullPath) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     Exiv2::Image::AutoPtr exifImage;
+#pragma clang diagnostic pop
+
     QSet<QString> tags;
     long orientation = 0;
 
