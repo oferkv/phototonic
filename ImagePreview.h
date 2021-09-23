@@ -41,12 +41,13 @@ public:
     QScrollArea *scrollArea;
 
 protected:
-    void resizeEvent(QResizeEvent *event);
+    void resizeEvent(QResizeEvent *event) override;
 
 private:
     QLabel *imageLabel;
     QPixmap previewPixmap;
     ImageViewer *imageViewer;
+    QPointer<QMovie> animation;
 
 };
 

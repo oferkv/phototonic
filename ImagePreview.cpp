@@ -20,6 +20,8 @@
 #include "Settings.h"
 #include "ThumbsViewer.h"
 
+#include <QMovie>
+
 ImagePreview::ImagePreview(QWidget *parent) : QWidget(parent)
 {
 
@@ -47,8 +49,23 @@ ImagePreview::ImagePreview(QWidget *parent) : QWidget(parent)
 }
 
 QPixmap& ImagePreview::loadImage(QString imageFileName) {
+    if (animation) {
+        delete animation;
+    }
+
     QImageReader imageReader(imageFileName);
-    if (imageReader.size().isValid()) {
+    qDebug() << imageReader.transformation() << imageReader.autoTransform();
+
+    if (!imageReader.size().isValid()) {
+        previewPixmap = QIcon::fromTheme("image-missing",
+                                         QIcon(":/images/error_image.png")).pixmap(BAD_IMAGE_SIZE, BAD_IMAGE_SIZE);
+    } else if (Settings::enableAnimations && imageReader.supportsAnimation()){
+        animation = new QMovie(imageFileName);
+        animation->setParent(imageLabel);
+        animation->start();
+        imageLabel->setMovie(animation);
+        previewPixmap = animation->currentPixmap();
+    } else {
         QSize resize = imageReader.size();
         resize.scale(QSize(imageLabel->width(), imageLabel->height()), Qt::KeepAspectRatio);
         QImage previewImage;
@@ -57,12 +74,13 @@ QPixmap& ImagePreview::loadImage(QString imageFileName) {
             imageViewer->rotateByExifRotation(previewImage, imageFileName);
         }
         previewPixmap = QPixmap::fromImage(previewImage);
+    }
+    if (animation) {
+        imageLabel->setMovie(animation);
     } else {
-        previewPixmap = QIcon::fromTheme("image-missing",
-                                         QIcon(":/images/error_image.png")).pixmap(BAD_IMAGE_SIZE, BAD_IMAGE_SIZE);
+        imageLabel->setPixmap(previewPixmap);
     }
 
-    imageLabel->setPixmap(previewPixmap);
     resizeImagePreview();
     return previewPixmap;
 }
@@ -73,20 +91,7 @@ void ImagePreview::clear() {
 
 void ImagePreview::resizeImagePreview()
 {
-#if (QT_VERSION < QT_VERSION_CHECK(5, 15, 0))
-    const QPixmap *pixmap = imageLabel->pixmap();
-    if (!pixmap) {
-        return;
-    }
-
-    QSize previewSizePixmap = pixmap->size();
-#else
-    const QPixmap pixmap = imageLabel->pixmap(Qt::ReturnByValue);
-    if (pixmap.isNull()) {
-        return;
-    }
-    QSize previewSizePixmap = pixmap.size();
-#endif
+    QSize previewSizePixmap = previewPixmap.size();
 
     if (Settings::upscalePreview || previewSizePixmap.width() > scrollArea->width() || previewSizePixmap.height() > scrollArea->height()) {
         previewSizePixmap.scale(scrollArea->width(), scrollArea->height(), Qt::KeepAspectRatio);
