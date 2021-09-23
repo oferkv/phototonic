@@ -96,6 +96,9 @@ public:
 
     QPoint getContextMenuPosition();
 
+signals:
+    void toolsUpdated();
+
 public slots:
 
     void monitorCursorState();

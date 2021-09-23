@@ -83,6 +83,7 @@ namespace Settings {
     float imageZoomFactor;
     bool keepZoomFactor;
     qreal rotation;
+    bool mouseRotateEnabled = false;
     bool keepTransform;
     bool flipH;
     bool flipV;

@@ -129,6 +129,8 @@ ImageViewer::ImageViewer(QWidget *parent, const std::shared_ptr<MetadataCache> &
 
     Settings::dialogLastX = Settings::dialogLastY = 0;
 
+    Settings::mouseRotateEnabled = false;
+
     newImage = false;
     cropRubberBand = 0;
 }
@@ -684,6 +686,9 @@ void ImageViewer::reload() {
     }
     Settings::scaledWidth = Settings::scaledHeight = 0;
     if (!batchMode) {
+        Settings::mouseRotateEnabled = false;
+        emit toolsUpdated();
+
         if (!Settings::keepTransform)
             Settings::cropLeft = Settings::cropTop = Settings::cropWidth = Settings::cropHeight = 0;
         if (newImage || viewerImageFullPath.isEmpty()) {
@@ -956,17 +961,19 @@ void ImageViewer::mouseMoveEvent(QMouseEvent *event) {
         return;
     }
 
-    if (event->modifiers() == Qt::ControlModifier) {
-        if (cropRubberBand && cropRubberBand->isVisible()) {
-            cropRubberBand->setGeometry(QRect(cropOrigin, event->pos()).normalized());
-        }
-    } else if (event->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier)) {
+    if (Settings::mouseRotateEnabled) {
         QPointF fulcrum(QPointF(imageWidget->pos()) + QPointF(imageWidget->width() / 2.0, imageWidget->height() / 2.0));
         if (event->pos().x() > (width() * 3) / 4)
             fulcrum.setY(mouseY); // if the user pressed near the right edge, start with initial rotation of 0
         QLineF vector(fulcrum, event->localPos());
         imageWidget->setRotation(initialRotation - vector.angle());
         // qDebug() << "image center" << fulcrum << "line" << vector << "angle" << vector.angle() << "geom" << imageWidget->geometry();
+
+    } else if (event->modifiers() == Qt::ControlModifier) {
+        if (cropRubberBand && cropRubberBand->isVisible()) {
+            cropRubberBand->setGeometry(QRect(cropOrigin, event->pos()).normalized());
+        }
+    } else if (event->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier)) {
     } else {
         if (moveImageLocked) {
             int newX = layoutX + (event->pos().x() - mouseX);

@@ -100,6 +100,7 @@ namespace Settings {
     extern float imageZoomFactor;
     extern bool keepZoomFactor;
     extern qreal rotation;
+    extern bool mouseRotateEnabled;
     extern bool keepTransform;
     extern bool flipH;
     extern bool flipV;

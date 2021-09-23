@@ -292,6 +292,10 @@ private slots:
 
     void setClassicThumbs();
 
+    void toggleRotateEnabled();
+
+    void onToolsUpdated();
+
 private:
     QMenu *fileMenu;
     QMenu *editMenu;
@@ -364,6 +368,7 @@ private:
     QAction *viewSubMenuAction;
     QAction *rotateLeftAction;
     QAction *rotateRightAction;
+    QAction *rotateToolAction;
     QAction *flipHorizontalAction;
     QAction *flipVerticalAction;
     QAction *cropAction;

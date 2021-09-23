@@ -164,6 +164,7 @@ void Phototonic::createImageViewer() {
     connect(copyImageAction, SIGNAL(triggered()), imageViewer, SLOT(copyImage()));
     connect(pasteImageAction, SIGNAL(triggered()), imageViewer, SLOT(pasteImage()));
     connect(applyCropAndRotationAction, SIGNAL(triggered()), imageViewer, SLOT(applyCropAndRotation()));
+    connect(imageViewer, &ImageViewer::toolsUpdated, this, &Phototonic::onToolsUpdated);
     imageViewer->ImagePopUpMenu = new QMenu();
 
     // Widget actions
@@ -643,6 +644,12 @@ void Phototonic::createActions() {
     rotateRightAction->setIcon(QIcon::fromTheme("object-rotate-right", QIcon(":/images/rotate_right.png")));
     connect(rotateRightAction, SIGNAL(triggered()), this, SLOT(rotateRight()));
 
+    rotateToolAction = new QAction(tr("Rotate with mouse"), this);
+    rotateToolAction->setObjectName("rotateRight");
+    rotateToolAction->setIcon(QIcon::fromTheme("rotation-allowed", QIcon(":/images/rotate.png")));
+    rotateToolAction->setCheckable(true);
+    connect(rotateToolAction, SIGNAL(triggered()), this, SLOT(toggleRotateEnabled()));
+
     flipHorizontalAction = new QAction(tr("Flip Horizontally"), this);
     flipHorizontalAction->setObjectName("flipH");
     flipHorizontalAction->setIcon(QIcon::fromTheme("object-flip-horizontal", QIcon(":/images/flipH.png")));
@@ -925,6 +932,7 @@ void Phototonic::createToolBars() {
     imageToolBar->addAction(resizeAction);
     imageToolBar->addAction(rotateRightAction);
     imageToolBar->addAction(rotateLeftAction);
+    imageToolBar->addAction(rotateToolAction);
     imageToolBar->addAction(flipHorizontalAction);
     imageToolBar->addAction(flipVerticalAction);
     imageToolBar->addAction(cropAction);
@@ -938,6 +946,16 @@ void Phototonic::createToolBars() {
 void Phototonic::setClassicThumbs() {
     Settings::thumbsLayout = ThumbsViewer::Classic;
     refreshThumbs(false);
+}
+
+void Phototonic::toggleRotateEnabled()
+{
+    Settings::mouseRotateEnabled = rotateToolAction->isChecked();
+}
+
+void Phototonic::onToolsUpdated()
+{
+    rotateToolAction->setChecked(Settings::mouseRotateEnabled);
 }
 
 void Phototonic::setSquareThumbs() {
@@ -1285,6 +1303,7 @@ void Phototonic::showSettings() {
         if (Settings::layoutMode == ImageViewWidget) {
             imageViewer->reload();
             needThumbsRefresh = true;
+            rotateToolAction->setChecked(Settings::mouseRotateEnabled);
         } else {
             refreshThumbs(false);
         }
