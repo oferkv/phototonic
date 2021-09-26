@@ -33,6 +33,10 @@ FileSystemTree::FileSystemTree(QWidget *parent) : QTreeView(parent) {
     }
     setHeaderHidden(true);
 
+    connect(fileSystemModel, &QFileSystemModel::layoutChanged, this, [this]() {
+            scrollTo(currentIndex());
+        }, Qt::QueuedConnection);
+
     connect(this, SIGNAL(expanded(
                                  const QModelIndex &)),
             this, SLOT(resizeTreeColumn(
