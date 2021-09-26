@@ -225,12 +225,12 @@ static float score(const CropOptions &options, const QImage &output, const QRect
         for (int x = 0; x < outputWidthDownSample; x += downSample) {
             int p = (qFloor(x * invDownSample)) * 4;
             qreal i = importance(options, crop, x, y);
-            qreal detail = od[p + 1] / 255.;
+            qreal dtl = od[p + 1] / 255.;
 
-            skin += (od[p] / 255.) * (detail + options.skinBias) * i;
-            detail += detail * i;
+            skin += (od[p] / 255.) * (dtl + options.skinBias) * i;
+            detail += dtl * i;
             saturation +=
-                    (od[p + 2] / 255) * (detail + options.saturationBias) * i;
+                    (od[p + 2] / 255) * (dtl + options.saturationBias) * i;
             boost += (od[p + 3] / 255.) * i;
         }
     }
