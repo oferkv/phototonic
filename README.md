@@ -1,5 +1,9 @@
 # Phototonic Image Viewer: batch-processing fork
 
+### Notice
+
+This project is unmaintained. See Geeqie for an alternative.
+
 ### About
 
 Phototonic is an image viewer and organizer built with Qt and Exiv2, released under GNU General Public License v3.
