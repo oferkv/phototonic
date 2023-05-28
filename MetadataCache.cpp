@@ -91,7 +91,11 @@ bool MetadataCache::loadImageMetadata(const QString &imageFullPath) {
     if (exifImage->supportsMetadata(Exiv2::mdExif)) try {
         Exiv2::ExifData::const_iterator it = Exiv2::orientation(exifImage->exifData());
         if (it != exifImage->exifData().end()) {
+#if EXIV2_TEST_VERSION(0,28,0)
+            orientation = it->toUint32();
+#else
             orientation = it->toLong();
+#endif
         }
     } catch (Exiv2::Error &error) {
         qWarning() << "Failed to read Exif metadata" << error.what();
