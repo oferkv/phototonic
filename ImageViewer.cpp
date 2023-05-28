@@ -1074,7 +1074,11 @@ void ImageViewer::saveImage() {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #endif
+#if EXIV2_TEST_VERSION(0,28,0)
+    Exiv2::Image::UniquePtr image;
+#else
     Exiv2::Image::AutoPtr image;
+#endif
 #if __clang__
 #pragma GCC diagnostic pop
 #endif
@@ -1117,7 +1121,11 @@ void ImageViewer::saveImage() {
             } else {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#if EXIV2_TEST_VERSION(0,28,0)
+                Exiv2::Image::UniquePtr imageOut = Exiv2::ImageFactory::open(savePath.toStdString());
+#else
                 Exiv2::Image::AutoPtr imageOut = Exiv2::ImageFactory::open(savePath.toStdString());
+#endif
 #pragma clang diagnostic pop
 
                 imageOut->setMetadata(*image);
@@ -1147,8 +1155,13 @@ void ImageViewer::saveImage() {
 void ImageViewer::saveImageAs() {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#if EXIV2_TEST_VERSION(0,28,0)
+    Exiv2::Image::UniquePtr exifImage;
+    Exiv2::Image::UniquePtr newExifImage;
+#else
     Exiv2::Image::AutoPtr exifImage;
     Exiv2::Image::AutoPtr newExifImage;
+#endif
 #pragma clang diagnostic pop
 
     bool exifError = false;
