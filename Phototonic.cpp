@@ -3394,7 +3394,11 @@ void Phototonic::removeMetadata() {
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#if EXIV2_TEST_VERSION(0,28,0)
+            Exiv2::Image::UniquePtr image;
+#else
             Exiv2::Image::AutoPtr image;
+#endif
 #pragma clang diagnostic pop
 
             try {
