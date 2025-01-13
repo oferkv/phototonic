@@ -2,7 +2,7 @@
 
 ### Notice
 
-This project is unmaintained. See Geeqie for an alternative.
+Work on Phototonic continues here: https://github.com/luebking/phototonic
 
 ### About
 
